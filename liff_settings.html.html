@@ -49,7 +49,7 @@
   }
   .tab-btn {
     flex: 1;
-    padding: 10px 2px;
+    padding: 8px 2px;
     border: none;
     background: none;
     font-size: 10px;
@@ -60,10 +60,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    justify-content: center;
+    gap: 3px;
+    min-height: 52px;
   }
   .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
-  .tab-icon { font-size: 16px; }
+  .tab-icon {
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
 
   .content { padding: 14px; }
   .tab-panel { display: none; }
@@ -357,19 +367,19 @@
 
 <div class="tab-nav">
   <button class="tab-btn active" onclick="switchTab('profile')">
-    <span class="tab-icon">👤</span>店舗
+    <span class="tab-icon">🏪</span>店舗
   </button>
   <button class="tab-btn" onclick="switchTab('sns')">
     <span class="tab-icon">📱</span>SNS
   </button>
-  <button class="tab-btn" onclick="switchTab('plan')">
-    <span class="tab-icon">📋</span>プラン
+  <button class="tab-btn" onclick="switchTab('support')">
+    <span class="tab-icon">🤖</span>サポート
   </button>
   <button class="tab-btn" onclick="switchTab('options')">
     <span class="tab-icon">🔔</span>通知
   </button>
   <button class="tab-btn" onclick="switchTab('account')">
-    <span class="tab-icon">🔐</span>登録
+    <span class="tab-icon">👤</span>登録
   </button>
 </div>
 
@@ -476,45 +486,40 @@
   </div>
 
   <!-- プランタブ -->
-  <div id="tab-plan" class="tab-panel">
-    <div class="plan-current-card">
-      <div class="plan-current-label">現在のプラン</div>
-      <div class="plan-current-name">STANDARD</div>
-      <div class="plan-current-price">¥1,280 / 月（税抜）· 次回更新 2026年7月1日</div>
-      <div class="plan-current-features">
-        <span class="plan-feature-tag">SNS 3つ</span>
-        <span class="plan-feature-tag">月30件</span>
-        <span class="plan-feature-tag">280文字</span>
-        <span class="plan-feature-tag">フル分析</span>
-        <span class="plan-feature-tag">週次レポート</span>
-      </div>
+  <!-- AIサポートタブ -->
+  <div id="tab-support" class="tab-panel">
+    <div class="card">
+      <div class="card-title">💬 AIサポート・よくある質問</div>
+      <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:16px;">
+        ご不明な点はLINEのチャットからAIサポートをご利用ください。AIが自動でお答えします。解決しない場合は運営スタッフが対応します。
+      </p>
+      <button onclick="closeToLine()" style="width:100%;background:var(--primary);color:white;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">
+        💬 LINEでAIサポートに相談する
+      </button>
     </div>
 
     <div class="card">
-      <div class="card-title">プランを比較する</div>
-      <p style="font-size:12px;color:var(--text-sub);margin-bottom:12px;line-height:1.7;">各プランをタップして現在のプランと詳しく比較できます。</p>
-
-      <button class="compare-btn" onclick="openCompare('LITE')">
-        <span class="plan-badge plan-LITE">LITE</span>
-        <span style="font-size:13px;">¥780 / 月</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text-sub);">詳しく見る ›</span>
-      </button>
-      <button class="compare-btn" onclick="openCompare('PRO')" style="border-color:#6a1b9a;">
-        <span class="plan-badge plan-PRO">PRO</span>
-        <span style="font-size:13px;">¥1,980 / 月</span>
-        <span style="background:#6a1b9a;color:white;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;">おすすめ</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text-sub);">詳しく見る ›</span>
-      </button>
-      <button class="compare-btn" onclick="openCompare('PERSONAL')" style="border-color:var(--border);">
-        <span class="plan-badge plan-PERSONAL">PERSONAL</span>
-        <span style="font-size:13px;">¥500 / 月</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text-sub);">詳しく見る ›</span>
-      </button>
-      <button class="compare-btn" onclick="openCompare('FREE')" style="border-color:var(--border);">
-        <span class="plan-badge plan-FREE">FREE</span>
-        <span style="font-size:13px;">¥0 / 月</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text-sub);">詳しく見る ›</span>
-      </button>
+      <div class="card-title">よくある質問</div>
+      <div style="border-bottom:1px solid var(--border);padding:12px 0;">
+        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. 文章生成は何回まで使えますか？</div>
+        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">全プラン無制限でご利用いただけます。何度でも作り直せます。カウントされるのは実際に予約した投稿のみです。</div>
+      </div>
+      <div style="border-bottom:1px solid var(--border);padding:12px 0;">
+        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. 複数のSNSに同時投稿できますか？</div>
+        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">はい、できます。同じ内容を複数のSNSに同時投稿した場合は1件としてカウントされます。</div>
+      </div>
+      <div style="border-bottom:1px solid var(--border);padding:12px 0;">
+        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. プランはいつでも変更できますか？</div>
+        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">はい、いつでも変更できます。リッチメニューの「プラン・料金」からお手続きください。</div>
+      </div>
+      <div style="border-bottom:1px solid var(--border);padding:12px 0;">
+        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. 解約はいつでもできますか？</div>
+        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">はい、いつでも解約できます。解約後は当月末まで引き続きご利用いただけます。日割り返金はございません。</div>
+      </div>
+      <div style="padding:12px 0;">
+        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. SNSのパスワードは預けるのですか？</div>
+        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">パスワードはお預かりしていません。各SNSが発行した投稿専用の許可証のみお預かりしています。許可の取り消しは各SNSの設定画面からいつでも可能です。</div>
+      </div>
     </div>
   </div>
 
@@ -593,6 +598,23 @@
   <div id="tab-account" class="tab-panel">
 
     <div class="main-screen" id="main-account">
+
+      <!-- 利用規約・プライバシーポリシー -->
+      <div class="card">
+        <div class="card-title">利用規約・プライバシーポリシー</div>
+        <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
+          当サービスをご利用いただくにあたり、以下の規約・ポリシーをご確認ください。
+        </p>
+        <div style="display:flex;gap:16px;margin-bottom:14px;">
+          <button onclick="window.location.href='https://ikitaki.github.io/aipost-liff/liff_terms.html'" style="flex:1;background:none;border:1px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;">利用規約を読む</button>
+          <button onclick="window.location.href='https://ikitaki.github.io/aipost-liff/liff_privacy.html'" style="flex:1;background:none;border:1px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;">プライバシーポリシーを読む</button>
+        </div>
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+          <input type="checkbox" id="agree-terms" style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--primary);">
+          <span style="font-size:12px;color:var(--text);line-height:1.8;">利用規約およびプライバシーポリシーを読み、内容に同意します</span>
+        </label>
+      </div>
+
       <div class="card">
         <div class="card-title">アカウント情報</div>
         <div class="info-row"><span class="info-key">ユーザーID</span><span class="info-val" style="font-size:12px;color:var(--text-sub);">USR-000001</span></div>
@@ -699,7 +721,7 @@
 
 <script>
 function switchTab(id) {
-  const tabs = ['profile','sns','plan','options','account'];
+  const tabs = ['profile','sns','support','options','account'];
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===id));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
@@ -852,19 +874,19 @@ function closeCompareOnBg(e) {
 
 <!-- ボトムナビゲーションバー -->
 <nav class="bottom-nav" id="bottom-nav">
-  <button class="nav-item " onclick="navigateTo('textgen')">
-    <span class="nav-icon">✏️</span>
+  <button class="nav-item" onclick="navigateTo('textgen')">
+    <span class="nav-icon">📝</span>
     <span class="nav-label">文章を作る</span>
   </button>
-  <button class="nav-item " onclick="navigateTo('reservation')">
+  <button class="nav-item" onclick="navigateTo('reservation')">
     <span class="nav-icon">📅</span>
     <span class="nav-label">投稿予約</span>
   </button>
-  <button class="nav-item " onclick="navigateTo('image')">
+  <button class="nav-item" onclick="navigateTo('image')">
     <span class="nav-icon">🖼️</span>
     <span class="nav-label">画像選択</span>
   </button>
-  <button class="nav-item " onclick="navigateTo('analytics')">
+  <button class="nav-item" onclick="navigateTo('analytics')">
     <span class="nav-icon">📊</span>
     <span class="nav-label">分析</span>
   </button>
@@ -872,9 +894,9 @@ function closeCompareOnBg(e) {
     <span class="nav-icon">⚙️</span>
     <span class="nav-label">設定</span>
   </button>
-  <button class="nav-item" onclick="closeToLine()">
-    <span class="nav-icon">💬</span>
-    <span class="nav-label">LINEへ</span>
+  <button class="nav-item" onclick="navigateTo('about')">
+    <span class="nav-icon">ℹ️</span>
+    <span class="nav-label">使い方</span>
   </button>
 </nav>
 
