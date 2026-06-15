@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>文章を作る - AiPost</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #1a237e;
+    --primary-light: #3949ab;
+    --accent: #00acc1;
+    --success: #43a047;
+    --warning: #fb8c00;
+    --danger: #e53935;
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --border: #e0e4ed;
+    --text: #1a1a2e;
+    --text-sub: #6b7280;
+    --text-light: #9ca3af;
+  }
+  body {
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    padding-bottom: 70px;
+  }
+
+  .header {
+    background: var(--primary);
+    color: white;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-logo { font-size: 16px; font-weight: 700; }
+  .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
+
+  /* ステップ表示 */
+  .steps {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    gap: 0;
+  }
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+  .step-circle {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text-light);
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .step.active .step-circle { border-color: var(--primary); background: var(--primary); color: white; }
+  .step.done .step-circle { border-color: var(--success); background: var(--success); color: white; }
+  .step-label { font-size: 10px; color: var(--text-light); text-align: center; }
+  .step.active .step-label { color: var(--primary); font-weight: 600; }
+  .step.done .step-label { color: var(--success); }
+  .step-line {
+    flex: 1; height: 2px;
+    background: var(--border);
+    margin-bottom: 14px;
+  }
+  .step-line.done { background: var(--success); }
+
+  .content { padding: 14px; }
+
+  .card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+  }
+  .card-title {
+    font-size: 11px; font-weight: 700;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  /* キーワード入力 */
+  .keyword-input-wrap {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .keyword-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .keyword-input:focus { border-color: var(--primary); }
+  .keyword-add-btn {
+    padding: 10px 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .keyword-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+    min-height: 32px;
+  }
+  .keyword-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #e8eaf6;
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .keyword-tag-del {
+    background: none;
+    border: none;
+    color: var(--primary-light);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+  }
+  .keyword-hint { font-size: 11px; color: var(--text-light); }
+
+  /* 訴求パターン */
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .pattern-btn {
+    padding: 8px 4px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    font-size: 11px;
+    color: var(--text-sub);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    line-height: 1.4;
+  }
+  .pattern-btn.selected {
+    border-color: var(--primary);
+    background: #e8eaf6;
+    color: var(--primary);
+    font-weight: 600;
+  }
+  .pattern-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+
+  /* 生成ボタン */
+  .generate-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    transition: opacity 0.2s;
+  }
+  .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ローディング */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 24px;
+  }
+  .loading.show { display: block; }
+  .loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: bounce 1.2s infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+  .loading-text { font-size: 13px; color: var(--text-sub); }
+
+  /* 生成結果エリア */
+  .result-area { display: none; }
+  .result-area.show { display: block; }
+
+  /* テキストエリア */
+  .textarea-wrap { position: relative; margin-bottom: 8px; }
+  .post-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.8;
+    resize: none;
+    outline: none;
+    min-height: 120px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .post-textarea:focus { border-color: var(--primary); }
+  .post-textarea.warn { border-color: var(--warning); }
+  .post-textarea.over { border-color: var(--danger); }
+
+  /* 文字数カウンター */
+  .char-counter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .char-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-sub);
+  }
+  .char-count.warn { color: var(--warning); }
+  .char-count.over { color: var(--danger); }
+  .char-bar-bg {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 10px;
+  }
+  .char-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--success);
+    transition: width 0.2s, background 0.2s;
+  }
+  .char-bar-fill.warn { background: var(--warning); }
+  .char-bar-fill.over { background: var(--danger); width: 100% !important; }
+
+  /* X警告 */
+  .x-warning {
+    display: none;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: #5d4037;
+    margin-bottom: 10px;
+    line-height: 1.7;
+  }
+  .x-warning.show { display: block; }
+
+  /* ハッシュタグ */
+  .hashtag-area {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+  .hashtag-label { font-size: 11px; color: var(--text-sub); margin-bottom: 4px; }
+  .hashtag-text { font-size: 13px; color: var(--accent); line-height: 1.8; }
+
+  /* 再生成ボタン群 */
+  .regen-btns {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .regen-btn {
+    flex: 1;
+    padding: 10px 8px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-size: 12px;
+    color: var(--text-sub);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .regen-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* SNS選択 */
+  .sns-check-list { display: flex; flex-direction: column; gap: 8px; }
+  .sns-check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sns-check-item.checked { border-color: var(--primary); background: #f0f2ff; }
+  .sns-icon-sm {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+  }
+  .sns-ig { background: linear-gradient(135deg,#f09433,#dc2743,#bc1888); }
+  .sns-fb { background: #1877f2; }
+  .sns-x  { background: #000; }
+  .sns-th { background: #000; }
+  .sns-check-name { flex: 1; font-size: 13px; font-weight: 500; }
+  .sns-checkbox {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+  .sns-check-item.checked .sns-checkbox {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: white;
+  }
+
+  /* 予約日時選択 */
+  .datetime-row {
+    display: flex;
+    gap: 8px;
+  }
+  .datetime-select {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--surface);
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+  }
+  .datetime-select:focus { border-color: var(--primary); }
+
+  /* 底部固定ボタン */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    padding: 12px 16px;
+    background: white;
+    border-top: 1px solid var(--border);
+    z-index: 98;
+  }
+  .reserve-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: var(--success);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .reserve-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* 完了モーダル */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 16px;
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+  }
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  .modal-close {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+  }
+
+  .notice {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: #5d4037;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+    line-height: 1.6;
+  }
+
+  /* ============================================ */
+  /* ボトムナビゲーションバー（全画面共通） */
+  /* ============================================ */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 1000;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    text-decoration: none;
+    color: #9e9e9e;
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+  }
+  .nav-item.active { color: #1a237e; }
+  .nav-item:active { opacity: 0.7; }
+  .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
+  .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
+
+</style>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:20px;">✏️</span>
+  <span class="header-logo">投稿文を作る</span>
+  <span class="header-sub">AiPost</span>
+</div>
+
+<!-- ステップ表示 -->
+<div class="steps">
+  <div class="step active" id="step1">
+    <div class="step-circle">1</div>
+    <div class="step-label">キーワード</div>
+  </div>
+  <div class="step-line" id="line1"></div>
+  <div class="step" id="step2">
+    <div class="step-circle">2</div>
+    <div class="step-label">文章を確認</div>
+  </div>
+  <div class="step-line" id="line2"></div>
+  <div class="step" id="step3">
+    <div class="step-circle">3</div>
+    <div class="step-label">予約する</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- STEP1：キーワード入力 -->
+  <div id="screen-step1">
+
+    <div class="card">
+      <div class="card-title">どんな内容を投稿しますか？</div>
+      <div class="keyword-input-wrap">
+        <input type="text" class="keyword-input" id="keyword-input"
+          placeholder="例：新メニュー、抹茶、週末限定"
+          onkeydown="if(event.key==='Enter')addKeyword()">
+        <button class="keyword-add-btn" onclick="addKeyword()">追加</button>
+      </div>
+      <div class="keyword-tags" id="keyword-tags">
+        <div class="keyword-tag">新メニュー<button class="keyword-tag-del" onclick="removeKeyword(this)">×</button></div>
+        <div class="keyword-tag">抹茶テリーヌ<button class="keyword-tag-del" onclick="removeKeyword(this)">×</button></div>
+        <div class="keyword-tag">週末限定<button class="keyword-tag-del" onclick="removeKeyword(this)">×</button></div>
+      </div>
+      <div class="keyword-hint">💡 キーワードは3〜5個が目安です。商品名・特徴・季節など</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">訴求パターン（任意）</div>
+      <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">どんな雰囲気で伝えたいですか？選ばなくてもAIが自動で判断します。</p>
+      <div class="pattern-grid" id="pattern-grid">
+        <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
+        <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💰</span>お得</button>
+        <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💡</span>悩み解決</button>
+        <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🔥</span>トレンド</button>
+        <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">⭐</span>信頼</button>
+        <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🌸</span>季節</button>
+        <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🆕</span>新登場</button>
+        <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">📍</span>地域密着</button>
+      </div>
+    </div>
+
+    <button class="generate-btn" id="generate-btn" onclick="startGenerate()">
+      <span style="font-size:20px;">✨</span>
+      AIで投稿文を作成する
+    </button>
+
+    <!-- ローディング -->
+    <div class="loading" id="loading">
+      <div class="loading-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="loading-text">AIが投稿文を考えています…<br>少々お待ちください</div>
+    </div>
+
+  </div>
+
+  <!-- STEP2：文章確認・編集 -->
+  <div id="screen-step2" style="display:none;">
+
+    <div class="notice">
+      <span>💡</span>
+      <span>生成された文章はそのまま使っても、自由に編集しても構いません。</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">投稿文を確認・編集する</div>
+
+      <div class="textarea-wrap">
+        <textarea class="post-textarea" id="post-textarea"
+          oninput="updateCharCount()"
+          placeholder="投稿文を入力してください">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりをぜひお試しください。</textarea>
+      </div>
+
+      <!-- 文字数カウンター -->
+      <div class="char-counter">
+        <span class="char-count" id="char-count">46文字</span>
+        <div class="char-bar-bg">
+          <div class="char-bar-fill" id="char-bar" style="width:16%;"></div>
+        </div>
+        <span style="font-size:11px;color:var(--text-light);">上限 280文字</span>
+      </div>
+
+      <!-- X文字数警告 -->
+      <div class="x-warning" id="x-warning">
+        ⚠️ <strong>Xは140文字が上限です。</strong><br>
+        現在○○文字のため、Xへの投稿時に切れる可能性があります。文章を短くするか、投稿先からXを外してください。
+      </div>
+
+      <!-- ハッシュタグ -->
+      <div class="hashtag-area">
+        <div class="hashtag-label">AIが提案するハッシュタグ</div>
+        <div class="hashtag-text" id="hashtag-text">#渋谷カフェ #週末限定 #抹茶スイーツ #新メニュー #カフェ巡り</div>
+      </div>
+
+      <!-- 再生成ボタン群 -->
+      <div class="regen-btns">
+        <button class="regen-btn" onclick="startGenerate()">🔄 作り直す</button>
+        <button class="regen-btn" onclick="makeShort()">✂️ 短くする</button>
+        <button class="regen-btn" onclick="makeFormal()">👔 丁寧にする</button>
+      </div>
+
+    </div>
+
+    <!-- STEP3：投稿先・日時 -->
+    <div id="screen-step3" style="display:none;">
+      <div class="card">
+        <div class="card-title">投稿先のSNSを選ぶ</div>
+        <div class="sns-check-list">
+          <div class="sns-check-item checked" onclick="toggleSns(this)">
+            <div class="sns-icon-sm sns-ig">IG</div>
+            <div class="sns-check-name">Instagram</div>
+            <div class="sns-checkbox">✓</div>
+          </div>
+          <div class="sns-check-item checked" onclick="toggleSns(this)">
+            <div class="sns-icon-sm sns-fb">f</div>
+            <div class="sns-check-name">Facebook</div>
+            <div class="sns-checkbox">✓</div>
+          </div>
+          <div class="sns-check-item checked" onclick="toggleSns(this)">
+            <div class="sns-icon-sm sns-x">X</div>
+            <div class="sns-check-name">X（Twitter）</div>
+            <div class="sns-checkbox">✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">投稿する日時を選ぶ</div>
+        <div class="datetime-row">
+          <input type="date" class="datetime-select" id="post-date" value="2026-06-15" style="flex:2;">
+          <select class="datetime-select" id="post-time">
+            <option>8時ごろ</option>
+            <option>9時ごろ</option>
+            <option>10時ごろ</option>
+            <option>11時ごろ</option>
+            <option>12時ごろ</option>
+            <option selected>13時ごろ</option>
+            <option>14時ごろ</option>
+            <option>15時ごろ</option>
+            <option>16時ごろ</option>
+            <option>17時ごろ</option>
+            <option>18時ごろ</option>
+            <option>19時ごろ</option>
+            <option>20時ごろ</option>
+            <option>21時ごろ</option>
+          </select>
+        </div>
+        <p style="font-size:11px;color:var(--text-sub);margin-top:8px;">💡 指定した時間帯に自動で投稿されます</p>
+      </div>
+    </div>
+
+    <button class="generate-btn" style="background:var(--accent);" onclick="showStep3()" id="next-btn">
+      <span style="font-size:18px;">📅</span>
+      投稿先と日時を選ぶ
+    </button>
+
+  </div>
+
+</div>
+
+<!-- 底部固定ボタン（STEP3のみ表示） -->
+<div class="bottom-bar" id="bottom-bar" style="display:none;">
+  <button class="reserve-btn" onclick="showComplete()">
+    <span style="font-size:20px;">✅</span>
+    この内容で投稿を予約する
+  </button>
+</div>
+
+<!-- 予約完了モーダル -->
+<div class="modal-overlay" id="complete-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px;">予約が完了しました！</div>
+    <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:16px;">
+      6月15日（日）13時ごろに<br>
+      Instagram・Facebook・Xへ自動投稿されます。
+    </p>
+    <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--text-sub);text-align:left;line-height:1.8;">
+      📋 予約一覧から確認・編集・キャンセルができます<br>
+      🔔 投稿が完了したらLINEでお知らせします
+    </div>
+    <button class="modal-close" onclick="document.getElementById('complete-modal').classList.remove('open')">閉じる</button>
+  </div>
+</div>
+
+<script>
+const CHAR_LIMIT = 280;
+const X_LIMIT = 140;
+
+// キーワード管理
+function addKeyword() {
+  const input = document.getElementById('keyword-input');
+  const val = input.value.trim();
+  if (!val) return;
+  const tags = document.getElementById('keyword-tags');
+  const tag = document.createElement('div');
+  tag.className = 'keyword-tag';
+  tag.innerHTML = val + '<button class="keyword-tag-del" onclick="removeKeyword(this)">×</button>';
+  tags.appendChild(tag);
+  input.value = '';
+}
+function removeKeyword(btn) {
+  btn.parentElement.remove();
+}
+
+// 訴求パターン選択
+function selectPattern(btn) {
+  document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// 文章生成
+function startGenerate() {
+  document.getElementById('generate-btn').disabled = true;
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('screen-step2').style.display = 'none';
+  document.getElementById('screen-step3').style.display = 'none';
+  document.getElementById('bottom-bar').style.display = 'none';
+  document.getElementById('next-btn') && (document.getElementById('next-btn').style.display = 'flex');
+
+  setTimeout(() => {
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('generate-btn').disabled = false;
+    document.getElementById('screen-step2').style.display = 'block';
+    setStep(2);
+    updateCharCount();
+  }, 2000);
+}
+
+// 文字数カウント（全角1文字・半角0.5文字）
+function countChars(text) {
+  let count = 0;
+  for (const ch of text) {
+    count += ch.match(/[ -~]/) ? 0.5 : 1;
+  }
+  return Math.round(count);
+}
+
+function updateCharCount() {
+  const text = document.getElementById('post-textarea').value;
+  const count = countChars(text);
+  const ratio = count / CHAR_LIMIT;
+  const countEl = document.getElementById('char-count');
+  const barEl = document.getElementById('char-bar');
+  const xWarn = document.getElementById('x-warning');
+  const textarea = document.getElementById('post-textarea');
+
+  countEl.textContent = count + '文字';
+  barEl.style.width = Math.min(ratio * 100, 100) + '%';
+
+  // 状態に応じて色変更
+  countEl.className = 'char-count';
+  barEl.className = 'char-bar-fill';
+  textarea.className = 'post-textarea';
+
+  if (count > CHAR_LIMIT) {
+    countEl.classList.add('over');
+    barEl.classList.add('over');
+    textarea.classList.add('over');
+    countEl.textContent = count + '文字（' + (count - CHAR_LIMIT) + '文字オーバー）';
+  } else if (ratio > 0.8) {
+    countEl.classList.add('warn');
+    barEl.classList.add('warn');
+    textarea.classList.add('warn');
+  }
+
+  // X警告（140文字超かつXが選択されている場合）
+  const xChecked = document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-x');
+  if (count > X_LIMIT && xChecked) {
+    xWarn.classList.add('show');
+    xWarn.innerHTML = `⚠️ <strong>Xは140文字が上限です。</strong><br>現在${count}文字のため、Xへの投稿時に文章が切れる可能性があります。文章を短くするか、投稿先からXを外してください。`;
+  } else {
+    xWarn.classList.remove('show');
+  }
+}
+
+function makeShort() {
+  const ta = document.getElementById('post-textarea');
+  ta.value = '週末限定の抹茶テリーヌが登場。濃厚な香りとなめらかな口当たりをぜひ。';
+  updateCharCount();
+}
+function makeFormal() {
+  const ta = document.getElementById('post-textarea');
+  ta.value = '週末限定の抹茶テリーヌをご用意いたしました。濃厚な抹茶の香りとなめらかな口当たりを、ぜひご堪能ください。';
+  updateCharCount();
+}
+
+function toggleSns(el) {
+  el.classList.toggle('checked');
+  const cb = el.querySelector('.sns-checkbox');
+  cb.textContent = el.classList.contains('checked') ? '✓' : '';
+  updateCharCount();
+}
+
+function showStep3() {
+  document.getElementById('screen-step3').style.display = 'block';
+  document.getElementById('next-btn').style.display = 'none';
+  document.getElementById('bottom-bar').style.display = 'block';
+  setStep(3);
+  document.getElementById('screen-step3').scrollIntoView({ behavior: 'smooth' });
+}
+
+function setStep(n) {
+  for (let i = 1; i <= 3; i++) {
+    const s = document.getElementById('step' + i);
+    s.classList.remove('active', 'done');
+    if (i < n) s.classList.add('done');
+    else if (i === n) s.classList.add('active');
+  }
+  for (let i = 1; i <= 2; i++) {
+    const l = document.getElementById('line' + i);
+    l.classList.toggle('done', i < n);
+  }
+}
+
+function showComplete() {
+  document.getElementById('complete-modal').classList.add('open');
+}
+
+// 初期文字数
+setTimeout(updateCharCount, 100);
+</script>
+
+<!-- ボトムナビゲーションバー -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="nav-item active" onclick="navigateTo('textgen')">
+    <span class="nav-icon">✏️</span>
+    <span class="nav-label">文章を作る</span>
+  </button>
+  <button class="nav-item " onclick="navigateTo('reservation')">
+    <span class="nav-icon">📅</span>
+    <span class="nav-label">投稿予約</span>
+  </button>
+  <button class="nav-item " onclick="navigateTo('image')">
+    <span class="nav-icon">🖼️</span>
+    <span class="nav-label">画像選択</span>
+  </button>
+  <button class="nav-item " onclick="navigateTo('analytics')">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">分析</span>
+  </button>
+  <button class="nav-item " onclick="navigateTo('settings')">
+    <span class="nav-icon">⚙️</span>
+    <span class="nav-label">設定</span>
+  </button>
+  <button class="nav-item" onclick="closeToLine()">
+    <span class="nav-icon">💬</span>
+    <span class="nav-label">LINEへ</span>
+  </button>
+</nav>
+
+<script>
+  // ============================================
+  // ボトムナビゲーション共通処理
+  // ============================================
+
+  // 各LIFF画面のURL
+  const LIFF_URLS = {
+    textgen:     'https://liff.line.me/2010401177-OpvemMmh',
+    reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
+    analytics:   'https://liff.line.me/2010401177-qKtfKWP0',
+    image:       'https://liff.line.me/2010401177-3pV56kDU',
+    settings:    'https://liff.line.me/2010401177-XJw2kDQV',
+  };
+
+  // 他のLIFF画面に移動する
+  function navigateTo(page) {
+    if (LIFF_URLS[page]) {
+      window.location.href = LIFF_URLS[page];
+    }
+  }
+
+  // LINEトークルームに戻る
+  function closeToLine() {
+    liff.init({ liffId: '2010401177-OpvemMmh' }).then(function() {
+      liff.closeWindow();
+    }).catch(function() {
+      window.history.back();
+    });
+  }
+</script>
+</body>
+</html>
