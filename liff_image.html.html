@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>画像を選ぶ - AiPost</title>
+<title>画像選択 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -390,7 +390,7 @@
 
 <div class="header">
   <span style="font-size:20px;">🖼️</span>
-  <span class="header-logo">画像を選ぶ</span>
+  <span class="header-logo">画像選択</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -439,13 +439,24 @@
     <!-- カテゴリフィルタ -->
     <div class="category-filter">
       <button class="cat-btn active" onclick="filterCat(this)">すべて</button>
-      <button class="cat-btn" onclick="filterCat(this)">食べ物・飲み物</button>
       <button class="cat-btn" onclick="filterCat(this)">人物</button>
+      <button class="cat-btn" onclick="filterCat(this)">ビジネス</button>
+      <button class="cat-btn" onclick="filterCat(this)">動物・生き物</button>
+      <button class="cat-btn" onclick="filterCat(this)">花・植物</button>
+      <button class="cat-btn" onclick="filterCat(this)">食べ物・飲み物</button>
+      <button class="cat-btn" onclick="filterCat(this)">町並み・建物</button>
+      <button class="cat-btn" onclick="filterCat(this)">医療・福祉</button>
+      <button class="cat-btn" onclick="filterCat(this)">交通・乗り物</button>
       <button class="cat-btn" onclick="filterCat(this)">季節・行事</button>
       <button class="cat-btn" onclick="filterCat(this)">自然・風景</button>
+      <button class="cat-btn" onclick="filterCat(this)">スポーツ</button>
+      <button class="cat-btn" onclick="filterCat(this)">エコ・環境</button>
       <button class="cat-btn" onclick="filterCat(this)">美容・健康</button>
-      <button class="cat-btn" onclick="filterCat(this)">ビジネス</button>
+      <button class="cat-btn" onclick="filterCat(this)">住宅・インテリア</button>
+      <button class="cat-btn" onclick="filterCat(this)">年賀状</button>
+      <button class="cat-btn" onclick="filterCat(this)">テクスチャ・背景</button>
       <button class="cat-btn" onclick="filterCat(this)">小物・雑貨</button>
+      <button class="cat-btn" onclick="filterCat(this)">クレイアート</button>
     </div>
 
     <!-- 画像グリッド -->
@@ -700,6 +711,7 @@ function selectFromModal() {
     image:       'https://liff.line.me/2010401177-3pV56kDU',
     settings:    'https://liff.line.me/2010401177-XJw2kDQV',
     about:       'https://liff.line.me/2010401177-PtX79ibV',
+    plan:        'https://liff.line.me/2010401177-IstPDnls',
   };
 
   // 他のLIFF画面に移動する
