@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AiPost</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root {
+      --primary: #1a237e;
+      --text: #212121;
+      --text-sub: #757575;
+      --border: #e0e0e0;
+      --bg: #f8f9fa;
+      --white: #ffffff;
+      --c-free:     #64748b;
+      --c-personal: #1565c0;
+      --c-lite:     #2e7d32;
+      --c-standard: #e65100;
+      --c-pro:      #6a1b9a;
+      --b-free:     #f1f5f9;
+      --b-personal: #e3f2fd;
+      --b-lite:     #e8f5e9;
+      --b-standard: #fff8e1;
+      --b-pro:      #f3e5f5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Yu Gothic","Hiragino Sans",sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 12px;
+      padding-bottom: 60px;
+    }
+
+    /* 固定ヘッダー */
+    .sticky-top {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+    }
+
+    /* トップバー */
+    .topbar {
+      background: var(--primary);
+      color: white;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-logo { font-size: 14px; font-weight: 700; }
+    .topbar-sub { font-size: 10px; opacity: 0.75; margin-left: auto; }
+
+    /* 現在のプランバナー */
+    .current-banner {
+      background: var(--primary);
+      color: white;
+      padding: 5px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    .cur-label { font-size: 9px; opacity: 0.75; }
+    .cur-name { font-size: 13px; font-weight: 700; }
+    .cur-price { font-size: 10px; opacity: 0.85; margin-left: auto; }
+
+    /* プランヘッダー行 */
+    .plan-header-row {
+      display: table;
+      width: 100%;
+      border-bottom: 2px solid var(--border);
+      background: var(--white);
+    }
+    .plan-header-row-inner {
+      display: flex;
+      width: 100%;
+    }
+    .key-col-spacer {
+      width: 28vw;
+      min-width: 80px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+    }
+    .plan-head {
+      flex: 1;
+      padding: 5px 2px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .plan-head:last-child { border-right: none; }
+    .plan-badge {
+      display: block;
+      margin: 0 auto 2px;
+      padding: 1px 4px;
+      border-radius: 10px;
+      font-size: 8px;
+      font-weight: 700;
+      width: fit-content;
+    }
+    .plan-FREE     { background: var(--b-free);     color: var(--c-free); }
+    .plan-PERSONAL { background: var(--b-personal); color: var(--c-personal); }
+    .plan-LITE     { background: var(--b-lite);     color: var(--c-lite); }
+    .plan-STANDARD { background: var(--b-standard); color: var(--c-standard); }
+    .plan-PRO      { background: var(--b-pro);      color: var(--c-pro); }
+
+    .plan-price-sm {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text);
+      display: block;
+      text-align: center;
+    }
+    .plan-price-sm span { font-size: 8px; font-weight: 400; color: var(--text-sub); }
+
+    /* テーブル本体 */
+    .feat-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    /* セクション行 */
+    .feat-table .sec-row td {
+      background: #e8eaf6;
+      color: var(--primary);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-bottom: 1px solid #c5cae9;
+      letter-spacing: 0.05em;
+    }
+
+    /* データ行 */
+    .feat-table .data-row td {
+      padding: 6px 4px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      font-size: 10px;
+      vertical-align: middle;
+    }
+    .feat-table .data-row .key-td {
+      text-align: left;
+      color: var(--text-sub);
+      padding: 6px 6px 6px 8px;
+      border-right: 1px solid var(--border);
+      font-size: 10px;
+      width: 28vw;
+      min-width: 80px;
+      line-height: 1.4;
+    }
+
+    /* 値セルの色 */
+    .col-free     { background: #fafbfc; }
+    .col-personal { background: #f8fbff; }
+    .col-lite     { background: #f8fff9; }
+    .col-standard { background: #fffdf5; }
+    .col-pro      { background: #fdf8ff; }
+
+    .ok { color: #2e7d32; font-weight: 700; }
+    .no { color: #bdbdbd; }
+
+    /* ボタン行 */
+    .btn-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border-top: 2px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .btn-table td {
+      padding: 8px 4px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .btn-table td:first-child { width: 28vw; min-width: 80px; }
+    .btn-table td:last-child { border-right: none; }
+
+    .plan-btn {
+      width: 100%;
+      padding: 7px 2px;
+      border-radius: 6px;
+      border: none;
+      font-size: 9px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1.4;
+    }
+    .btn-new      { background: var(--primary); color: white; }
+    .btn-upgrade  { background: #2e7d32; color: white; }
+    .btn-current  { background: var(--bg); color: var(--text-sub); cursor: default; }
+    .btn-downgrade{ background: none; border: 1px solid #e65100; color: #e65100; }
+
+    /* 注意事項 */
+    .notice {
+      background: var(--white);
+      padding: 12px 14px;
+      font-size: 11px;
+      color: var(--text-sub);
+      line-height: 1.8;
+      border-top: 1px solid var(--border);
+    }
+    .notice-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+
+    /* モーダル */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: flex-end;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: 16px 16px 0 0;
+      padding: 20px 16px 32px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 14px; }
+    .modal-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+    .modal-warn { background: #fff8e1; border-radius: 8px; padding: 12px; margin-bottom: 12px; border-left: 4px solid #e65100; }
+    .modal-warn-title { font-size: 12px; font-weight: 700; color: #e65100; margin-bottom: 8px; }
+    .modal-warn-item { font-size: 11px; color: var(--text-sub); line-height: 1.8; }
+    .modal-note { font-size: 11px; color: var(--text-sub); line-height: 1.8; margin-bottom: 14px; }
+    .modal-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; }
+    .modal-btn-exec { background: #e65100; color: white; }
+    .modal-btn-cancel { background: var(--bg); color: var(--text-sub); }
+
+    /* ナビゲーション */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: #ffffff;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 1000;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    }
+    .nav-item {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1; height: 100%;
+      cursor: pointer; color: #9e9e9e;
+      -webkit-tap-highlight-color: transparent;
+      background: none; border: none; padding: 0;
+      font-family: inherit; outline: none;
+    }
+    .nav-item.active { color: #1a237e; }
+    .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
+    .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
+  </style>
+</head>
+<body>
+
+  <!-- 固定ヘッダー -->
+  <div class="sticky-top">
+    <div class="topbar">
+      <span style="font-size:16px;">💎</span>
+      <span class="topbar-logo">プラン・料金</span>
+      <span class="topbar-sub">AiPost</span>
+    </div>
+    <div class="current-banner">
+      <span class="cur-label">現在のプラン</span>
+      <span class="cur-name">STANDARD</span>
+      <span class="cur-price">¥1,280/月（税抜）· 次回更新 2026年7月1日</span>
+    </div>
+    <!-- プランヘッダー行 -->
+    <div class="plan-header-row-inner">
+      <div class="key-col-spacer"></div>
+      <div class="plan-head" style="border-left:2px solid var(--c-free);">
+        <span class="plan-badge plan-FREE">FREE</span>
+        <span class="plan-price-sm">¥0<span>/月</span></span>
+      </div>
+      <div class="plan-head" style="border-left:2px solid var(--c-personal);">
+        <span class="plan-badge plan-PERSONAL">PER</span>
+        <span class="plan-price-sm">¥500<span>/月</span></span>
+      </div>
+      <div class="plan-head" style="border-left:2px solid var(--c-lite);">
+        <span class="plan-badge plan-LITE">LITE</span>
+        <span class="plan-price-sm">¥780<span>/月</span></span>
+      </div>
+      <div class="plan-head" style="border-left:2px solid var(--c-standard);">
+        <span class="plan-badge plan-STANDARD">STD</span>
+        <span class="plan-price-sm">¥1,280<span>/月</span></span>
+      </div>
+      <div class="plan-head" style="border-left:2px solid var(--c-pro);">
+        <span class="plan-badge plan-PRO">PRO</span>
+        <span class="plan-price-sm">¥1,980<span>/月</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 機能比較テーブル -->
+  <table class="feat-table">
+    <tbody>
+
+      <tr class="sec-row"><td colspan="6">■ 投稿機能</td></tr>
+      <tr class="data-row">
+        <td class="key-td">SNS数</td>
+        <td class="col-free">1つ</td><td class="col-personal">1つ</td>
+        <td class="col-lite">2つ</td><td class="col-standard">3つ</td><td class="col-pro">4つ</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">月間投稿数</td>
+        <td class="col-free">4件</td><td class="col-personal">8件</td>
+        <td class="col-lite">15件</td><td class="col-standard">30件</td><td class="col-pro">60件</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">実質最大投稿回数</td>
+        <td class="col-free">4回</td><td class="col-personal">8回</td>
+        <td class="col-lite">30回</td><td class="col-standard">90回</td><td class="col-pro">240回</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">文字数上限</td>
+        <td class="col-free">60字</td><td class="col-personal">140字</td>
+        <td class="col-lite">280字</td><td class="col-standard">280字</td><td class="col-pro">280字</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">同時投稿</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+
+      <tr class="sec-row"><td colspan="6">■ AI文章生成</td></tr>
+      <tr class="data-row">
+        <td class="key-td">AI文章生成</td>
+        <td class="col-free ok">∞</td><td class="col-personal ok">∞</td>
+        <td class="col-lite ok">∞</td><td class="col-standard ok">∞</td><td class="col-pro ok">∞</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">ハッシュタグ提案</td>
+        <td class="col-free ok">✓</td><td class="col-personal ok">✓</td>
+        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+
+      <tr class="sec-row"><td colspan="6">■ 画像</td></tr>
+      <tr class="data-row">
+        <td class="key-td">アップロード</td>
+        <td class="col-free ok">✓</td><td class="col-personal ok">✓</td>
+        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">素材画像</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+
+      <tr class="sec-row"><td colspan="6">■ 分析レポート</td></tr>
+      <tr class="data-row">
+        <td class="key-td">分析の段階</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite">2段階</td><td class="col-standard">3段階</td><td class="col-pro">4段階</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">いいね・EG率・推移</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">人気投稿ランキング</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">AIアクション提案</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">AI要因分析</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite no">－</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">トレンド予測</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite no">－</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">競合比較</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite no">－</td><td class="col-standard no">－</td><td class="col-pro ok">✓</td>
+      </tr>
+
+      <tr class="sec-row"><td colspan="6">■ レポート通知</td></tr>
+      <tr class="data-row">
+        <td class="key-td">月次レポート</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">週次レポート</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite no">－</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
+      </tr>
+
+      <tr class="sec-row"><td colspan="6">■ PRO限定機能</td></tr>
+      <tr class="data-row">
+        <td class="key-td">ネガティブ検知</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite no">－</td><td class="col-standard no">－</td><td class="col-pro ok">✓</td>
+      </tr>
+      <tr class="data-row">
+        <td class="key-td">AIコメント返信</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite no">－</td><td class="col-standard no">－</td><td class="col-pro ok">✓</td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- ボタン行 -->
+  <table class="btn-table">
+    <tr>
+      <td></td>
+      <td><button class="plan-btn btn-downgrade" onclick="confirmDowngrade('STANDARD','FREE')">ダウン</button></td>
+      <td><button class="plan-btn btn-downgrade" onclick="confirmDowngrade('STANDARD','PERSONAL')">ダウン</button></td>
+      <td><button class="plan-btn btn-downgrade" onclick="confirmDowngrade('STANDARD','LITE')">ダウン</button></td>
+      <td><button class="plan-btn btn-current">契約中</button></td>
+      <td><button class="plan-btn btn-upgrade" onclick="selectPlan('PRO')">アップ</button></td>
+    </tr>
+  </table>
+
+  <!-- 注意事項 -->
+  <div class="notice">
+    <div class="notice-title">⚠️ プラン変更について</div>
+    アップグレードは即時反映されます。ダウングレードは当月末に反映され、それまでは現在のプランをご利用いただけます。日割り返金はございません。解約をご希望の場合は設定画面の「登録」タブから手続きいただけます。
+  </div>
+
+  <!-- ダウングレード確認モーダル -->
+  <div class="modal-overlay" id="downgrade-modal">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="modal-title">ダウングレードの確認</div>
+      <div class="modal-warn">
+        <div class="modal-warn-title">⚠️ 以下の機能が利用できなくなります</div>
+        <div class="modal-warn-item" id="modal-warn-items"></div>
+      </div>
+      <div class="modal-note" id="modal-note"></div>
+      <button class="modal-btn modal-btn-exec" id="modal-exec-btn">ダウングレードする</button>
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal()">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- ナビゲーションバー -->
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">文章を作る</span></button>
+    <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">投稿予約</span></button>
+    <button class="nav-item" onclick="navigateTo('image')"><span class="nav-icon">🖼️</span><span class="nav-label">画像選択</span></button>
+    <button class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
+    <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
+    <button class="nav-item" onclick="navigateTo('about')"><span class="nav-icon">ℹ️</span><span class="nav-label">使い方</span></button>
+  </nav>
+
+<script>
+  const LIFF_URLS = {
+    textgen:     'https://liff.line.me/2010401177-OpvemMmh',
+    reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
+    analytics:   'https://liff.line.me/2010401177-qKtfKWP0',
+    image:       'https://liff.line.me/2010401177-3pV56kDU',
+    settings:    'https://liff.line.me/2010401177-XJw2kDQV',
+    about:       'https://liff.line.me/2010401177-PtX79ibV',
+    plan:        'https://liff.line.me/（plan用LIFF IDに差し替え）',
+  };
+
+  function navigateTo(page) {
+    if (LIFF_URLS[page]) window.location.href = LIFF_URLS[page];
+  }
+
+  const DOWNGRADE_WARNINGS = {
+    'STANDARD→FREE':     ['SNSが3つ→1つに減ります','月間投稿数が30件→4件に減ります','文字数上限が280字→60字に減ります','同時投稿ができなくなります','素材画像が利用できなくなります','分析・レポート機能が全て利用できなくなります'],
+    'STANDARD→PERSONAL': ['SNSが3つ→1つに減ります','月間投稿数が30件→8件に減ります','文字数上限が280字→140字に減ります','同時投稿ができなくなります','素材画像が利用できなくなります','分析・レポート機能が全て利用できなくなります'],
+    'STANDARD→LITE':     ['SNSが3つ→2つに減ります','月間投稿数が30件→15件に減ります','AI要因分析が利用できなくなります','週次レポートが利用できなくなります'],
+  };
+
+  function selectPlan(plan) {
+    alert(plan + 'プランへの申し込み画面に移動します。\n（実装後はStripe決済画面が開きます）');
+  }
+
+  function confirmDowngrade(from, to) {
+    const key = from + '→' + to;
+    const warnings = DOWNGRADE_WARNINGS[key] || ['機能が制限されます'];
+    document.getElementById('modal-title').textContent = from + ' → ' + to + ' へのダウングレード';
+    document.getElementById('modal-warn-items').innerHTML = warnings.map(w => '・' + w).join('<br>');
+    document.getElementById('modal-note').textContent = 'ダウングレードは当月末に反映されます。それまでは' + from + 'プランをご利用いただけます。';
+    document.getElementById('modal-exec-btn').onclick = () => executePlanChange(to);
+    document.getElementById('downgrade-modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('downgrade-modal').classList.remove('open');
+  }
+
+  function executePlanChange(plan) {
+    closeModal();
+    alert(plan + 'プランへのダウングレードを受け付けました。\n当月末に変更が反映されます。');
+  }
+</script>
+</body>
+</html>
