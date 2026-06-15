@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>プライバシーポリシー - AiPost</title>
+  <style>
+    :root {
+      --primary: #1a237e;
+      --text: #212121;
+      --text-sub: #757575;
+      --border: #e0e0e0;
+      --bg: #f8f9fa;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Yu Gothic", "Hiragino Sans", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.8;
+      padding-bottom: 40px;
+    }
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo { font-size: 15px; font-weight: 700; }
+    .header-sub { font-size: 10px; opacity: 0.75; margin-left: auto; }
+
+    .content { padding: 16px; }
+
+    .doc-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .doc-date {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 20px;
+    }
+
+    .section {
+      background: var(--white);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section p {
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.9;
+    }
+    .section p:last-child { margin-bottom: 0; }
+
+    ol, ul {
+      padding-left: 18px;
+      margin-bottom: 8px;
+    }
+    li {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.9;
+      margin-bottom: 4px;
+    }
+    li:last-child { margin-bottom: 0; }
+
+    .info-box {
+      background: #f0f2ff;
+      border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 12px;
+      margin: 10px 0;
+      font-size: 12px;
+      color: #1a237e;
+      line-height: 1.8;
+    }
+
+    .placeholder {
+      background: #fff3e0;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-weight: 700;
+      color: #e65100;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin: 8px 0;
+    }
+    th {
+      background: #e8eaf6;
+      color: var(--primary);
+      font-weight: 700;
+      padding: 7px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+      line-height: 1.7;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    .company-row {
+      display: flex;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      gap: 12px;
+    }
+    .company-row:last-child { border-bottom: none; }
+    .company-key { color: var(--text-sub); width: 100px; flex-shrink: 0; }
+    .company-val { color: var(--text); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <span style="font-size:16px;">🔒</span>
+    <span class="header-logo">プライバシーポリシー</span>
+    <span class="header-sub">AiPost</span>
+  </div>
+
+  <div class="content">
+
+    <div class="doc-title">AiPost プライバシーポリシー</div>
+    <div class="doc-date">制定日：<span class="placeholder">【制定日】</span>　最終更新：<span class="placeholder">【最終更新日】</span></div>
+
+    <!-- 第1条 -->
+    <div class="section">
+      <div class="section-title">第1条（基本方針）</div>
+      <p><span class="placeholder">【会社名】</span>（以下「当社」）は、本サービス「AiPost」の運営において、利用者の個人情報を適切に取り扱うことを重要な責務と考え、個人情報の保護に関する法律（個人情報保護法）を遵守します。</p>
+    </div>
+
+    <!-- 第2条 -->
+    <div class="section">
+      <div class="section-title">第2条（取得する情報）</div>
+      <p>当社は以下の情報を取得します。</p>
+      <table>
+        <tr>
+          <th>情報の種類</th>
+          <th>取得方法</th>
+          <th>内容</th>
+        </tr>
+        <tr>
+          <td>LINEアカウント情報</td>
+          <td>LINE連携時に自動取得</td>
+          <td>LINE UID・表示名・プロフィール画像URL</td>
+        </tr>
+        <tr>
+          <td>SNSアクセストークン</td>
+          <td>SNS連携時に取得</td>
+          <td>各SNSの投稿専用アクセストークン（パスワードは取得しません）</td>
+        </tr>
+        <tr>
+          <td>店舗情報</td>
+          <td>利用者が入力</td>
+          <td>店舗名・業種・エリア・SNSアカウント名</td>
+        </tr>
+        <tr>
+          <td>投稿データ</td>
+          <td>利用者が作成・予約</td>
+          <td>投稿文・ハッシュタグ・投稿日時・画像</td>
+        </tr>
+        <tr>
+          <td>分析データ</td>
+          <td>SNS APIから自動取得</td>
+          <td>いいね数・フォロワー数・エンゲージメント率・コメント</td>
+        </tr>
+        <tr>
+          <td>決済情報</td>
+          <td>Stripeが取得・管理</td>
+          <td>クレジットカード情報（当社は保持しません）</td>
+        </tr>
+        <tr>
+          <td>利用ログ</td>
+          <td>自動記録</td>
+          <td>サービス利用日時・エラーログ</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 第3条 -->
+    <div class="section">
+      <div class="section-title">第3条（情報の利用目的）</div>
+      <p>取得した情報は以下の目的で利用します。</p>
+      <ol>
+        <li>本サービスの提供・運営・改善</li>
+        <li>投稿の自動実行・予約管理</li>
+        <li>分析レポートの生成・提供</li>
+        <li>AI文章生成処理</li>
+        <li>LINEを通じたサービス通知・レポートの送信</li>
+        <li>決済処理・プラン管理</li>
+        <li>カスタマーサポート対応</li>
+        <li>不正利用の検知・防止</li>
+        <li>匿名統計データの作成（後述）</li>
+      </ol>
+    </div>
+
+    <!-- 第4条 -->
+    <div class="section">
+      <div class="section-title">第4条（匿名統計データの利用）</div>
+      <p>本サービスのPROプランが提供する「同業種・同エリア競合比較」機能のため、以下の処理を行います。</p>
+      <ol>
+        <li>利用者の分析データ（いいね数・フォロワー数・エンゲージメント率・月間投稿数）を匿名化した上で統計処理します。</li>
+        <li>統計データは同業種・同エリアの平均値として集計されます。</li>
+        <li>個人・店舗を特定できる情報は一切含まれません。</li>
+        <li>本機能はPROプランの利用者のみが閲覧できます。</li>
+      </ol>
+      <div class="info-box">📊 匿名統計データへの参加は設定画面の「通知」タブからいつでもOFF/ONを切り替えることができます。OFFにした場合、競合比較機能の精度に影響する場合があります。</div>
+    </div>
+
+    <!-- 第5条 -->
+    <div class="section">
+      <div class="section-title">第5条（第三者提供）</div>
+      <p>当社は、以下の場合を除き、利用者の個人情報を第三者に提供しません。</p>
+      <ol>
+        <li>利用者の同意がある場合</li>
+        <li>法令に基づく場合</li>
+        <li>人の生命・身体・財産の保護のために必要な場合</li>
+        <li>以下の業務委託先への提供（必要な範囲に限定）</li>
+      </ol>
+      <table>
+        <tr>
+          <th>委託先</th>
+          <th>提供する情報</th>
+          <th>目的</th>
+        </tr>
+        <tr>
+          <td>OpenAI（米国）</td>
+          <td>投稿キーワード・店舗業種</td>
+          <td>AI文章生成処理</td>
+        </tr>
+        <tr>
+          <td>Stripe（米国）</td>
+          <td>決済に必要な情報</td>
+          <td>クレジットカード決済処理</td>
+        </tr>
+        <tr>
+          <td>LINE（日本）</td>
+          <td>LINE UID・メッセージ内容</td>
+          <td>通知・レポート送信</td>
+        </tr>
+        <tr>
+          <td>Google（米国）</td>
+          <td>投稿データ・分析データ</td>
+          <td>データ保存（Google スプレッドシート・Drive）</td>
+        </tr>
+        <tr>
+          <td>各SNS事業者</td>
+          <td>投稿文・画像・アクセストークン</td>
+          <td>SNSへの自動投稿</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 第6条 -->
+    <div class="section">
+      <div class="section-title">第6条（データの保存期間）</div>
+      <table>
+        <tr>
+          <th>データの種類</th>
+          <th>保存期間</th>
+        </tr>
+        <tr>
+          <td>投稿履歴</td>
+          <td>投稿日から6ヶ月（その後自動削除）</td>
+        </tr>
+        <tr>
+          <td>分析データ</td>
+          <td>取得日から1年（その後自動削除）</td>
+        </tr>
+        <tr>
+          <td>エラーログ</td>
+          <td>記録日から3ヶ月（その後自動削除）</td>
+        </tr>
+        <tr>
+          <td>退会後のデータ</td>
+          <td>退会申請から30日後に全データ削除</td>
+        </tr>
+        <tr>
+          <td>決済記録</td>
+          <td>法令に基づき保存（7年）</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 第7条 -->
+    <div class="section">
+      <div class="section-title">第7条（セキュリティ）</div>
+      <ol>
+        <li>SNSのアクセストークンはGoogleスプレッドシートに保存します。アクセス権限は運営者のみに制限しています。</li>
+        <li>クレジットカード情報はStripeが管理し、当社は保持しません。</li>
+        <li>当社は情報漏洩を防ぐための適切な安全管理措置を講じます。</li>
+        <li>情報漏洩が発生した場合は速やかに利用者に通知します。</li>
+      </ol>
+    </div>
+
+    <!-- 第8条 -->
+    <div class="section">
+      <div class="section-title">第8条（利用者の権利）</div>
+      <p>利用者は以下の権利を有します。</p>
+      <ol>
+        <li>保有する個人情報の開示請求</li>
+        <li>個人情報の訂正・追加・削除の請求</li>
+        <li>個人情報の利用停止・消去の請求</li>
+        <li>匿名統計データへの参加停止（設定画面から随時変更可能）</li>
+      </ol>
+      <p>開示・訂正・削除の請求は下記お問い合わせ先までご連絡ください。</p>
+    </div>
+
+    <!-- 第9条 -->
+    <div class="section">
+      <div class="section-title">第9条（Cookieおよびアクセス解析）</div>
+      <p>本サービスはLINEのLIFF（LINE Front-end Framework）を利用しており、LINE社のCookieポリシーが適用される場合があります。当社独自のCookieは使用していません。</p>
+    </div>
+
+    <!-- 第10条 -->
+    <div class="section">
+      <div class="section-title">第10条（プライバシーポリシーの変更）</div>
+      <p>当社は必要に応じて本ポリシーを変更することができます。変更後のポリシーは本サービス内に掲載した時点で効力を生じます。重要な変更がある場合はLINEを通じてお知らせします。</p>
+    </div>
+
+    <!-- お問い合わせ -->
+    <div class="section">
+      <div class="section-title">お問い合わせ先</div>
+      <div class="company-row"><span class="company-key">会社名</span><span class="company-val placeholder">【会社名】</span></div>
+      <div class="company-row"><span class="company-key">個人情報取扱責任者</span><span class="company-val placeholder">【代表者名】</span></div>
+      <div class="company-row"><span class="company-key">所在地</span><span class="company-val placeholder">【所在地】</span></div>
+      <div class="company-row"><span class="company-key">メール</span><span class="company-val placeholder">【メールアドレス】</span></div>
+      <div class="company-row"><span class="company-key">受付時間</span><span class="company-val placeholder">【受付時間】</span></div>
+    </div>
+
+  </div>
+
+</body>
+</html>
