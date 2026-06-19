@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>文章を作る - AiPost</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #1a237e;
+    --primary-light: #3949ab;
+    --accent: #00acc1;
+    --success: #43a047;
+    --warning: #fb8c00;
+    --danger: #e53935;
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --border: #e0e4ed;
+    --text: #1a1a2e;
+    --text-sub: #6b7280;
+    --text-light: #9ca3af;
+  }
+  body {
+    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    max-width: 480px;
+    margin: 0 auto;
+    padding-bottom: 70px;
+  }
+
+  /* ヘッダー */
+  .header {
+    background: var(--primary);
+    color: white;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-logo { font-size: 16px; font-weight: 700; }
+  .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
+
+  /* ステップナビ */
+  .steps {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 0;
+  }
+  .steps::-webkit-scrollbar { display: none; }
+  .step { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; min-width: 48px; }
+  .step-circle {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text-light);
+    margin-bottom: 3px;
+  }
+  .step.active .step-circle { border-color: var(--primary); background: var(--primary); color: white; }
+  .step.done .step-circle { border-color: var(--success); background: var(--success); color: white; }
+  .step-label { font-size: 9px; color: var(--text-light); text-align: center; white-space: nowrap; }
+  .step.active .step-label { color: var(--primary); font-weight: 600; }
+  .step.done .step-label { color: var(--success); }
+  .step-line { flex: 1; height: 2px; background: var(--border); min-width: 6px; margin-bottom: 12px; }
+  .step-line.done { background: var(--success); }
+
+  /* コンテンツ */
+  .content { padding: 14px 16px; }
+
+  /* カード */
+  .card { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+
+  /* セクションタイトル */
+  .section-title {
+    font-size: 11px; font-weight: 700; color: var(--text-sub);
+    letter-spacing: 0.08em; padding: 8px 0 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* キーワード */
+  .keyword-input-wrap { display: flex; gap: 8px; margin-bottom: 10px; }
+  .keyword-input {
+    flex: 1; padding: 10px 12px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 14px; font-family: inherit; outline: none;
+  }
+  .keyword-input:focus { border-color: var(--primary); }
+  .keyword-add-btn {
+    padding: 10px 14px; background: var(--primary); color: white;
+    border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+    cursor: pointer; white-space: nowrap;
+  }
+  .keyword-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .keyword-tag {
+    background: #e8eaf6; color: var(--primary); padding: 4px 10px;
+    border-radius: 20px; font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .keyword-tag-del { background: none; border: none; color: var(--primary); cursor: pointer; font-size: 14px; padding: 0; opacity: 0.6; }
+  .keyword-hint { font-size: 11px; color: var(--text-light); line-height: 1.6; }
+
+  /* 訴求パターン */
+  .pattern-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .pattern-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 8px 4px; border: 1.5px solid var(--border); border-radius: 8px;
+    background: var(--surface); cursor: pointer; font-size: 11px; color: var(--text-sub);
+    font-family: inherit; transition: all 0.15s;
+  }
+  .pattern-btn.selected { border-color: var(--primary); background: #e8eaf6; color: var(--primary); font-weight: 700; }
+  .pattern-icon { font-size: 18px; }
+
+  /* AI生成ボタン */
+  .generate-btn {
+    width: 100%; padding: 14px; background: var(--primary); color: white;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-bottom: 12px; font-family: inherit;
+  }
+  .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* ローディング */
+  .loading { display: none; flex-direction: column; align-items: center; padding: 20px; gap: 12px; }
+  .loading.show { display: flex; }
+  .loading-dots { display: flex; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); animation: bounce 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+  .loading-text { font-size: 13px; color: var(--text-sub); text-align: center; line-height: 1.8; }
+
+  /* 文章エリア */
+  .post-textarea {
+    width: 100%; min-height: 120px; padding: 12px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: inherit; line-height: 1.8;
+    resize: none; outline: none; transition: border-color 0.2s;
+  }
+  .post-textarea:focus { border-color: var(--primary); }
+  .post-textarea.warn { border-color: var(--warning); }
+  .post-textarea.over { border-color: var(--danger); }
+
+  /* 文字数 */
+  .char-counter { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+  .char-count { font-size: 12px; font-weight: 600; color: var(--text-sub); min-width: 70px; }
+  .char-count.warn { color: var(--warning); }
+  .char-count.over { color: var(--danger); }
+  .char-bar-bg { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .char-bar-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.3s; }
+  .char-bar-fill.warn { background: var(--warning); }
+  .char-bar-fill.over { background: var(--danger); }
+
+  /* 警告 */
+  .url-warning { display: none; background: #fce4ec; border: 1px solid #f48fb1; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #880e4f; margin: 8px 0; line-height: 1.7; }
+  .url-warning.show { display: block; }
+  .x-warning { display: none; background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #5d4037; margin: 8px 0; line-height: 1.7; }
+  .x-warning.show { display: block; }
+
+  /* ハッシュタグ */
+  .hashtag-area { background: #f0f2ff; border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
+  .hashtag-label { font-size: 11px; color: var(--primary); font-weight: 700; margin-bottom: 4px; }
+  .hashtag-text { font-size: 13px; color: var(--primary); line-height: 1.8; }
+
+  /* 再生成ボタン */
+  .regen-btns { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .regen-btn { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); font-size: 12px; color: var(--text-sub); cursor: pointer; font-family: inherit; }
+
+  /* 下書き保存 */
+  .draft-btn {
+    width: 100%; padding: 11px; border: 1.5px solid var(--primary);
+    border-radius: 10px; background: none; color: var(--primary);
+    font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px;
+  }
+
+  /* ===== 画像選択エリア（インライン） ===== */
+  .image-section { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; }
+  .image-section-header {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .image-section-title { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  /* 選択中プレビュー（コンパクト） */
+  .img-selected-bar {
+    display: none;
+    background: #e8f5e9;
+    border-bottom: 1px solid #a5d6a7;
+    padding: 8px 14px;
+    align-items: center;
+    gap: 10px;
+  }
+  .img-selected-bar.show { display: flex; }
+  .img-selected-thumb { font-size: 24px; }
+  .img-selected-name { font-size: 12px; font-weight: 700; color: #2e7d32; flex: 1; }
+  .img-selected-clear { background: none; border: none; color: #2e7d32; font-size: 18px; cursor: pointer; padding: 0; }
+
+  /* 画像タブ */
+  .img-tab-nav { display: flex; border-bottom: 1px solid var(--border); }
+  .img-tab-btn {
+    flex: 1; padding: 10px 4px; border: none; background: none;
+    font-size: 11px; font-weight: 600; color: var(--text-sub);
+    cursor: pointer; border-bottom: 2px solid transparent;
+    font-family: inherit; display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+  }
+  .img-tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .img-tab-icon { font-size: 16px; }
+  .img-tab-panel { display: none; padding: 12px 14px; }
+  .img-tab-panel.active { display: block; }
+
+  /* カテゴリフィルタ */
+  .category-filter {
+    display: flex; gap: 6px; overflow-x: auto;
+    scrollbar-width: none; padding-bottom: 10px; margin-bottom: 8px;
+  }
+  .category-filter::-webkit-scrollbar { display: none; }
+  .cat-btn {
+    padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px;
+    background: var(--surface); font-size: 11px; color: var(--text-sub);
+    cursor: pointer; white-space: nowrap; font-family: inherit;
+  }
+  .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  /* 画像グリッド */
+  .image-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .image-item {
+    position: relative; aspect-ratio: 1; border-radius: 8px;
+    overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.2s;
+  }
+  .image-item.selected { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); }
+  .image-thumb {
+    width: 100%; height: 100%; object-fit: cover;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; background: var(--border);
+  }
+  .image-check {
+    position: absolute; top: 4px; right: 4px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--primary); color: white; font-size: 11px;
+    display: none; align-items: center; justify-content: center; font-weight: 700;
+  }
+  .image-item.selected .image-check { display: flex; }
+  .image-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.5); color: white; font-size: 9px;
+    padding: 3px 5px; text-align: center;
+  }
+
+  /* 画像なしタブ */
+  .no-image-option {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px; gap: 8px; cursor: pointer;
+    border: 2px solid var(--border); border-radius: 10px;
+  }
+  .no-image-option.selected { border-color: var(--primary); background: #f0f2ff; }
+  .no-image-icon { font-size: 36px; }
+  .no-image-label { font-size: 14px; font-weight: 700; color: var(--text); }
+  .no-image-desc { font-size: 12px; color: var(--text-sub); text-align: center; line-height: 1.7; }
+
+  /* SNS選択 */
+  .sns-check-list { display: flex; flex-direction: column; gap: 8px; }
+  .sns-check-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer;
+  }
+  .sns-check-item.checked { border-color: var(--primary); background: #f0f2ff; }
+  .sns-icon-sm {
+    width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
+  }
+  .sns-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+  .sns-fb { background: #1877f2; }
+  .sns-x  { background: #000000; }
+  .sns-check-name { flex: 1; font-size: 14px; font-weight: 600; }
+  .sns-checkbox {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--border); display: flex; align-items: center;
+    justify-content: center; font-size: 12px; color: white; flex-shrink: 0;
+  }
+  .sns-check-item.checked .sns-checkbox { background: var(--primary); border-color: var(--primary); }
+
+  /* ===== カレンダー（予約画面から流用） ===== */
+  .calendar-wrap { background: var(--surface); }
+  .cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  .cal-title { font-size: 15px; font-weight: 700; }
+  .cal-nav {
+    width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-grid { padding: 8px; }
+  .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
+  .cal-day-label { font-size: 11px; color: var(--text-sub); padding: 4px 0; text-align: center; }
+  .cal-day-label:first-child { color: var(--danger); }
+  .cal-day-label:last-child { color: var(--accent); }
+  .cal-dates { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-date {
+    aspect-ratio: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; border-radius: 8px;
+    font-size: 12px; cursor: pointer; position: relative; padding: 2px;
+    transition: background 0.15s;
+  }
+  .cal-date:hover { background: var(--bg); }
+  .cal-date.today { background: var(--primary); color: white; font-weight: 700; }
+  .cal-date.selected { background: var(--accent); color: white; font-weight: 700; }
+  .cal-date.today.selected { background: var(--accent); }
+  .cal-date.has-post { padding-top: 2px; justify-content: flex-start; gap: 1px; }
+  .cal-post-count {
+    font-size: 9px; font-weight: 700; color: white;
+    background: var(--accent); border-radius: 8px; padding: 0px 4px;
+    line-height: 1.6; min-width: 14px; text-align: center;
+  }
+  .cal-date.today .cal-post-count { background: rgba(255,255,255,0.9); color: var(--primary); }
+  .cal-date.selected .cal-post-count { background: rgba(255,255,255,0.9); color: var(--accent); }
+  .cal-date.other-month { color: var(--text-light); }
+  .cal-date.sunday { color: var(--danger); }
+  .cal-date.saturday { color: var(--accent); }
+  .cal-date.today.sunday, .cal-date.today.saturday { color: white; }
+
+  /* 選択日表示 */
+  .selected-date-bar {
+    display: none; background: #e3f2fd; padding: 8px 14px;
+    font-size: 13px; font-weight: 700; color: var(--primary);
+    border-top: 1px solid #bbdefb; align-items: center; gap: 8px;
+  }
+  .selected-date-bar.show { display: flex; }
+
+  /* 時間選択 */
+  .time-select-row { padding: 12px 14px; border-top: 1px solid var(--border); }
+  .time-select-label { font-size: 12px; color: var(--text-sub); margin-bottom: 8px; }
+  .datetime-select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 14px; font-family: inherit; background: var(--surface); outline: none;
+  }
+
+  /* 予約ボタン */
+  .reserve-btn {
+    width: 100%; padding: 16px; background: var(--success); color: white;
+    border: none; border-radius: 10px; font-size: 16px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 8px; font-family: inherit; margin-bottom: 12px;
+  }
+
+  /* 確認モーダル */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 2000; align-items: flex-end;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: 16px 16px 0 0; padding: 20px 16px 32px; width: 100%; }
+  .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .modal-desc { font-size: 13px; color: var(--text-sub); line-height: 1.8; margin-bottom: 16px; }
+  .modal-btn { width: 100%; padding: 13px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
+  .modal-btn-primary { background: var(--primary); color: white; }
+  .modal-btn-success { background: var(--success); color: white; }
+  .modal-btn-cancel { background: var(--bg); color: var(--text-sub); }
+
+  /* 予約確認モーダルの内容 */
+  .confirm-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .confirm-row:last-of-type { border-bottom: none; }
+  .confirm-key { color: var(--text-sub); }
+  .confirm-val { font-weight: 600; color: var(--text); text-align: right; }
+
+  /* トースト */
+  .toast {
+    display: none; position: fixed; bottom: 80px; left: 50%;
+    transform: translateX(-50%); background: var(--primary); color: white;
+    padding: 10px 20px; border-radius: 20px; font-size: 13px;
+    font-weight: 700; z-index: 3000; white-space: nowrap;
+  }
+
+  /* ナビゲーション */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+    background: #ffffff; border-top: 1px solid #e0e0e0;
+    display: flex; align-items: center; justify-content: space-around;
+    z-index: 1000; box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex: 1; height: 100%; cursor: pointer; color: #9e9e9e;
+    -webkit-tap-highlight-color: transparent; background: none; border: none;
+    padding: 0; font-family: inherit; outline: none;
+  }
+  .nav-item.active { color: #1a237e; }
+  .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
+  .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
+</style>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:20px;">📝</span>
+  <span class="header-logo">文章を作る</span>
+  <span class="header-sub">AiPost</span>
+</div>
+
+<!-- ステップナビ -->
+<div class="steps">
+  <div class="step active" id="step1"><div class="step-circle">1</div><div class="step-label">キーワード</div></div>
+  <div class="step-line" id="line1"></div>
+  <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">訴求パターン</div></div>
+  <div class="step-line" id="line2"></div>
+  <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">生成</div></div>
+  <div class="step-line" id="line3"></div>
+  <div class="step" id="step4"><div class="step-circle">4</div><div class="step-label">文章確認</div></div>
+  <div class="step-line" id="line4"></div>
+  <div class="step" id="step5"><div class="step-circle">5</div><div class="step-label">予約</div></div>
+</div>
+
+<div class="content">
+
+  <div class="section-title">AIで文章を作る</div>
+
+  <!-- ① キーワード入力 -->
+  <div class="card">
+    <div class="card-title">① キーワードを入力する</div>
+    <div class="keyword-input-wrap">
+      <input type="text" class="keyword-input" id="keyword-input"
+        placeholder="例：新メニュー、抹茶、週末限定"
+        onkeydown="if(event.key==='Enter')addKeyword()">
+      <button class="keyword-add-btn" onclick="addKeyword()">追加</button>
+    </div>
+    <div class="keyword-tags" id="keyword-tags">
+      <div class="keyword-tag">新メニュー<button class="keyword-tag-del" onclick="removeKeyword(this)">×</button></div>
+      <div class="keyword-tag">抹茶テリーヌ<button class="keyword-tag-del" onclick="removeKeyword(this)">×</button></div>
+      <div class="keyword-tag">週末限定<button class="keyword-tag-del" onclick="removeKeyword(this)">×</button></div>
+    </div>
+    <div class="keyword-hint">💡 キーワードは3〜5個が目安です。商品名・特徴・季節など</div>
+    <div class="keyword-hint" style="margin-top:6px;">✏️ 自分で文章を書く場合は④の入力欄に直接入力してください</div>
+  </div>
+
+  <!-- ② 訴求パターン -->
+  <div class="card">
+    <div class="card-title">② 訴求パターンを選ぶ（任意）</div>
+    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">どんな雰囲気で伝えたいですか？選ばなくてもAIが自動で判断します。</p>
+    <div class="pattern-grid">
+      <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💰</span>お得</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💡</span>悩み解決</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🔥</span>トレンド</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">⭐</span>信頼</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🌸</span>季節</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🆕</span>新登場</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">📍</span>地域密着</button>
+    </div>
+  </div>
+
+  <!-- ③ AI生成ボタン -->
+  <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
+    <span style="font-size:20px;">✨</span>③ AIで投稿文を作成する
+  </button>
+
+  <!-- ローディング -->
+  <div class="loading" id="loading">
+    <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="loading-text">AIが投稿文を考えています…<br>少々お待ちください</div>
+  </div>
+
+  <!-- ④ 文章確認・編集 -->
+  <div class="card">
+    <div class="card-title">④ 文章を確認・編集する</div>
+    <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで作成した文章が表示されます。自由に編集できます。直接入力することもできます。</p>
+    <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount()"
+      placeholder="AIで生成した文章がここに表示されます。直接入力することもできます。"></textarea>
+    <div class="char-counter">
+      <span class="char-count" id="char-count">0文字</span>
+      <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
+      <span style="font-size:11px;color:var(--text-light);">上限 280文字</span>
+    </div>
+    <div class="url-warning" id="url-warning">
+      🔗 <strong>投稿文にURLが含まれています。</strong><br>当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます。
+    </div>
+    <div class="x-warning" id="x-warning"></div>
+    <div class="hashtag-area" id="hashtag-area" style="display:none;">
+      <div class="hashtag-label">AIが提案するハッシュタグ</div>
+      <div class="hashtag-text" id="hashtag-text"></div>
+    </div>
+    <div class="regen-btns" id="regen-btns" style="display:none;">
+      <button class="regen-btn" onclick="confirmAndGenerate()">🔄 作り直す</button>
+      <button class="regen-btn" onclick="makeShort()">✂️ 短くする</button>
+      <button class="regen-btn" onclick="makeFormal()">👔 丁寧にする</button>
+    </div>
+  </div>
+
+  <!-- 下書き保存 -->
+  <button class="draft-btn" onclick="saveDraft()">💾 下書き保存</button>
+
+  <!-- ⑤ 画像選択（インライン） -->
+  <div class="image-section">
+    <div class="image-section-header">
+      <div class="image-section-title">⑤ 画像を選ぶ（任意）</div>
+    </div>
+
+    <!-- 選択中プレビューバー -->
+    <div class="img-selected-bar" id="img-selected-bar">
+      <span class="img-selected-thumb" id="img-selected-thumb">🍵</span>
+      <span class="img-selected-name" id="img-selected-name">抹茶ラテ</span>
+      <button class="img-selected-clear" onclick="clearImageSelection()">×</button>
+    </div>
+
+    <!-- タブ -->
+    <div class="img-tab-nav">
+      <button class="img-tab-btn active" onclick="switchImgTab('stock', this)">
+        <span class="img-tab-icon">🗂️</span>素材画像
+      </button>
+      <button class="img-tab-btn" onclick="switchImgTab('myimage', this)">
+        <span class="img-tab-icon">🏞️</span>マイ画像
+      </button>
+      <button class="img-tab-btn" onclick="switchImgTab('none', this)">
+        <span class="img-tab-icon">🚫</span>画像なし
+      </button>
+    </div>
+
+    <!-- 素材画像タブ -->
+    <div id="img-tab-stock" class="img-tab-panel active">
+      <div class="category-filter">
+        <button class="cat-btn active" onclick="filterCat(this)">すべて</button>
+        <button class="cat-btn" onclick="filterCat(this)">人物</button>
+        <button class="cat-btn" onclick="filterCat(this)">ビジネス</button>
+        <button class="cat-btn" onclick="filterCat(this)">動物・生き物</button>
+        <button class="cat-btn" onclick="filterCat(this)">花・植物</button>
+        <button class="cat-btn" onclick="filterCat(this)">食べ物・飲み物</button>
+        <button class="cat-btn" onclick="filterCat(this)">町並み・建物</button>
+        <button class="cat-btn" onclick="filterCat(this)">季節・行事</button>
+        <button class="cat-btn" onclick="filterCat(this)">自然・風景</button>
+        <button class="cat-btn" onclick="filterCat(this)">スポーツ</button>
+        <button class="cat-btn" onclick="filterCat(this)">美容・健康</button>
+        <button class="cat-btn" onclick="filterCat(this)">小物・雑貨</button>
+        <button class="cat-btn" onclick="filterCat(this)">クレイアート</button>
+      </div>
+      <div class="image-grid">
+        <div class="image-item" onclick="selectImage(this,'🍵','抹茶ラテ')"><div class="image-thumb">🍵</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
+        <div class="image-item" onclick="selectImage(this,'☕','コーヒー')"><div class="image-thumb">☕</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
+        <div class="image-item" onclick="selectImage(this,'🍰','ケーキ')"><div class="image-thumb">🍰</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
+        <div class="image-item" onclick="selectImage(this,'🌸','桜')"><div class="image-thumb">🌸</div><div class="image-check">✓</div><div class="image-label">季節</div></div>
+        <div class="image-item" onclick="selectImage(this,'🍓','フルーツ')"><div class="image-thumb">🍓</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
+        <div class="image-item" onclick="selectImage(this,'🌿','グリーン')"><div class="image-thumb">🌿</div><div class="image-check">✓</div><div class="image-label">自然</div></div>
+        <div class="image-item" onclick="selectImage(this,'🧁','マフィン')"><div class="image-thumb">🧁</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
+        <div class="image-item" onclick="selectImage(this,'🌅','夕景')"><div class="image-thumb">🌅</div><div class="image-check">✓</div><div class="image-label">自然</div></div>
+        <div class="image-item" onclick="selectImage(this,'🌺','花')"><div class="image-thumb">🌺</div><div class="image-check">✓</div><div class="image-label">季節</div></div>
+      </div>
+    </div>
+
+    <!-- マイ画像タブ -->
+    <div id="img-tab-myimage" class="img-tab-panel">
+      <div style="text-align:center;padding:24px 0;color:var(--text-sub);">
+        <div style="font-size:36px;margin-bottom:8px;">📷</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px;">アップロードした画像</div>
+        <div style="font-size:12px;line-height:1.7;">画像をアップロードしてここに表示できます。</div>
+        <button style="margin-top:12px;padding:8px 20px;background:var(--primary);color:white;border:none;border-radius:20px;font-size:13px;cursor:pointer;">画像をアップロード</button>
+      </div>
+    </div>
+
+    <!-- 画像なしタブ -->
+    <div id="img-tab-none" class="img-tab-panel">
+      <div class="no-image-option" id="no-image-opt" onclick="selectNoImage()">
+        <div class="no-image-icon">📄</div>
+        <div class="no-image-label">画像なしで投稿する</div>
+        <div class="no-image-desc">テキストのみで投稿します。<br>画像がなくても投稿できます。</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ⑥ 投稿先SNS -->
+  <div class="card">
+    <div class="card-title">⑥ 投稿先のSNSを選ぶ</div>
+    <div class="sns-check-list">
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-ig">IG</div>
+        <div class="sns-check-name">Instagram</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-fb">f</div>
+        <div class="sns-check-name">Facebook</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-x">X</div>
+        <div class="sns-check-name">X（Twitter）</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦ 投稿日時：カレンダー -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);">
+      <div class="card-title" style="margin-bottom:0;">⑦ 投稿日を選ぶ</div>
+    </div>
+    <div class="calendar-wrap">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="prevMonth()">‹</button>
+        <div class="cal-title" id="cal-title">2026年6月</div>
+        <button class="cal-nav" onclick="nextMonth()">›</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-days">
+          <div class="cal-day-label">日</div><div class="cal-day-label">月</div>
+          <div class="cal-day-label">火</div><div class="cal-day-label">水</div>
+          <div class="cal-day-label">木</div><div class="cal-day-label">金</div>
+          <div class="cal-day-label">土</div>
+        </div>
+        <div class="cal-dates" id="cal-dates"></div>
+      </div>
+    </div>
+    <div class="selected-date-bar" id="selected-date-bar">
+      📌 <span id="selected-date-label">日付を選んでください</span>
+    </div>
+    <div class="time-select-row">
+      <div class="time-select-label">投稿時間を選ぶ</div>
+      <select class="datetime-select" id="post-time">
+        <option>8時ごろ</option><option>9時ごろ</option><option>10時ごろ</option>
+        <option>11時ごろ</option><option>12時ごろ</option><option selected>13時ごろ</option>
+        <option>14時ごろ</option><option>15時ごろ</option><option>16時ごろ</option>
+        <option>17時ごろ</option><option>18時ごろ</option><option>19時ごろ</option>
+        <option>20時ごろ</option><option>21時ごろ</option>
+      </select>
+      <p style="font-size:11px;color:var(--text-sub);margin-top:6px;">💡 指定した時間帯に自動で投稿されます</p>
+    </div>
+  </div>
+
+  <!-- 予約ボタン -->
+  <button class="reserve-btn" onclick="showConfirm()">
+    <span style="font-size:20px;">✅</span>この内容で投稿を予約する
+  </button>
+
+</div>
+
+<!-- 上書き確認モーダル -->
+<div class="modal-overlay" id="overwrite-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚠️ 入力中の文章があります</div>
+    <div class="modal-desc">AIが生成した文章で上書きされます。現在入力中の文章は消えますがよろしいですか？</div>
+    <button class="modal-btn modal-btn-primary" onclick="executeGenerate()">上書きして生成する</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeModal('overwrite-modal')">キャンセル</button>
+  </div>
+</div>
+
+<!-- 予約確認モーダル -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📋 予約内容の確認</div>
+    <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:16px;">
+      <div class="confirm-row"><span class="confirm-key">投稿先</span><span class="confirm-val" id="confirm-sns">Instagram・Facebook・X</span></div>
+      <div class="confirm-row"><span class="confirm-key">投稿日時</span><span class="confirm-val" id="confirm-date">6月17日 13時ごろ</span></div>
+      <div class="confirm-row"><span class="confirm-key">画像</span><span class="confirm-val" id="confirm-image">抹茶ラテ</span></div>
+      <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain">残り22件</span></div>
+    </div>
+    <button class="modal-btn modal-btn-success" onclick="executeReserve()">予約を確定する</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeModal('confirm-modal')">修正する</button>
+  </div>
+</div>
+
+<!-- 予約完了モーダル -->
+<div class="modal-overlay" id="complete-modal">
+  <div class="modal" style="text-align:center;">
+    <div class="modal-handle"></div>
+    <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px;">予約が完了しました！</div>
+    <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:16px;">
+      <span id="complete-msg">6月17日（水）13時ごろに<br>Instagram・Facebook・Xへ自動投稿されます。</span>
+    </p>
+    <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--text-sub);text-align:left;line-height:1.8;margin-bottom:8px;">
+      📋 予約確認から確認・キャンセルができます<br>
+      🔔 投稿が完了したらLINEでお知らせします
+    </div>
+    <button class="modal-btn modal-btn-cancel" onclick="closeModal('complete-modal')">閉じる</button>
+  </div>
+</div>
+
+<!-- トースト -->
+<div class="toast" id="draft-toast">💾 下書きを保存しました</div>
+
+<!-- ナビゲーションバー -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">文章を作る</span></button>
+  <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">予約確認</span></button>
+  <button class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
+  <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
+  <button class="nav-item" onclick="navigateTo('plan')"><span class="nav-icon">💎</span><span class="nav-label">プラン</span></button>
+  <button class="nav-item" onclick="navigateTo('about')"><span class="nav-icon">ℹ️</span><span class="nav-label">使い方</span></button>
+</nav>
+
+<script>
+const CHAR_LIMIT = 280;
+const X_LIMIT = 140;
+
+// ===== キーワード =====
+function addKeyword() {
+  const input = document.getElementById('keyword-input');
+  const val = input.value.trim();
+  if (!val) return;
+  const tags = document.getElementById('keyword-tags');
+  const tag = document.createElement('div');
+  tag.className = 'keyword-tag';
+  tag.innerHTML = val + '<button class="keyword-tag-del" onclick="removeKeyword(this)">×</button>';
+  tags.appendChild(tag);
+  input.value = '';
+}
+function removeKeyword(btn) { btn.parentElement.remove(); }
+
+// ===== 訴求パターン =====
+function selectPattern(btn) {
+  document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  setStep(2);
+}
+
+// ===== AI生成 =====
+function confirmAndGenerate() {
+  const ta = document.getElementById('post-textarea');
+  if (ta.value.trim() !== '') {
+    document.getElementById('overwrite-modal').classList.add('open');
+  } else {
+    executeGenerate();
+  }
+}
+
+function executeGenerate() {
+  closeModal('overwrite-modal');
+  document.getElementById('generate-btn').disabled = true;
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('regen-btns').style.display = 'none';
+  document.getElementById('hashtag-area').style.display = 'none';
+  setStep(3);
+  setTimeout(() => {
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('generate-btn').disabled = false;
+    const ta = document.getElementById('post-textarea');
+    ta.value = '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりをぜひお試しください。';
+    document.getElementById('hashtag-area').style.display = 'block';
+    document.getElementById('hashtag-text').textContent = '#渋谷カフェ #週末限定 #抹茶スイーツ #新メニュー #カフェ巡り';
+    document.getElementById('regen-btns').style.display = 'flex';
+    setStep(4);
+    updateCharCount();
+    ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 2000);
+}
+
+// ===== 下書き =====
+let draftSaved = false;
+function saveDraft() {
+  const ta = document.getElementById('post-textarea');
+  if (!ta.value.trim()) { alert('文章を入力してから保存してください。'); return; }
+  if (draftSaved && !confirm('保存済みの下書きを上書きしますか？')) return;
+  window._draft = ta.value;
+  draftSaved = true;
+  const toast = document.getElementById('draft-toast');
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 2000);
+}
+
+// ===== 文字数 =====
+function countChars(text) {
+  let count = 0;
+  for (const ch of text) count += ch.match(/[ -~]/) ? 0.5 : 1;
+  return Math.round(count);
+}
+function updateCharCount() {
+  const text = document.getElementById('post-textarea').value;
+  const count = countChars(text);
+  const ratio = count / CHAR_LIMIT;
+  const countEl = document.getElementById('char-count');
+  const barEl = document.getElementById('char-bar');
+  const ta = document.getElementById('post-textarea');
+  countEl.textContent = count + '文字';
+  barEl.style.width = Math.min(ratio * 100, 100) + '%';
+  countEl.className = 'char-count';
+  barEl.className = 'char-bar-fill';
+  ta.className = 'post-textarea';
+  if (count > CHAR_LIMIT) {
+    countEl.classList.add('over'); barEl.classList.add('over'); ta.classList.add('over');
+    countEl.textContent = count + '文字（' + (count - CHAR_LIMIT) + '文字オーバー）';
+  } else if (ratio > 0.8) {
+    countEl.classList.add('warn'); barEl.classList.add('warn'); ta.classList.add('warn');
+  }
+  const hasUrl = /https?:\/\//.test(text);
+  document.getElementById('url-warning').classList.toggle('show', hasUrl);
+  const xChecked = document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-x');
+  const xWarn = document.getElementById('x-warning');
+  if (!hasUrl && count > X_LIMIT && xChecked) {
+    xWarn.classList.add('show');
+    xWarn.innerHTML = '⚠️ <strong>Xは140文字が上限です。</strong><br>現在' + count + '文字のため切れる可能性があります。';
+  } else {
+    xWarn.classList.remove('show');
+  }
+  if (text.trim()) setStep(4);
+}
+function makeShort() {
+  document.getElementById('post-textarea').value = '週末限定の抹茶テリーヌが登場。濃厚な香りとなめらかな口当たりをぜひ。';
+  updateCharCount();
+}
+function makeFormal() {
+  document.getElementById('post-textarea').value = '週末限定の抹茶テリーヌをご用意いたしました。濃厚な抹茶の香りとなめらかな口当たりを、ぜひご堪能ください。';
+  updateCharCount();
+}
+
+// ===== SNS =====
+function toggleSns(el) {
+  el.classList.toggle('checked');
+  el.querySelector('.sns-checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
+  updateCharCount();
+}
+
+// ===== 画像選択 =====
+let selectedImage = null;
+function switchImgTab(id, btn) {
+  document.querySelectorAll('.img-tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.img-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('img-tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+function selectImage(el, emoji, name) {
+  document.querySelectorAll('.image-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedImage = { emoji, name };
+  document.getElementById('img-selected-bar').classList.add('show');
+  document.getElementById('img-selected-thumb').textContent = emoji;
+  document.getElementById('img-selected-name').textContent = name;
+  document.getElementById('no-image-opt').classList.remove('selected');
+}
+function clearImageSelection() {
+  document.querySelectorAll('.image-item').forEach(i => i.classList.remove('selected'));
+  document.getElementById('img-selected-bar').classList.remove('show');
+  selectedImage = null;
+}
+function selectNoImage() {
+  clearImageSelection();
+  document.getElementById('no-image-opt').classList.add('selected');
+  selectedImage = { emoji: '📄', name: '画像なし' };
+  document.getElementById('img-selected-bar').classList.add('show');
+  document.getElementById('img-selected-thumb').textContent = '📄';
+  document.getElementById('img-selected-name').textContent = '画像なし';
+}
+function filterCat(btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ===== カレンダー =====
+const postCounts = {15: 3, 17: 1, 20: 2, 25: 5, 28: 1};
+const todayDate = 17;
+let selectedDay = null;
+
+function buildCalendar() {
+  const grid = document.getElementById('cal-dates');
+  grid.innerHTML = '';
+  const firstDay = 1;
+  const days = 30;
+  for (let i = 0; i < firstDay; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'cal-date other-month';
+    blank.textContent = 31 - firstDay + i + 1;
+    grid.appendChild(blank);
+  }
+  for (let d = 1; d <= days; d++) {
+    const el = document.createElement('div');
+    const dayOfWeek = (firstDay + d - 1) % 7;
+    let cls = 'cal-date';
+    if (dayOfWeek === 0) cls += ' sunday';
+    if (dayOfWeek === 6) cls += ' saturday';
+    if (d === todayDate) cls += ' today';
+    if (postCounts[d]) cls += ' has-post';
+    if (d === selectedDay) cls += ' selected';
+    el.className = cls;
+    const count = postCounts[d];
+    if (count) {
+      el.innerHTML = '<span>' + d + '</span><span class="cal-post-count">' + count + '件</span>';
+    } else {
+      el.textContent = d;
+    }
+    el.onclick = () => selectCalDay(d);
+    grid.appendChild(el);
+  }
+}
+
+function selectCalDay(d) {
+  selectedDay = d;
+  buildCalendar();
+  const bar = document.getElementById('selected-date-bar');
+  bar.classList.add('show');
+  const count = postCounts[d] || 0;
+  document.getElementById('selected-date-label').textContent =
+    '6月' + d + '日を選択中' + (count > 0 ? '（既に' + count + '件予約あり）' : '');
+  setStep(5);
+}
+
+function prevMonth() {}
+function nextMonth() {}
+
+// ===== 予約確認 =====
+function showConfirm() {
+  const ta = document.getElementById('post-textarea');
+  if (!ta.value.trim()) { alert('文章を入力してください。'); return; }
+  if (!selectedDay) { alert('投稿日を選んでください。'); return; }
+  const checkedSns = [...document.querySelectorAll('.sns-check-item.checked')]
+    .map(el => el.querySelector('.sns-check-name').textContent).join('・');
+  const time = document.getElementById('post-time').value;
+  document.getElementById('confirm-sns').textContent = checkedSns || '未選択';
+  document.getElementById('confirm-date').textContent = '6月' + selectedDay + '日 ' + time;
+  document.getElementById('confirm-image').textContent = selectedImage ? selectedImage.name : '未選択';
+  document.getElementById('confirm-remain').textContent = '残り22件 / 30件';
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+function executeReserve() {
+  closeModal('confirm-modal');
+  document.getElementById('complete-modal').classList.add('open');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ===== ステップ =====
+function setStep(n) {
+  for (let i = 1; i <= 5; i++) {
+    const s = document.getElementById('step' + i);
+    s.classList.remove('active', 'done');
+    if (i < n) s.classList.add('done');
+    else if (i === n) s.classList.add('active');
+  }
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('line' + i).classList.toggle('done', i < n);
+  }
+}
+
+// ===== ナビゲーション =====
+const LIFF_URLS = {
+  textgen: 'https://liff.line.me/2010401177-OpvemMmh',
+  reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
+  analytics: 'https://liff.line.me/2010401177-qKtfKWP0',
+  settings: 'https://liff.line.me/2010401177-XJw2kDQV',
+  plan: 'https://liff.line.me/2010401177-IstPDnls',
+  about: 'https://liff.line.me/2010401177-PtX79ibV',
+};
+function navigateTo(page) {
+  if (LIFF_URLS[page]) window.location.href = LIFF_URLS[page];
+}
+
+buildCalendar();
+setTimeout(updateCharCount, 100);
+</script>
+</body>
+</html>
