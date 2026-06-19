@@ -242,15 +242,19 @@
     background: var(--primary-light);
     color: white;
   }
-  .cal-date.has-post::after {
-    content: '';
-    width: 5px; height: 5px;
-    border-radius: 50%;
+  .cal-date.has-post { padding-top: 2px; justify-content: flex-start; gap: 1px; }
+  .cal-post-count {
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
     background: var(--accent);
-    position: absolute;
-    bottom: 2px;
+    border-radius: 8px;
+    padding: 0px 4px;
+    line-height: 1.6;
+    min-width: 14px;
+    text-align: center;
   }
-  .cal-date.today.has-post::after { background: white; }
+  .cal-date.today .cal-post-count { background: rgba(255,255,255,0.9); color: var(--primary); }
   .cal-date.other-month { color: var(--text-light); }
   .cal-date.sunday { color: var(--danger); }
   .cal-date.saturday { color: var(--accent); }
@@ -460,10 +464,29 @@
         <span class="usage-denom">/ 30</span>
       </div>
       <div class="usage-info">
-        <div class="usage-title">今月の予約残数</div>
+        <div class="usage-title">今月の投稿予約数</div>
         <div class="usage-sub">あと22件予約できます・月末まで18日</div>
         <div class="usage-bar-bg">
           <div class="usage-bar-fill" style="width:27%;background:var(--success);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 現在のプラン・SNS連携状況 -->
+    <div style="background:#ffffff;border-radius:10px;border:1px solid var(--border);padding:12px 14px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:11px;color:var(--text-sub);">現在のプラン</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="background:#fff8e1;color:#e65100;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">STANDARD</span>
+          <span style="font-size:11px;color:var(--text-sub);">¥1,280/月</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:11px;color:var(--text-sub);">連携中のSNS</div>
+        <div style="display:flex;gap:4px;">
+          <span style="background:#e8f5e9;color:#2e7d32;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">Instagram</span>
+          <span style="background:#e3f2fd;color:#1565c0;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">Facebook</span>
+          <span style="background:#212121;color:#ffffff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">X</span>
         </div>
       </div>
     </div>
@@ -572,7 +595,7 @@
     <div id="no-selected" class="empty-state" style="padding:24px 20px;">
       <div class="empty-icon">📆</div>
       <div class="empty-title">日付をタップしてください</div>
-      <div class="empty-sub">投稿予約がある日には青い点が表示されます</div>
+      <div class="empty-sub">投稿予約がある日には件数が表示されます</div>
     </div>
 
   </div>
@@ -718,7 +741,7 @@ function switchTab(id) {
 }
 
 // カレンダー生成
-const postDays = [15, 17, 20, 25, 28];
+const postCounts = {15: 3, 17: 1, 20: 2, 25: 5, 28: 1}; // 日付:件数のマップ
 const today = 13;
 let selectedDay = null;
 
@@ -745,10 +768,16 @@ function buildCalendar() {
     if (dayOfWeek === 0) cls += ' sunday';
     if (dayOfWeek === 6) cls += ' saturday';
     if (d === today) cls += ' today';
-    if (postDays.includes(d)) cls += ' has-post';
+    if (postCounts[d]) cls += ' has-post';
     if (d === selectedDay) cls += ' selected';
     el.className = cls;
-    el.textContent = d;
+    // 件数バッジを含むHTML
+    const count = postCounts[d];
+    if (count) {
+      el.innerHTML = `<span>${d}</span><span class="cal-post-count">${count}件</span>`;
+    } else {
+      el.textContent = d;
+    }
     el.onclick = () => selectDay(d);
     grid.appendChild(el);
   }
@@ -757,7 +786,7 @@ function buildCalendar() {
 function selectDay(d) {
   selectedDay = d;
   buildCalendar();
-  const posts = postDays.includes(d);
+  const posts = !!postCounts[d];
   document.getElementById('no-selected').style.display = posts ? 'none' : 'block';
   document.getElementById('selected-day-section').style.display = posts ? 'block' : 'none';
   if (posts) {
@@ -845,6 +874,7 @@ buildCalendar();
     image:       'https://liff.line.me/2010401177-3pV56kDU',
     settings:    'https://liff.line.me/2010401177-XJw2kDQV',
     about:       'https://liff.line.me/2010401177-PtX79ibV',
+    plan:        'https://liff.line.me/2010401177-IstPDnls',
   };
 
   // 他のLIFF画面に移動する
