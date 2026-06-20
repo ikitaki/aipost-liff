@@ -366,14 +366,8 @@
 </div>
 
 <div class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('profile')">
-    <span class="tab-icon">🏪</span>店舗
-  </button>
-  <button class="tab-btn" onclick="switchTab('sns')">
+  <button class="tab-btn active" onclick="switchTab('sns')">
     <span class="tab-icon">📱</span>SNS
-  </button>
-  <button class="tab-btn" onclick="switchTab('support')">
-    <span class="tab-icon">🤖</span>サポート
   </button>
   <button class="tab-btn" onclick="switchTab('options')">
     <span class="tab-icon">🔔</span>通知
@@ -385,65 +379,8 @@
 
 <div class="content">
 
-  <!-- 店舗タブ -->
-  <div id="tab-profile" class="tab-panel active">
-    <div class="card">
-      <div class="profile-row">
-        <div class="profile-avatar">👤</div>
-        <div>
-          <div class="profile-name">山田カフェ</div>
-          <div class="profile-id">USR-000001</div>
-        </div>
-        <span class="plan-badge plan-STANDARD" style="margin-left:auto;">STANDARD</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">今月の使用状況</div>
-      <div class="usage-label"><span>投稿予約</span><span style="font-weight:600;">22 / 30件</span></div>
-      <div class="usage-bar-bg"><div class="usage-bar-fill warn" style="width:73%;"></div></div>
-      <div class="usage-sub">残り8件・月末まで18日</div>
-      <div class="usage-label"><span>連携SNS</span><span style="font-weight:600;">3 / 3個</span></div>
-      <div class="usage-bar-bg"><div class="usage-bar-fill full" style="width:100%;"></div></div>
-      <div class="usage-sub" style="margin-bottom:0;">上限です。PROプランで4つに増やせます</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">店舗情報</div>
-      <div class="form-group">
-        <label class="form-label">業種（大分類）</label>
-        <div class="select-wrap">
-          <select class="form-select">
-            <option>グルメ・飲食</option>
-            <option>美容・健康</option>
-            <option>ショッピング</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">業種（小分類）</label>
-        <div class="select-wrap">
-          <select class="form-select">
-            <option>レストラン・カフェ</option>
-            <option>居酒屋・バー</option>
-            <option>テイクアウト・デリバリー</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group" style="margin-bottom:0;">
-        <label class="form-label">エリア</label>
-        <div class="select-wrap">
-          <select class="form-select">
-            <option>東京</option><option>大阪</option><option>愛知</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <button class="btn btn-primary">変更を保存する</button>
-  </div>
-
   <!-- SNSタブ -->
-  <div id="tab-sns" class="tab-panel">
+  <div id="tab-sns" class="tab-panel active">
     <div class="notice">
       <span>💡</span>
       <span>SNSと連携することで自動投稿が可能になります。パスワードはお預かりしません。</span>
@@ -481,44 +418,6 @@
           <div class="sns-status">PROプランで追加できます</div>
         </div>
         <button class="sns-btn btn-connect" disabled>連携</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- プランタブ -->
-  <!-- AIサポートタブ -->
-  <div id="tab-support" class="tab-panel">
-    <div class="card">
-      <div class="card-title">💬 AIサポート・よくある質問</div>
-      <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:16px;">
-        ご不明な点はLINEのチャットからAIサポートをご利用ください。AIが自動でお答えします。解決しない場合は運営スタッフが対応します。
-      </p>
-      <button onclick="closeToLine()" style="width:100%;background:var(--primary);color:white;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">
-        💬 LINEでAIサポートに相談する
-      </button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">よくある質問</div>
-      <div style="border-bottom:1px solid var(--border);padding:12px 0;">
-        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. 文章生成は何回まで使えますか？</div>
-        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">全プラン無制限でご利用いただけます。何度でも作り直せます。カウントされるのは実際に予約した投稿のみです。</div>
-      </div>
-      <div style="border-bottom:1px solid var(--border);padding:12px 0;">
-        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. 複数のSNSに同時投稿できますか？</div>
-        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">はい、できます。同じ内容を複数のSNSに同時投稿した場合は1件としてカウントされます。</div>
-      </div>
-      <div style="border-bottom:1px solid var(--border);padding:12px 0;">
-        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. プランはいつでも変更できますか？</div>
-        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">はい、いつでも変更できます。リッチメニューの「プラン・料金」からお手続きください。</div>
-      </div>
-      <div style="border-bottom:1px solid var(--border);padding:12px 0;">
-        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. 解約はいつでもできますか？</div>
-        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">はい、いつでも解約できます。解約後は当月末まで引き続きご利用いただけます。日割り返金はございません。</div>
-      </div>
-      <div style="padding:12px 0;">
-        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;">Q. SNSのパスワードは預けるのですか？</div>
-        <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">パスワードはお預かりしていません。各SNSが発行した投稿専用の許可証のみお預かりしています。許可の取り消しは各SNSの設定画面からいつでも可能です。</div>
       </div>
     </div>
   </div>
@@ -599,27 +498,79 @@
 
     <div class="main-screen" id="main-account">
 
-      <!-- 利用規約・プライバシーポリシー -->
+      <!-- 店舗情報 -->
       <div class="card">
-        <div class="card-title">利用規約・プライバシーポリシー</div>
+        <div class="card-title">店舗情報</div>
         <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
-          当サービスをご利用いただくにあたり、以下の規約・ポリシーをご確認ください。
+          AI文章生成の精度向上のために登録してください。入力しなくても文章生成は利用できます。
         </p>
-        <div style="display:flex;gap:16px;margin-bottom:14px;">
-          <button onclick="window.location.href='https://ikitaki.github.io/aipost-liff/liff_terms.html'" style="flex:1;background:none;border:1px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;">利用規約を読む</button>
-          <button onclick="window.location.href='https://ikitaki.github.io/aipost-liff/liff_privacy.html'" style="flex:1;background:none;border:1px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;">プライバシーポリシーを読む</button>
+        <div class="form-group">
+          <label class="form-label">店舗名</label>
+          <input type="text" class="form-input" placeholder="例：山田カフェ" value="山田カフェ" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
         </div>
-        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
-          <input type="checkbox" id="agree-terms" style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--primary);">
-          <span style="font-size:12px;color:var(--text);line-height:1.8;">利用規約およびプライバシーポリシーを読み、内容に同意します</span>
-        </label>
+        <div class="form-group">
+          <label class="form-label">業種（大分類）</label>
+          <div class="select-wrap">
+            <select class="form-select">
+              <option>グルメ・飲食</option>
+              <option>美容・健康</option>
+              <option>ショッピング</option>
+              <option>住まい・暮らし</option>
+              <option>サービス・専門</option>
+              <option>学び・習い事</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">業種（小分類）</label>
+          <div class="select-wrap">
+            <select class="form-select">
+              <option>レストラン・カフェ</option>
+              <option>居酒屋・バー</option>
+              <option>テイクアウト・デリバリー</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">エリア（都道府県）</label>
+          <div class="select-wrap">
+            <select class="form-select">
+              <option>東京都</option><option>大阪府</option><option>愛知県</option>
+              <option>神奈川県</option><option>埼玉県</option><option>千葉県</option>
+              <option>新潟県</option><option>福岡県</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="showToast('店舗情報を保存しました')">店舗情報を保存する</button>
       </div>
 
+      <!-- アカウント情報 -->
       <div class="card">
         <div class="card-title">アカウント情報</div>
         <div class="info-row"><span class="info-key">ユーザーID</span><span class="info-val" style="font-size:12px;color:var(--text-sub);">USR-000001</span></div>
         <div class="info-row"><span class="info-key">登録日</span><span class="info-val">2026年6月1日</span></div>
         <div class="info-row"><span class="info-key">最終アクセス</span><span class="info-val">本日</span></div>
+      </div>
+
+      <!-- 連絡先メール -->
+      <div class="card">
+        <div class="card-title">連絡先メールアドレス（任意）</div>
+        <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
+          LINEアカウントが使えなくなった場合の連絡手段として登録できます。登録しなくても利用できます。
+        </p>
+        <div class="form-group" style="margin-bottom:0;">
+          <input type="email" class="form-input" placeholder="例：info@example.com" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
+        </div>
+        <button class="btn btn-primary" style="margin-top:10px;" onclick="showToast('メールアドレスを保存しました')">保存する</button>
+      </div>
+
+      <!-- 利用規約・プライバシーポリシー -->
+      <div class="card">
+        <div class="card-title">利用規約・プライバシーポリシー</div>
+        <div style="display:flex;gap:10px;">
+          <button onclick="window.location.href='https://ikitaki.github.io/aipost-liff/liff_terms.html'" style="flex:1;background:none;border:1px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;">利用規約を読む</button>
+          <button onclick="window.location.href='https://ikitaki.github.io/aipost-liff/liff_privacy.html'" style="flex:1;background:none;border:1px solid var(--primary);color:var(--primary);border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;">プライバシーポリシーを読む</button>
+        </div>
       </div>
 
       <div class="card">
@@ -720,8 +671,16 @@
 </div>
 
 <script>
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a237e;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:3000;white-space:nowrap;';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2000);
+}
+
 function switchTab(id) {
-  const tabs = ['profile','sns','support','options','account'];
+  const tabs = ['sns','options','account'];
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===id));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
@@ -875,28 +834,22 @@ function closeCompareOnBg(e) {
 <!-- ボトムナビゲーションバー -->
 <nav class="bottom-nav" id="bottom-nav">
   <button class="nav-item" onclick="navigateTo('textgen')">
-    <span class="nav-icon">📝</span>
-    <span class="nav-label">文章を作る</span>
+    <span class="nav-icon">📝</span><span class="nav-label">文章を作る</span>
   </button>
   <button class="nav-item" onclick="navigateTo('reservation')">
-    <span class="nav-icon">📅</span>
-    <span class="nav-label">投稿予約</span>
-  </button>
-  <button class="nav-item" onclick="navigateTo('image')">
-    <span class="nav-icon">🖼️</span>
-    <span class="nav-label">画像選択</span>
+    <span class="nav-icon">📅</span><span class="nav-label">予約確認</span>
   </button>
   <button class="nav-item" onclick="navigateTo('analytics')">
-    <span class="nav-icon">📊</span>
-    <span class="nav-label">分析</span>
+    <span class="nav-icon">📊</span><span class="nav-label">分析</span>
   </button>
   <button class="nav-item active" onclick="navigateTo('settings')">
-    <span class="nav-icon">⚙️</span>
-    <span class="nav-label">設定</span>
+    <span class="nav-icon">⚙️</span><span class="nav-label">設定</span>
   </button>
-  <button class="nav-item" onclick="navigateTo('about')">
-    <span class="nav-icon">ℹ️</span>
-    <span class="nav-label">使い方</span>
+  <button class="nav-item" onclick="closeToLine()">
+    <span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span>
+  </button>
+  <button class="nav-item" onclick="navigateTo('plan')">
+    <span class="nav-icon">💎</span><span class="nav-label">プラン</span>
   </button>
 </nav>
 
@@ -913,6 +866,7 @@ function closeCompareOnBg(e) {
     image:       'https://liff.line.me/2010401177-3pV56kDU',
     settings:    'https://liff.line.me/2010401177-XJw2kDQV',
     about:       'https://liff.line.me/2010401177-PtX79ibV',
+    plan:        'https://liff.line.me/2010401177-IstPDnls',
   };
 
   // 他のLIFF画面に移動する

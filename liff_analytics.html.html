@@ -464,11 +464,8 @@
   <button class="tab-btn active" onclick="switchTab('overview')">
     <span class="tab-icon">📈</span>サマリー
   </button>
-  <button class="tab-btn" onclick="switchTab('posts')">
-    <span class="tab-icon">🏆</span>人気投稿
-  </button>
-  <button class="tab-btn" onclick="switchTab('follower')">
-    <span class="tab-icon">👥</span>フォロワー
+  <button class="tab-btn" onclick="switchTab('standard')">
+    <span class="tab-icon">🔍</span>STANDARD分析
   </button>
   <button class="tab-btn" onclick="switchTab('pro')">
     <span class="tab-icon">🧬</span>PRO分析
@@ -636,94 +633,55 @@
   </div>
 
   <!-- 人気投稿タブ -->
-  <div id="tab-posts" class="tab-panel">
+  <!-- STANDARD分析タブ -->
+  <div id="tab-standard" class="tab-panel">
 
     <div class="card">
-      <div class="card-title">今月の人気投稿ランキング</div>
-      <div class="ranking-item">
-        <div class="rank-num gold">1</div>
-        <div class="rank-info">
-          <div class="rank-text">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。</div>
-          <div class="rank-stats">
-            <div class="rank-stat">❤️ <span>142</span></div>
-            <div class="rank-stat">💬 <span>18</span></div>
-            <div class="rank-stat">EG <span>9.8%</span></div>
+      <div class="card-title">🔍 AI要因分析（なぜそうなったか）</div>
+      <div style="background:#e3f2fd;border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.8;color:#1565c0;">
+        📊 今月のEG率7.2%は先月比+1.4%の上昇です。主な要因は以下の通りです。
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:var(--bg);border-radius:10px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">✅ 効果があった要因</div>
+          <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">
+            ・週末の投稿（土日）のEG率が平日より2.3%高い<br>
+            ・画像付き投稿のEG率が画像なしより4.1%高い<br>
+            ・「限定」「新登場」のキーワードを含む投稿の反応が良好
           </div>
         </div>
-      </div>
-      <div class="ranking-item">
-        <div class="rank-num silver">2</div>
-        <div class="rank-info">
-          <div class="rank-text">本日のスペシャルティコーヒーはエチオピア産。フルーティな香りが特徴です。</div>
-          <div class="rank-stats">
-            <div class="rank-stat">❤️ <span>98</span></div>
-            <div class="rank-stat">💬 <span>12</span></div>
-            <div class="rank-stat">EG <span>7.4%</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="ranking-item">
-        <div class="rank-num bronze">3</div>
-        <div class="rank-info">
-          <div class="rank-text">夏季限定メニュー開始のお知らせ。冷たいフルーツティーとサマーパフェが登場。</div>
-          <div class="rank-stats">
-            <div class="rank-stat">❤️ <span>87</span></div>
-            <div class="rank-stat">💬 <span>9</span></div>
-            <div class="rank-stat">EG <span>6.9%</span></div>
+        <div style="background:var(--bg);border-radius:10px;padding:12px;">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">⚠️ 改善が必要な要因</div>
+          <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">
+            ・平日午前中の投稿のEG率が低い傾向<br>
+            ・Xのみの投稿はEG率が他SNSより3.2%低い<br>
+            ・1週間以上投稿が空いた期間にフォロワーが減少
           </div>
         </div>
       </div>
     </div>
 
-  </div>
-
-  <!-- フォロワータブ -->
-  <div id="tab-follower" class="tab-panel">
-
     <div class="card">
-      <div class="card-title">フォロワー数（全SNS合計）</div>
-      <div class="follower-trend">
-        <div>
-          <div class="follower-label">現在のフォロワー数</div>
-          <div class="follower-num">3,847</div>
-          <div class="follower-change up">↑ 今月 +124人</div>
-        </div>
+      <div class="card-title">🔮 トレンド予測</div>
+      <div style="background:#f3e5f5;border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.8;color:#6a1b9a;">
+        AIが過去3ヶ月のデータをもとに今後の推移を予測します。
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
         <div class="info-row">
-          <span class="info-key">Instagram</span>
-          <span class="info-val">1,284人 <span class="up" style="font-size:11px;">↑ +48</span></span>
+          <span class="info-key">来月のEG率予測</span>
+          <span class="info-val" style="color:#6a1b9a;">7.8〜8.4%</span>
         </div>
         <div class="info-row">
-          <span class="info-key">Facebook</span>
-          <span class="info-val">842人 <span class="up" style="font-size:11px;">↑ +32</span></span>
+          <span class="info-key">フォロワー増加予測</span>
+          <span class="info-val" style="color:#6a1b9a;">+140〜160人</span>
         </div>
         <div class="info-row">
-          <span class="info-key">X</span>
-          <span class="info-val">1,721人 <span class="up" style="font-size:11px;">↑ +44</span></span>
+          <span class="info-key">4,000人達成予測</span>
+          <span class="info-val" style="color:#6a1b9a;">今月末頃</span>
         </div>
       </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">フォロワー増加グラフ（今月）</div>
-      <div class="chart-area">
-        <div class="chart-bars">
-          <div class="bar-wrap"><div class="bar-val">+8</div><div class="bar" style="height:32%;"></div><div class="bar-label">6/1</div></div>
-          <div class="bar-wrap"><div class="bar-val">+12</div><div class="bar" style="height:48%;"></div><div class="bar-label">6/3</div></div>
-          <div class="bar-wrap"><div class="bar-val">+6</div><div class="bar" style="height:24%;"></div><div class="bar-label">6/5</div></div>
-          <div class="bar-wrap"><div class="bar-val">+18</div><div class="bar highlight" style="height:72%;"></div><div class="bar-label">6/7</div></div>
-          <div class="bar-wrap"><div class="bar-val">+14</div><div class="bar" style="height:56%;"></div><div class="bar-label">6/9</div></div>
-          <div class="bar-wrap"><div class="bar-val">+22</div><div class="bar highlight" style="height:88%;"></div><div class="bar-label">6/11</div></div>
-          <div class="bar-wrap"><div class="bar-val">+25</div><div class="bar highlight" style="height:100%;"></div><div class="bar-label">6/13</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">AIのコメント</div>
-      <div style="background:#e8f5e9;border-radius:10px;padding:12px;font-size:13px;line-height:1.8;color:#2e7d32;">
-        🌱 フォロワーが着実に増加しています。特に6月11日の「夏季限定メニュー」の投稿後に急増しており、季節感のある投稿がフォロワー獲得に効果的であることがわかります。このペースを維持できれば、今月末に4,000人を超える見込みです。
+      <div style="margin-top:10px;background:#f3e5f5;border-radius:10px;padding:12px;font-size:12px;line-height:1.8;color:#6a1b9a;">
+        🔮 現在のペースで週末投稿を継続すると、来月のEG率は8%台に到達する見込みです。特に土曜日の13〜15時の投稿効果が高いため、この時間帯への予約投稿を増やすことをお勧めします。
       </div>
     </div>
 
@@ -893,7 +851,7 @@
 
 <script>
 function switchTab(id) {
-  const tabs = ['overview','posts','follower','pro'];
+  const tabs = ['overview','standard','pro'];
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===id));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
@@ -933,28 +891,22 @@ function closeHelp() {
 <!-- ボトムナビゲーションバー -->
 <nav class="bottom-nav" id="bottom-nav">
   <button class="nav-item" onclick="navigateTo('textgen')">
-    <span class="nav-icon">📝</span>
-    <span class="nav-label">文章を作る</span>
+    <span class="nav-icon">📝</span><span class="nav-label">文章を作る</span>
   </button>
   <button class="nav-item" onclick="navigateTo('reservation')">
-    <span class="nav-icon">📅</span>
-    <span class="nav-label">投稿予約</span>
-  </button>
-  <button class="nav-item" onclick="navigateTo('image')">
-    <span class="nav-icon">🖼️</span>
-    <span class="nav-label">画像選択</span>
+    <span class="nav-icon">📅</span><span class="nav-label">予約確認</span>
   </button>
   <button class="nav-item active" onclick="navigateTo('analytics')">
-    <span class="nav-icon">📊</span>
-    <span class="nav-label">分析</span>
+    <span class="nav-icon">📊</span><span class="nav-label">分析</span>
   </button>
   <button class="nav-item" onclick="navigateTo('settings')">
-    <span class="nav-icon">⚙️</span>
-    <span class="nav-label">設定</span>
+    <span class="nav-icon">⚙️</span><span class="nav-label">設定</span>
   </button>
-  <button class="nav-item" onclick="navigateTo('about')">
-    <span class="nav-icon">ℹ️</span>
-    <span class="nav-label">使い方</span>
+  <button class="nav-item" onclick="closeToLine()">
+    <span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span>
+  </button>
+  <button class="nav-item" onclick="navigateTo('plan')">
+    <span class="nav-icon">💎</span><span class="nav-label">プラン</span>
   </button>
 </nav>
 
@@ -971,6 +923,7 @@ function closeHelp() {
     image:       'https://liff.line.me/2010401177-3pV56kDU',
     settings:    'https://liff.line.me/2010401177-XJw2kDQV',
     about:       'https://liff.line.me/2010401177-PtX79ibV',
+    plan:        'https://liff.line.me/2010401177-IstPDnls',
   };
 
   // 他のLIFF画面に移動する
