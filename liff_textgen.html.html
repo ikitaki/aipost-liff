@@ -33,7 +33,7 @@
   .header {
     background: var(--primary);
     color: white;
-    padding: 10px 14px;
+    padding: 8px 14px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -41,7 +41,18 @@
     top: 0;
     z-index: 100;
   }
-  .header-logo { font-size: 16px; font-weight: 700; }
+  .header-logo { font-size: 15px; font-weight: 700; }
+  .subbar {
+    background: #13195f;
+    padding: 5px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    position: sticky;
+    top: 40px;
+    z-index: 99;
+  }
   .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
 
   /* ステップナビ */
@@ -55,7 +66,7 @@
     scrollbar-width: none;
     gap: 0;
     position: sticky;
-    top: 74px;
+    top: 70px;
     z-index: 98;
   }
   .steps::-webkit-scrollbar { display: none; }
@@ -421,11 +432,19 @@
 </div>
 
 <!-- プラン・SNSサブバー -->
-<div style="background:#13195f;padding:6px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:44px;z-index:99;">
-  <div style="display:flex;align-items:center;gap:6px;">
+<div class="subbar">
+  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
     <span style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
-    <span style="font-size:10px;color:rgba(255,255,255,0.6);">¥1,280/月</span>
+    <span style="font-size:10px;color:rgba(255,255,255,0.7);">¥1,280/月</span>
+    <span style="font-size:10px;color:rgba(255,255,255,0.5);">次回更新 7/1</span>
   </div>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
+  </div>
+</div>
   <div style="display:flex;align-items:center;gap:4px;">
     <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
     <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
