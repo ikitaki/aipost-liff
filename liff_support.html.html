@@ -299,6 +299,32 @@
       margin-top: 10px;
     }
 
+    /* モーダル */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: flex-end;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #ffffff;
+      border-radius: 16px 16px 0 0;
+      padding: 20px 16px 32px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+
     /* ナビゲーション */
     .bottom-nav {
       position: fixed;
