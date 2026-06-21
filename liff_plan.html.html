@@ -420,7 +420,7 @@
   <!-- ボタン行 -->
   <table class="btn-table">
     <tr>
-      <td></td>
+      <td style="font-size:11px;font-weight:700;color:var(--text-sub);text-align:center;vertical-align:middle;padding:8px 4px;">プラン選択</td>
       <td><button class="plan-btn btn-downgrade" onclick="confirmDowngrade('STANDARD','FREE')">ダウン</button></td>
       <td><button class="plan-btn btn-downgrade" onclick="confirmDowngrade('STANDARD','PERSONAL')">ダウン</button></td>
       <td><button class="plan-btn btn-downgrade" onclick="confirmDowngrade('STANDARD','LITE')">ダウン</button></td>
@@ -453,11 +453,11 @@
   <!-- ナビゲーションバー -->
   <nav class="bottom-nav">
     <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">文章を作る</span></button>
-    <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">投稿予約</span></button>
-    <button class="nav-item" onclick="navigateTo('image')"><span class="nav-icon">🖼️</span><span class="nav-label">画像選択</span></button>
+    <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">予約確認</span></button>
     <button class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
     <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
-    <button class="nav-item" onclick="navigateTo('about')"><span class="nav-icon">ℹ️</span><span class="nav-label">使い方</span></button>
+    <button class="nav-item" onclick="closeToLine()"><span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span></button>
+    <button class="nav-item active" onclick="navigateTo('plan')"><span class="nav-icon">💎</span><span class="nav-label">プラン</span></button>
   </nav>
 
 <script>
@@ -468,11 +468,20 @@
     image:       'https://liff.line.me/2010401177-3pV56kDU',
     settings:    'https://liff.line.me/2010401177-XJw2kDQV',
     about:       'https://liff.line.me/2010401177-PtX79ibV',
-    plan:        'https://liff.line.me/2010401177-IstPDnls',,
+    plan:        'https://liff.line.me/2010401177-IstPDnls',
+    support:     'https://ikitaki.github.io/aipost-liff/liff_support.html',
   };
 
   function navigateTo(page) {
     if (LIFF_URLS[page]) window.location.href = LIFF_URLS[page];
+  }
+
+  function closeToLine() {
+    if (typeof liff !== "undefined" && liff.isInClient()) {
+      liff.closeWindow();
+    } else {
+      window.history.back();
+    }
   }
 
   const DOWNGRADE_WARNINGS = {
