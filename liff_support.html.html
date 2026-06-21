@@ -7,9 +7,11 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js">
   function openMailModal() {
     document.getElementById('mail-content').value = '';
-    document.getElementById('mail-send-btn').disabled = true;
-    document.getElementById('mail-send-btn').style.background = '#cccccc';
-    document.getElementById('mail-send-btn').style.cursor = 'not-allowed';
+    const btn = document.getElementById('mail-confirm-btn');
+    btn.disabled = true;
+    btn.style.background = '#cccccc';
+    btn.style.cursor = 'not-allowed';
+    btn.style.opacity = '0.7';
     document.getElementById('mail-modal').classList.add('open');
   }
 
@@ -19,7 +21,7 @@
 
   function toggleMailBtn() {
     const content = document.getElementById('mail-content').value.trim();
-    const btn = document.getElementById('mail-send-btn');
+    const btn = document.getElementById('mail-confirm-btn');
     if (content.length > 0) {
       btn.disabled = false;
       btn.style.background = 'var(--primary)';
@@ -33,8 +35,22 @@
     }
   }
 
+  function showMailConfirm() {
+    const category = document.getElementById('mail-category').value;
+    const content = document.getElementById('mail-content').value.trim();
+    document.getElementById('confirm-category').textContent = category;
+    document.getElementById('confirm-content').textContent = content;
+    document.getElementById('mail-modal').classList.remove('open');
+    document.getElementById('mail-confirm-modal').classList.add('open');
+  }
+
+  function backToMailForm() {
+    document.getElementById('mail-confirm-modal').classList.remove('open');
+    document.getElementById('mail-modal').classList.add('open');
+  }
+
   function sendMail() {
-    closeMailModal();
+    document.getElementById('mail-confirm-modal').classList.remove('open');
     document.getElementById('mail-complete-modal').classList.add('open');
   }
 
@@ -485,26 +501,27 @@
     </div>
 
     <!-- 運営へのお問い合わせ -->
-    <div class="contact-card" style="margin-top:14px;">
-      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">解決しない場合は運営にお問い合わせ</div>
-      <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">AIで解決できない場合は運営スタッフが対応します。</div>
-      <button class="contact-btn" onclick="openMailModal()">✉️ 運営に問い合わせる</button>
+    <div style="margin-top:14px;margin-bottom:14px;">
+      <button onclick="openMailModal()" style="width:100%;padding:13px;background:none;border:1.5px solid var(--primary);border-radius:10px;color:var(--primary);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+        ✉️ 解決しない場合は運営に問い合わせる
+      </button>
+      <p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:6px;line-height:1.7;">通常2〜3営業日以内にLINEにてご返信いたします</p>
     </div>
 
   </div>
 
-  <!-- メールフォームモーダル -->
+  <!-- メールフォームモーダル（入力画面） -->
   <div class="modal-overlay" id="mail-modal">
     <div class="modal">
       <div class="modal-handle"></div>
       <div class="modal-title">✉️ 運営へのお問い合わせ</div>
       <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:14px;">
         AIで解決できない場合は運営スタッフが対応します。<br>
-        通常2〜3営業日以内にご返信いたします。
+        通常2〜3営業日以内にLINEにてご返信いたします。
       </p>
       <div style="margin-bottom:12px;">
         <label style="font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:6px;">お問い合わせの種類</label>
-        <div class="select-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
           <select id="mail-category" style="width:100%;padding:10px 12px;border:none;font-size:14px;font-family:inherit;background:white;outline:none;">
             <option>使い方について</option>
             <option>SNS連携について</option>
@@ -521,13 +538,38 @@
           style="width:100%;height:120px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;line-height:1.8;resize:none;outline:none;"
           oninput="toggleMailBtn()"></textarea>
       </div>
-      <button id="mail-send-btn" disabled onclick="sendMail()"
+      <button id="mail-confirm-btn" disabled onclick="showMailConfirm()"
         style="width:100%;padding:13px;border-radius:8px;border:none;background:#cccccc;color:white;font-size:14px;font-weight:700;cursor:not-allowed;font-family:inherit;margin-bottom:8px;opacity:0.7;">
-        送信する
+        内容を確認する
       </button>
       <button onclick="closeMailModal()"
         style="width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
         キャンセル
+      </button>
+    </div>
+  </div>
+
+  <!-- メールフォームモーダル（確認画面） -->
+  <div class="modal-overlay" id="mail-confirm-modal">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-title">📋 送信内容の確認</div>
+      <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:16px;">
+        <div style="font-size:12px;color:var(--text-sub);margin-bottom:4px;">お問い合わせの種類</div>
+        <div id="confirm-category" style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;"></div>
+        <div style="font-size:12px;color:var(--text-sub);margin-bottom:4px;">お問い合わせ内容</div>
+        <div id="confirm-content" style="font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap;"></div>
+      </div>
+      <div style="background:#f0f2ff;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:var(--primary);line-height:1.7;">
+        💡 ご返信はLINEにてお送りします。通常2〜3営業日以内にご連絡いたします。
+      </div>
+      <button onclick="sendMail()"
+        style="width:100%;padding:13px;border-radius:8px;border:none;background:var(--primary);color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;">
+        送信する
+      </button>
+      <button onclick="backToMailForm()"
+        style="width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+        修正する
       </button>
     </div>
   </div>
@@ -644,9 +686,11 @@
 
   function openMailModal() {
     document.getElementById('mail-content').value = '';
-    document.getElementById('mail-send-btn').disabled = true;
-    document.getElementById('mail-send-btn').style.background = '#cccccc';
-    document.getElementById('mail-send-btn').style.cursor = 'not-allowed';
+    const btn = document.getElementById('mail-confirm-btn');
+    btn.disabled = true;
+    btn.style.background = '#cccccc';
+    btn.style.cursor = 'not-allowed';
+    btn.style.opacity = '0.7';
     document.getElementById('mail-modal').classList.add('open');
   }
 
@@ -656,7 +700,7 @@
 
   function toggleMailBtn() {
     const content = document.getElementById('mail-content').value.trim();
-    const btn = document.getElementById('mail-send-btn');
+    const btn = document.getElementById('mail-confirm-btn');
     if (content.length > 0) {
       btn.disabled = false;
       btn.style.background = 'var(--primary)';
@@ -670,8 +714,22 @@
     }
   }
 
+  function showMailConfirm() {
+    const category = document.getElementById('mail-category').value;
+    const content = document.getElementById('mail-content').value.trim();
+    document.getElementById('confirm-category').textContent = category;
+    document.getElementById('confirm-content').textContent = content;
+    document.getElementById('mail-modal').classList.remove('open');
+    document.getElementById('mail-confirm-modal').classList.add('open');
+  }
+
+  function backToMailForm() {
+    document.getElementById('mail-confirm-modal').classList.remove('open');
+    document.getElementById('mail-modal').classList.add('open');
+  }
+
   function sendMail() {
-    closeMailModal();
+    document.getElementById('mail-confirm-modal').classList.remove('open');
     document.getElementById('mail-complete-modal').classList.add('open');
   }
 
