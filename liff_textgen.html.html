@@ -977,7 +977,7 @@ const LIFF_URLS = {
   about: 'https://liff.line.me/2010401177-PtX79ibV',
 };
 function navigateTo(page) {
-  if (LIFF_URLS[page]) window.location.href = LIFF_URLS[page];
+  if (LIFF_URLS[page]) window.location.replace(LIFF_URLS[page]);
 }
 
 buildCalendar();

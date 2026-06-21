@@ -473,7 +473,7 @@
   };
 
   function navigateTo(page) {
-    if (LIFF_URLS[page]) window.location.href = LIFF_URLS[page];
+    if (LIFF_URLS[page]) window.location.replace(LIFF_URLS[page]);
   }
 
   function closeToLine() {

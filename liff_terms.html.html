@@ -137,6 +137,7 @@
 <body>
 
   <div class="header">
+    <button onclick="history.back()" style="background:none;border:none;color:white;font-size:13px;cursor:pointer;padding:0;margin-right:4px;">◀ 戻る</button>
     <span style="font-size:16px;">📄</span>
     <span class="header-logo">利用規約</span>
     <span class="header-sub">AiPost</span>
@@ -232,12 +233,40 @@
 
     <!-- 第8条 -->
     <div class="section">
-      <div class="section-title">第8条（SNSアカウントの連携）</div>
+      <div class="section-title">第8条（SNSアカウントの連携と安全管理）</div>
+
+      <p>本サービスでは、自動投稿を行うために各SNSが発行する「アクセストークン」をお預かりします。</p>
+
+      <div class="info-box" style="margin:10px 0;">
+        <strong>アクセストークンとは？</strong><br>
+        各SNSが発行する「投稿専用の許可証」です。通常のパスワードとは全く異なるもので、以下の性質があります。<br>
+        ・投稿する権限のみを持ちます<br>
+        ・ログインや個人情報の閲覧には使えません<br>
+        ・利用者がいつでも無効にできます
+      </div>
+
       <ol>
-        <li>本サービスでは、各SNSが発行した投稿専用のアクセストークンをお預かりします。</li>
-        <li>パスワードはお預かりしません。</li>
-        <li>アクセストークンの取り消しは各SNSの設定画面からいつでも可能です。</li>
-        <li>アクセストークンの漏洩・不正利用について当社は責任を負いません。</li>
+        <li>
+          <strong>暗号化による安全管理</strong><br>
+          お預かりするアクセストークンはAES-256という業界標準の暗号化方式で保存されます。保存されたデータは意味不明な文字列に変換されるため、運営者を含む第三者が直接内容を読むことは技術的にできません。
+        </li>
+        <li>
+          <strong>当社が預かるもの・預からないもの</strong><br>
+          【預かるもの】投稿専用のアクセストークン（暗号化済み）<br>
+          【預からないもの】SNSのパスワード・個人情報・金融情報
+        </li>
+        <li>
+          <strong>パスワードについて</strong><br>
+          当社はSNSのパスワードを一切保持していません。パスワードを忘れた場合は各SNSのサポートにお問い合わせください。当社では対応できません。
+        </li>
+        <li>
+          <strong>アクセストークンの取り消し</strong><br>
+          各SNSの設定画面からいつでも連携を解除・アクセストークンを無効にすることができます。
+        </li>
+        <li>
+          <strong>免責</strong><br>
+          当社は適切なセキュリティ管理を行いますが、各SNS側のシステム障害・仕様変更、または利用者自身のアカウント管理に起因する問題については対応できない場合があります。
+        </li>
       </ol>
     </div>
 
@@ -316,7 +345,66 @@
       <div class="company-row"><span class="company-key">メール</span><span class="company-val placeholder">【メールアドレス】</span></div>
     </div>
 
+    <!-- 申し込み用：同意チェックとボタン（プラン申し込み時のみ表示） -->
+    <div id="agreement-section" style="display:none;">
+      <div style="background:#ffffff;border-radius:10px;border:2px solid var(--primary);padding:16px;margin-bottom:12px;">
+        <div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:12px;text-align:center;">
+          申し込み確認
+        </div>
+        <div style="background:#f0f2ff;border-radius:8px;padding:12px;margin-bottom:14px;font-size:13px;color:var(--primary);text-align:center;">
+          選択プラン：<strong id="selected-plan-name">-</strong>
+        </div>
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:14px;">
+          <input type="checkbox" id="agree-terms-check" onchange="toggleAgreeBtn()" style="width:20px;height:20px;margin-top:2px;flex-shrink:0;accent-color:var(--primary);">
+          <span style="font-size:13px;color:var(--text);line-height:1.8;">利用規約の内容を読み、同意します</span>
+        </label>
+        <button id="agree-btn" disabled onclick="proceedToPayment()"
+          style="width:100%;padding:14px;border-radius:10px;border:none;background:#cccccc;color:white;font-size:15px;font-weight:700;cursor:not-allowed;transition:all 0.2s;">
+          申し込みを完了する
+        </button>
+        <p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:8px;line-height:1.7;">
+          ※ チェックを入れると申し込みボタンが有効になります<br>
+          ※ 申し込み後はStripe決済画面に進みます
+        </p>
+      </div>
+    </div>
+
   </div>
 
+<script>
+// URLパラメータを確認してプラン申し込み時は同意セクションを表示
+(function() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const from = params.get('from');
+    const plan = params.get('plan');
+    if (from === 'plan' && plan) {
+      document.getElementById('agreement-section').style.display = 'block';
+      document.getElementById('selected-plan-name').textContent = plan + 'プラン';
+      // プラン名をグローバル変数に保存
+      window._selectedPlan = plan;
+    }
+  } catch(e) {}
+})();
+
+function toggleAgreeBtn() {
+  const checked = document.getElementById('agree-terms-check').checked;
+  const btn = document.getElementById('agree-btn');
+  if (checked) {
+    btn.disabled = false;
+    btn.style.background = '#1a237e';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.background = '#cccccc';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+
+function proceedToPayment() {
+  const plan = window._selectedPlan || '選択したプラン';
+  alert(plan + 'プランへの申し込みを受け付けました。決済画面に進みます。（実装後はStripe決済画面が開きます）');
+}
+</script>
 </body>
 </html>

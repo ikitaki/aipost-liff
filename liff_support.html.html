@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AIサポート - AiPost</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root {
+      --primary: #1a237e;
+      --text: #212121;
+      --text-sub: #757575;
+      --border: #e0e0e0;
+      --bg: #f8f9fa;
+      --white: #ffffff;
+      --success: #43a047;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Yu Gothic","Hiragino Sans",sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      padding-bottom: 70px;
+    }
+
+    /* ヘッダー */
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo { font-size: 16px; font-weight: 700; }
+    .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
+
+    /* サブバー */
+    .subbar {
+      background: #13195f;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      position: sticky;
+      top: 44px;
+      z-index: 99;
+    }
+
+    /* コンテンツ */
+    .content { padding: 14px; }
+
+    /* 質問入力エリア */
+    .search-card {
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .search-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    .search-input-wrap {
+      display: flex;
+      gap: 8px;
+    }
+    .search-input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--primary); }
+    .search-btn {
+      padding: 10px 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .search-hint {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    /* AI回答エリア */
+    .answer-card {
+      background: var(--white);
+      border-radius: 12px;
+      border: 1.5px solid var(--primary);
+      padding: 14px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .answer-card.show { display: block; }
+    .answer-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .answer-text {
+      font-size: 13px;
+      line-height: 1.9;
+      color: var(--text);
+    }
+    .answer-loading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+    .dots { display: flex; gap: 4px; }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      animation: bounce 1.2s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* セクションタイトル */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    /* よくある質問 */
+    .faq-card {
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .faq-q {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      justify-content: space-between;
+    }
+    .faq-q-left { display: flex; align-items: center; gap: 8px; }
+    .faq-q-icon {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .faq-arrow {
+      font-size: 12px;
+      color: var(--text-sub);
+      transition: transform 0.2s;
+    }
+    .faq-card.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      display: none;
+      padding: 0 14px 12px 44px;
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.9;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+    .faq-card.open .faq-a { display: block; }
+
+    /* クイック質問ボタン */
+    .quick-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .quick-btn {
+      padding: 7px 14px;
+      border: 1px solid var(--primary);
+      border-radius: 20px;
+      background: var(--white);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .quick-btn:active { background: #f0f2ff; }
+
+    /* 運営へのお問い合わせ */
+    .contact-card {
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 14px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .contact-btn {
+      width: 100%;
+      padding: 12px;
+      background: none;
+      border: 1.5px solid var(--primary);
+      border-radius: 10px;
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 10px;
+    }
+
+    /* ナビゲーション */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: #ffffff;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 1000;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    }
+    .nav-item {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1; height: 100%;
+      cursor: pointer; color: #9e9e9e;
+      -webkit-tap-highlight-color: transparent;
+      background: none; border: none; padding: 0;
+      font-family: inherit; outline: none;
+    }
+    .nav-item.active { color: #1a237e; }
+    .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
+    .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <span style="font-size:20px;">🤖</span>
+    <span class="header-logo">AIサポート</span>
+    <span class="header-sub">AiPost</span>
+  </div>
+
+  <!-- サブバー -->
+  <div class="subbar">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
+      <span style="font-size:10px;color:rgba(255,255,255,0.6);">¥1,280/月</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:4px;">
+      <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
+      <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
+      <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
+      <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- 質問入力エリア -->
+    <div class="search-card">
+      <div class="search-title">🤖 AIに質問する</div>
+      <div class="search-input-wrap">
+        <input type="text" class="search-input" id="search-input"
+          placeholder="例：文章生成の使い方を教えて"
+          onkeydown="if(event.key==='Enter')searchFAQ()">
+        <button class="search-btn" onclick="searchFAQ()">質問する</button>
+      </div>
+      <div class="search-hint">💡 知りたいことをキーワードや質問文で入力してください</div>
+    </div>
+
+    <!-- AI回答エリア -->
+    <div class="answer-card" id="answer-card">
+      <div class="answer-header">
+        <span style="font-size:20px;">🤖</span>
+        <span id="answer-question">質問内容</span>
+      </div>
+      <div class="answer-loading" id="answer-loading">
+        <div class="dots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <span>AIが回答を考えています…</span>
+      </div>
+      <div class="answer-text" id="answer-text" style="display:none;"></div>
+      <div id="answer-followup" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">この回答は参考になりましたか？</div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="answerFeedback(true)" style="flex:1;padding:8px;border:1px solid var(--success);border-radius:8px;background:none;color:var(--success);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">✓ 解決した</button>
+          <button onclick="answerFeedback(false)" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text-sub);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">✗ 解決しなかった</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- クイック質問 -->
+    <div class="section-title">よく聞かれる質問</div>
+    <div class="quick-btns">
+      <button class="quick-btn" onclick="quickSearch('文章生成の使い方')">文章生成の使い方</button>
+      <button class="quick-btn" onclick="quickSearch('SNS連携方法')">SNS連携方法</button>
+      <button class="quick-btn" onclick="quickSearch('プランを変更したい')">プランを変更したい</button>
+      <button class="quick-btn" onclick="quickSearch('投稿予約のキャンセル')">投稿予約のキャンセル</button>
+      <button class="quick-btn" onclick="quickSearch('分析の見方')">分析の見方</button>
+      <button class="quick-btn" onclick="quickSearch('解約したい')">解約したい</button>
+      <button class="quick-btn" onclick="quickSearch('画像のアップロード')">画像のアップロード</button>
+      <button class="quick-btn" onclick="quickSearch('EG率とは')">EG率とは</button>
+    </div>
+
+    <!-- よくある質問 -->
+    <div class="section-title" style="margin-top:4px;">よくある質問</div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>登録しなくても使えますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">はい、LINE友達登録だけでAI文章生成をすぐにお試しいただけます。SNS連携・プラン選択は投稿予約を使いたいタイミングで行えます。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>SNS連携はいつ必要になりますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">投稿予約・画像選択・投稿履歴の保存を使う際にSNS連携が必要になります。文章を作るだけなら連携は不要です。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>文章生成は何回まで使えますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">全プラン無制限でご利用いただけます。何度でも作り直せます。カウントされるのは実際に予約確定した投稿のみです。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>複数のSNSに同時投稿できますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">はい、LITEプラン以上で複数のSNSに同時投稿できます。同じ内容を同時投稿した場合は1件としてカウントされます。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>XへのURL付き投稿はできますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">当サービスではXへのURL付き投稿に対応していません。URLが含まれる場合、Xは自動的に投稿先から除外されます。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>プランはいつでも変更できますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">はい、いつでも変更できます。アップグレードは即時反映、ダウングレードは当月末に反映されます。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>解約はいつでもできますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">はい、設定画面の「登録」タブからいつでも解約できます。解約後は当月末まで引き続きご利用いただけます。日割り返金はございません。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>SNSのパスワードを預けるのですか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">パスワードはお預かりしていません。各SNSが発行した投稿専用のアクセストークン（許可証）のみお預かりしています。AES-256暗号化で安全に保管しています。</div>
+    </div>
+
+    <!-- 運営へのお問い合わせ -->
+    <div class="contact-card" style="margin-top:14px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">解決しない場合は運営にお問い合わせ</div>
+      <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">AIで解決できない場合は運営スタッフが対応します。</div>
+      <button class="contact-btn" onclick="contactSupport()">✉️ 運営に問い合わせる</button>
+    </div>
+
+  </div>
+
+  <!-- ナビゲーションバー -->
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">文章を作る</span></button>
+    <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">予約確認</span></button>
+    <button class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
+    <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
+    <button class="nav-item active"><span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span></button>
+    <button class="nav-item" onclick="navigateTo('plan')"><span class="nav-icon">💎</span><span class="nav-label">プラン</span></button>
+  </nav>
+
+<script>
+  const LIFF_URLS = {
+    textgen:     'https://liff.line.me/2010401177-OpvemMmh',
+    reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
+    analytics:   'https://liff.line.me/2010401177-qKtfKWP0',
+    settings:    'https://liff.line.me/2010401177-XJw2kDQV',
+    about:       'https://liff.line.me/2010401177-PtX79ibV',
+    plan:        'https://liff.line.me/2010401177-IstPDnls',
+  };
+
+  function navigateTo(page) {
+    if (LIFF_URLS[page]) window.location.replace(LIFF_URLS[page]);
+  }
+
+  // FAQ開閉
+  function toggleFAQ(card) {
+    card.classList.toggle('open');
+  }
+
+  // クイック質問
+  function quickSearch(text) {
+    document.getElementById('search-input').value = text;
+    searchFAQ();
+  }
+
+  // AI回答（デモ：本番はGAS経由でOpenAI APIを呼び出す）
+  const DEMO_ANSWERS = {
+    '文章生成': 'リッチメニューの「文章を作る」をタップして、投稿したい内容のキーワードを入力してください。AIが自動で投稿文とハッシュタグを生成します。何度でも作り直せます。',
+    'SNS連携': '設定画面の「SNS」タブから連携したいSNSのボタンをタップしてください。各SNSの認証画面が開きますので、ログインして連携を許可してください。',
+    'プラン': 'プラン・料金画面から変更できます。アップグレードは即時反映、ダウングレードは当月末に反映されます。',
+    'キャンセル': '予約確認・変更画面から予約をタップして「キャンセル」ボタンで取り消せます。キャンセルした分の予約枠は即時解放されます。',
+    '分析': '分析画面でいいね数・EG率・フォロワー推移を確認できます。EG率とはフォロワーに対する反応率で、高いほど投稿が刺さっていることを意味します。',
+    '解約': '設定画面の「登録」タブの最下部から解約手続きができます。解約後は当月末までご利用いただけます。',
+    '画像': '文章を作る画面の「画像を選ぶ」セクションから素材画像またはご自身の画像を選択できます。',
+    'EG率': 'EG率（エンゲージメント率）とは、フォロワー数に対していいね・コメント・保存の合計がどれだけあるかを示す指標です。一般的に3〜5%以上が良好とされています。',
+  };
+
+  function searchFAQ() {
+    const input = document.getElementById('search-input').value.trim();
+    if (!input) return;
+
+    const card = document.getElementById('answer-card');
+    const loading = document.getElementById('answer-loading');
+    const text = document.getElementById('answer-text');
+    const followup = document.getElementById('answer-followup');
+
+    document.getElementById('answer-question').textContent = input;
+    card.classList.add('show');
+    loading.style.display = 'flex';
+    text.style.display = 'none';
+    followup.style.display = 'none';
+
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // デモ：キーワードマッチングで回答
+    setTimeout(() => {
+      loading.style.display = 'none';
+      let answer = '申し訳ありません。ご質問の内容についての回答が見つかりませんでした。下の「運営に問い合わせる」ボタンからお問い合わせください。';
+      for (const [key, val] of Object.entries(DEMO_ANSWERS)) {
+        if (input.includes(key)) { answer = val; break; }
+      }
+      text.textContent = answer;
+      text.style.display = 'block';
+      followup.style.display = 'block';
+    }, 1500);
+  }
+
+  function answerFeedback(resolved) {
+    const followup = document.getElementById('answer-followup');
+    if (resolved) {
+      followup.innerHTML = '<div style="text-align:center;color:var(--success);font-weight:700;font-size:13px;">✓ 解決できてよかったです！</div>';
+    } else {
+      followup.innerHTML = '<div style="text-align:center;font-size:13px;color:var(--text-sub);margin-bottom:8px;">運営スタッフにお問い合わせください。</div><button onclick="contactSupport()" style="width:100%;padding:10px;border:1.5px solid var(--primary);border-radius:8px;background:none;color:var(--primary);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">✉️ 運営に問い合わせる</button>';
+    }
+  }
+
+  function contactSupport() {
+    // 本番ではLINEチャットに問い合わせメッセージを送信
+    alert('運営へのお問い合わせ画面に移動します。\n（実装後はLINEチャットに自動でメッセージが送信されます）');
+  }
+</script>
+</body>
+</html>
