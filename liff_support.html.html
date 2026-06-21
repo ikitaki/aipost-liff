@@ -4,7 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AIサポート - AiPost</title>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js">
+  function openMailModal() {
+    document.getElementById('mail-content').value = '';
+    document.getElementById('mail-send-btn').disabled = true;
+    document.getElementById('mail-send-btn').style.background = '#cccccc';
+    document.getElementById('mail-send-btn').style.cursor = 'not-allowed';
+    document.getElementById('mail-modal').classList.add('open');
+  }
+
+  function closeMailModal() {
+    document.getElementById('mail-modal').classList.remove('open');
+  }
+
+  function toggleMailBtn() {
+    const content = document.getElementById('mail-content').value.trim();
+    const btn = document.getElementById('mail-send-btn');
+    if (content.length > 0) {
+      btn.disabled = false;
+      btn.style.background = 'var(--primary)';
+      btn.style.cursor = 'pointer';
+      btn.style.opacity = '1';
+    } else {
+      btn.disabled = true;
+      btn.style.background = '#cccccc';
+      btn.style.cursor = 'not-allowed';
+      btn.style.opacity = '0.7';
+    }
+  }
+
+  function sendMail() {
+    closeMailModal();
+    document.getElementById('mail-complete-modal').classList.add('open');
+  }
+
+  function closeMailComplete() {
+    document.getElementById('mail-complete-modal').classList.remove('open');
+  }
+</script>
   <style>
     :root {
       --primary: #1a237e;
@@ -451,9 +488,65 @@
     <div class="contact-card" style="margin-top:14px;">
       <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">解決しない場合は運営にお問い合わせ</div>
       <div style="font-size:12px;color:var(--text-sub);line-height:1.8;">AIで解決できない場合は運営スタッフが対応します。</div>
-      <button class="contact-btn" onclick="contactSupport()">✉️ 運営に問い合わせる</button>
+      <button class="contact-btn" onclick="openMailModal()">✉️ 運営に問い合わせる</button>
     </div>
 
+  </div>
+
+  <!-- メールフォームモーダル -->
+  <div class="modal-overlay" id="mail-modal">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-title">✉️ 運営へのお問い合わせ</div>
+      <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:14px;">
+        AIで解決できない場合は運営スタッフが対応します。<br>
+        通常2〜3営業日以内にご返信いたします。
+      </p>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:6px;">お問い合わせの種類</label>
+        <div class="select-wrap" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+          <select id="mail-category" style="width:100%;padding:10px 12px;border:none;font-size:14px;font-family:inherit;background:white;outline:none;">
+            <option>使い方について</option>
+            <option>SNS連携について</option>
+            <option>料金・プランについて</option>
+            <option>投稿が失敗した</option>
+            <option>アカウントについて</option>
+            <option>その他</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:6px;">お問い合わせ内容</label>
+        <textarea id="mail-content" placeholder="お問い合わせ内容を入力してください"
+          style="width:100%;height:120px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;line-height:1.8;resize:none;outline:none;"
+          oninput="toggleMailBtn()"></textarea>
+      </div>
+      <button id="mail-send-btn" disabled onclick="sendMail()"
+        style="width:100%;padding:13px;border-radius:8px;border:none;background:#cccccc;color:white;font-size:14px;font-weight:700;cursor:not-allowed;font-family:inherit;margin-bottom:8px;opacity:0.7;">
+        送信する
+      </button>
+      <button onclick="closeMailModal()"
+        style="width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+        キャンセル
+      </button>
+    </div>
+  </div>
+
+  <!-- 送信完了モーダル -->
+  <div class="modal-overlay" id="mail-complete-modal">
+    <div class="modal" style="text-align:center;">
+      <div class="modal-handle"></div>
+      <div style="font-size:40px;margin-bottom:12px;">✉️</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:8px;">お問い合わせを送信しました</div>
+      <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:16px;">
+        通常2〜3営業日以内にご返信いたします。<br>
+        しばらくお待ちください。
+      </p>
+      <button onclick="closeMailComplete()"
+        style="width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+        閉じる
+      </button>
+    </div>
   </div>
 
   <!-- ナビゲーションバー -->
@@ -540,13 +633,50 @@
     if (resolved) {
       followup.innerHTML = '<div style="text-align:center;color:var(--success);font-weight:700;font-size:13px;">✓ 解決できてよかったです！</div>';
     } else {
-      followup.innerHTML = '<div style="text-align:center;font-size:13px;color:var(--text-sub);margin-bottom:8px;">運営スタッフにお問い合わせください。</div><button onclick="contactSupport()" style="width:100%;padding:10px;border:1.5px solid var(--primary);border-radius:8px;background:none;color:var(--primary);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">✉️ 運営に問い合わせる</button>';
+      followup.innerHTML = '<div style="text-align:center;font-size:13px;color:var(--text-sub);margin-bottom:8px;">運営スタッフにお問い合わせください。</div><button onclick="openMailModal()" style="width:100%;padding:10px;border:1.5px solid var(--primary);border-radius:8px;background:none;color:var(--primary);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">✉️ 運営に問い合わせる</button>';
     }
   }
 
   function contactSupport() {
     // 本番ではLINEチャットに問い合わせメッセージを送信
     alert('運営へのお問い合わせ画面に移動します。\n（実装後はLINEチャットに自動でメッセージが送信されます）');
+  }
+
+  function openMailModal() {
+    document.getElementById('mail-content').value = '';
+    document.getElementById('mail-send-btn').disabled = true;
+    document.getElementById('mail-send-btn').style.background = '#cccccc';
+    document.getElementById('mail-send-btn').style.cursor = 'not-allowed';
+    document.getElementById('mail-modal').classList.add('open');
+  }
+
+  function closeMailModal() {
+    document.getElementById('mail-modal').classList.remove('open');
+  }
+
+  function toggleMailBtn() {
+    const content = document.getElementById('mail-content').value.trim();
+    const btn = document.getElementById('mail-send-btn');
+    if (content.length > 0) {
+      btn.disabled = false;
+      btn.style.background = 'var(--primary)';
+      btn.style.cursor = 'pointer';
+      btn.style.opacity = '1';
+    } else {
+      btn.disabled = true;
+      btn.style.background = '#cccccc';
+      btn.style.cursor = 'not-allowed';
+      btn.style.opacity = '0.7';
+    }
+  }
+
+  function sendMail() {
+    closeMailModal();
+    document.getElementById('mail-complete-modal').classList.add('open');
+  }
+
+  function closeMailComplete() {
+    document.getElementById('mail-complete-modal').classList.remove('open');
   }
 </script>
 </body>

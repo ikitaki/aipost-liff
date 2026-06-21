@@ -471,12 +471,47 @@
         </div>
         <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
       </div>
+      <!-- フォロワーマイルストーン通知 -->
       <div class="toggle-row">
         <div class="toggle-info">
-          <div class="toggle-label">フォロワーサンクス提案</div>
-          <div class="toggle-desc">100・300・500・1000人などの節目に通知</div>
+          <div class="toggle-label">フォロワー増加通知</div>
+          <div class="toggle-desc">設定した人数増えるごとにLINEで通知</div>
         </div>
-        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        <label class="toggle"><input type="checkbox" id="follower-toggle" checked onchange="toggleFollowerSetting()"><span class="toggle-slider"></span></label>
+      </div>
+      <div id="follower-setting" style="padding:10px 0 4px 0;">
+        <div style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">何人増えるごとに通知しますか？</div>
+        <div class="select-wrap">
+          <select class="form-select">
+            <option>10人増えるごと</option>
+            <option>20人増えるごと</option>
+            <option selected>50人増えるごと</option>
+            <option>100人増えるごと</option>
+            <option>200人増えるごと</option>
+            <option>500人増えるごと</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 投稿頻度維持サポート -->
+      <div class="toggle-row" style="margin-top:8px;">
+        <div class="toggle-info">
+          <div class="toggle-label">投稿頻度維持サポート</div>
+          <div class="toggle-desc">設定した日数投稿がない場合にLINEで通知</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="frequency-toggle" checked onchange="toggleFrequencySetting()"><span class="toggle-slider"></span></label>
+      </div>
+      <div id="frequency-setting" style="padding:10px 0 4px 0;">
+        <div style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">何日間投稿がない場合に通知しますか？</div>
+        <div class="select-wrap">
+          <select class="form-select">
+            <option>3日間投稿がない場合</option>
+            <option>5日間投稿がない場合</option>
+            <option selected>7日間投稿がない場合</option>
+            <option>10日間投稿がない場合</option>
+            <option>14日間投稿がない場合</option>
+          </select>
+        </div>
       </div>
       <div class="toggle-row">
         <div class="toggle-info">
@@ -708,6 +743,18 @@ function showToast(msg) {
   t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a237e;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:3000;white-space:nowrap;';
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 2000);
+}
+
+function toggleFollowerSetting() {
+  const setting = document.getElementById('follower-setting');
+  const checked = document.getElementById('follower-toggle').checked;
+  setting.style.display = checked ? 'block' : 'none';
+}
+
+function toggleFrequencySetting() {
+  const setting = document.getElementById('frequency-setting');
+  const checked = document.getElementById('frequency-toggle').checked;
+  setting.style.display = checked ? 'block' : 'none';
 }
 
 function switchTab(id) {
