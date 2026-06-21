@@ -470,6 +470,78 @@
     </div>
   </div>
 
+  <!-- 利用規約モーダル -->
+  <div class="modal-overlay" id="terms-modal">
+    <div class="modal" style="max-height:90vh;overflow-y:auto;">
+      <div class="modal-handle"></div>
+      <div class="modal-title">📄 お申し込みの確認</div>
+
+      <!-- 選択プラン表示 -->
+      <div style="background:#f0f2ff;border-radius:10px;padding:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+        <span class="plan-badge plan-PRO" id="terms-plan-badge">PRO</span>
+        <span id="terms-plan-name" style="font-size:13px;font-weight:700;color:var(--primary);"></span>
+      </div>
+
+      <!-- 利用規約本文（スクロール） -->
+      <div style="height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;line-height:1.9;color:var(--text);">
+        <div style="font-weight:700;font-size:13px;color:var(--primary);margin-bottom:10px;">AiPost 利用規約（抜粋）</div>
+
+        <div style="font-weight:700;margin-bottom:4px;">第3条（プランと料金）</div>
+        <p style="margin-bottom:10px;">料金は全て税別です。月払いにて決済されます。</p>
+
+        <div style="font-weight:700;margin-bottom:4px;">第4条（決済・解約）</div>
+        <p style="margin-bottom:10px;">アップグレードは即時反映されます。ダウングレード・解約は当月末に反映されます。日割り返金は行いません。</p>
+
+        <div style="font-weight:700;margin-bottom:4px;">第8条（SNSアカウントの連携と安全管理）</div>
+        <p style="margin-bottom:10px;">アクセストークンはAES-256暗号化で保存されます。パスワードはお預かりしません。</p>
+
+        <div style="font-weight:700;margin-bottom:4px;">第11条（禁止事項）</div>
+        <p style="margin-bottom:10px;">XへのURL付き投稿の迂回行為・各SNS利用規約に違反する投稿・その他当社が不適切と判断する行為は禁止します。</p>
+
+        <div style="font-weight:700;margin-bottom:4px;">第13条（免責事項）</div>
+        <p style="margin-bottom:10px;">SNS側のAPI変更・障害により投稿が失敗した場合、当社は責任を負いません。</p>
+
+        <div style="text-align:center;color:var(--text-sub);font-size:11px;padding-top:8px;">
+          ▼ 全文は「AiPostとは？」画面の利用規約からご確認いただけます
+        </div>
+      </div>
+
+      <!-- 同意チェック -->
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:16px;padding:12px;background:#f8f9fa;border-radius:8px;border:1px solid var(--border);">
+        <input type="checkbox" id="terms-agree-check" onchange="toggleAgreeBtn()"
+          style="width:20px;height:20px;margin-top:2px;flex-shrink:0;accent-color:var(--primary);">
+        <span style="font-size:13px;color:var(--text);line-height:1.8;">
+          利用規約の内容を読み、同意します
+        </span>
+      </label>
+
+      <button id="terms-agree-btn" disabled onclick="proceedToPayment()"
+        style="width:100%;padding:14px;border-radius:10px;border:none;background:#cccccc;color:white;font-size:15px;font-weight:700;cursor:not-allowed;opacity:0.7;font-family:inherit;margin-bottom:8px;">
+        申し込みを完了する
+      </button>
+      <p style="font-size:11px;color:var(--text-sub);text-align:center;margin-bottom:12px;">
+        ※ チェックを入れると申し込みボタンが有効になります<br>
+        ※ 申し込み後はStripe決済画面に進みます
+      </p>
+      <button class="modal-btn modal-btn-cancel" onclick="closeTermsModal()">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- 申し込み完了モーダル -->
+  <div class="modal-overlay" id="complete-modal">
+    <div class="modal" style="text-align:center;">
+      <div class="modal-handle"></div>
+      <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px;">お申し込みありがとうございます！</div>
+      <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:16px;">
+        <span id="complete-plan-name"></span>プランへのお申し込みを受け付けました。<br>
+        Stripe決済画面に進みます。<br>
+        <span style="font-size:11px;">（デモのため実際の決済は行われません）</span>
+      </p>
+      <button onclick="closeCompleteModal()" style="width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">閉じる</button>
+    </div>
+  </div>
+
   <!-- ナビゲーションバー -->
   <nav class="bottom-nav">
     <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">文章を作る</span></button>
@@ -511,7 +583,53 @@
   };
 
   function selectPlan(plan) {
-    alert(plan + 'プランへの申し込み画面に移動します。\n（実装後はStripe決済画面が開きます）');
+    // 選択プランをグローバル変数に保存
+    window._selectedPlan = plan;
+    // プラン名をモーダルに表示
+    document.getElementById('terms-plan-name').textContent = plan + 'プラン（¥' + PLAN_PRICES[plan] + '/月・税別）';
+    document.getElementById('terms-plan-badge').className = 'plan-badge plan-' + plan;
+    document.getElementById('terms-plan-badge').textContent = plan;
+    // 同意チェックをリセット
+    document.getElementById('terms-agree-check').checked = false;
+    toggleAgreeBtn();
+    // 利用規約モーダルを表示
+    document.getElementById('terms-modal').classList.add('open');
+  }
+
+  const PLAN_PRICES = {
+    'FREE': '0', 'PERSONAL': '500', 'LITE': '780',
+    'STANDARD': '1,280', 'PRO': '1,980'
+  };
+
+  function toggleAgreeBtn() {
+    const checked = document.getElementById('terms-agree-check').checked;
+    const btn = document.getElementById('terms-agree-btn');
+    if (checked) {
+      btn.disabled = false;
+      btn.style.background = '#43a047';
+      btn.style.cursor = 'pointer';
+      btn.style.opacity = '1';
+    } else {
+      btn.disabled = true;
+      btn.style.background = '#cccccc';
+      btn.style.cursor = 'not-allowed';
+      btn.style.opacity = '0.7';
+    }
+  }
+
+  function proceedToPayment() {
+    const plan = window._selectedPlan;
+    document.getElementById('terms-modal').classList.remove('open');
+    document.getElementById('complete-modal').classList.add('open');
+    document.getElementById('complete-plan-name').textContent = plan;
+  }
+
+  function closeTermsModal() {
+    document.getElementById('terms-modal').classList.remove('open');
+  }
+
+  function closeCompleteModal() {
+    document.getElementById('complete-modal').classList.remove('open');
   }
 
   function confirmDowngrade(from, to) {
