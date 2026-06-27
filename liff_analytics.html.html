@@ -149,9 +149,10 @@
 </div>
 
 <div class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('lite')"><span class="tab-icon">🔍</span>LITE分析</button>
-  <button class="tab-btn" onclick="switchTab('standard')"><span class="tab-icon">📊</span>STANDARD分析</button>
-  <button class="tab-btn" onclick="switchTab('pro')"><span class="tab-icon">💎</span>PRO分析</button>
+  <button class="tab-btn active" onclick="switchTab('lite')" style="font-size:10px;"><span class="tab-icon">🔍</span>LITE</button>
+  <button class="tab-btn" onclick="switchTab('standard')" style="font-size:10px;"><span class="tab-icon">📊</span>STANDARD</button>
+  <button class="tab-btn" onclick="switchTab('pro')" style="font-size:10px;"><span class="tab-icon">💎</span>PRO</button>
+  <button class="tab-btn" onclick="switchTab('guide')" style="font-size:10px;"><span class="tab-icon">📖</span>ガイド</button>
 </div>
 
 <div class="content">
@@ -628,6 +629,185 @@
   </div>
 
 </div><!-- /tab-pro -->
+
+<!-- ===== ガイドタブ ===== -->
+<div id="tab-guide" class="tab-panel">
+
+  <!-- 導入 -->
+  <div class="card">
+    <div class="card-title" style="font-size:14px;">📖 分析ガイド</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">分析機能は「結果を見るため」だけにあるのではありません。<strong>次の投稿をより良くするための機能</strong>です。「どんな投稿が反応されるのか」「どの時間帯が最適なのか」「何を改善すればよいのか」を知ることで、継続的に成果を高めていくことを目的としています。</div>
+  </div>
+
+  <!-- ① SNS投稿後の反応時間について -->
+  <div class="card">
+    <div class="card-title">① SNS投稿後の反応時間について</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">多くのSNSでは、投稿直後のユーザーの反応がその後の表示機会に影響すると考えられています。投稿後の短い時間帯に反応が集まるほど、フォロワー以外のより多くのユーザーに投稿が表示されやすくなる傾向があります。</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="background:#fce4ec;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#880e4f;margin-bottom:3px;">📱 Instagram</div>
+        <div style="font-size:11px;color:#880e4f;line-height:1.7;">投稿後1〜2時間以内（保存・シェアが拡散に関係する要素として知られています）</div>
+      </div>
+      <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#0d47a1;margin-bottom:3px;">🐦 X</div>
+        <div style="font-size:11px;color:#0d47a1;line-height:1.7;">投稿後30分〜1時間以内（リポスト・リプライが広がりに影響すると考えられています）</div>
+      </div>
+      <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#1b5e20;margin-bottom:3px;">💻 Facebook</div>
+        <div style="font-size:11px;color:#1b5e20;line-height:1.7;">投稿後2〜6時間以内（シェアが評価に関係する要素として知られています）</div>
+      </div>
+      <div style="background:#f3e5f5;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#4a148c;margin-bottom:3px;">🧵 Threads</div>
+        <div style="font-size:11px;color:#4a148c;line-height:1.7;">投稿後1〜3時間以内（返信・リポストが露出に影響すると考えられています）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 段階的なデータ取得について -->
+  <div class="card">
+    <div class="card-title">② 段階的なデータ取得について</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿直後・数時間後・24時間後の反応を比較することで、あなたの投稿が「今どのくらい伸びているか」を把握できます。</div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px;">
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">💎 PROプラン</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;">投稿後<strong>1時間・3時間・24時間</strong>の3つのタイミングでデータを自動取得します。この3段階のデータが揃うことで投稿の成長の流れを数値で確認できます。</div>
+    </div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔍 LITE・📊 STANDARDプラン</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;">投稿後<strong>24時間後</strong>に1回取得します。</div>
+    </div>
+  </div>
+
+  <!-- ③ 初速スコアについて -->
+  <div class="card">
+    <div class="card-title">③ 初速スコアについて</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">AiPostでは投稿直後の反応の強さを「初速スコア」として表示します。初速スコアはあなた自身の過去投稿との比較結果を100段階で表したAiPost独自の指標です。<strong>数値が高いほど、過去の投稿よりも順調な反応が得られていることを示します。</strong></div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">初速スコアはいいね数だけを見ているのではありません。SNSごとに重要とされる反応（シェア・リポスト・リプライ・返信・引用など）を総合的に分析しています。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">また、初速スコアは投稿後1時間だけを評価しているわけではありません。投稿後<strong>1時間・3時間・24時間</strong>までの推移も考慮して分析します。そのため、一時的な反応だけでなく、投稿全体の伸び方も確認できます。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">初速スコアを見ることで、この投稿は順調に伸びているか・反応が伸び悩んでいるか・まだ伸びる可能性があるかを視覚的に確認できます。</div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px;display:flex;gap:12px;justify-content:center;">
+      <span style="font-size:11px;font-weight:700;color:#43a047;">🟢 70%以上：好調</span>
+      <span style="font-size:11px;font-weight:700;color:#fb8c00;">🟡 40〜70%：平均的</span>
+      <span style="font-size:11px;font-weight:700;color:#e53935;">🔴 40%未満：伸び悩み</span>
+    </div>
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;">
+      <div style="font-size:10px;color:#e65100;line-height:1.7;">※初速スコアは各SNSの公式評価を示すものではなく、AiPost独自の分析指標です。SNS各社のアルゴリズムを再現・保証するものではありません。分析結果は投稿づくりや運用改善の参考情報としてご利用ください。</div>
+    </div>
+  </div>
+
+  <!-- ④ データ蓄積と分析精度について -->
+  <div class="card">
+    <div class="card-title">④ データ蓄積と分析精度について</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">初速スコアはあなた自身の過去30投稿の平均データとの比較で算出されます。直近の投稿傾向を反映しやすくするため、比較対象は最新30投稿を基準としています。投稿数が増えるほど・継続期間が長いほど比較データが充実し、スコアの精度が高まります。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">AiPostはデータを蓄積するほど、あなた専用の分析に近づいていきます。投稿データが蓄積されることで、あなたが反応を得やすい曜日・時間帯などをより高い精度で分析できるようになります。</div>
+    <div style="background:linear-gradient(135deg,#1a237e,#283593);border-radius:10px;padding:12px;">
+      <div style="font-size:11px;color:rgba(255,255,255,0.9);line-height:1.8;">利用開始直後は比較データが少ないため、初速スコアは参考値として表示されます。<strong style="color:#fff9c4;">投稿数が増えるほど比較データが充実し、より精度の高い初速スコアと分析結果を提供できるようになります。</strong>PROプランを継続することが、より正確な分析への近道です。</div>
+    </div>
+  </div>
+
+  <!-- ⑤ 分析画面の見方 -->
+  <div class="card">
+    <div class="card-title">⑤ 分析画面の見方</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔍 LITE分析</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">いいね数・コメント数・インプレッション・EG率を日別カレンダーで確認できます。日付をタップするとSNS別の詳細が表示されます。データは投稿後24時間後に1回取得されます。</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">📊 STANDARD分析</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">LITE分析の全機能に加え、各指標の推移グラフとフォロワー数の推移（SNS別）を確認できます。データは投稿後24時間後に1回取得されます。</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">💎 PRO分析</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">STANDARD分析の全機能に加え、直近投稿の初速状況・人気投稿ランキング・おすすめ投稿時間帯・感情分析・同業種比較・ネガティブコメント検知が利用できます。データは投稿後1時間・3時間・24時間の3回取得されます。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ アイコンの意味 -->
+  <div class="card">
+    <div class="card-title">⑥ アイコンの意味</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div class="info-row"><span class="info-key" style="font-size:16px;">❤️</span><span class="info-val" style="font-size:11px;">いいね数　投稿に「いいね」した人の数</span></div>
+      <div class="info-row"><span class="info-key" style="font-size:16px;">💬</span><span class="info-val" style="font-size:11px;">コメント数　投稿についたコメントの数</span></div>
+      <div class="info-row"><span class="info-key" style="font-size:16px;">🔁</span><span class="info-val" style="font-size:11px;">リポスト数　投稿を拡散（リポスト）した数（X・TH）</span></div>
+      <div class="info-row"><span class="info-key" style="font-size:16px;">📤</span><span class="info-val" style="font-size:11px;">シェア数　投稿をシェアした数（FB）</span></div>
+      <div class="info-row"><span class="info-key" style="font-size:16px;">↩️</span><span class="info-val" style="font-size:11px;">リプライ数　投稿への返信数（X・TH）</span></div>
+      <div class="info-row"><span class="info-key" style="font-size:16px;">🗨️</span><span class="info-val" style="font-size:11px;">引用数　コメント付きでリポストした数（TH）</span></div>
+      <div class="info-row"><span class="info-key" style="font-size:16px;">👍</span><span class="info-val" style="font-size:11px;">リアクション数　ハート・驚き等の反応数（FB）</span></div>
+      <div class="info-row"><span class="info-key" style="font-size:16px;">👁️</span><span class="info-val" style="font-size:11px;">インプレッション　投稿が表示された延べ回数</span></div>
+      <div class="info-row" style="border-bottom:none;"><span class="info-key" style="font-size:16px;">📊</span><span class="info-val" style="font-size:11px;">EG率　SNSごとの主要な反応をもとに算出する独自のエンゲージメント率</span></div>
+    </div>
+  </div>
+
+  <!-- ⑦ 用語の説明 -->
+  <div class="card">
+    <div class="card-title">⑦ 用語の説明</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="border-bottom:1px solid var(--border);padding-bottom:8px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px;">EG率（エンゲージメント率）</div>
+        <div style="font-size:11px;color:var(--text-sub);line-height:1.7;">SNSごとの主要な反応をもとに算出するAiPost独自のエンゲージメント率です。AiPostでは、あなた自身の過去投稿との比較も参考にしながら、投稿への反応の強さを確認できます。</div>
+      </div>
+      <div style="border-bottom:1px solid var(--border);padding-bottom:8px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px;">インプレッション</div>
+        <div style="font-size:11px;color:var(--text-sub);line-height:1.7;">投稿が画面に表示された延べ回数です。同じ人が複数回見た場合もその回数分カウントされます。リーチ（到達した人数）とは異なります。</div>
+      </div>
+      <div style="border-bottom:1px solid var(--border);padding-bottom:8px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px;">初速（しょそく）</div>
+        <div style="font-size:11px;color:var(--text-sub);line-height:1.7;">投稿直後（1〜3時間以内）の反応の勢いのことです。多くのSNSでは、投稿直後の反応は表示機会に影響する要素の一つと考えられています。</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px;">成長率</div>
+        <div style="font-size:11px;color:var(--text-sub);line-height:1.7;">1時間後・3時間後・24時間後のデータの増加数を示します。例えば1時間後に28件→3時間後に75件であれば+47件の成長です。増加が大きいほど投稿が拡散されていることを意味します。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑧ データの活用方法 -->
+  <div class="card">
+    <div class="card-title">⑧ データの活用方法</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#43a047;margin-bottom:4px;">🟢 初速が好調だった場合</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">投稿時間帯・内容・ハッシュタグなどが効果的だった可能性があります。同じパターンを次の投稿でも活用しましょう。「おすすめの投稿時間帯」と組み合わせると効果的です。</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#e53935;margin-bottom:4px;">🔴 初速が伸び悩んだ場合</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">投稿時間帯・内容・ハッシュタグの見直しを検討してください。「おすすめの投稿時間帯」を参考にフォロワーが最もアクティブな時間帯に投稿することで改善につながる可能性があります。</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">📊 EG率の活用</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">EG率が高い投稿は「あなたの平均との比較」画面で確認できます。何が好まれているかを分析し、人気投稿ランキングと合わせてコンテンツの方向性を決める参考にしましょう。</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">⚠️ ネガティブコメントへの対応</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">ネガティブコメント検知で検出されたコメントは、早めに確認することをおすすめします。対応が早いほどブランドイメージへの影響を最小限に抑えられます。各SNSのアプリから直接コメントを確認してください。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AiPost分析の特徴 -->
+  <div class="card">
+    <div class="card-title">AiPost分析の特徴</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">多くのSNS分析では、投稿結果の確認が中心です。AiPostでは投稿の伸び方や次回の改善につながる分析まで行います。単なる結果ではなく、<strong>次の投稿を成功させるための分析</strong>を提供することがAiPost最大の特徴です。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">分析は「評価」ではなく「改善」のためにあります。数字の良し悪しだけを見るのではなく、「どんな投稿が反応されやすいか」を知り、次の投稿に活かすことがSNS運用成功への近道です。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">SNSのアルゴリズムやユーザーの行動は日々変化しています。AiPostは、継続的なデータの蓄積と分析を通じて、あなた専用のSNS運用パートナーとして、より効果的な投稿づくりをサポートします。</div>
+  </div>
+
+  <!-- このような方におすすめ -->
+  <div class="card">
+    <div class="card-title">このような方におすすめ</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>SNSを始めたばかりの方</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>何を改善すればいいか分からない方</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>投稿の反応をもっと増やしたい方</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>数字だけでなく改善方法も知りたい方</div>
+    </div>
+    <button class="plan-guide-btn" onclick="navigateTo('plan')" style="margin-top:12px;">プラン・料金を見る</button>
+  </div>
+
+</div><!-- /tab-guide -->
+
+
 </div><!-- /content -->
 
 <nav class="bottom-nav">
@@ -655,7 +835,7 @@ function switchTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
-  ['lite','standard','pro'].forEach((t,i)=>{
+  ['lite','standard','pro','guide'].forEach((t,i)=>{
     document.querySelectorAll('.tab-btn')[i].classList.toggle('active', t===id);
   });
 }
