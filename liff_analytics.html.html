@@ -32,7 +32,7 @@
   .metric-name { font-size:12px; font-weight:700; }
   .metric-desc { font-size:10px; color:var(--text-sub); margin-top:1px; }
   .metric-val { text-align:right; flex-shrink:0; }
-  .metric-num { font-size:16px; font-weight:700; }
+  .metric-num { font-size:12px; font-weight:700; }
   .metric-change { font-size:10px; color:var(--success); }
   .info-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border); font-size:12px; }
   .info-row:last-child { border-bottom:none; }
@@ -89,6 +89,33 @@
   .plan-guide-btn { width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
   .plan-guide-price { font-size:11px; color:var(--text-sub); margin-top:6px; text-align:center; }
   .already-use-title { font-size:14px; font-weight:700; color:var(--success); margin-bottom:14px; text-align:center; }
+  /* 初速UI */
+  .sns-section { border-radius:10px; padding:12px; margin-bottom:10px; }
+  .sns-ig { background:#fff0f5; border:1px solid #f8bbd0; }
+  .sns-fb { background:#f0f4ff; border:1px solid #bbdefb; }
+  .sns-x  { background:#f5f5f5; border:1px solid #e0e0e0; }
+  .sns-th { background:#fafafa; border:1px solid #eeeeee; }
+  .sns-label { font-size:12px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+  .gauge-wrap { margin-bottom:10px; }
+  .gauge-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .gauge-title { font-size:11px; font-weight:700; }
+  .gauge-status { font-size:11px; font-weight:700; }
+  .gauge-bar { height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden; }
+  .gauge-fill { height:100%; border-radius:5px; transition:width 0.3s; }
+  .gauge-good { background:linear-gradient(90deg,#43a047,#66bb6a); }
+  .gauge-avg  { background:linear-gradient(90deg,#fb8c00,#ffa726); }
+  .gauge-low  { background:linear-gradient(90deg,#e53935,#ef5350); }
+  .growth-row { display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px solid rgba(0,0,0,0.06); }
+  .growth-row:last-child { border-bottom:none; }
+  .growth-time { font-size:10px; color:var(--text-sub); width:52px; flex-shrink:0; }
+  .growth-vals { flex:1; font-size:11px; font-weight:700; display:flex; gap:8px; }
+  .growth-diff { font-size:10px; color:var(--success); }
+  .action-box { background:#e8f5e9; border:1px solid #a5d6a7; border-radius:8px; padding:10px; margin-top:8px; }
+  .action-box.warn { background:#fff8e1; border-color:#ffe082; }
+  .action-box.done { background:#e3f2fd; border-color:#90caf9; }
+  .action-text { font-size:11px; color:#1b5e20; font-weight:600; }
+  .action-text.warn { color:#e65100; }
+  .action-text.done { color:#0d47a1; }
   /* ナビ */
   .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#fff; border-top:1px solid #e0e0e0; display:flex; align-items:center; justify-content:space-around; z-index:1000; box-shadow:0 -2px 8px rgba(0,0,0,0.08); }
   .nav-item { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; height:100%; cursor:pointer; color:#9e9e9e; background:none; border:none; padding:0; font-family:inherit; }
@@ -162,7 +189,7 @@
       <div class="plan-feature-item"><span>💬</span><span>コメント数の推移グラフ</span></div>
       <div class="plan-feature-item"><span>👁️</span><span>インプレッションの推移グラフ</span></div>
       <div class="plan-feature-item"><span>📊</span><span>EG率の推移グラフ</span></div>
-      <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移（毎日更新）</span></div>
+      <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移・SNS別（毎日更新）</span></div>
       <div class="plan-feature-item"><span>📅</span><span>データ更新：直近7日は毎日・8日以降は週1回</span></div>
     </div>
     <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
@@ -173,57 +200,243 @@
 <!-- ===== PRO分析タブ ===== -->
 <div id="tab-pro" class="tab-panel">
 
-  <!-- 未利用ユーザー向け案内（GAS接続後にプラン判定で表示切り替え） -->
+  <!-- 未利用ユーザー向け案内 -->
   <div id="pro-upgrade-guide" style="display:none;">
     <div style="text-align:center;padding:20px 16px 12px;">
       <div style="font-size:28px;margin-bottom:8px;">💎</div>
       <div class="already-use-title" style="color:var(--primary);">PROプランで利用できます</div>
       <div class="plan-feature-list">
         <div class="plan-feature-label">PRO分析に含まれる機能</div>
+        <div class="plan-feature-item"><span>⚡</span><span>投稿後の初速状況をリアルタイムで確認</span></div>
+        <div class="plan-feature-item"><span>📈</span><span>1時間・3時間・24時間の成長率表示</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>あなたの平均との比較</span></div>
         <div class="plan-feature-item"><span>❤️</span><span>いいね数・コメント数・インプレッション・EG率</span></div>
-        <div class="plan-feature-item"><span>📈</span><span>各指標の推移グラフ</span></div>
-        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移（毎日更新）</span></div>
+        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移・SNS別（毎日更新）</span></div>
         <div class="plan-feature-item"><span>🏆</span><span>今月の人気投稿ランキング</span></div>
         <div class="plan-feature-item"><span>⏰</span><span>おすすめの投稿時間帯</span></div>
         <div class="plan-feature-item"><span>😊</span><span>コメントの感情分析</span></div>
         <div class="plan-feature-item"><span>🏙️</span><span>同業種・同エリア平均との比較</span></div>
         <div class="plan-feature-item"><span>⚠️</span><span>ネガティブコメント検知</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>データ更新：毎日</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>データ更新：投稿後1時間・3時間・24時間（毎日）</span></div>
       </div>
       <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
       <p class="plan-guide-price">PROプラン ¥1,980/月</p>
     </div>
   </div>
 
-  <!-- 数値サマリー -->
+  <!-- ===== 上部：今どうなっているか ===== -->
+
+  <!-- 直近投稿の初速状況 -->
   <div class="card">
-    <div class="card-title">今週の数値（直近7日）</div>
+    <div class="card-title">⚡ 直近投稿の初速状況</div>
+    <div style="font-size:11px;color:var(--text-sub);margin-bottom:10px;padding:8px;background:var(--bg);border-radius:8px;line-height:1.6;">
+      📝 今週のおすすめスイーツをご紹介します🍵✨抹茶の濃厚な香りとなめらかな口当たりが絶品の「抹茶テリーヌ」が週末限定で登場！地元産の厳選抹茶を使用した一品です。数量限定のため、お早めにどうぞ。ご来店お待ちしております😊 #渋谷カフェ #週末限定 #抹茶スイーツ<br>
+      <span style="font-size:10px;color:var(--text-light);">6月15日（日）<strong style="color:var(--text);">13:02</strong>投稿　140文字</span>
+    </div>
+
+    <!-- Instagram -->
+    <div class="sns-section sns-ig">
+      <div class="sns-label" style="color:#e1306c;">
+        <span>📱</span><span>Instagram</span>
+      </div>
+      <div class="gauge-wrap">
+        <div class="gauge-label">
+          <span class="gauge-title">初速スコア</span>
+          <span class="gauge-status" style="color:#43a047;">🟢 好調　72%</span>
+        </div>
+        <div class="gauge-bar"><div class="gauge-fill gauge-good" style="width:72%;"></div></div>
+      </div>
+      <div>
+        <div class="growth-row">
+          <span class="growth-time">1時間後</span>
+          <span class="growth-vals"><span>❤️ 28</span><span>💬 4</span><span>📊 2.1%</span></span>
+          <span style="font-size:9px;color:var(--text-light);">14:02取得</span>
+        </div>
+        <div class="growth-row" style="opacity:0.45;">
+          <span class="growth-time">3時間後</span>
+          <span class="growth-vals" style="color:var(--text-sub);">— —</span>
+          <span style="font-size:9px;color:var(--warning);font-weight:600;">16:02に更新予定</span>
+        </div>
+        <div class="growth-row" style="opacity:0.45;">
+          <span class="growth-time">24時間後</span>
+          <span class="growth-vals" style="color:var(--text-sub);">— —</span>
+          <span style="font-size:9px;color:var(--warning);font-weight:600;">翌13:02に更新予定</span>
+        </div>
+      </div>
+      <p style="font-size:9px;color:var(--text-light);margin-top:4px;">※ IGのインプレッションは取得に時間がかかるため表示対象外です</p>
+      <div class="action-box">
+        <div class="action-text">🟢 1時間後の反応は好調です。3時間後のデータをお待ちください</div>
+      </div>
+    </div>
+
+    <!-- Facebook -->
+    <div class="sns-section sns-fb">
+      <div class="sns-label" style="color:#1877f2;">
+        <span>💻</span><span>Facebook</span>
+      </div>
+      <div class="gauge-wrap">
+        <div class="gauge-label">
+          <span class="gauge-title">初速スコア</span>
+          <span class="gauge-status" style="color:#fb8c00;">🟡 平均的　55%</span>
+        </div>
+        <div class="gauge-bar"><div class="gauge-fill gauge-avg" style="width:55%;"></div></div>
+      </div>
+      <div>
+        <div class="growth-row">
+          <span class="growth-time">1時間後</span>
+          <span class="growth-vals"><span>❤️ 12</span><span>💬 2</span><span>📤 1</span><span>👁️ 320</span><span>📊 1.0%</span></span>
+          <span style="font-size:9px;color:var(--text-light);">14:02取得</span>
+        </div>
+        <div class="growth-row" style="opacity:0.45;">
+          <span class="growth-time">3時間後</span>
+          <span class="growth-vals" style="color:var(--text-sub);">— —</span>
+          <span style="font-size:9px;color:var(--warning);font-weight:600;">16:02に更新予定</span>
+        </div>
+        <div class="growth-row" style="opacity:0.45;">
+          <span class="growth-time">24時間後</span>
+          <span class="growth-vals" style="color:var(--text-sub);">— —</span>
+          <span style="font-size:9px;color:var(--warning);font-weight:600;">翌13:02に更新予定</span>
+        </div>
+      </div>
+      <div class="action-box warn">
+        <div class="action-text warn">🟡 現時点では平均的な反応です。3時間後のデータをお待ちください</div>
+      </div>
+    </div>
+
+    <!-- X -->
+    <div class="sns-section sns-x">
+      <div class="sns-label" style="color:#000000;">
+        <span>🐦</span><span>X</span>
+      </div>
+      <div class="gauge-wrap">
+        <div class="gauge-label">
+          <span class="gauge-title">初速スコア</span>
+          <span class="gauge-status" style="color:#43a047;">🟢 非常に好調　94%</span>
+        </div>
+        <div class="gauge-bar"><div class="gauge-fill gauge-good" style="width:94%;"></div></div>
+      </div>
+      <div>
+        <div class="growth-row">
+          <span class="growth-time">1時間後</span>
+          <span class="growth-vals"><span>❤️ 42</span><span>🔁 8</span><span>↩️ 3</span><span>👁️ 1.2K</span><span>📊 4.4%</span></span>
+          <span style="font-size:9px;color:var(--text-light);">14:02取得</span>
+        </div>
+        <div class="growth-row" style="opacity:0.45;">
+          <span class="growth-time">3時間後</span>
+          <span class="growth-vals" style="color:var(--text-sub);">— —</span>
+          <span style="font-size:9px;color:var(--warning);font-weight:600;">16:02に更新予定</span>
+        </div>
+        <div class="growth-row" style="opacity:0.45;">
+          <span class="growth-time">24時間後</span>
+          <span class="growth-vals" style="color:var(--text-sub);">— —</span>
+          <span style="font-size:9px;color:var(--warning);font-weight:600;">翌13:02に更新予定</span>
+        </div>
+      </div>
+      <div class="action-box">
+        <div class="action-text">🟢 Xの初速は非常に好調です。このまま伸びる可能性があります</div>
+      </div>
+    </div>
+
+    <!-- Threads -->
+    <div class="sns-section sns-th">
+      <div class="sns-label" style="color:#555555;">
+        <span>🧵</span><span>Threads</span>
+      </div>
+      <div style="font-size:11px;color:var(--text-sub);margin-bottom:8px;padding:6px;background:var(--bg);border-radius:6px;line-height:1.6;">
+        📝 週末は抹茶テリーヌで一息つきませんか☕️地元産の抹茶を使った濃厚な味わいは一度食べたらやみつきに。土日限定・数量限定でご用意しています。気になる方はぜひ週末にご来店ください🍵 #抹茶 #週末カフェ #渋谷スイーツ<br>
+        <span style="font-size:10px;color:var(--text-light);">6月15日（日）<strong style="color:var(--text);">15:30</strong>投稿　119文字</span>
+      </div>
+      <div class="gauge-wrap">
+        <div class="gauge-label">
+          <span class="gauge-title">初速スコア</span>
+          <span class="gauge-status" style="color:#e53935;">🔴 伸び悩み　32%</span>
+        </div>
+        <div class="gauge-bar"><div class="gauge-fill gauge-low" style="width:32%;"></div></div>
+      </div>
+      <div>
+        <div class="growth-row">
+          <span class="growth-time">1時間後</span>
+          <span class="growth-vals"><span>❤️ 5</span><span>🔁 0</span><span>↩️ 1</span><span>👁️ 82</span><span>📊 0.6%</span></span>
+          <span style="font-size:9px;color:var(--text-light);">16:30取得</span>
+        </div>
+        <div class="growth-row" style="opacity:0.45;">
+          <span class="growth-time">3時間後</span>
+          <span class="growth-vals" style="color:var(--text-sub);">— —</span>
+          <span style="font-size:9px;color:var(--warning);font-weight:600;">18:30に更新予定</span>
+        </div>
+        <div class="growth-row" style="opacity:0.45;">
+          <span class="growth-time">24時間後</span>
+          <span class="growth-vals" style="color:var(--text-sub);">— —</span>
+          <span style="font-size:9px;color:var(--warning);font-weight:600;">翌15:30に更新予定</span>
+        </div>
+      </div>
+      <div class="action-box warn">
+        <div class="action-text warn">🔴 Threadsの初速は伸び悩んでいます。3時間後のデータを確認しましょう</div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-top:6px;">
+      <p style="font-size:9px;color:var(--text-sub);line-height:1.8;">❤️いいね　💬コメント　🔁リポスト　📤シェア　↩️リプライ　🗨️引用　👍リアクション　👁️インプレッション　📊EG率</p>
+    </div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:4px;">※ 初速スコアはあなたの直近30投稿の平均との比較です</p>
+  </div>
+
+  <!-- あなたの平均との比較 -->
+  <div class="card">
+    <div class="card-title">📊 あなたの平均との比較（直近30投稿）</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">今週のおすすめスイーツをご紹介。（6月15日）</p>
+    <div class="compare-grid">
+      <div class="compare-header" style="color:var(--text-sub);"></div>
+      <div class="compare-header" style="color:var(--primary);">今回</div>
+      <div class="compare-header" style="color:var(--text-sub);">あなたの平均</div>
+      <div class="compare-label">❤️ いいね（X）</div>
+      <div class="compare-val" style="color:var(--primary);">142件 <span style="font-size:10px;color:var(--success);">↑</span></div>
+      <div class="compare-val" style="color:var(--text-sub);">98件</div>
+      <div class="compare-label">🔁 リポスト（X）</div>
+      <div class="compare-val" style="color:var(--primary);">40件 <span style="font-size:10px;color:var(--success);">↑</span></div>
+      <div class="compare-val" style="color:var(--text-sub);">18件</div>
+      <div class="compare-label">❤️ いいね（IG）</div>
+      <div class="compare-val" style="color:var(--primary);">126件 <span style="font-size:10px;color:var(--success);">↑</span></div>
+      <div class="compare-val" style="color:var(--text-sub);">88件</div>
+      <div class="compare-label">📊 EG率（全体）</div>
+      <div class="compare-val" style="color:var(--primary);">9.8% <span style="font-size:10px;color:var(--success);">↑</span></div>
+      <div class="compare-val" style="color:var(--text-sub);">7.2%</div>
+    </div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ データが30投稿以上蓄積された時点から表示されます</p>
+  </div>
+
+  <!-- ===== 下部：過去の振り返り ===== -->
+  <div style="font-size:11px;font-weight:700;color:var(--text-sub);padding:4px 0 8px;border-top:1px solid var(--border);margin-top:4px;">過去の振り返り</div>
+
+  <!-- 今月の数値サマリー -->
+  <div class="card">
+    <div class="card-title">📋 今月の数値（全SNS合計）</div>
     <div class="metric-row">
       <div class="metric-icon">❤️</div>
-      <div class="metric-info"><div class="metric-name">いいね数</div><div class="metric-desc">投稿に「いいね」した人の数</div></div>
-      <div class="metric-val"><div class="metric-num">847件</div><div class="metric-change">↑ 先週比 +12%</div></div>
+      <div class="metric-info"><div class="metric-name">いいね数</div></div>
+      <div class="metric-val"><div class="metric-num">847件</div></div>
     </div>
     <div class="metric-row">
       <div class="metric-icon">💬</div>
-      <div class="metric-info"><div class="metric-name">コメント数</div><div class="metric-desc">投稿についたコメントの数</div></div>
-      <div class="metric-val"><div class="metric-num">94件</div><div class="metric-change">↑ 先週比 +8%</div></div>
+      <div class="metric-info"><div class="metric-name">コメント数</div></div>
+      <div class="metric-val"><div class="metric-num">94件</div></div>
     </div>
     <div class="metric-row">
       <div class="metric-icon">👁️</div>
-      <div class="metric-info"><div class="metric-name">インプレッション</div><div class="metric-desc">投稿が表示された延べ回数</div></div>
-      <div class="metric-val"><div class="metric-num">12.4K回</div><div class="metric-change">↑ 先週比 +5%</div></div>
+      <div class="metric-info"><div class="metric-name">インプレッション</div></div>
+      <div class="metric-val"><div class="metric-num">12.4K回</div></div>
     </div>
     <div class="metric-row">
       <div class="metric-icon">📊</div>
-      <div class="metric-info"><div class="metric-name">EG率（エンゲージメント率）</div><div class="metric-desc">投稿への反応率（いいね＋コメント÷フォロワー数）</div></div>
-      <div class="metric-val"><div class="metric-num" style="color:var(--primary);">7.2%</div><div class="metric-change">↑ 先週比 +1.2%</div></div>
+      <div class="metric-info"><div class="metric-name">EG率（平均）</div></div>
+      <div class="metric-val"><div class="metric-num" style="color:var(--primary);">7.2%</div></div>
     </div>
     <p style="font-size:10px;color:var(--text-light);margin-top:6px;">※ K = 1,000（例：1.2K = 1,200回）</p>
   </div>
 
   <!-- いいね数カレンダー -->
   <div class="card">
-    <div class="card-title">❤️ いいね数（今月）</div>
+    <div class="card-title">❤️ いいね数（今月・SNS別）</div>
     <div style="margin-bottom:10px;">
       <div class="info-row"><span class="info-key">Instagram</span><span class="info-val" style="color:#1a237e;">247件</span></div>
       <div class="info-row"><span class="info-key">Facebook</span><span class="info-val" style="color:#1a237e;">183件</span></div>
@@ -246,7 +459,7 @@
 
   <!-- コメント数カレンダー -->
   <div class="card">
-    <div class="card-title">💬 コメント数（今月）</div>
+    <div class="card-title">💬 コメント数（今月・SNS別）</div>
     <div style="margin-bottom:10px;">
       <div class="info-row"><span class="info-key">Instagram</span><span class="info-val" style="color:#2e7d32;">42件</span></div>
       <div class="info-row"><span class="info-key">Facebook</span><span class="info-val" style="color:#2e7d32;">31件</span></div>
@@ -269,7 +482,7 @@
 
   <!-- インプレッションカレンダー -->
   <div class="card">
-    <div class="card-title">👁️ インプレッション（今月）</div>
+    <div class="card-title">👁️ インプレッション（今月・SNS別）</div>
     <div style="margin-bottom:10px;">
       <div class="info-row"><span class="info-key">Instagram</span><span class="info-val" style="color:#e65100;">8,240回</span></div>
       <div class="info-row"><span class="info-key">Facebook</span><span class="info-val" style="color:#e65100;">5,180回</span></div>
@@ -292,7 +505,7 @@
 
   <!-- EG率カレンダー -->
   <div class="card">
-    <div class="card-title">📊 EG率（今月平均）</div>
+    <div class="card-title">📊 EG率（今月平均・SNS別）</div>
     <div style="margin-bottom:10px;">
       <div class="info-row"><span class="info-key">Instagram</span><span class="info-val" style="color:#ad1457;">8.1%</span></div>
       <div class="info-row"><span class="info-key">Facebook</span><span class="info-val" style="color:#ad1457;">6.4%</span></div>
@@ -314,7 +527,7 @@
 
   <!-- フォロワー推移 -->
   <div class="card">
-    <div class="card-title">👥 フォロワー数の推移</div>
+    <div class="card-title">👥 フォロワー数の推移（SNS別）</div>
     <div class="follower-num">3,847人</div>
     <div class="follower-change">↑ 今月 +124人</div>
     <div>
