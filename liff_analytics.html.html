@@ -230,7 +230,7 @@
   <!-- 直近投稿の初速状況 -->
   <div class="card">
     <div class="card-title">⚡ 直近投稿の初速状況</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">各SNSの直近投稿の反応状況です。投稿後1時間・3時間・24時間のデータを自動取得しています。</p>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">各SNSの直近投稿の反応を、投稿後1時間・3時間・24時間の3段階で自動取得し、「初速スコア」として表示しています。初速スコアはあなた自身の直近30投稿の平均との比較で算出するAiPost独自の指標です。数値が高いほど、過去の投稿よりも順調な反応が得られていることを示します。</p>
 
     <!-- IG・FB・X共通投稿 -->
     <div style="font-size:11px;color:var(--text-sub);margin-bottom:10px;padding:8px;background:var(--bg);border-radius:8px;line-height:1.6;border-left:3px solid var(--border);">
@@ -252,10 +252,15 @@
         <div class="gauge-bar"><div class="gauge-fill gauge-good" style="width:72%;"></div></div>
       </div>
       <div>
-        <div class="growth-row">
+        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:4px 8px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
           <span class="growth-time">1時間後</span>
-          <span class="growth-vals"><span>❤️ 28</span><span>💬 4</span><span>📊 2.1%</span></span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">❤️</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">💬</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">📊</span>
           <span style="font-size:9px;color:var(--text-light);">14:02取得</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">28</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">4</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">2.1%</span>
         </div>
         <div class="growth-row" style="opacity:0.45;">
           <span class="growth-time">3時間後</span>
@@ -273,6 +278,7 @@
         <div class="action-text">🟢 1時間後の反応は好調です。3時間後のデータをお待ちください</div>
       </div>
       <p style="font-size:9px;color:var(--text-sub);line-height:1.8;margin-top:6px;">❤️いいね　💬コメント　📊EG率</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
     </div>
     <div class="sns-section sns-fb">
       <div class="sns-label" style="color:#1877f2;">
@@ -286,10 +292,21 @@
         <div class="gauge-bar"><div class="gauge-fill gauge-avg" style="width:55%;"></div></div>
       </div>
       <div>
-        <div class="growth-row">
+        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
           <span class="growth-time">1時間後</span>
-          <span class="growth-vals"><span>❤️ 12</span><span>💬 2</span><span>📤 1</span><span>👁️ 320</span><span>📊 1.0%</span></span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">❤️</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">💬</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">📤</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">👍</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">👁️</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">📊</span>
           <span style="font-size:9px;color:var(--text-light);">14:02取得</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">142</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">128</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">113</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">847</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">320</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">10.2%</span>
         </div>
         <div class="growth-row" style="opacity:0.45;">
           <span class="growth-time">3時間後</span>
@@ -306,6 +323,7 @@
         <div class="action-text warn">🟡 現時点では平均的な反応です。3時間後のデータをお待ちください</div>
       </div>
       <p style="font-size:9px;color:var(--text-sub);line-height:1.8;margin-top:6px;">❤️いいね　💬コメント　📤シェア　👍リアクション　👁️インプレッション　📊EG率</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
     </div>
 
     <!-- X -->
@@ -321,10 +339,19 @@
         <div class="gauge-bar"><div class="gauge-fill gauge-good" style="width:94%;"></div></div>
       </div>
       <div>
-        <div class="growth-row">
+        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
           <span class="growth-time">1時間後</span>
-          <span class="growth-vals"><span>❤️ 42</span><span>🔁 8</span><span>↩️ 3</span><span>👁️ 1.2K</span><span>📊 4.4%</span></span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">❤️</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">🔁</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">↩️</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">👁️</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">📊</span>
           <span style="font-size:9px;color:var(--text-light);">14:02取得</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">1.8K</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">1.2K</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">1.0K</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">1.2K</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">10.2%</span>
         </div>
         <div class="growth-row" style="opacity:0.45;">
           <span class="growth-time">3時間後</span>
@@ -341,6 +368,7 @@
         <div class="action-text">🟢 Xの初速は非常に好調です。このまま伸びる可能性があります</div>
       </div>
       <p style="font-size:9px;color:var(--text-sub);line-height:1.8;margin-top:6px;">❤️いいね　🔁リポスト　↩️リプライ　👁️インプレッション　📊EG率</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
     </div>
 
     <!-- Threads -->
@@ -361,10 +389,19 @@
         <div class="gauge-bar"><div class="gauge-fill gauge-low" style="width:32%;"></div></div>
       </div>
       <div>
-        <div class="growth-row">
+        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
           <span class="growth-time">1時間後</span>
-          <span class="growth-vals"><span>❤️ 5</span><span>🔁 0</span><span>↩️ 1</span><span>👁️ 82</span><span>📊 0.6%</span></span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">❤️</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">🔁</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">↩️</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">👁️</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">📊</span>
           <span style="font-size:9px;color:var(--text-light);">16:30取得</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">5</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">0</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">1</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">82</span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">0.6%</span>
         </div>
         <div class="growth-row" style="opacity:0.45;">
           <span class="growth-time">3時間後</span>
@@ -381,9 +418,8 @@
         <div class="action-text warn">🔴 Threadsの初速は伸び悩んでいます。3時間後のデータを確認しましょう</div>
       </div>
       <p style="font-size:9px;color:var(--text-sub);line-height:1.8;margin-top:6px;">❤️いいね　🔁リポスト　↩️返信　🗨️引用　👁️インプレッション　📊EG率</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
     </div>
-
-    <p style="font-size:9px;color:var(--text-light);margin-top:4px;">※ 初速スコアはあなたの直近30投稿の平均との比較です</p>
   </div>
 
   <!-- あなたの平均との比較 -->
@@ -743,9 +779,38 @@
     </div>
   </div>
 
-  <!-- ⑦ 用語の説明 -->
+  <!-- ⑦ SNSごとの取得データと重要指標 -->
   <div class="card">
-    <div class="card-title">⑦ 用語の説明</div>
+    <div class="card-title">⑦ SNSごとの取得データと重要指標</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">各SNSはそれぞれ独自のAPI（データ取得の仕組み）を持っており、公開している指標の種類が異なります。また技術的な制約により取得できない指標もあります。さらにSNSによってユーザーの行動特性が異なるため、投稿の拡散に影響する重要な指標も変わります。</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="background:#fff0f5;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#e1306c;margin-bottom:4px;">📱 Instagram</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　💬コメント　📊EG率</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;"><strong>特に重要：</strong>コメント数（エンゲージメントの深さを示す）</div>
+        <div style="font-size:10px;color:var(--text-sub);line-height:1.7;">※ インプレッションはAPIの仕様上48時間の遅延があるため初速画面では非表示。保存数・シェア数はAPIで取得できません。</div>
+      </div>
+      <div style="background:#e3f2fd;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#1877f2;margin-bottom:4px;">💻 Facebook</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　💬コメント　📤シェア　👍リアクション　👁️インプレッション　📊EG率</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：シェア数（友人への拡散が集客に直結するFacebookの特性上、最も重要な指標）</div>
+      </div>
+      <div style="background:#fffde7;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#555555;margin-bottom:4px;">🐦 X</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　🔁リポスト　↩️リプライ　👁️インプレッション　📊EG率</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：リポスト数（拡散力の核心。投稿後30分〜1時間のリポストの勢いがアルゴリズムの評価を左右すると考えられています）</div>
+      </div>
+      <div style="background:#e8f5e9;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#555555;margin-bottom:4px;">🧵 Threads</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　🔁リポスト　↩️返信　🗨️引用　👁️インプレッション　📊EG率</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：返信数・引用数（会話を重視するThreadsの特性上、返信や引用が露出増加に影響すると考えられています）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑧ 用語の説明 -->
+  <div class="card">
+    <div class="card-title">⑧ 用語の説明</div>
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="border-bottom:1px solid var(--border);padding-bottom:8px;">
         <div style="font-size:12px;font-weight:700;margin-bottom:3px;">EG率（エンゲージメント率）</div>
@@ -766,9 +831,9 @@
     </div>
   </div>
 
-  <!-- ⑧ データの活用方法 -->
+  <!-- ⑨ データの活用方法 -->
   <div class="card">
-    <div class="card-title">⑧ データの活用方法</div>
+    <div class="card-title">⑨ データの活用方法</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:#43a047;margin-bottom:4px;">🟢 初速が好調だった場合</div>
