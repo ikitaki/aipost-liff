@@ -1396,55 +1396,62 @@ const snsStyle = {
 // タイミングラベル
 const timingLabel = {h1:'1時間後', h3:'3時間後', h24:'24時間後'};
 
-function makeSNSRow(icon, v1, v2, v3) {
-  const fmt = v => v === undefined ? '--' : v;
-  return `<div style="font-size:13px;display:flex;align-items:center;justify-content:center;padding:2px 0;">${icon}</div>
-          <div style="text-align:center;font-size:11px;font-weight:700;color:var(--primary);padding:2px 0;">${fmt(v1)}</div>
-          <div style="text-align:center;font-size:11px;font-weight:700;color:var(--primary);padding:2px 0;">${fmt(v2)}</div>
-          <div style="text-align:center;font-size:11px;font-weight:700;color:var(--primary);padding:2px 0;">${fmt(v3)}</div>`;
-}
-
 function makeSNSBlock(snsKey, snsData) {
   const s = snsStyle[snsKey] || {icon:'',label:snsKey,color:'#555'};
   const h1 = snsData.h1 || {};
   const h3 = snsData.h3 || {};
   const h24 = snsData.h24 || {};
+  const fmt = v => v === undefined ? '--' : v;
 
-  let rows = '';
-  // 共通指標
+  // 使用するアイコンと値を収集
+  const metrics = [];
   if (h1.likes!==undefined || h3.likes!==undefined || h24.likes!==undefined)
-    rows += makeSNSRow('❤️', h1.likes, h3.likes, h24.likes);
+    metrics.push({icon:'❤️', h1:h1.likes, h3:h3.likes, h24:h24.likes});
   if (h1.comments!==undefined || h3.comments!==undefined || h24.comments!==undefined)
-    rows += makeSNSRow('💬', h1.comments, h3.comments, h24.comments);
-  // FB専用
+    metrics.push({icon:'💬', h1:h1.comments, h3:h3.comments, h24:h24.comments});
   if (h1.shares!==undefined || h3.shares!==undefined || h24.shares!==undefined)
-    rows += makeSNSRow('📤', h1.shares, h3.shares, h24.shares);
+    metrics.push({icon:'📤', h1:h1.shares, h3:h3.shares, h24:h24.shares});
   if (h1.reactions!==undefined || h3.reactions!==undefined || h24.reactions!==undefined)
-    rows += makeSNSRow('👍', h1.reactions, h3.reactions, h24.reactions);
-  // X専用
+    metrics.push({icon:'👍', h1:h1.reactions, h3:h3.reactions, h24:h24.reactions});
   if (h1.reposts!==undefined || h3.reposts!==undefined || h24.reposts!==undefined)
-    rows += makeSNSRow('🔁', h1.reposts, h3.reposts, h24.reposts);
+    metrics.push({icon:'🔁', h1:h1.reposts, h3:h3.reposts, h24:h24.reposts});
   if (h1.replies!==undefined || h3.replies!==undefined || h24.replies!==undefined)
-    rows += makeSNSRow('↩️', h1.replies, h3.replies, h24.replies);
-  // TH専用
+    metrics.push({icon:'↩️', h1:h1.replies, h3:h3.replies, h24:h24.replies});
   if (h1.quotes!==undefined || h3.quotes!==undefined || h24.quotes!==undefined)
-    rows += makeSNSRow('🗨️', h1.quotes, h3.quotes, h24.quotes);
-  // インプレッション
+    metrics.push({icon:'🗨️', h1:h1.quotes, h3:h3.quotes, h24:h24.quotes});
   if (h1.imprs!==undefined || h3.imprs!==undefined || h24.imprs!==undefined)
-    rows += makeSNSRow('👁️', h1.imprs, h3.imprs, h24.imprs);
-  // EG率
+    metrics.push({icon:'👁️', h1:h1.imprs, h3:h3.imprs, h24:h24.imprs});
   if (h1.eg!==undefined || h3.eg!==undefined || h24.eg!==undefined)
-    rows += makeSNSRow('📊', h1.eg, h3.eg, h24.eg);
+    metrics.push({icon:'📊', h1:h1.eg, h3:h3.eg, h24:h24.eg});
+
+  const cols = metrics.length;
+  const gridCols = `52px repeat(${cols}, 1fr)`;
+
+  // 1行目：ラベル＋アイコン横並び
+  const iconRow = `<span class="growth-time">1時間後</span>` +
+    metrics.map(m => `<span style="font-size:11px;font-weight:700;text-align:center;">${m.icon}</span>`).join('');
+
+  // 2行目：取得時間＋1時間後の数値
+  const h1Row = `<span style="font-size:9px;color:var(--text-light);">取得済み</span>` +
+    metrics.map(m => `<span style="font-size:11px;font-weight:700;text-align:center;color:var(--primary);">${fmt(m.h1)}</span>`).join('');
+
+  // 3時間後行
+  const h3Row = `<span class="growth-time">3時間後</span>` +
+    metrics.map(m => `<span style="font-size:11px;font-weight:700;text-align:center;color:var(--primary);">${fmt(m.h3)}</span>`).join('');
+
+  // 24時間後行
+  const h24Row = `<span class="growth-time">24時間後</span>` +
+    metrics.map(m => `<span style="font-size:11px;font-weight:700;text-align:center;color:var(--primary);">${fmt(m.h24)}</span>`).join('');
 
   return `<div style="margin-bottom:10px;">
-    <div style="font-size:11px;font-weight:700;color:${s.color};margin-bottom:4px;">${s.icon} ${s.label}</div>
-    <div style="display:grid;grid-template-columns:32px 1fr 1fr 1fr;gap:2px;">
-      <div></div>
-      <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text-sub);padding:2px 0;border-bottom:1px solid var(--border);">1時間後</div>
-      <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text-sub);padding:2px 0;border-bottom:1px solid var(--border);">3時間後</div>
-      <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text-sub);padding:2px 0;border-bottom:1px solid var(--border);">24時間後</div>
-      ${rows}
+    <div style="font-size:11px;font-weight:700;color:${s.color};margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">${s.icon} ${s.label}</div>
+    <div style="display:grid;grid-template-columns:${gridCols};gap:4px 6px;align-items:center;">
+      ${iconRow}
+      ${h1Row}
+      ${h3Row}
+      ${h24Row}
     </div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:4px;">※ K = 1,000（例：1.2K = 1,200回）</p>
   </div>`;
 }
 
