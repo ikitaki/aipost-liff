@@ -47,6 +47,11 @@
   .rank-text { font-size:12px; line-height:1.6; margin-bottom:4px; }
   .rank-stats { display:flex; gap:8px; font-size:11px; color:var(--text-sub); }
   .sentiment-bar { display:flex; height:10px; border-radius:5px; overflow:hidden; margin:8px 0; }
+  /* アコーディオン */
+  .accordion-title { cursor:pointer; display:flex; justify-content:space-between; align-items:center; user-select:none; }
+  .accordion-arrow { font-size:10px; color:var(--text-sub); transition:transform 0.2s; margin-left:8px; }
+  .accordion-body { display:none; margin-top:8px; }
+  .accordion-body.open { display:block; }
   .sent-pos { background:var(--success); } .sent-neu { background:#e0e0e0; } .sent-neg { background:var(--danger); }
   .sentiment-legend { display:flex; gap:10px; flex-wrap:wrap; }
   .sent-label { font-size:11px; color:var(--text-sub); display:flex; align-items:center; gap:4px; }
@@ -103,8 +108,23 @@
   .gauge-bar { height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden; }
   .gauge-fill { height:100%; border-radius:5px; transition:width 0.3s; }
   .gauge-good { background:linear-gradient(90deg,#43a047,#66bb6a); }
+  .gauge-best { background:linear-gradient(90deg,#1b5e20,#43a047); }
   .gauge-avg  { background:linear-gradient(90deg,#fb8c00,#ffa726); }
   .gauge-low  { background:linear-gradient(90deg,#e53935,#ef5350); }
+  /* 今日の状況カード */
+  .today-card { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
+  .today-item { background:var(--bg); border-radius:8px; padding:8px; text-align:center; }
+  .today-label { font-size:9px; color:var(--text-sub); margin-bottom:3px; }
+  .today-val { font-size:14px; font-weight:700; color:var(--text); }
+  .today-sub { font-size:10px; color:var(--text-sub); margin-top:2px; }
+  /* データ蓄積ゲージ */
+  .accum-bar { height:8px; background:#e0e0e0; border-radius:4px; overflow:hidden; margin:4px 0; }
+  .accum-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--primary),#5c6bc0); }
+  /* 次回おすすめ */
+  .next-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .next-item { background:var(--bg); border-radius:8px; padding:8px; }
+  .next-item-label { font-size:9px; color:var(--text-sub); margin-bottom:2px; }
+  .next-item-val { font-size:12px; font-weight:700; color:var(--primary); }
   .growth-row { display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px solid rgba(0,0,0,0.06); }
   .growth-row:last-child { border-bottom:none; }
   .growth-time { font-size:11px; font-weight:700; color:var(--text-sub); width:52px; flex-shrink:0; }
@@ -227,6 +247,62 @@
 
   <!-- ===== 上部：今どうなっているか ===== -->
 
+  <!-- ① 今日の状況 -->
+  <div class="card" style="border:2px solid var(--primary);">
+    <div class="card-title">📊 今日の状況</div>
+    <div class="today-card">
+      <div class="today-item">
+        <div class="today-label">総合初速スコア</div>
+        <div class="today-val" style="color:#43a047;">78<span style="font-size:10px;">点</span></div>
+        <div class="today-sub" style="color:var(--success);">昨日比 +12点</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">過去30投稿中</div>
+        <div class="today-val" style="color:var(--primary);">4<span style="font-size:10px;">位</span></div>
+        <div class="today-sub">/30投稿</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">今日の投稿数</div>
+        <div class="today-val">2<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">残り38件</div>
+      </div>
+    </div>
+    <!-- あと○件で過去最高 -->
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="font-size:11px;font-weight:700;color:#e65100;">🏆 あといいね <span style="font-size:14px;">5件</span> で過去最高記録！</div>
+      <div style="font-size:10px;color:#e65100;margin-top:2px;">現在のいいね数：142件　過去最高：147件（6月3日）</div>
+    </div>
+    <!-- データ蓄積率 -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-size:11px;font-weight:700;color:var(--text);">📈 データ蓄積率</span>
+        <span style="font-size:12px;font-weight:700;color:var(--primary);">73%</span>
+      </div>
+      <div class="accum-bar"><div class="accum-fill" style="width:73%;"></div></div>
+      <div style="font-size:9px;color:var(--text-sub);margin-top:3px;">22投稿分蓄積済み・30投稿で分析精度が最大になります</div>
+    </div>
+  </div>
+
+  <!-- ② 数値ベースのアドバイスカード -->
+  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);">
+    <div class="card-title" style="color:#1b5e20;">🤖 AiPostからのアドバイス</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <span style="font-size:14px;flex-shrink:0;">✅</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xの初速スコアが94点と非常に好調です。投稿時間帯（13:02）が効果的だった可能性があります。</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <span style="font-size:14px;flex-shrink:0;">✅</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Threadsの初速スコアは32点と伸び悩んでいます。投稿時間帯の変更を検討してください。</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <span style="font-size:14px;flex-shrink:0;">💡</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">あなたの投稿は日曜日13〜15時の反応率が最も高い傾向があります。次回もこの時間帯を活用しましょう。</span>
+      </div>
+    </div>
+    <p style="font-size:9px;color:#558b2f;margin-top:8px;">※ アドバイスはあなたの投稿データの数値分析をもとに生成しています</p>
+  </div>
+
   <!-- 直近投稿の初速状況 -->
   <div class="card">
     <div class="card-title">⚡ 直近投稿の初速状況</div>
@@ -246,9 +322,9 @@
       <div class="gauge-wrap">
         <div class="gauge-label">
           <span class="gauge-title">初速スコア</span>
-          <span class="gauge-status" style="color:#43a047;">🟢 非常に好調　94%</span>
+          <span class="gauge-status" style="color:#1b5e20;">🟢 最高！　94点</span>
         </div>
-        <div class="gauge-bar"><div class="gauge-fill gauge-good" style="width:94%;"></div></div>
+        <div class="gauge-bar"><div class="gauge-fill gauge-best" style="width:94%;"></div></div>
       </div>
       <div>
         <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
@@ -290,7 +366,7 @@
       <div class="gauge-wrap">
         <div class="gauge-label">
           <span class="gauge-title">初速スコア</span>
-          <span class="gauge-status" style="color:#43a047;">🟢 好調　72%</span>
+          <span class="gauge-status" style="color:#43a047;">🟢 好調　72点</span>
         </div>
         <div class="gauge-bar"><div class="gauge-fill gauge-good" style="width:72%;"></div></div>
       </div>
@@ -330,7 +406,7 @@
       <div class="gauge-wrap">
         <div class="gauge-label">
           <span class="gauge-title">初速スコア</span>
-          <span class="gauge-status" style="color:#fb8c00;">🟡 平均的　55%</span>
+          <span class="gauge-status" style="color:#fb8c00;">🟡 平均的　55点</span>
         </div>
         <div class="gauge-bar"><div class="gauge-fill gauge-avg" style="width:55%;"></div></div>
       </div>
@@ -383,7 +459,7 @@
       <div class="gauge-wrap">
         <div class="gauge-label">
           <span class="gauge-title">初速スコア</span>
-          <span class="gauge-status" style="color:#e53935;">🔴 伸び悩み　32%</span>
+          <span class="gauge-status" style="color:#e53935;">🔴 伸び悩み　32点</span>
         </div>
         <div class="gauge-bar"><div class="gauge-fill gauge-low" style="width:32%;"></div></div>
       </div>
@@ -829,6 +905,31 @@
     </div>
   </div>
 
+  <!-- 次回おすすめカード -->
+  <div class="card" style="border:2px solid var(--primary);">
+    <div class="card-title">🎯 次回の投稿おすすめ</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに算出した次回投稿のおすすめです。</p>
+    <div class="next-grid">
+      <div class="next-item">
+        <div class="next-item-label">⏰ おすすめ投稿時間</div>
+        <div class="next-item-val">日曜 13:00</div>
+      </div>
+      <div class="next-item">
+        <div class="next-item-label">📱 おすすめSNS</div>
+        <div class="next-item-val">X・Instagram</div>
+      </div>
+      <div class="next-item">
+        <div class="next-item-label">📊 予想初速スコア</div>
+        <div class="next-item-val">82点</div>
+      </div>
+      <div class="next-item">
+        <div class="next-item-label">💡 投稿のポイント</div>
+        <div class="next-item-val" style="font-size:11px;">ハッシュタグ3〜5個</div>
+      </div>
+    </div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 予想スコアはあなたの過去データの数値分析をもとに算出するAiPost独自の指標です</p>
+  </div>
+
 </div><!-- /tab-pro -->
 
 <!-- ===== ガイドタブ ===== -->
@@ -842,7 +943,8 @@
 
   <!-- ① SNS投稿後の反応時間について -->
   <div class="card">
-    <div class="card-title">① SNS投稿後の反応時間について</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-1')">① SNS投稿後の反応時間について<span class="accordion-arrow" id="arr-acc-1">▶</span></div>
+    <div class="accordion-body" id="acc-1">
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">多くのSNSでは、投稿直後のユーザーの反応がその後の表示機会に影響すると考えられています。投稿後の短い時間帯に反応が集まるほど、フォロワー以外のより多くのユーザーに投稿が表示されやすくなる傾向があります。</div>
     <div style="display:flex;flex-direction:column;gap:6px;">
       <div style="background:#fffde7;border-radius:8px;padding:8px 10px;">
@@ -865,8 +967,10 @@
   </div>
 
   <!-- ② 段階的なデータ取得について -->
+    </div>
   <div class="card">
-    <div class="card-title">② 段階的なデータ取得について</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-2')">② 段階的なデータ取得について<span class="accordion-arrow" id="arr-acc-2">▶</span></div>
+    <div class="accordion-body" id="acc-2">
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿直後・数時間後・24時間後の反応を比較することで、あなたの投稿が「今どのくらい伸びているか」を把握できます。</div>
     <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px;">
       <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">💎 PROプラン</div>
@@ -879,8 +983,10 @@
   </div>
 
   <!-- ③ 初速スコアについて -->
+    </div>
   <div class="card">
-    <div class="card-title">③ 初速スコアについて</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-3')">③ 初速スコアについて<span class="accordion-arrow" id="arr-acc-3">▶</span></div>
+    <div class="accordion-body" id="acc-3">
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">AiPostでは投稿直後の反応の強さを「初速スコア」として表示します。初速スコアはあなた自身の過去投稿との比較結果を100段階で表したAiPost独自の指標です。<strong>数値が高いほど、過去の投稿よりも順調な反応が得られていることを示します。</strong></div>
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">初速スコアはいいね数だけを見ているのではありません。SNSごとに重要とされる反応（シェア・リポスト・リプライ・返信・引用など）を総合的に分析しています。</div>
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">また、初速スコアは投稿後1時間だけを評価しているわけではありません。投稿後<strong>1時間・3時間・24時間</strong>までの推移も考慮して分析します。そのため、一時的な反応だけでなく、投稿全体の伸び方も確認できます。</div>
@@ -896,8 +1002,10 @@
   </div>
 
   <!-- ④ データ蓄積と分析精度について -->
+    </div>
   <div class="card">
-    <div class="card-title">④ データ蓄積と分析精度について</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-4')">④ データ蓄積と分析精度について<span class="accordion-arrow" id="arr-acc-4">▶</span></div>
+    <div class="accordion-body" id="acc-4">
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">初速スコアはあなた自身の過去30投稿の平均データとの比較で算出されます。直近の投稿傾向を反映しやすくするため、比較対象は最新30投稿を基準としています。投稿数が増えるほど・継続期間が長いほど比較データが充実し、スコアの精度が高まります。</div>
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">AiPostはデータを蓄積するほど、あなた専用の分析に近づいていきます。投稿データが蓄積されることで、あなたが反応を得やすい曜日・時間帯などをより高い精度で分析できるようになります。</div>
     <div style="background:linear-gradient(135deg,#1a237e,#283593);border-radius:10px;padding:12px;">
@@ -906,8 +1014,10 @@
   </div>
 
   <!-- ⑤ 分析画面の見方 -->
+    </div>
   <div class="card">
-    <div class="card-title">⑤ 分析画面の見方</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-5')">⑤ 分析画面の見方<span class="accordion-arrow" id="arr-acc-5">▶</span></div>
+    <div class="accordion-body" id="acc-5">
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔍 LITE分析</div>
@@ -925,8 +1035,10 @@
   </div>
 
   <!-- ⑥ アイコンの意味 -->
+    </div>
   <div class="card">
-    <div class="card-title">⑥ アイコンの意味</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-6')">⑥ アイコンの意味<span class="accordion-arrow" id="arr-acc-6">▶</span></div>
+    <div class="accordion-body" id="acc-6">
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">❤️</span><span style="font-size:11px;color:var(--text);line-height:1.6;">いいね数　投稿に「いいね」した人の数</span></div>
       <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">💬</span><span style="font-size:11px;color:var(--text);line-height:1.6;">コメント数　投稿についたコメントの数</span></div>
@@ -941,8 +1053,10 @@
   </div>
 
   <!-- ⑦ SNSごとの取得データと重要指標 -->
+    </div>
   <div class="card">
-    <div class="card-title">⑦ SNSごとの取得データと重要指標</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-7')">⑦ SNSごとの取得データと重要指標<span class="accordion-arrow" id="arr-acc-7">▶</span></div>
+    <div class="accordion-body" id="acc-7">
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">各SNSはそれぞれ独自のAPI（データ取得の仕組み）を持っており、公開している指標の種類が異なります。また技術的な制約により取得できない指標もあります。さらにSNSによってユーザーの行動特性が異なるため、投稿の拡散に影響する重要な指標も変わります。</div>
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="background:#fffde7;border-radius:8px;padding:10px;">
@@ -970,8 +1084,10 @@
   </div>
 
   <!-- ⑧ 用語の説明 -->
+    </div>
   <div class="card">
-    <div class="card-title">⑧ 用語の説明</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-8')">⑧ 用語の説明<span class="accordion-arrow" id="arr-acc-8">▶</span></div>
+    <div class="accordion-body" id="acc-8">
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="border-bottom:1px solid var(--border);padding-bottom:8px;">
         <div style="font-size:12px;font-weight:700;margin-bottom:3px;">EG率（エンゲージメント率）</div>
@@ -993,8 +1109,10 @@
   </div>
 
   <!-- ⑨ データの活用方法 -->
+    </div>
   <div class="card">
-    <div class="card-title">⑨ データの活用方法</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-9')">⑨ データの活用方法<span class="accordion-arrow" id="arr-acc-9">▶</span></div>
+    <div class="accordion-body" id="acc-9">
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:#43a047;margin-bottom:4px;">🟢 初速が好調だった場合</div>
@@ -1016,16 +1134,20 @@
   </div>
 
   <!-- AiPost分析の特徴 -->
+    </div>
   <div class="card">
-    <div class="card-title">AiPost分析の特徴</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-10')">AiPost分析の特徴<span class="accordion-arrow" id="arr-acc-10">▶</span></div>
+    <div class="accordion-body" id="acc-10">
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">多くのSNS分析では、投稿結果の確認が中心です。AiPostでは投稿の伸び方や次回の改善につながる分析まで行います。単なる結果ではなく、<strong>次の投稿を成功させるための分析</strong>を提供することがAiPost最大の特徴です。</div>
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">分析は「評価」ではなく「改善」のためにあります。数字の良し悪しだけを見るのではなく、「どんな投稿が反応されやすいか」を知り、次の投稿に活かすことがSNS運用成功への近道です。</div>
     <div style="font-size:11px;color:var(--text);line-height:1.8;">SNSのアルゴリズムやユーザーの行動は日々変化しています。AiPostは、継続的なデータの蓄積と分析を通じて、あなた専用のSNS運用パートナーとして、より効果的な投稿づくりをサポートします。</div>
   </div>
 
   <!-- このような方におすすめ -->
+    </div>
   <div class="card">
-    <div class="card-title">このような方におすすめ</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-11')">このような方におすすめ<span class="accordion-arrow" id="arr-acc-11">▶</span></div>
+    <div class="accordion-body" id="acc-11">
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>SNSを始めたばかりの方</div>
       <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>何を改善すればいいか分からない方</div>
@@ -1035,6 +1157,7 @@
     <button class="plan-guide-btn" onclick="navigateTo('plan')" style="margin-top:12px;">プラン・料金を見る</button>
   </div>
 
+    </div>
 </div><!-- /tab-guide -->
 
 
@@ -1068,6 +1191,15 @@ function switchTab(id) {
   ['lite','standard','pro','guide'].forEach((t,i)=>{
     document.querySelectorAll('.tab-btn')[i].classList.toggle('active', t===id);
   });
+}
+
+function toggleAcc(id) {
+  const body = document.getElementById(id);
+  const arr = document.getElementById('arr-' + id);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  if (arr) arr.style.transform = isOpen ? '' : 'rotate(90deg)';
 }
 
 // ===== カレンダー共通関数 =====
