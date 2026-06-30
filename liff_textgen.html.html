@@ -222,68 +222,37 @@
   .img-selected-name { font-size: 12px; font-weight: 700; color: #2e7d32; flex: 1; }
   .img-selected-clear { background: none; border: none; color: #2e7d32; font-size: 18px; cursor: pointer; padding: 0; }
 
-  /* 画像タブ */
-  .img-tab-nav { display: flex; border-bottom: 1px solid var(--border); }
-  .img-tab-btn {
-    flex: 1; padding: 10px 4px; border: none; background: none;
-    font-size: 11px; font-weight: 600; color: var(--text-sub);
-    cursor: pointer; border-bottom: 2px solid transparent;
-    font-family: inherit; display: flex; flex-direction: column;
-    align-items: center; gap: 2px;
-  }
-  .img-tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-  .img-tab-icon { font-size: 16px; }
-  .img-tab-panel { display: none; padding: 12px 14px; }
-  .img-tab-panel.active { display: block; }
-
-  /* カテゴリフィルタ */
-  .category-filter {
-    display: flex; gap: 6px; overflow-x: auto;
-    scrollbar-width: none; padding-bottom: 10px; margin-bottom: 8px;
-  }
-  .category-filter::-webkit-scrollbar { display: none; }
-  .cat-btn {
-    padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px;
-    background: var(--surface); font-size: 11px; color: var(--text-sub);
-    cursor: pointer; white-space: nowrap; font-family: inherit;
-  }
-  .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-  /* 画像グリッド */
-  .image-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .image-item {
-    position: relative; aspect-ratio: 1; border-radius: 8px;
-    overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.2s;
-  }
-  .image-item.selected { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); }
-  .image-thumb {
-    width: 100%; height: 100%; object-fit: cover;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; background: var(--border);
-  }
-  .image-check {
-    position: absolute; top: 4px; right: 4px;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: var(--primary); color: white; font-size: 11px;
-    display: none; align-items: center; justify-content: center; font-weight: 700;
-  }
-  .image-item.selected .image-check { display: flex; }
-  .image-label {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    background: rgba(0,0,0,0.5); color: white; font-size: 9px;
-    padding: 3px 5px; text-align: center;
-  }
-
-  /* 画像なしタブ */
-  .no-image-option {
+  /* アップロードエリア */
+  .upload-area { padding: 12px 14px; }
+  .upload-btn-wrap {
     display: flex; flex-direction: column; align-items: center;
-    padding: 20px; gap: 8px; cursor: pointer;
-    border: 2px solid var(--border); border-radius: 10px;
+    gap: 10px; padding: 20px 14px;
+    border: 2px dashed var(--border); border-radius: 10px;
+    background: var(--bg);
   }
-  .no-image-option.selected { border-color: var(--primary); background: #f0f2ff; }
-  .no-image-icon { font-size: 36px; }
-  .no-image-label { font-size: 14px; font-weight: 700; color: var(--text); }
-  .no-image-desc { font-size: 12px; color: var(--text-sub); text-align: center; line-height: 1.7; }
+  .upload-icon { font-size: 36px; }
+  .upload-label { font-size: 13px; font-weight: 700; color: var(--text); }
+  .upload-desc { font-size: 11px; color: var(--text-sub); text-align: center; line-height: 1.7; }
+  .upload-btn {
+    padding: 8px 20px; background: var(--primary); color: white;
+    border: none; border-radius: 20px; font-size: 13px;
+    cursor: pointer; font-family: inherit; font-weight: 600;
+  }
+  .upload-preview { display: none; margin-top: 10px; position: relative; }
+  .upload-preview.show { display: block; }
+  .upload-preview img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 8px; }
+  .upload-preview-clear {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(0,0,0,0.5); color: white; border: none;
+    border-radius: 50%; width: 24px; height: 24px; font-size: 14px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .upload-no-image { margin-top: 10px; text-align: center; }
+  .upload-no-image-btn {
+    background: none; border: none; font-size: 12px;
+    color: var(--text-sub); cursor: pointer; text-decoration: underline;
+    font-family: inherit;
+  }
 
   /* SNS選択 */
   .sns-check-list { display: flex; flex-direction: column; gap: 8px; }
@@ -550,81 +519,40 @@
   <!-- 下書き保存 -->
   <button class="draft-btn" onclick="saveDraft()">💾 下書き保存</button>
 
-  <!-- ⑤ 画像選択（インライン） -->
+  <!-- ⑤ 画像選択（アップロードのみ） -->
   <div class="image-section">
     <div class="image-section-header">
-      <div class="image-section-title">⑤ 画像を選ぶ（任意）</div>
+      <div class="image-section-title">⑤ 画像をアップロードする（任意）</div>
     </div>
 
     <!-- 選択中プレビューバー -->
     <div class="img-selected-bar" id="img-selected-bar">
-      <span class="img-selected-thumb" id="img-selected-thumb">🍵</span>
-      <span class="img-selected-name" id="img-selected-name">抹茶ラテ</span>
+      <span class="img-selected-thumb" id="img-selected-thumb">🖼️</span>
+      <span class="img-selected-name" id="img-selected-name"></span>
       <button class="img-selected-clear" onclick="clearImageSelection()">×</button>
     </div>
 
-    <!-- タブ -->
-    <div class="img-tab-nav">
-      <button class="img-tab-btn active" onclick="switchImgTab('stock', this)">
-        <span class="img-tab-icon">🗂️</span>素材画像
-      </button>
-      <button class="img-tab-btn" onclick="switchImgTab('myimage', this)">
-        <span class="img-tab-icon">🏞️</span>マイ画像
-      </button>
-      <button class="img-tab-btn" onclick="switchImgTab('none', this)">
-        <span class="img-tab-icon">🚫</span>画像なし
-      </button>
-    </div>
-
-    <!-- 素材画像タブ -->
-    <div id="img-tab-stock" class="img-tab-panel active">
-      <div class="category-filter">
-        <button class="cat-btn active" onclick="filterCat(this)">すべて</button>
-        <button class="cat-btn" onclick="filterCat(this)">人物</button>
-        <button class="cat-btn" onclick="filterCat(this)">ビジネス</button>
-        <button class="cat-btn" onclick="filterCat(this)">動物・生き物</button>
-        <button class="cat-btn" onclick="filterCat(this)">花・植物</button>
-        <button class="cat-btn" onclick="filterCat(this)">食べ物・飲み物</button>
-        <button class="cat-btn" onclick="filterCat(this)">町並み・建物</button>
-        <button class="cat-btn" onclick="filterCat(this)">季節・行事</button>
-        <button class="cat-btn" onclick="filterCat(this)">自然・風景</button>
-        <button class="cat-btn" onclick="filterCat(this)">スポーツ</button>
-        <button class="cat-btn" onclick="filterCat(this)">美容・健康</button>
-        <button class="cat-btn" onclick="filterCat(this)">小物・雑貨</button>
-        <button class="cat-btn" onclick="filterCat(this)">クレイアート</button>
+    <div class="upload-area">
+      <!-- アップロードエリア -->
+      <div class="upload-btn-wrap" id="upload-wrap">
+        <div class="upload-icon">📷</div>
+        <div class="upload-label">画像をアップロード</div>
+        <div class="upload-desc">JPG・PNG・GIF に対応<br>タップして端末から選択できます</div>
+        <input type="file" id="upload-input" accept="image/*" style="display:none;" onchange="onImageUpload(event)">
+        <button class="upload-btn" onclick="document.getElementById('upload-input').click()">画像を選択する</button>
       </div>
-      <div class="image-grid">
-        <div class="image-item" onclick="selectImage(this,'🍵','抹茶ラテ')"><div class="image-thumb">🍵</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
-        <div class="image-item" onclick="selectImage(this,'☕','コーヒー')"><div class="image-thumb">☕</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
-        <div class="image-item" onclick="selectImage(this,'🍰','ケーキ')"><div class="image-thumb">🍰</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
-        <div class="image-item" onclick="selectImage(this,'🌸','桜')"><div class="image-thumb">🌸</div><div class="image-check">✓</div><div class="image-label">季節</div></div>
-        <div class="image-item" onclick="selectImage(this,'🍓','フルーツ')"><div class="image-thumb">🍓</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
-        <div class="image-item" onclick="selectImage(this,'🌿','グリーン')"><div class="image-thumb">🌿</div><div class="image-check">✓</div><div class="image-label">自然</div></div>
-        <div class="image-item" onclick="selectImage(this,'🧁','マフィン')"><div class="image-thumb">🧁</div><div class="image-check">✓</div><div class="image-label">食べ物</div></div>
-        <div class="image-item" onclick="selectImage(this,'🌅','夕景')"><div class="image-thumb">🌅</div><div class="image-check">✓</div><div class="image-label">自然</div></div>
-        <div class="image-item" onclick="selectImage(this,'🌺','花')"><div class="image-thumb">🌺</div><div class="image-check">✓</div><div class="image-label">季節</div></div>
+
+      <!-- アップロード後プレビュー -->
+      <div class="upload-preview" id="upload-preview">
+        <img id="upload-preview-img" src="" alt="プレビュー">
+        <button class="upload-preview-clear" onclick="clearImageSelection()">×</button>
+      </div>
+
+      <!-- 画像なしリンク -->
+      <div class="upload-no-image">
+        <button class="upload-no-image-btn" onclick="selectNoImage()">画像なしで投稿する</button>
       </div>
     </div>
-
-    <!-- マイ画像タブ -->
-    <div id="img-tab-myimage" class="img-tab-panel">
-      <div style="text-align:center;padding:24px 0;color:var(--text-sub);">
-        <div style="font-size:36px;margin-bottom:8px;">📷</div>
-        <div style="font-size:14px;font-weight:700;margin-bottom:6px;">アップロードした画像</div>
-        <div style="font-size:12px;line-height:1.7;">画像をアップロードしてここに表示できます。</div>
-        <button style="margin-top:12px;padding:8px 20px;background:var(--primary);color:white;border:none;border-radius:20px;font-size:13px;cursor:pointer;">画像をアップロード</button>
-      </div>
-    </div>
-
-    <!-- 画像なしタブ -->
-    <div id="img-tab-none" class="img-tab-panel">
-      <div class="no-image-option" id="no-image-opt" onclick="selectNoImage()">
-        <div class="no-image-icon">📄</div>
-        <div class="no-image-label">画像なしで投稿する</div>
-        <div class="no-image-desc">テキストのみで投稿します。<br>画像がなくても投稿できます。</div>
-      </div>
-    </div>
-
   </div>
 
   <!-- ⑥ 投稿先SNS -->
@@ -713,7 +641,7 @@
       <div class="confirm-row"><span class="confirm-key">投稿先</span><span class="confirm-val" id="confirm-sns">Instagram・Facebook・X</span></div>
       <div class="confirm-row"><span class="confirm-key">投稿日時</span><span class="confirm-val" id="confirm-date">6月17日 13時ごろ</span></div>
       <div class="confirm-row"><span class="confirm-key">画像</span><span class="confirm-val" id="confirm-image">抹茶ラテ</span></div>
-      <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain">残り22件</span></div>
+      <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain">残り22</span></div>
     </div>
     <button class="modal-btn modal-btn-success" onclick="executeReserve()">予約を確定する</button>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('confirm-modal')">修正する</button>
@@ -871,39 +799,41 @@ function toggleSns(el) {
   updateCharCount();
 }
 
-// ===== 画像選択 =====
+// ===== 画像選択（アップロードのみ） =====
 let selectedImage = null;
-function switchImgTab(id, btn) {
-  document.querySelectorAll('.img-tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.img-tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('img-tab-' + id).classList.add('active');
-  btn.classList.add('active');
+
+function onImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const previewImg = document.getElementById('upload-preview-img');
+    previewImg.src = e.target.result;
+    document.getElementById('upload-preview').classList.add('show');
+    document.getElementById('upload-wrap').style.display = 'none';
+    selectedImage = { name: file.name, file: file };
+    document.getElementById('img-selected-bar').classList.add('show');
+    document.getElementById('img-selected-thumb').textContent = '🖼️';
+    document.getElementById('img-selected-name').textContent = file.name;
+  };
+  reader.readAsDataURL(file);
 }
-function selectImage(el, emoji, name) {
-  document.querySelectorAll('.image-item').forEach(i => i.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedImage = { emoji, name };
-  document.getElementById('img-selected-bar').classList.add('show');
-  document.getElementById('img-selected-thumb').textContent = emoji;
-  document.getElementById('img-selected-name').textContent = name;
-  document.getElementById('no-image-opt').classList.remove('selected');
-}
+
 function clearImageSelection() {
-  document.querySelectorAll('.image-item').forEach(i => i.classList.remove('selected'));
-  document.getElementById('img-selected-bar').classList.remove('show');
   selectedImage = null;
+  document.getElementById('img-selected-bar').classList.remove('show');
+  document.getElementById('upload-preview').classList.remove('show');
+  document.getElementById('upload-preview-img').src = '';
+  document.getElementById('upload-wrap').style.display = '';
+  document.getElementById('upload-input').value = '';
 }
+
 function selectNoImage() {
   clearImageSelection();
-  document.getElementById('no-image-opt').classList.add('selected');
-  selectedImage = { emoji: '📄', name: '画像なし' };
+  selectedImage = { name: '画像なし' };
   document.getElementById('img-selected-bar').classList.add('show');
   document.getElementById('img-selected-thumb').textContent = '📄';
-  document.getElementById('img-selected-name').textContent = '画像なし';
-}
-function filterCat(btn) {
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  document.getElementById('img-selected-name').textContent = '画像なしで投稿';
 }
 
 // ===== カレンダー =====
@@ -934,7 +864,7 @@ function buildCalendar() {
     el.className = cls;
     const count = postCounts[d];
     if (count) {
-      el.innerHTML = '<span>' + d + '</span><span class="cal-post-count">' + count + '件</span>';
+      el.innerHTML = '<span>' + d + '</span><span class="cal-post-count">' + count + '</span>';
     } else {
       el.textContent = d;
     }
