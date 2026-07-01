@@ -230,7 +230,7 @@
         <div class="plan-feature-label">PRO分析に含まれる機能</div>
         <div class="plan-feature-item"><span>⚡</span><span>投稿後の初速状況をリアルタイムで確認</span></div>
         <div class="plan-feature-item"><span>📈</span><span>1時間・3時間・24時間の成長率表示</span></div>
-        <div class="plan-feature-item"><span>📊</span><span>あなたの平均との比較</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>あなたの投稿平均との比較</span></div>
         <div class="plan-feature-item"><span>❤️</span><span>いいね数・コメント数・インプレッション・EG率</span></div>
         <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移・SNS別（毎日更新）</span></div>
         <div class="plan-feature-item"><span>🏆</span><span>今月の人気投稿ランキング</span></div>
@@ -506,10 +506,10 @@
     </div>
   </div>
 
-  <!-- あなたの平均との比較 -->
+  <!-- あなたの投稿平均との比較 -->
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;">
-      <div class="card-title" style="margin-bottom:0;">📊 あなたの平均との比較</div>
+      <div class="card-title" style="margin-bottom:0;">📊 あなたの投稿平均との比較</div>
       <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;" onclick="toggleSNSDetail('compare-detail')">▶ 詳細を見る</span>
     </div>
     <div id="compare-detail" style="display:none;margin-top:10px;">
@@ -754,13 +754,13 @@
         </div>
         <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">週間推移（直近7日）</div>
         <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
-          <div style="flex:1;background:#fff176;border-radius:2px 2px 0 0;height:55%;"></div>
-          <div style="flex:1;background:#fff176;border-radius:2px 2px 0 0;height:60%;"></div>
-          <div style="flex:1;background:#fff176;border-radius:2px 2px 0 0;height:50%;"></div>
-          <div style="flex:1;background:#fff176;border-radius:2px 2px 0 0;height:70%;"></div>
-          <div style="flex:1;background:#fff176;border-radius:2px 2px 0 0;height:65%;"></div>
-          <div style="flex:1;background:#fff176;border-radius:2px 2px 0 0;height:80%;"></div>
-          <div style="flex:1;background:#f9a825;border-radius:2px 2px 0 0;height:100%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:55%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:50%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:65%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#e65100;border-radius:2px 2px 0 0;height:100%;"></div>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);">
           <span>6/11</span><span>6/12</span><span>6/13</span><span>6/14</span><span>6/15</span><span>6/16</span><span>6/17</span>
@@ -898,15 +898,9 @@
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに算出した次回投稿のおすすめです。</p>
-    <div class="next-grid">
-      <div class="next-item">
-        <div class="next-item-label">⏰ おすすめ投稿時間</div>
-        <div class="next-item-val">日曜 13:00</div>
-      </div>
-      <div class="next-item">
-        <div class="next-item-label">📱 おすすめSNS</div>
-        <div class="next-item-val">X・Instagram</div>
-      </div>
+
+    <!-- 予想初速スコア・投稿のポイント -->
+    <div class="next-grid" style="grid-template-columns:1fr 1fr;margin-bottom:10px;">
       <div class="next-item">
         <div class="next-item-label">📊 予想初速スコア</div>
         <div class="next-item-val">82点</div>
@@ -918,7 +912,7 @@
     </div>
 
     <!-- おすすめ投稿時間帯ランキング -->
-    <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px;">
+    <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
@@ -1132,7 +1126,7 @@
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">📊 EG率の活用</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.7;">EG率が高い投稿は「あなたの平均との比較」画面で確認できます。何が好まれているかを分析し、人気投稿ランキングと合わせてコンテンツの方向性を決める参考にしましょう。</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">EG率が高い投稿は「あなたの投稿平均との比較」画面で確認できます。何が好まれているかを分析し、人気投稿ランキングと合わせてコンテンツの方向性を決める参考にしましょう。</div>
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">⚠️ ネガティブコメントへの対応</div>
