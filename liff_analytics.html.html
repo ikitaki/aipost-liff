@@ -71,6 +71,8 @@
   .cal-date:hover { background:var(--bg); }
   .cal-date.today { background:var(--primary); color:white; font-weight:700; }
   .cal-date.has-post { padding-top:2px; justify-content:flex-start; gap:1px; }
+  .cal-date.selected { background:var(--primary-light) !important; color:white !important; border-radius:6px; }
+  .cal-date.selected .cal-post-count { background:white !important; color:var(--primary) !important; }
   .cal-post-count { font-size:9px; font-weight:700; color:white; border-radius:8px; padding:0px 4px; line-height:1.6; min-width:14px; text-align:center; }
   .cal-date.today .cal-post-count { background:rgba(255,255,255,0.9) !important; color:var(--primary); }
   .cal-date.other-month { color:var(--text-light); }
@@ -156,16 +158,14 @@
 
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">PRO</span>
-    <span>¥1,980/月</span>
+    <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">LITE</span>
+    <span id="plan-price">¥680/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
   </div>
-  <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
+  <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Facebook</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
   </div>
 </div>
 
@@ -184,21 +184,21 @@
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">📊 今日の状況</div>
-    <div class="today-card">
-      <div class="today-item">
-        <div class="today-label">今日の投稿数</div>
-        <div class="today-val">1<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">残り9件</div>
+    <!-- 今日の投稿 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:8px;margin-bottom:8px;">
+      <span style="font-size:12px;font-weight:700;color:var(--text);">📅 今日の投稿</span>
+      <span style="font-size:14px;font-weight:700;color:var(--primary);">1件</span>
+    </div>
+    <!-- 今月の残り投稿枠 -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-size:12px;font-weight:700;color:var(--text);">📆 今月の投稿枠</span>
+        <span style="font-size:12px;font-weight:700;color:var(--primary);">8 / 10件使用</span>
       </div>
-      <div class="today-item">
-        <div class="today-label">今月の投稿数</div>
-        <div class="today-val" style="color:var(--primary);">8<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">/10件</div>
-      </div>
-      <div class="today-item">
-        <div class="today-label">連携SNS数</div>
-        <div class="today-val">2<span style="font-size:10px;">つ</span></div>
-        <div class="today-sub">IG・FB</div>
+      <div class="accum-bar"><div class="accum-fill" style="width:80%;"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;">
+        <span style="font-size:10px;color:var(--text-sub);">連携SNS：IG・FB</span>
+        <span style="font-size:11px;font-weight:700;color:var(--danger);">残り 2件</span>
       </div>
     </div>
   </div>
@@ -363,34 +363,26 @@
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">📊 今日の状況</div>
-    <div class="today-card">
-      <div class="today-item">
-        <div class="today-label">今日の投稿数</div>
-        <div class="today-val">2<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">残り18件</div>
+    <!-- 今日の投稿 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:8px;margin-bottom:8px;">
+      <span style="font-size:12px;font-weight:700;color:var(--text);">📅 今日の投稿</span>
+      <span style="font-size:14px;font-weight:700;color:var(--primary);">2件</span>
+    </div>
+    <!-- 今月の残り投稿枠 -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-size:12px;font-weight:700;color:var(--text);">📆 今月の投稿枠</span>
+        <span style="font-size:12px;font-weight:700;color:var(--primary);">12 / 20件使用</span>
       </div>
-      <div class="today-item">
-        <div class="today-label">今月の投稿数</div>
-        <div class="today-val" style="color:var(--primary);">12<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">/20件</div>
-      </div>
-      <div class="today-item">
-        <div class="today-label">連携SNS数</div>
-        <div class="today-val">3<span style="font-size:10px;">つ</span></div>
-        <div class="today-sub">X・IG・FB</div>
+      <div class="accum-bar"><div class="accum-fill" style="width:60%;"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;">
+        <span style="font-size:10px;color:var(--text-sub);">連携SNS：X・IG・FB</span>
+        <span style="font-size:11px;font-weight:700;color:var(--success);">残り 8件</span>
       </div>
     </div>
-    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;">
       <div style="font-size:11px;font-weight:700;color:#e65100;">🏆 あといいね <span style="font-size:14px;">5件</span> で過去最高記録！</div>
       <div style="font-size:10px;color:#e65100;margin-top:2px;">現在のいいね数：142件　過去最高：147件（6月3日）</div>
-    </div>
-    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <span style="font-size:11px;font-weight:700;color:var(--text);">📈 データ蓄積率</span>
-        <span style="font-size:12px;font-weight:700;color:var(--primary);">73%</span>
-      </div>
-      <div class="accum-bar"><div class="accum-fill" style="width:73%;"></div></div>
-      <div style="font-size:9px;color:var(--text-sub);margin-top:3px;">22投稿分蓄積済み・30投稿で分析精度が最大になります</div>
     </div>
   </div>
 
@@ -677,7 +669,19 @@
       <div class="today-item">
         <div class="today-label">今日の投稿数</div>
         <div class="today-val">2<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">残り38件</div>
+        <div class="today-sub">本日投稿済み</div>
+      </div>
+    </div>
+    <!-- 今月の残り投稿枠 -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-size:12px;font-weight:700;color:var(--text);">📆 今月の投稿枠</span>
+        <span style="font-size:12px;font-weight:700;color:var(--primary);">22 / 40件使用</span>
+      </div>
+      <div class="accum-bar"><div class="accum-fill" style="width:55%;"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;">
+        <span style="font-size:10px;color:var(--text-sub);">連携SNS：X・IG・FB・TH</span>
+        <span style="font-size:11px;font-weight:700;color:var(--success);">残り 18件</span>
       </div>
     </div>
     <!-- あと○件で過去最高 -->
@@ -1316,6 +1320,9 @@
     <div class="card-title">⚠️ ネガティブコメント検知
       <button class="acc-btn" onclick="toggleCompare('neg-detail','neg-btn')" id="neg-btn">詳細を見る ▼</button>
     </div>
+    <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の大切なヒントです。早めに気づいて対応することで、お客様との信頼関係を深めるチャンスに変えましょう。</div>
+    </div>
     <div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);">
       <span style="font-size:22px;">⚠️</span>
       <div>
@@ -1587,8 +1594,12 @@
         <div style="font-size:11px;color:var(--text);line-height:1.7;">EG率が高い投稿は「あなたの投稿平均との比較」画面で確認できます。何が好まれているかを分析し、人気投稿ランキングと合わせてコンテンツの方向性を決める参考にしましょう。</div>
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
-        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">⚠️ ネガティブコメントへの対応</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.7;">ネガティブコメント検知はAIがコメントを自動分析し、ネガティブと判断した内容を通知します。ただしAIによる検知のため、全てのネガティブコメントを検知できるわけではありません。早めに確認することをおすすめします。対応が早いほどブランドイメージへの影響を最小限に抑えられます。各SNSのアプリから直接コメントを確認してください。</div>
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">💡 ネガティブコメントは改善のチャンス</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">ネガティブなコメントが届いたとき、それは落ち込む理由ではなく、お客様があなたのお店に期待している証です。早めに気づいて誠実に対応することは、むしろブランドへの信頼を高める絶好の機会になります。AiPostがいち早くお知らせするので、ぜひ前向きな改善のきっかけとして活用してください。</div>
+        <div style="margin-top:8px;padding:8px;background:#e8f5e9;border-radius:6px;border-left:3px solid #43a047;">
+          <div style="font-size:11px;font-weight:700;color:#1b5e20;margin-bottom:3px;">⭐ PROプランでできること</div>
+          <div style="font-size:11px;color:#2e7d32;line-height:1.7;">AIがネガティブコメントをいち早く検知してお知らせします。小さな不満が大きなトラブルになる前に対応でき、サービス改善のヒントを見逃しません。お客様の声を経営に活かす、賢い店舗運営のパートナーです。</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1651,6 +1662,35 @@ function switchTab(id) {
   ['lite','standard','pro','guide'].forEach((t,i)=>{
     document.querySelectorAll('.tab-btn')[i].classList.toggle('active', t===id);
   });
+
+  // プランバッジ・価格・連携SNS連動
+  const planInfo = {
+    lite:     { badge:'LITE',     price:'¥680/月',   sns:'Instagram・Facebook' },
+    standard: { badge:'STANDARD', price:'¥1,280/月', sns:'X・Instagram・Facebook' },
+    pro:      { badge:'PRO',      price:'¥1,980/月', sns:'X・Instagram・Facebook・Threads' },
+    guide:    { badge:'GUIDE',    price:'',           sns:'' },
+  };
+  const info = planInfo[id];
+  if (info) {
+    const badge = document.getElementById('plan-badge');
+    const price = document.getElementById('plan-price');
+    const sns   = document.getElementById('plan-sns');
+    if (badge) badge.textContent = info.badge;
+    if (price) price.textContent = info.price;
+    if (sns) sns.style.display = info.sns ? 'flex' : 'none';
+    if (sns && info.sns) {
+      sns.innerHTML = '<span>連携中：</span>' + info.sns.split('・').map(s =>
+        `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${s}</span>`
+      ).join('');
+    }
+  }
+
+  // カレンダー選択状態リセット
+  document.querySelectorAll('.cal-day.selected').forEach(el => el.classList.remove('selected'));
+  ['cal-lite-detail','cal-std-detail','cal-unified-detail'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
 }
 
 function togglePost(id) {
@@ -1706,7 +1746,12 @@ function buildCal(gridId, data, badgeColor, onClickFn) {
     if (val !== undefined) {
       cls += ' has-post';
       el.innerHTML = `<span>${d}</span><span class="cal-post-count" style="background:${badgeColor};">${val}</span>`;
-      el.onclick = () => onClickFn(d, val);
+      el.onclick = () => {
+        // 同一カレンダー内の選択状態をリセット
+        grid.querySelectorAll('.cal-date.selected').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        onClickFn(d, val);
+      };
     } else {
       el.textContent = d;
     }
