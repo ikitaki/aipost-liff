@@ -120,8 +120,9 @@
   .today-val { font-size:14px; font-weight:700; color:var(--text); }
   .today-sub { font-size:10px; color:var(--text-sub); margin-top:2px; }
   /* データ蓄積ゲージ */
-  .accum-bar { height:8px; background:#e0e0e0; border-radius:4px; overflow:hidden; margin:4px 0; }
+  .accum-bar { height:11px; background:#e0e0e0; border-radius:5px; overflow:hidden; margin:5px 0; }
   .accum-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--primary),#5c6bc0); }
+  .post-text { font-size:11px; color:var(--text); line-height:1.6; }
   /* 次回おすすめ */
   .next-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
   .acc-btn { float:right; font-size:10px; background:none; border:1px solid var(--border); border-radius:12px; padding:2px 8px; color:var(--primary); cursor:pointer; font-family:inherit; font-weight:600; }
@@ -179,26 +180,53 @@
 <div class="content">
 
 <!-- ===== LITE分析タブ ===== -->
+<!-- ===== LITE分析タブ ===== -->
 <div id="tab-lite" class="tab-panel active">
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">📊 今日の状況</div>
-    <!-- 今日の投稿 -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:8px;margin-bottom:8px;">
-      <span style="font-size:12px;font-weight:700;color:var(--text);">📅 今日の投稿</span>
-      <span style="font-size:14px;font-weight:700;color:var(--primary);">1件</span>
-    </div>
-    <!-- 今月の残り投稿枠 -->
-    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <span style="font-size:12px;font-weight:700;color:var(--text);">📆 今月の投稿枠</span>
-        <span style="font-size:12px;font-weight:700;color:var(--primary);">8 / 10件使用</span>
+
+    <!-- 3項目グリッド -->
+    <div class="today-card" style="margin-bottom:10px;">
+      <div class="today-item">
+        <div class="today-label">今日の投稿数</div>
+        <div class="today-val">1<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">本日投稿済み</div>
       </div>
-      <div class="accum-bar"><div class="accum-fill" style="width:80%;"></div></div>
-      <div style="display:flex;justify-content:space-between;margin-top:4px;">
-        <span style="font-size:10px;color:var(--text-sub);">連携SNS：IG・FB</span>
-        <span style="font-size:11px;font-weight:700;color:var(--danger);">残り 2件</span>
+      <div class="today-item">
+        <div class="today-label">今月の投稿数</div>
+        <div class="today-val" style="color:var(--primary);">8<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">/10件</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">総合EG率</div>
+        <div class="today-val" style="color:#43a047;">9.8%</div>
+        <div class="today-sub" style="color:var(--success);">前回比 +1.2%</div>
+      </div>
+    </div>
+
+    <!-- 👥 フォロワー前日比（IG・FB） -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:8px;">👥 フォロワー前日比</div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#e1306c;">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">1,284人　<span style="color:var(--success);font-weight:700;">+5人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#1877f2;">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">842人　<span style="color:var(--success);font-weight:700;">+1人</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📆 今月の投稿枠（テキスト） -->
+    <div style="display:grid;grid-template-columns:1fr;gap:6px;">
+      <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success);">残り2件</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">8 / 10件使用　連携SNS：IG・FB</div>
       </div>
     </div>
   </div>
@@ -213,7 +241,7 @@
       </div>
       <div style="display:flex;align-items:flex-start;gap:8px;">
         <span style="font-size:14px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Facebookの反応は平均的です。投稿のシェアを増やす工夫（呼びかけ文など）を試してみましょう。</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Facebookの反応は平均的です。投稿のシェアを増やす工夫を試してみましょう。</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:8px;">
         <span style="font-size:14px;flex-shrink:0;">💡</span>
@@ -223,10 +251,10 @@
     <p style="font-size:9px;color:#558b2f;margin-top:8px;">※ アドバイスはあなたの投稿データの数値分析をもとに生成しています</p>
   </div>
 
-  <!-- ③ 投稿カレンダー -->
+  <!-- ③ 投稿カレンダー（24時間後データ） -->
   <div class="card">
-    <div class="card-title">📅 投稿カレンダー（6月）</div>
-    <p class="hint">💡 日付をタップすると24時間後のデータを確認できます</p>
+    <div class="card-title">📅 投稿日別データ</div>
+    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます</p>
     <div class="cal-grid">
       <div class="cal-days">
         <div class="cal-day-label">日</div><div class="cal-day-label">月</div><div class="cal-day-label">火</div>
@@ -238,9 +266,10 @@
       <div id="cal-lite-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-lite-sns"></div>
     </div>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
   </div>
 
-  <!-- ④ フォロワー推移 -->
+  <!-- ④ フォロワー推移（IG・FB） -->
   <div class="card">
     <div class="card-title">👥 フォロワー数の推移（SNS別）</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
@@ -309,7 +338,8 @@
         <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月19日（月）10:01投稿</div>
         <div class="rank-text">本日のスペシャルティコーヒーはエチオピア・イルガチェフェ産☕️希少豆をハンドドリップでご提供。</div>
         <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️158　💬24　📊15.8%<br><span style="color:#1877f2;font-weight:700;">FB</span> ❤️78　💬15　📤10　👁️1.2K　📊7.2%
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️158　💬24　📊15.8%<br>
+          <span style="color:#1877f2;font-weight:700;">FB</span> ❤️78　💬15　📤10　👁️1.2K　📊7.2%
         </div>
       </div>
     </div>
@@ -325,37 +355,64 @@
     </div>
   </div>
 
-  <!-- ⑥ 次回おすすめ -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに算出した次回投稿のおすすめです。</p>
+
+    <!-- おすすめ投稿時間帯ランキング -->
     <div style="margin-bottom:12px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:18px;">🥇</span><div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:18px;">🥈</span><div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:18px;">🥉</span><div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥇</span>
+          <div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥈</span>
+          <div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥉</span>
+          <div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div>
+        </div>
       </div>
     </div>
+
+    <!-- 投稿のポイント -->
     <div style="border-top:1px solid var(--border);padding-top:10px;margin-bottom:12px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">💡 投稿のポイント</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:14px;flex-shrink:0;">✅</span><span style="font-size:11px;color:var(--text);line-height:1.6;">ハッシュタグは3〜5個が最も反応率が高い傾向があります</span></div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:14px;flex-shrink:0;">✅</span><span style="font-size:11px;color:var(--text);line-height:1.6;">写真は明るく正面から撮影した投稿の反応率が平均より18%高い</span></div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:14px;flex-shrink:0;">✅</span><span style="font-size:11px;color:var(--text);line-height:1.6;">「限定」「本日」などの緊急性ワードを含む投稿はEG率が高い</span></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:14px;flex-shrink:0;">✅</span>
+          <span style="font-size:11px;color:var(--text);line-height:1.6;">ハッシュタグは3〜5個が最も反応率が高い傾向があります</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:14px;flex-shrink:0;">✅</span>
+          <span style="font-size:11px;color:var(--text);line-height:1.6;">写真は明るく正面から撮影した投稿の反応率が平均より18%高い</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:14px;flex-shrink:0;">✅</span>
+          <span style="font-size:11px;color:var(--text);line-height:1.6;">「限定」「本日」などの緊急性ワードを含む投稿はEG率が高い</span>
+        </div>
       </div>
     </div>
+
+    <!-- 予想初速スコア（施策実践後の結論として最後に表示） -->
     <div style="border-top:1px solid var(--border);padding-top:10px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📊 これらを実践した場合の予想スコア</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📊 これらを実践した場合の予想初速スコア</div>
       <div style="display:flex;align-items:center;gap:12px;padding:10px;background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border-radius:8px;border:1px solid #a5d6a7;">
-        <div style="font-size:32px;font-weight:700;color:#2e7d32;">76<span style="font-size:14px;">点</span></div>
-        <div><div style="font-size:11px;font-weight:700;color:#1b5e20;">🟢 好調が期待できます</div><div style="font-size:10px;color:#558b2f;margin-top:2px;">過去平均より+8点の予想です</div></div>
+        <div style="font-size:32px;font-weight:700;color:#2e7d32;">82<span style="font-size:14px;">点</span></div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#1b5e20;">🟢 好調が期待できます</div>
+          <div style="font-size:10px;color:#558b2f;margin-top:2px;">過去平均より+12点の予想です</div>
+        </div>
       </div>
     </div>
+
     <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 予想スコア・おすすめ時間帯はあなたの過去データの数値分析をもとに算出するAiPost独自の指標です</p>
   </div>
 
-</div>
+</div><!-- /tab-lite -->
 
 <!-- ===== STANDARD分析タブ ===== -->
 <div id="tab-standard" class="tab-panel">
@@ -363,26 +420,52 @@
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">📊 今日の状況</div>
-    <!-- 今日の投稿 -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:8px;margin-bottom:8px;">
-      <span style="font-size:12px;font-weight:700;color:var(--text);">📅 今日の投稿</span>
-      <span style="font-size:14px;font-weight:700;color:var(--primary);">2件</span>
+
+    <!-- 3項目グリッド -->
+    <div class="today-card" style="margin-bottom:10px;">
+      <div class="today-item">
+        <div class="today-label">今日の投稿数</div>
+        <div class="today-val">2<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">本日投稿済み</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">今月の投稿数</div>
+        <div class="today-val" style="color:var(--primary);">12<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">/20件</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">総合EG率</div>
+        <div class="today-val" style="color:#43a047;">8.4%</div>
+        <div class="today-sub" style="color:var(--success);">前回比 +0.8%</div>
+      </div>
     </div>
-    <!-- 今月の残り投稿枠 -->
+
+    <!-- 👥 フォロワー前日比（X・IG・FB） -->
     <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <span style="font-size:12px;font-weight:700;color:var(--text);">📆 今月の投稿枠</span>
-        <span style="font-size:12px;font-weight:700;color:var(--primary);">12 / 20件使用</span>
-      </div>
-      <div class="accum-bar"><div class="accum-fill" style="width:60%;"></div></div>
-      <div style="display:flex;justify-content:space-between;margin-top:4px;">
-        <span style="font-size:10px;color:var(--text-sub);">連携SNS：X・IG・FB</span>
-        <span style="font-size:11px;font-weight:700;color:var(--success);">残り 8件</span>
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:8px;">👥 フォロワー前日比</div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#000;">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);">1,721人　<span style="color:var(--success);font-weight:700;">+3人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#e1306c;">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">1,284人　<span style="color:var(--success);font-weight:700;">+5人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#1877f2;">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">842人　<span style="color:var(--success);font-weight:700;">+1人</span></span>
+        </div>
       </div>
     </div>
-    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;">
-      <div style="font-size:11px;font-weight:700;color:#e65100;">🏆 あといいね <span style="font-size:14px;">5件</span> で過去最高記録！</div>
-      <div style="font-size:10px;color:#e65100;margin-top:2px;">現在のいいね数：142件　過去最高：147件（6月3日）</div>
+
+    <!-- 📆 今月の投稿枠（テキスト） -->
+    <div style="display:grid;grid-template-columns:1fr;gap:6px;">
+      <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success);">残り8件</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">12 / 20件使用　連携SNS：X・IG・FB</div>
+      </div>
     </div>
   </div>
 
@@ -406,10 +489,10 @@
     <p style="font-size:9px;color:#558b2f;margin-top:8px;">※ アドバイスはあなたの投稿データの数値分析をもとに生成しています</p>
   </div>
 
-  <!-- ③ 投稿カレンダー -->
+  <!-- ③ 投稿カレンダー（24時間後データ） -->
   <div class="card">
-    <div class="card-title">📅 投稿カレンダー（6月）</div>
-    <p class="hint">💡 日付をタップすると24時間後のデータを確認できます</p>
+    <div class="card-title">📅 投稿日別データ</div>
+    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます</p>
     <div class="cal-grid">
       <div class="cal-days">
         <div class="cal-day-label">日</div><div class="cal-day-label">月</div><div class="cal-day-label">火</div>
@@ -421,9 +504,10 @@
       <div id="cal-std-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-std-sns"></div>
     </div>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
   </div>
 
-  <!-- ④ フォロワー推移 -->
+  <!-- ④ フォロワー推移（X・IG・FB） -->
   <div class="card">
     <div class="card-title">👥 フォロワー数の推移（SNS別）</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
@@ -503,7 +587,8 @@
         <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月21日（水）19:02投稿</div>
         <div class="rank-text">週末限定✨抹茶テリーヌが本日より登場です🍵濃厚な宇治抹茶の香りとなめらかな口当たりが絶品。</div>
         <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️184　💬26　📊18.4%<br><span style="color:#555555;font-weight:700;">X</span> ❤️148　🔁42　📊22.4%
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️184　💬26　📊18.4%<br>
+          <span style="color:#555555;font-weight:700;">X</span> ❤️148　🔁42　📊22.4%
         </div>
       </div>
     </div>
@@ -513,7 +598,8 @@
         <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月19日（月）10:01投稿</div>
         <div class="rank-text">本日のスペシャルティコーヒーはエチオピア・イルガチェフェ産☕️希少豆をハンドドリップでご提供。</div>
         <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️158　💬24　📊15.8%<br><span style="color:#1877f2;font-weight:700;">FB</span> ❤️78　💬15　📤10　👁️1.2K　📊7.2%
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️158　💬24　📊15.8%<br>
+          <span style="color:#1877f2;font-weight:700;">FB</span> ❤️78　💬15　📤10　👁️1.2K　📊7.2%
         </div>
       </div>
     </div>
@@ -523,7 +609,8 @@
         <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月13日（土）12:01投稿</div>
         <div class="rank-text">🌴週末限定ドリンク登場！南国フルーツたっぷりのトロピカルスムージー🥤3種からお選びいただけます。</div>
         <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️97　💬18　📊11.4%<br><span style="color:#1877f2;font-weight:700;">FB</span> ❤️72　💬14　📤9　👁️982　📊6.2%
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️97　💬18　📊11.4%<br>
+          <span style="color:#1877f2;font-weight:700;">FB</span> ❤️72　💬14　📤9　👁️982　📊6.2%
         </div>
       </div>
     </div>
@@ -536,16 +623,10 @@
     </div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">直近投稿（6月25日）の24時間後データと過去平均を比較しています</p>
     <div id="std-compare-detail" style="display:none;margin-top:10px;">
-
-      <!-- X -->
-      <div style="margin-bottom:4px;">
+      <div style="margin-bottom:10px;">
         <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:6px;">🐦 X（24時間後）</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">🔁</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">↩️</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">👁️</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div><div style="font-size:12px;font-weight:700;text-align:center;">🔁</div><div style="font-size:12px;font-weight:700;text-align:center;">↩️</div><div style="font-size:12px;font-weight:700;text-align:center;">👁️</div><div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
           <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">124 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 88</div></div>
           <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">28 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 19</div></div>
           <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 12</div></div>
@@ -554,30 +635,20 @@
         </div>
       </div>
       <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
-
-      <!-- Instagram -->
-      <div style="margin-bottom:4px;">
+      <div style="margin-bottom:10px;">
         <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram（24時間後）</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 8px;align-items:center;">
-          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">💬</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div><div style="font-size:12px;font-weight:700;text-align:center;">💬</div><div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
           <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">178 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 124</div></div>
           <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">34 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 22</div></div>
           <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">17.8% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 12.4%</div></div>
         </div>
       </div>
       <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
-
-      <!-- Facebook -->
-      <div style="margin-bottom:4px;">
+      <div>
         <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook（24時間後）</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">💬</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">📤</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">👁️</div>
-          <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div><div style="font-size:12px;font-weight:700;text-align:center;">💬</div><div style="font-size:12px;font-weight:700;text-align:center;">📤</div><div style="font-size:12px;font-weight:700;text-align:center;">👁️</div><div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
           <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">72 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 58</div></div>
           <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">14 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 11</div></div>
           <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">11 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 8</div></div>
@@ -586,38 +657,64 @@
         </div>
       </div>
       <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 最大過去30投稿の24時間後データをもとに算出しています</p>
-      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
-      <p style="font-size:9px;color:#e65100;margin-top:4px;font-weight:700;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+      <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
     </div>
   </div>
 
-  <!-- ⑦ 次回おすすめ -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに算出した次回投稿のおすすめです。</p>
+
+    <!-- おすすめ投稿時間帯ランキング -->
     <div style="margin-bottom:12px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:18px;">🥇</span><div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:18px;">🥈</span><div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div></div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:18px;">🥉</span><div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥇</span>
+          <div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥈</span>
+          <div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥉</span>
+          <div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div>
+        </div>
       </div>
     </div>
+
+    <!-- 投稿のポイント -->
     <div style="border-top:1px solid var(--border);padding-top:10px;margin-bottom:12px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">💡 投稿のポイント</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:14px;flex-shrink:0;">✅</span><span style="font-size:11px;color:var(--text);line-height:1.6;">ハッシュタグは3〜5個が最も反応率が高い傾向があります</span></div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:14px;flex-shrink:0;">✅</span><span style="font-size:11px;color:var(--text);line-height:1.6;">写真は明るく正面から撮影した投稿の反応率が平均より18%高い</span></div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;"><span style="font-size:14px;flex-shrink:0;">✅</span><span style="font-size:11px;color:var(--text);line-height:1.6;">「限定」「本日」などの緊急性ワードを含む投稿はEG率が高い</span></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:14px;flex-shrink:0;">✅</span>
+          <span style="font-size:11px;color:var(--text);line-height:1.6;">ハッシュタグは3〜5個が最も反応率が高い傾向があります</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:14px;flex-shrink:0;">✅</span>
+          <span style="font-size:11px;color:var(--text);line-height:1.6;">写真は明るく正面から撮影した投稿の反応率が平均より18%高い</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:14px;flex-shrink:0;">✅</span>
+          <span style="font-size:11px;color:var(--text);line-height:1.6;">「限定」「本日」などの緊急性ワードを含む投稿はEG率が高い</span>
+        </div>
       </div>
     </div>
+
+    <!-- 予想初速スコア（施策実践後の結論として最後に表示） -->
     <div style="border-top:1px solid var(--border);padding-top:10px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📊 これらを実践した場合の予想スコア</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📊 これらを実践した場合の予想初速スコア</div>
       <div style="display:flex;align-items:center;gap:12px;padding:10px;background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border-radius:8px;border:1px solid #a5d6a7;">
-        <div style="font-size:32px;font-weight:700;color:#2e7d32;">79<span style="font-size:14px;">点</span></div>
-        <div><div style="font-size:11px;font-weight:700;color:#1b5e20;">🟢 好調が期待できます</div><div style="font-size:10px;color:#558b2f;margin-top:2px;">過去平均より+10点の予想です</div></div>
+        <div style="font-size:32px;font-weight:700;color:#2e7d32;">82<span style="font-size:14px;">点</span></div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#1b5e20;">🟢 好調が期待できます</div>
+          <div style="font-size:10px;color:#558b2f;margin-top:2px;">過去平均より+12点の予想です</div>
+        </div>
       </div>
     </div>
+
     <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 予想スコア・おすすめ時間帯はあなたの過去データの数値分析をもとに算出するAiPost独自の指標です</p>
   </div>
 
@@ -655,48 +752,103 @@
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">📊 今日の状況</div>
-    <div class="today-card">
-      <div class="today-item">
-        <div class="today-label">総合初速スコア</div>
-        <div class="today-val" style="color:#43a047;">78<span style="font-size:10px;">点</span></div>
-        <div class="today-sub" style="color:var(--success);">昨日比 +12点</div>
-      </div>
-      <div class="today-item">
-        <div class="today-label">過去30投稿中</div>
-        <div class="today-val" style="color:var(--primary);">4<span style="font-size:10px;">位</span></div>
-        <div class="today-sub">/30投稿</div>
-      </div>
+
+    <!-- グループ①：今日のパフォーマンス -->
+    <div class="today-card" style="margin-bottom:10px;">
       <div class="today-item">
         <div class="today-label">今日の投稿数</div>
         <div class="today-val">2<span style="font-size:10px;">件</span></div>
         <div class="today-sub">本日投稿済み</div>
       </div>
+      <div class="today-item">
+        <div class="today-label">過去30投稿中</div>
+        <div class="today-val" style="color:var(--primary);">4<span style="font-size:10px;">位</span></div>
+        <div class="today-sub">上位 13%</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">総合EG率</div>
+        <div class="today-val" style="color:#43a047;">9.8%</div>
+        <div class="today-sub" style="color:var(--success);">前回比 +2.1%</div>
+      </div>
     </div>
-    <!-- 今月の残り投稿枠 -->
+
+    <!-- ⚡ 直近投稿の初速スコア＋1時間後の反応 -->
     <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <span style="font-size:12px;font-weight:700;color:var(--text);">📆 今月の投稿枠</span>
-        <span style="font-size:12px;font-weight:700;color:var(--primary);">22 / 40件使用</span>
-      </div>
-      <div class="accum-bar"><div class="accum-fill" style="width:55%;"></div></div>
-      <div style="display:flex;justify-content:space-between;margin-top:4px;">
-        <span style="font-size:10px;color:var(--text-sub);">連携SNS：X・IG・FB・TH</span>
-        <span style="font-size:11px;font-weight:700;color:var(--success);">残り 18件</span>
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:8px;">⚡ 直近投稿の初速スコア（1時間後）</div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#000;">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);">❤️42　🔁8　↩️5　👁️1.1K</span>
+          <span style="font-size:12px;font-weight:700;color:#1b5e20;">94点</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#e1306c;">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">❤️58　💬9</span>
+          <span style="font-size:12px;font-weight:700;color:#43a047;">88点</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#1877f2;">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">❤️22　💬4　📤3　👁️512</span>
+          <span style="font-size:12px;font-weight:700;color:#fb8c00;">62点</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#555;">🧵 TH</span>
+          <span style="font-size:10px;color:var(--text);">❤️18　🔁3　↩️4　👁️284</span>
+          <span style="font-size:12px;font-weight:700;color:#43a047;">78点</span>
+        </div>
       </div>
     </div>
-    <!-- あと○件で過去最高 -->
-    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;margin-bottom:8px;">
-      <div style="font-size:11px;font-weight:700;color:#e65100;">🏆 あといいね <span style="font-size:14px;">5件</span> で過去最高記録！</div>
-      <div style="font-size:10px;color:#e65100;margin-top:2px;">現在のいいね数：142件　過去最高：147件（6月3日）</div>
-    </div>
-    <!-- データ蓄積率 -->
-    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <span style="font-size:11px;font-weight:700;color:var(--text);">📈 データ蓄積率</span>
-        <span style="font-size:12px;font-weight:700;color:var(--primary);">73%</span>
+
+    <!-- 👥 フォロワー前日比（簡易テキスト） -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:8px;">👥 フォロワー前日比</div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#000;">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);">1,721人　<span style="color:var(--success);font-weight:700;">+3人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#e1306c;">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">1,284人　<span style="color:var(--success);font-weight:700;">+5人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#1877f2;">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">842人　<span style="color:var(--success);font-weight:700;">+1人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#555;">🧵 TH</span>
+          <span style="font-size:10px;color:var(--text);">201人　<span style="color:var(--success);font-weight:700;">+2人</span></span>
+        </div>
       </div>
-      <div class="accum-bar"><div class="accum-fill" style="width:73%;"></div></div>
-      <div style="font-size:9px;color:var(--text-sub);margin-top:3px;">22投稿分蓄積済み・30投稿で分析精度が最大になります</div>
+    </div>
+
+    <!-- 😊 コメント感情分析（グラフ） -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;">😊 コメント感情分析（今月 128件）</div>
+      <div class="sentiment-bar" style="height:11px;margin:5px 0;">
+        <div class="sent-pos" style="width:72%;"></div>
+        <div class="sent-neu" style="width:21%;"></div>
+        <div class="sent-neg" style="width:7%;"></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:5px;">
+        <div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--success);display:inline-block;"></span>ポジティブ 72%（92件）</div>
+        <div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#e0e0e0;border:1px solid #ccc;display:inline-block;"></span>中立 21%（27件）</div>
+        <div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--danger);display:inline-block;"></span>ネガティブ 7%（9件）</div>
+      </div>
+    </div>
+
+    <!-- 📈データ蓄積率・📆今月の投稿枠（簡易テキスト2列） -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📈 データ蓄積率</div>
+        <div style="font-size:14px;font-weight:700;color:var(--primary);">73%</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">22 / 30投稿</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success);">残り18件</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">22 / 40件使用</div>
+      </div>
     </div>
   </div>
 
@@ -706,11 +858,11 @@
     <div style="display:flex;flex-direction:column;gap:6px;">
       <div style="display:flex;align-items:flex-start;gap:8px;">
         <span style="font-size:14px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xの初速スコアが94点と非常に好調です。投稿時間帯（13:02）が効果的だった可能性があります。</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xの1時間後のいいね・リポストが平均比+32%と非常に好調です。投稿時間帯（08:00）が効果的だった可能性があります。</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:8px;">
         <span style="font-size:14px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Threadsの初速スコアは32点と伸び悩んでいます。投稿時間帯の変更を検討してください。</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Threadsの1時間後の反応が平均を下回っています。投稿時間帯の変更を検討してください。</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:8px;">
         <span style="font-size:14px;flex-shrink:0;">💡</span>
@@ -724,224 +876,101 @@
   <div class="card">
     <div class="card-title">⚡ 直近投稿の初速状況</div>
 
-    <!-- IG・FB・X共通投稿 -->
-    <div style="font-size:11px;color:var(--text-sub);margin-bottom:10px;padding:8px;background:var(--bg);border-radius:8px;line-height:1.6;border-left:3px solid var(--border);">
-      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:6px;">🐦X・📱IG・💻FB　の直近投稿</div>
-      <div id="post-common-short">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。<span style="color:var(--primary);cursor:pointer;font-size:10px;" onclick="togglePost('common')">…続きを読む</span></div>
-      <div id="post-common-full" style="display:none;">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。ご予約は不要ですのでお気軽にお越しください😊 #渋谷モーニング #朝活カフェ #特別イベント<span style="color:var(--primary);cursor:pointer;font-size:10px;margin-left:4px;" onclick="togglePost('common')">▲ 閉じる</span></div>
-      <span style="font-size:10px;color:var(--text-light);">6月25日（水）<strong style="color:var(--text);">08:00</strong>投稿　138文字</span>
-    </div>
+    <!-- 投稿① X・IG・FB・TH 同時投稿 -->
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
+      <div style="padding:10px 10px 0 10px;">
+        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">6月25日（水）08:00投稿　138文字　🐦X・📱IG・💻FB・🧵TH</div>
+        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。ご予約は不要ですのでお気軽にお越しください😊 #渋谷モーニング #朝活カフェ #特別イベント</p>
+        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('p1-detail','p1-btn')" id="p1-btn">詳細を見る ▼</button>
+      </div>
+      <div id="p1-detail" style="display:none;padding:10px;">
 
-    <div class="sns-section sns-x">
-      <div class="sns-label" style="color:#000000;">
-        <span>🐦</span><span>X</span>
-      </div>
-      <div class="gauge-wrap">
-        <div class="gauge-label">
-          <span class="gauge-title">初速スコア</span>
-          <span class="gauge-status" style="color:#1b5e20;">🟢 最高！　94点</span>
+        <!-- X -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:6px;">🐦 X</div>
+          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">🔁</div><div style="font-size:11px;font-weight:700;text-align:center;">↩️</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">42</span><span style="font-size:11px;font-weight:700;text-align:center;">8</span><span style="font-size:11px;font-weight:700;text-align:center;">5</span><span style="font-size:11px;font-weight:700;text-align:center;">1.1K</span><span style="font-size:11px;font-weight:700;text-align:center;">5.2%</span>
+            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">88</span><span style="font-size:11px;font-weight:700;text-align:center;">18</span><span style="font-size:11px;font-weight:700;text-align:center;">12</span><span style="font-size:11px;font-weight:700;text-align:center;">2.4K</span><span style="font-size:11px;font-weight:700;text-align:center;">10.8%</span>
+            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">124 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">28 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">18 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">3.6K ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">14.8% ↑</span>
+          </div>
         </div>
-        <div class="gauge-bar"><div class="gauge-fill gauge-best" style="width:94%;"></div></div>
-      </div>
-      <div style="text-align:right;margin-top:4px;">
-        <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;" onclick="toggleSNSDetail('x-detail')">▶ 詳細を見る</span>
-      </div>
-      <div id="x-detail" style="display:none;margin-top:6px;">
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
-          <span class="growth-time">1時間後</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">❤️</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">🔁</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">↩️</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">👁️</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">📊</span>
-          <span style="font-size:9px;color:var(--text-light);">09:01取得</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">42</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">8</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">5</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">1.1K</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">5.2%</span>
-        </div>
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
-          <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">88</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">18</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">12</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">2.4K</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">10.8%</span>
-        </div>
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;">
-          <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">124 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">28 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">18 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">3.6K ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">14.8% ↑</span>
-        </div>
-        <div class="action-box" style="margin-top:6px;">
-          <div class="action-text">🔵 24時間が経過しました。次の投稿準備を始めましょう</div>
-        </div>
-        <p style="font-size:9px;color:var(--text-sub);line-height:1.8;margin-top:6px;">❤️いいね　🔁リポスト　↩️リプライ　👁️インプレッション　📊EG率</p>
-        <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
-      </div>
-    </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
 
-    <div class="sns-section sns-ig">
-      <div class="sns-label" style="color:#e1306c;">
-        <span>📱</span><span>Instagram</span>
-      </div>
-      <div class="gauge-wrap">
-        <div class="gauge-label">
-          <span class="gauge-title">初速スコア</span>
-          <span class="gauge-status" style="color:#43a047;">🟢 好調　88点</span>
+        <!-- Instagram -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram</div>
+          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:4px 8px;align-items:center;">
+            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">58</span><span style="font-size:11px;font-weight:700;text-align:center;">9</span><span style="font-size:11px;font-weight:700;text-align:center;">5.8%</span>
+            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">124</span><span style="font-size:11px;font-weight:700;text-align:center;">22</span><span style="font-size:11px;font-weight:700;text-align:center;">12.4%</span>
+            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">178 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">34 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">17.8% ↑</span>
+          </div>
         </div>
-        <div class="gauge-bar"><div class="gauge-fill gauge-good" style="width:88%;"></div></div>
-      </div>
-      <div style="text-align:right;margin-top:4px;">
-        <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;" onclick="toggleSNSDetail('ig-detail')">▶ 詳細を見る</span>
-      </div>
-      <div id="ig-detail" style="display:none;margin-top:6px;">
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:4px 8px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
-          <span class="growth-time">1時間後</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">❤️</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">💬</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">📊</span>
-          <span style="font-size:9px;color:var(--text-light);">09:01取得</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">58</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">9</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">5.8%</span>
+        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
+
+        <!-- Facebook -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook</div>
+          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📤</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">22</span><span style="font-size:11px;font-weight:700;text-align:center;">4</span><span style="font-size:11px;font-weight:700;text-align:center;">3</span><span style="font-size:11px;font-weight:700;text-align:center;">512</span><span style="font-size:11px;font-weight:700;text-align:center;">2.2%</span>
+            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">48</span><span style="font-size:11px;font-weight:700;text-align:center;">9</span><span style="font-size:11px;font-weight:700;text-align:center;">7</span><span style="font-size:11px;font-weight:700;text-align:center;">1.1K</span><span style="font-size:11px;font-weight:700;text-align:center;">4.8%</span>
+            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">72 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">14 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">11 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">1.6K ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">7.2% ↑</span>
+          </div>
         </div>
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:4px 8px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
-          <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">124</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">22</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">12.4%</span>
+        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
+
+        <!-- Threads -->
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:6px;">🧵 Threads</div>
+          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">🔁</div><div style="font-size:11px;font-weight:700;text-align:center;">↩️</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">18</span><span style="font-size:11px;font-weight:700;text-align:center;">3</span><span style="font-size:11px;font-weight:700;text-align:center;">4</span><span style="font-size:11px;font-weight:700;text-align:center;">284</span><span style="font-size:11px;font-weight:700;text-align:center;">3.8%</span>
+            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">42</span><span style="font-size:11px;font-weight:700;text-align:center;">8</span><span style="font-size:11px;font-weight:700;text-align:center;">10</span><span style="font-size:11px;font-weight:700;text-align:center;">612</span><span style="font-size:11px;font-weight:700;text-align:center;">8.2%</span>
+            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">64 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">14 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">16 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">924 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">12.4% ↑</span>
+          </div>
         </div>
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:4px 8px;align-items:center;padding:4px 0;">
-          <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">178 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">34 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">17.8% ↑</span>
-        </div>
-        <p style="font-size:9px;color:var(--text-light);margin-top:4px;">※ IGのインプレッションは取得に時間がかかるため表示対象外です</p>
-        <div class="action-box" style="margin-top:6px;">
-          <div class="action-text">🔵 24時間が経過しました。次の投稿準備を始めましょう</div>
-        </div>
-        <p style="font-size:9px;color:var(--text-sub);line-height:1.8;margin-top:6px;">❤️いいね　💬コメント　📊EG率</p>
-        <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
-      </div>
-    </div>
-    <div class="sns-section sns-fb">
-      <div class="sns-label" style="color:#1877f2;">
-        <span>💻</span><span>Facebook</span>
-      </div>
-      <div class="gauge-wrap">
-        <div class="gauge-label">
-          <span class="gauge-title">初速スコア</span>
-          <span class="gauge-status" style="color:#fb8c00;">🟡 平均的　62点</span>
-        </div>
-        <div class="gauge-bar"><div class="gauge-fill gauge-avg" style="width:62%;"></div></div>
-      </div>
-      <div style="text-align:right;margin-top:4px;">
-        <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;" onclick="toggleSNSDetail('fb-detail')">▶ 詳細を見る</span>
-      </div>
-      <div id="fb-detail" style="display:none;margin-top:6px;">
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
-          <span class="growth-time">1時間後</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">❤️</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">💬</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">📤</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">👁️</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">📊</span>
-          <span style="font-size:9px;color:var(--text-light);">09:01取得</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">22</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">4</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">3</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">512</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">2.2%</span>
-        </div>
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
-          <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">48</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">9</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">7</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">1.1K</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">4.8%</span>
-        </div>
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;">
-          <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">72 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">14 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">11 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">1.6K ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">7.2% ↑</span>
-        </div>
-        <div class="action-box warn" style="margin-top:6px;">
-          <div class="action-text warn">🔵 24時間が経過しました。次の投稿準備を始めましょう</div>
-        </div>
-        <p style="font-size:9px;color:var(--text-sub);line-height:1.8;margin-top:6px;">❤️いいね　💬コメント　📤シェア　👁️リーチ　📊EG率</p>
-        <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
+        <div class="action-box" style="margin-top:8px;"><div class="action-text">🔵 24時間が経過しました。次の投稿準備を始めましょう</div></div>
+        <p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ K = 1,000（例：1.2K = 1,200回）</p>
       </div>
     </div>
 
-    <!-- Threads -->
-    <div style="font-size:11px;color:var(--text-sub);margin-bottom:6px;padding:8px;background:var(--bg);border-radius:8px;line-height:1.6;border-left:3px solid var(--border);">
-      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:6px;">🧵TH　の直近投稿</div>
-      <div id="post-th-short">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。<span style="color:var(--primary);cursor:pointer;font-size:10px;" onclick="togglePost('th')">…続きを読む</span></div>
-      <div id="post-th-full" style="display:none;">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。ご予約は不要ですのでお気軽にお越しください😊 #渋谷モーニング #朝活カフェ #特別イベント<span style="color:var(--primary);cursor:pointer;font-size:10px;margin-left:4px;" onclick="togglePost('th')">▲ 閉じる</span></div>
-      <span style="font-size:10px;color:var(--text-light);">6月25日（水）<strong style="color:var(--text);">08:00</strong>投稿　138文字</span>
-    </div>
-    <div class="sns-section sns-th">
-      <div class="sns-label" style="color:#555555;">
-        <span>🧵</span><span>Threads</span>
+    <!-- 投稿② X単独投稿 -->
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
+      <div style="padding:10px 10px 0 10px;">
+        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">6月25日（水）12:30投稿　138文字　🐦X</div>
+        <p class="post-text" style="border-left:3px solid #000;padding-left:8px;margin-bottom:8px;">☕️本日のスペシャルコーヒーはパナマ・ゲイシャ種！フローラルでジャスミンのような香りが広がる世界最高峰のコーヒー豆を本日限定でご提供します。一杯一杯丁寧にハンドドリップでお作りします。数量は残り僅かです🌸 #パナマゲイシャ #スペシャルティコーヒー #渋谷</p>
+        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('p2-detail','p2-btn')" id="p2-btn">詳細を見る ▼</button>
       </div>
-      <div class="gauge-wrap">
-        <div class="gauge-label">
-          <span class="gauge-title">初速スコア</span>
-          <span class="gauge-status" style="color:#43a047;">🟢 好調　78点</span>
+      <div id="p2-detail" style="display:none;padding:10px;">
+        <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:6px;">🐦 X</div>
+        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+          <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">🔁</div><div style="font-size:11px;font-weight:700;text-align:center;">↩️</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+          <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">13:31取得</span></span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">56</span><span style="font-size:11px;font-weight:700;text-align:center;">12</span><span style="font-size:11px;font-weight:700;text-align:center;">8</span><span style="font-size:11px;font-weight:700;text-align:center;">1.6K</span><span style="font-size:11px;font-weight:700;text-align:center;">7.2%</span>
+          <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">15:31取得</span></span>
+          <span style="font-size:11px;font-weight:700;text-align:center;">118</span><span style="font-size:11px;font-weight:700;text-align:center;">26</span><span style="font-size:11px;font-weight:700;text-align:center;">18</span><span style="font-size:11px;font-weight:700;text-align:center;">3.8K</span><span style="font-size:11px;font-weight:700;text-align:center;">14.8%</span>
+          <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌12:31取得</span></span>
+          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">168 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">42 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">28 ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">5.6K ↑</span><span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;white-space:nowrap;">19.8% ↑</span>
         </div>
-        <div class="gauge-bar"><div class="gauge-fill gauge-good" style="width:78%;"></div></div>
-      </div>
-      <div style="text-align:right;margin-top:4px;">
-        <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;" onclick="toggleSNSDetail('th-detail')">▶ 詳細を見る</span>
-      </div>
-      <div id="th-detail" style="display:none;margin-top:6px;">
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
-          <span class="growth-time">1時間後</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">❤️</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">🔁</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">↩️</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">👁️</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">📊</span>
-          <span style="font-size:9px;color:var(--text-light);">09:01取得</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">18</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">3</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">4</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">284</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">3.8%</span>
-        </div>
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,0,0,0.06);">
-          <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">42</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">8</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">10</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">612</span>
-          <span style="font-size:11px;font-weight:700;text-align:center;">8.2%</span>
-        </div>
-        <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:4px 0;">
-          <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">64 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">14 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">16 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">924 ↑</span>
-          <span style="font-size:11px;font-weight:700;color:var(--success);text-align:center;">12.4% ↑</span>
-        </div>
-        <div class="action-box" style="margin-top:6px;">
-          <div class="action-text">🔵 24時間が経過しました。次の投稿準備を始めましょう</div>
-        </div>
-        <p style="font-size:9px;color:var(--text-sub);line-height:1.8;margin-top:6px;">❤️いいね　🔁リポスト　↩️返信　👁️インプレッション　📊EG率</p>
-        <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
+        <div class="action-box" style="margin-top:8px;"><div class="action-text">🔵 24時間が経過しました。次の投稿準備を始めましょう</div></div>
+        <p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ K = 1,000（例：1.2K = 1,200回）</p>
       </div>
     </div>
+
   </div>
 
   <!-- あなたの投稿平均との比較 -->
@@ -1279,40 +1308,68 @@
     </div>
   </div>
 
-  <!-- 感情分析 -->
-  <div class="card">
-    <div class="card-title">😊 コメントの感情分析</div>
-    <div style="font-size:11px;color:var(--text-sub);margin-bottom:6px;">今月のコメント 128件</div>
-    <div class="sentiment-bar">
-      <div class="sent-pos" style="width:72%;"></div>
-      <div class="sent-neu" style="width:21%;"></div>
-      <div class="sent-neg" style="width:7%;"></div>
-    </div>
-    <div class="sentiment-legend">
-      <div class="sent-label"><span class="sent-dot" style="background:var(--success);"></span>ポジティブ 72%（92件）</div>
-      <div class="sent-label"><span class="sent-dot" style="background:#e0e0e0;border:1px solid #ccc;"></span>中立 21%（27件）</div>
-      <div class="sent-label"><span class="sent-dot" style="background:var(--danger);"></span>ネガティブ 7%（9件）</div>
-    </div>
-  </div>
-
   <!-- 同業種・同エリア比較 -->
   <div class="card">
     <div class="card-title">🏙️ 同業種・同エリア平均との比較</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">※ 同業種店舗の平均値との比較です</p>
-    <div class="compare-grid">
-      <div class="compare-header" style="color:var(--text-sub);"></div>
-      <div class="compare-header" style="color:var(--primary);">自店</div>
-      <div class="compare-header" style="color:var(--text-sub);">業界平均</div>
-      <div class="compare-label">EG率</div>
-      <div class="compare-val" style="color:var(--primary);">7.2% <span style="font-size:10px;color:var(--success);">↑</span></div>
-      <div class="compare-val">5.8%</div>
-      <div class="compare-label">フォロワー</div>
-      <div class="compare-val" style="color:var(--primary);">3,847人 <span style="font-size:10px;color:var(--success);">↑</span></div>
-      <div class="compare-val">2,340人</div>
-      <div class="compare-label">月間投稿</div>
-      <div class="compare-val" style="color:var(--primary);">22件</div>
-      <div class="compare-val">18件</div>
+    <p style="font-size:10px;color:var(--text-sub);margin-bottom:10px;">同業種・同エリアの店舗平均値との比較です（匿名集計）</p>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <!-- EG率 -->
+      <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:700;color:var(--text);">📊 EG率</span>
+          <span style="font-size:10px;color:var(--success);font-weight:700;">上位 12%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">
+            <div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>
+            <div style="font-size:13px;font-weight:700;color:#1b5e20;">7.2%</div>
+          </div>
+          <div style="background:white;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
+            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">業界平均</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-sub);">5.8%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- フォロワー総数 -->
+      <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:700;color:var(--text);">👥 フォロワー総数</span>
+          <span style="font-size:10px;color:var(--success);font-weight:700;">上位 18%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">
+            <div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>
+            <div style="font-size:13px;font-weight:700;color:#1b5e20;">3,847人</div>
+          </div>
+          <div style="background:white;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
+            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">業界平均</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-sub);">2,340人</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 月間投稿数 -->
+      <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:700;color:var(--text);">📅 月間投稿数</span>
+          <span style="font-size:10px;color:var(--success);font-weight:700;">平均より多い</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">
+            <div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>
+            <div style="font-size:13px;font-weight:700;color:#1b5e20;">22件</div>
+          </div>
+          <div style="background:white;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
+            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">業界平均</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-sub);">18件</div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 同業種・同エリアの利用ユーザー5件以上のデータを匿名で集計しています</p>
   </div>
 
   <!-- ネガティブコメント検知 -->
@@ -1320,15 +1377,15 @@
     <div class="card-title">⚠️ ネガティブコメント検知
       <button class="acc-btn" onclick="toggleCompare('neg-detail','neg-btn')" id="neg-btn">詳細を見る ▼</button>
     </div>
-    <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
-      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の大切なヒントです。早めに気づいて対応することで、お客様との信頼関係を深めるチャンスに変えましょう。</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);">
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);margin-bottom:10px;">
       <span style="font-size:22px;">⚠️</span>
       <div>
         <div style="font-size:13px;font-weight:700;color:#b71c1c;">今月 15件 検知</div>
         <div style="font-size:10px;color:var(--text-sub);margin-top:2px;">直近：6月25日に10件・6月13日に3件・6月11日に2件</div>
       </div>
+    </div>
+    <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の大切なヒントです。早めに気づいて対応することで、お客様との信頼関係を深めるチャンスに変えましょう。</div>
     </div>
     <div id="neg-detail" style="display:none;margin-top:10px;">
       <div style="font-size:11px;font-weight:700;color:#b71c1c;margin-bottom:8px;">■ 6月25日（10件）</div>
@@ -1455,15 +1512,48 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-3')">③ 初速スコアについて<span class="accordion-arrow" id="arr-acc-3">▶</span></div>
     <div class="accordion-body" id="acc-3">
-    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">AiPostでは投稿直後の反応の強さを「初速スコア」として表示します。初速スコアはあなた自身の過去投稿との比較結果を100段階で表したAiPost独自の指標です。<strong>数値が高いほど、過去の投稿よりも順調な反応が得られていることを示します。</strong></div>
-    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">初速スコアはいいね数だけを見ているのではありません。SNSごとに重要とされる反応（シェア・リポスト・リプライ・返信・引用など）を総合的に分析しています。</div>
-    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">また、初速スコアは投稿後1時間だけを評価しているわけではありません。投稿後<strong>1時間・3時間・24時間</strong>までの推移も考慮して分析します。そのため、一時的な反応だけでなく、投稿全体の伸び方も確認できます。</div>
-    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">初速スコアを見ることで、この投稿は順調に伸びているか・反応が伸び悩んでいるか・まだ伸びる可能性があるかを視覚的に確認できます。</div>
-    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px;display:flex;gap:12px;justify-content:center;">
-      <span style="font-size:11px;font-weight:700;color:#43a047;">🟢 70%以上：好調</span>
-      <span style="font-size:11px;font-weight:700;color:#fb8c00;">🟡 40〜70%：平均的</span>
-      <span style="font-size:11px;font-weight:700;color:#e53935;">🔴 40%未満：伸び悩み</span>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">AiPostでは投稿直後の反応の強さを「初速スコア」として表示します。初速スコアはあなた自身の過去投稿との比較結果を100点満点で表したAiPost独自の指標です。<strong>数値が高いほど、過去の投稿よりも順調な反応が得られていることを示します。</strong></div>
+
+    <!-- 4段階判定 -->
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">スコアの判定基準</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#1b5e20;">🟢 90〜100点</span><span style="font-size:11px;color:var(--text);">最高！</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#43a047;">🟢 70〜89点</span><span style="font-size:11px;color:var(--text);">好調</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#fb8c00;">🟡 50〜69点</span><span style="font-size:11px;color:var(--text);">平均的</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#e53935;">🔴 49点以下</span><span style="font-size:11px;color:var(--text);">伸び悩み</span></div>
+      </div>
     </div>
+
+    <!-- 計算式 -->
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">📐 スコアの算出方法</div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">① 各指標を正規化（0〜100点）</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">今回の数値 ÷ 過去30投稿のトリム平均 × 100<br>※100点を超えた場合はすべて100点に丸める</div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">② トリム平均（バズ投稿対策）</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">過去30投稿のうち上位2件・下位2件を除いた26件の平均を使用。一度だけ極端に伸びた投稿や極端に低い投稿の影響を排除し、安定したスコアを算出します。</div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">③ SNSごとの重要指標と重み</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:6px;font-size:10px;color:var(--text);line-height:1.8;">
+        <div>🐦 X：いいね30% ／ リポスト30% ／ リプライ15% ／ インプレッション10% ／ EG率15%</div>
+        <div>📱 Instagram：いいね40% ／ コメント30% ／ EG率30%</div>
+        <div>💻 Facebook：いいね30% ／ コメント25% ／ シェア25% ／ リーチ10% ／ EG率10%</div>
+        <div>🧵 Threads：いいね30% ／ リポスト30% ／ 返信20% ／ インプレッション10% ／ EG率10%</div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">④ 時間重みによる最終スコア</div>
+      <div style="background:white;border-radius:6px;padding:8px;font-size:11px;color:var(--text);line-height:1.9;">
+        最終スコア ＝<br>
+        　（1時間スコア × <strong>50%</strong>）<br>
+        ＋（3時間スコア × <strong>30%</strong>）<br>
+        ＋（24時間スコア × <strong>20%</strong>）
+      </div>
+      <div style="font-size:10px;color:var(--text-sub);margin-top:4px;">「初速」を重視しつつ、その後の伸びも評価します。</div>
+    </div>
+
+    <!-- 注記 -->
     <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;">
       <div style="font-size:10px;color:#e65100;line-height:1.7;">※初速スコアは各SNSの公式評価を示すものではなく、AiPost独自の分析指標です。SNS各社のアルゴリズムを再現・保証するものではありません。分析結果は投稿づくりや運用改善の参考情報としてご利用ください。</div>
     </div>
@@ -1593,19 +1683,27 @@
         <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">📊 EG率の活用</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;">EG率が高い投稿は「あなたの投稿平均との比較」画面で確認できます。何が好まれているかを分析し、人気投稿ランキングと合わせてコンテンツの方向性を決める参考にしましょう。</div>
       </div>
-      <div style="background:var(--bg);border-radius:8px;padding:10px;">
-        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">💡 ネガティブコメントは改善のチャンス</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.7;">ネガティブなコメントが届いたとき、それは落ち込む理由ではなく、お客様があなたのお店に期待している証です。早めに気づいて誠実に対応することは、むしろブランドへの信頼を高める絶好の機会になります。AiPostがいち早くお知らせするので、ぜひ前向きな改善のきっかけとして活用してください。</div>
-        <div style="margin-top:8px;padding:8px;background:#e8f5e9;border-radius:6px;border-left:3px solid #43a047;">
-          <div style="font-size:11px;font-weight:700;color:#1b5e20;margin-bottom:3px;">⭐ PROプランでできること</div>
-          <div style="font-size:11px;color:#2e7d32;line-height:1.7;">AIがネガティブコメントをいち早く検知してお知らせします。小さな不満が大きなトラブルになる前に対応でき、サービス改善のヒントを見逃しません。お客様の声を経営に活かす、賢い店舗運営のパートナーです。</div>
-        </div>
-      </div>
     </div>
   </div>
 
   <!-- AiPost分析の特徴 -->
     </div>
+  <!-- ⑩ ネガティブコメントは、お店を成長させる最も貴重なヒントです -->
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-neg')">⑩ ネガティブコメントへの向き合い方<span class="accordion-arrow" id="arr-acc-neg">▶</span></div>
+    <div class="accordion-body" id="acc-neg">
+    <div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.8;margin-bottom:10px;">ネガティブコメントは、お店を成長させる最も貴重なヒントです。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">ネガティブなコメントは、決して悪い評価ばかりではありません。それは、お客様が実際に感じた不満や改善点を教えてくれる、とても貴重な声です。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">しかし、忙しい毎日の中で、すべてのコメントを確認し続けるのは簡単ではありません。気付くのが遅れると、同じ不満を持つお客様が増えたり、お店の信頼に影響したりする可能性があります。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AiPostは、AIがネガティブなコメントを自動で検知し、できるだけ早くお知らせします。早期に気付き、誠実に対応することで、お客様との信頼関係を深め、サービス品質の向上にもつながります。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:12px;">高評価のコメントは励みになりますが、お店をさらに成長させてくれるのは、改善点を教えてくれるお客様の声です。その貴重な一件を見逃さず、お店の成長につなげることができるのが、AiPost PROプランの大きな特長です。</div>
+    <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:10px;">
+      <div style="font-size:11px;font-weight:700;color:#1b5e20;margin-bottom:4px;">⭐ PROプランなら</div>
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">AIが全SNSのネガティブコメントを自動検知し、LINEでいち早くお知らせします。忙しい店舗運営の中でも、お客様の声を見逃しません。小さな不満が大きなトラブルになる前に対応でき、サービス改善のヒントを経営に活かせます。</div>
+    </div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-10')">AiPost分析の特徴<span class="accordion-arrow" id="arr-acc-10">▶</span></div>
     <div class="accordion-body" id="acc-10">
@@ -1691,6 +1789,14 @@ function switchTab(id) {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+}
+
+function togglePostPreview(id) {
+  const el  = document.getElementById('post-' + id);
+  const btn = document.getElementById('btn-' + id + '-read');
+  if (!el) return;
+  const expanded = el.classList.toggle('expanded');
+  if (btn) btn.textContent = expanded ? '▲ 閉じる' : '…続きを読む';
 }
 
 function togglePost(id) {
