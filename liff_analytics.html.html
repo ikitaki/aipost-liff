@@ -234,25 +234,6 @@
     </div>
   </div>
 
-  <!-- ② AiPostアドバイス -->
-  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);">
-    <div class="card-title" style="color:#1b5e20;">🤖 AiPostからのアドバイス</div>
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <div style="display:flex;align-items:flex-start;gap:8px;">
-        <span style="font-size:14px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">昨日のInstagramの投稿はいいね142件・EG率9.8%と好調でした。引き続き写真付きの投稿を心がけましょう。</span>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:8px;">
-        <span style="font-size:14px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Facebookの反応は平均的です。投稿のシェアを増やす工夫を試してみましょう。</span>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:8px;">
-        <span style="font-size:14px;flex-shrink:0;">💡</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">日曜日13〜15時の投稿が最も反応率が高い傾向があります。次回はこの時間帯を活用してみてください。</span>
-      </div>
-    </div>
-    <p style="font-size:9px;color:#558b2f;margin-top:8px;">※ アドバイスはあなたの投稿データの数値分析をもとに生成しています</p>
-  </div>
 
 
   <!-- ③ 直近投稿と24時間後の状況 -->
@@ -415,12 +396,21 @@
     </div>
   </div>
 
+  <!-- 次回おすすめカード（アドバイス統合） -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに算出した次回投稿のおすすめです。</p>
-
-    <!-- おすすめ投稿時間帯ランキング -->
-    <div style="margin-bottom:12px;">
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">✅</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Instagramのいいね・コメントが平均比+18%と好調です。引き続き同じ時間帯での投稿を続けましょう。</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">⚠️</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Facebookの反応が平均を下回っています。投稿時間帯の見直しを検討してみてください。</span>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
@@ -437,43 +427,9 @@
         </div>
       </div>
     </div>
-
-    <!-- 投稿のポイント -->
-    <div style="border-top:1px solid var(--border);padding-top:10px;margin-bottom:12px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">💡 投稿のポイント</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:14px;flex-shrink:0;">✅</span>
-          <span style="font-size:11px;color:var(--text);line-height:1.6;">ハッシュタグは3〜5個が最も反応率が高い傾向があります</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:14px;flex-shrink:0;">✅</span>
-          <span style="font-size:11px;color:var(--text);line-height:1.6;">写真は明るく正面から撮影した投稿の反応率が平均より18%高い</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:14px;flex-shrink:0;">✅</span>
-          <span style="font-size:11px;color:var(--text);line-height:1.6;">「限定」「本日」などの緊急性ワードを含む投稿はEG率が高い</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 予想初速スコア（AI予測） -->
-    <div style="border-top:1px solid var(--border);padding-top:10px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">🤖 AI予測　次回予想初速スコア</div>
-      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <div style="font-size:12px;font-weight:700;color:#166534;">🟢 好調が期待できます</div>
-          <div style="font-size:20px;font-weight:700;color:#1a237e;line-height:1;">89<span style="font-size:11px;">点</span></div>
-        </div>
-        <div style="height:6px;background:#bbf7d0;border-radius:3px;overflow:hidden;">
-          <div style="height:100%;width:89%;background:#1a237e;border-radius:3px;"></div>
-        </div>
-        <div style="font-size:9px;color:#6b7280;margin-top:5px;">予測成功率 84%　基準値78点+11点</div>
-      </div>
-    </div>
-
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 予想スコア・おすすめ時間帯はあなたの過去データの数値分析をもとに算出するAiPost独自の指標です</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
   </div>
+
 
 </div><!-- /tab-lite -->
 
@@ -532,25 +488,6 @@
     </div>
   </div>
 
-  <!-- ② AiPostアドバイス -->
-  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);">
-    <div class="card-title" style="color:#1b5e20;">🤖 AiPostからのアドバイス</div>
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <div style="display:flex;align-items:flex-start;gap:8px;">
-        <span style="font-size:14px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Instagramの昨日の投稿はいいね158件・EG率15.8%と今月最高の反応でした。同じ時間帯・形式を継続しましょう。</span>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:8px;">
-        <span style="font-size:14px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xの24時間後データが平均を上回っています。ハッシュタグの効果が出ている可能性があります。</span>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:8px;">
-        <span style="font-size:14px;flex-shrink:0;">💡</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">日曜日13〜15時の投稿が最も反応率が高い傾向があります。次回はこの時間帯を活用してみてください。</span>
-      </div>
-    </div>
-    <p style="font-size:9px;color:#558b2f;margin-top:8px;">※ アドバイスはあなたの投稿データの数値分析をもとに生成しています</p>
-  </div>
 
 
   <!-- ③ 直近投稿と24時間後の状況 -->
@@ -799,12 +736,21 @@
     </div>
   </div>
 
+  <!-- 次回おすすめカード（アドバイス統合） -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに算出した次回投稿のおすすめです。</p>
-
-    <!-- おすすめ投稿時間帯ランキング -->
-    <div style="margin-bottom:12px;">
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">✅</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xのいいね・リポストが平均比+24%と好調です。引き続き同じ時間帯での投稿を続けましょう。</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">⚠️</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Facebookの反応が平均を下回っています。投稿時間帯の見直しを検討してみてください。</span>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
@@ -821,43 +767,9 @@
         </div>
       </div>
     </div>
-
-    <!-- 投稿のポイント -->
-    <div style="border-top:1px solid var(--border);padding-top:10px;margin-bottom:12px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">💡 投稿のポイント</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:14px;flex-shrink:0;">✅</span>
-          <span style="font-size:11px;color:var(--text);line-height:1.6;">ハッシュタグは3〜5個が最も反応率が高い傾向があります</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:14px;flex-shrink:0;">✅</span>
-          <span style="font-size:11px;color:var(--text);line-height:1.6;">写真は明るく正面から撮影した投稿の反応率が平均より18%高い</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:14px;flex-shrink:0;">✅</span>
-          <span style="font-size:11px;color:var(--text);line-height:1.6;">「限定」「本日」などの緊急性ワードを含む投稿はEG率が高い</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 予想初速スコア（AI予測） -->
-    <div style="border-top:1px solid var(--border);padding-top:10px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">🤖 AI予測　次回予想初速スコア</div>
-      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <div style="font-size:12px;font-weight:700;color:#166534;">🟢 好調が期待できます</div>
-          <div style="font-size:20px;font-weight:700;color:#1a237e;line-height:1;">89<span style="font-size:11px;">点</span></div>
-        </div>
-        <div style="height:6px;background:#bbf7d0;border-radius:3px;overflow:hidden;">
-          <div style="height:100%;width:89%;background:#1a237e;border-radius:3px;"></div>
-        </div>
-        <div style="font-size:9px;color:#6b7280;margin-top:5px;">予測成功率 84%　基準値78点+11点</div>
-      </div>
-    </div>
-
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 予想スコア・おすすめ時間帯はあなたの過去データの数値分析をもとに算出するAiPost独自の指標です</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
   </div>
+
 
 </div><!-- /tab-standard -->
 
@@ -1512,33 +1424,22 @@
     </div>
   </div>
 
-  <!-- AiPostからのアドバイス（データ確認後に表示） -->
-  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);">
-    <div class="card-title" style="color:#1b5e20;">🤖 AiPostからのアドバイス</div>
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <div style="display:flex;align-items:flex-start;gap:8px;">
-        <span style="font-size:14px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xの1時間後のいいね・リポストが平均比+32%と非常に好調です。投稿時間帯（08:00）が効果的だった可能性があります。</span>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:8px;">
-        <span style="font-size:14px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Threadsの1時間後の反応が平均を下回っています。投稿時間帯の変更を検討してください。</span>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:8px;">
-        <span style="font-size:14px;flex-shrink:0;">💡</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">あなたの投稿は日曜日13〜15時の反応率が最も高い傾向があります。次回もこの時間帯を活用しましょう。</span>
-      </div>
-    </div>
-    <p style="font-size:9px;color:#558b2f;margin-top:8px;">※ アドバイスはあなたの投稿データの数値分析をもとに生成しています</p>
-  </div>
 
-  <!-- 次回おすすめカード -->
+  <!-- 次回おすすめカード（アドバイス統合） -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに算出した次回投稿のおすすめです。</p>
-
-    <!-- おすすめ投稿時間帯ランキング -->
-    <div style="margin-bottom:12px;">
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">✅</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xのいいね・リポストが平均比+32%と好調です。08:00の投稿時間帯が効果的だった可能性があります。</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">⚠️</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Threadsの反応が平均を下回っています。投稿時間帯の見直しを検討してみてください。</span>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
@@ -1555,43 +1456,9 @@
         </div>
       </div>
     </div>
-
-    <!-- 投稿のポイント -->
-    <div style="border-top:1px solid var(--border);padding-top:10px;margin-bottom:12px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">💡 投稿のポイント</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:14px;flex-shrink:0;">✅</span>
-          <span style="font-size:11px;color:var(--text);line-height:1.6;">ハッシュタグは3〜5個が最も反応率が高い傾向があります</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:14px;flex-shrink:0;">✅</span>
-          <span style="font-size:11px;color:var(--text);line-height:1.6;">写真は明るく正面から撮影した投稿の反応率が平均より18%高い</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:14px;flex-shrink:0;">✅</span>
-          <span style="font-size:11px;color:var(--text);line-height:1.6;">「限定」「本日」などの緊急性ワードを含む投稿はEG率が高い</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 予想初速スコア（AI予測） -->
-    <div style="border-top:1px solid var(--border);padding-top:10px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">🤖 AI予測　次回予想初速スコア</div>
-      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <div style="font-size:12px;font-weight:700;color:#166534;">🟢 好調が期待できます</div>
-          <div style="font-size:20px;font-weight:700;color:#1a237e;line-height:1;">89<span style="font-size:11px;">点</span></div>
-        </div>
-        <div style="height:6px;background:#bbf7d0;border-radius:3px;overflow:hidden;">
-          <div style="height:100%;width:89%;background:#1a237e;border-radius:3px;"></div>
-        </div>
-        <div style="font-size:9px;color:#6b7280;margin-top:5px;">予測成功率 84%　基準値78点+11点</div>
-      </div>
-    </div>
-
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 予想スコア・おすすめ時間帯はあなたの過去データの数値分析をもとに算出するAiPost独自の指標です</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
   </div>
+
 
 </div><!-- /tab-pro -->
 
