@@ -396,6 +396,96 @@
     </div>
   </div>
 
+
+  <!-- 先週・先月のまとめ -->
+  <div class="card">
+    <div class="card-title">📅 先週・先月のまとめ</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button onclick="switchSummary('weekly',this)" style="flex:1;padding:6px;border:1px solid var(--primary);border-radius:8px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">先週</button>
+      <button onclick="switchSummary('monthly',this)" style="flex:1;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;">先月</button>
+    </div>
+
+    <!-- 先週のまとめ -->
+    <div id="summary-weekly">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div>
+          <div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 78　平均EG率 4.2%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">🧵 TH</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span>
+        </div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">
+        <div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div>
+      </div>
+    </div>
+
+    <!-- 先月のまとめ -->
+    <div id="summary-monthly" style="display:none;">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div>
+          <div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 482　平均EG率 5.2%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">🧵 TH</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span>
+        </div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">
+        <div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div>
+      </div>
+    </div>
+  </div>
+
   <!-- 次回おすすめカード（アドバイス統合） -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
@@ -735,6 +825,47 @@
       <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
     </div>
   </div>
+
+
+  <!-- 先週・先月のまとめ -->
+  <div class="card">
+    <div class="card-title">📅 先週・先月のまとめ</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button onclick="switchSummary('weekly',this)" style="flex:1;padding:6px;border:1px solid var(--primary);border-radius:8px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">先週</button>
+      <button onclick="switchSummary('monthly',this)" style="flex:1;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;">先月</button>
+    </div>
+    <div id="summary-weekly-2">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🐦 X</span><span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">📱 IG</span><span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">💻 FB</span><span style="font-size:10px;color:var(--text);">いいね計 78　平均EG率 4.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🧵 TH</span><span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span></div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
+    </div>
+    <div id="summary-monthly-2" style="display:none;">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🐦 X</span><span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">📱 IG</span><span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">💻 FB</span><span style="font-size:10px;color:var(--text);">いいね計 482　平均EG率 5.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🧵 TH</span><span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span></div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
+    </div>
+  </div>
+
 
   <!-- 次回おすすめカード（アドバイス統合） -->
   <div class="card" style="border:2px solid var(--primary);">
@@ -1425,6 +1556,47 @@
   </div>
 
 
+
+  <!-- 先週・先月のまとめ -->
+  <div class="card">
+    <div class="card-title">📅 先週・先月のまとめ</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button onclick="switchSummary('weekly',this)" style="flex:1;padding:6px;border:1px solid var(--primary);border-radius:8px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">先週</button>
+      <button onclick="switchSummary('monthly',this)" style="flex:1;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;">先月</button>
+    </div>
+    <div id="summary-weekly-3">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🐦 X</span><span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">📱 IG</span><span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">💻 FB</span><span style="font-size:10px;color:var(--text);">いいね計 78　平均EG率 4.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🧵 TH</span><span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span></div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
+    </div>
+    <div id="summary-monthly-3" style="display:none;">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🐦 X</span><span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">📱 IG</span><span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">💻 FB</span><span style="font-size:10px;color:var(--text);">いいね計 482　平均EG率 5.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🧵 TH</span><span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span></div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
+    </div>
+  </div>
+
+
   <!-- 次回おすすめカード（アドバイス統合） -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
@@ -1602,15 +1774,15 @@
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔍 LITE分析</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.7;">いいね数・コメント数・インプレッション・EG率を日別カレンダーで確認できます。日付をタップするとSNS別の詳細が表示されます。データは投稿後24時間後に1回取得されます。</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">今日の状況・直近投稿の24時間後データ・投稿カレンダー・フォロワー推移（連携SNS）・人気投稿ランキング・先週・先月のまとめ・次回おすすめを確認できます。データは投稿後24時間後に1回取得されます。</div>
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">📊 STANDARD分析</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.7;">LITE分析の全機能に加え、各指標の推移グラフとフォロワー数の推移（SNS別）を確認できます。データは投稿後24時間後に1回取得されます。</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">LITEの全機能に加え、あなたの投稿平均との比較（24時間後）を確認できます。データは投稿後24時間後に1回取得されます。</div>
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">💎 PRO分析</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.7;">STANDARD分析の全機能に加え、直近投稿の初速状況・人気投稿ランキング・おすすめ投稿時間帯・感情分析・同業種比較・ネガティブコメント検知が利用できます。データは投稿後1時間・3時間・24時間の3回取得されます。</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">STANDARDの全機能に加え、直近投稿の初速状況（1h・3h・24h）・あなたの投稿平均との比較（1h・3h・24h）・感情分析・同業種・同エリア平均との比較・ネガティブコメント検知が利用できます。データは投稿後1時間・3時間・24時間の3回取得されます。</div>
       </div>
     </div>
   </div>
@@ -1711,9 +1883,33 @@
 
   <!-- AiPost分析の特徴 -->
     </div>
-  <!-- ⑩ ネガティブコメントは、お店を成長させる最も貴重なヒントです -->
+  <!-- ⑩ 同業種・同エリア平均との比較（PROプラン限定） -->
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-neg')">⑩ ネガティブコメントへの向き合い方<span class="accordion-arrow" id="arr-acc-neg">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-competitor')">⑩ 同業種・同エリア平均との比較<span class="accordion-arrow" id="arr-acc-competitor">▶</span></div>
+    <div class="accordion-body" id="acc-competitor">
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">同業種・同エリアの他の店舗のEG率・フォロワー数・月間投稿数を匿名で集計し、あなたの数値と比較して表示します。</div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:6px;">📊 表示される比較内容</div>
+      <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text);line-height:1.8;">
+        <div>・平均EG率：あなたのEG率 vs 同業種平均</div>
+        <div>・フォロワー総数：あなたのフォロワー vs 同業種平均</div>
+        <div>・月間投稿数：あなたの投稿数 vs 同業種平均</div>
+        <div>・上位○%表示：あなたが同業種の中で何%の位置にいるか</div>
+      </div>
+    </div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔒 プライバシーについて</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">比較データは完全に匿名で集計されています。個人・店舗を特定できる情報は一切含まれません。PROプランに加入した時点で自動的にデータ提供に参加となります。</div>
+    </div>
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;">
+      <div style="font-size:10px;color:#e65100;line-height:1.7;">※ 同業種・同エリアのPROプラン利用者が5店舗以上集まると比較データが表示されます。5店舗未満の場合は「データ収集中」と表示されます。</div>
+    </div>
+    </div>
+  </div>
+
+  <!-- ⑪ ネガティブコメントは、お店を成長させる最も貴重なヒントです -->
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-neg')">⑪ ネガティブコメントへの向き合い方<span class="accordion-arrow" id="arr-acc-neg">▶</span></div>
     <div class="accordion-body" id="acc-neg">
     <div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.8;margin-bottom:10px;">ネガティブコメントは、お店を成長させる最も貴重なヒントです。</div>
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">ネガティブなコメントは、決して悪い評価ばかりではありません。それは、お客様が実際に感じた不満や改善点を教えてくれる、とても貴重な声です。</div>
@@ -2267,6 +2463,24 @@ function showLiteUnified(d) {
   html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ LITEプランは24時間後のデータのみ取得されます</p>';
   html += '<p style="font-size:9px;color:#e65100;font-weight:700;margin-top:2px;">💎 より詳しいデータはSTANDARD・PROプランで確認できます</p>';
   document.getElementById('cal-lite-sns').innerHTML = html;
+}
+
+function switchSummary(type, btn) {
+  // 親カードを探してその中のweekly/monthlyを切り替え
+  const card = btn.closest('.card');
+  const btns = card.querySelectorAll('button');
+  btns.forEach(b => {
+    b.style.background = 'var(--surface)';
+    b.style.color = 'var(--text)';
+    b.style.border = '1px solid var(--border)';
+  });
+  btn.style.background = 'var(--primary)';
+  btn.style.color = '#fff';
+  btn.style.border = '1px solid var(--primary)';
+  const weeklyDivs = card.querySelectorAll('[id^="summary-weekly"]');
+  const monthlyDivs = card.querySelectorAll('[id^="summary-monthly"]');
+  weeklyDivs.forEach(d => d.style.display = type === 'weekly' ? 'block' : 'none');
+  monthlyDivs.forEach(d => d.style.display = type === 'monthly' ? 'block' : 'none');
 }
 
 function toggleCompare(detailId, btnId) {
