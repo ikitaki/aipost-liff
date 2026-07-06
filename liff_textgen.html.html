@@ -1030,17 +1030,7 @@ function selectImage(el, emoji, name) {
   document.getElementById('no-image-opt').classList.remove('selected');
 }
 function clearImageSelection() {
-  document.querySelectorAll('.image-item').forEach(i => i.classList.remove('selected'));
-  document.getElementById('img-selected-bar').classList.remove('show');
-  selectedImage = null;
-}
-function selectNoImage() {
-  clearImageSelection();
-  document.getElementById('no-image-opt').classList.add('selected');
-  selectedImage = { emoji: '📄', name: '画像なし' };
-  document.getElementById('img-selected-bar').classList.add('show');
-  document.getElementById('img-selected-thumb').textContent = '📄';
-  document.getElementById('img-selected-name').textContent = '画像なし';
+  resetImageUpload();
 }
 function filterCat(btn) {
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -1608,17 +1598,24 @@ function resetImageUpload() {
   trimResults = {};
   imageState = null;
   document.getElementById('my-img-input').value = '';
+  document.getElementById('my-cam-input').value = '';
   document.getElementById('my-img-preview-wrap').style.display = 'none';
   document.getElementById('img-upload-area').style.display = 'block';
   document.getElementById('img-selected-bar').style.display = 'none';
+  // トリミング完了エリアを削除
   const existing = document.getElementById('trim-confirm-area');
   if (existing) existing.remove();
+  // トリミング・そのまま使うボタンを再表示
+  const wrap = document.getElementById('my-img-preview-wrap');
+  const trimBtn = wrap ? wrap.querySelector('button[onclick="startTrimFlow()"]') : null;
+  if (trimBtn) trimBtn.style.display = 'block';
+  const noTrimBtn = wrap ? wrap.querySelector('button[onclick="selectMyImageWithoutTrim()"]') : null;
+  if (noTrimBtn) noTrimBtn.style.display = 'block';
 }
 
 // 画像なし選択（確認ダイアログ付き）
 function selectNoImage() {
   if (originalImage) {
-    // 既に画像がある場合は確認
     if (!confirm('アップロードした画像を削除して「画像なし」で投稿しますか？')) return;
   }
   originalImage = null;
@@ -1630,10 +1627,8 @@ function selectNoImage() {
   document.getElementById('img-selected-name').style.color = '#9e9e9e';
   document.getElementById('my-img-preview-wrap').style.display = 'none';
   document.getElementById('img-upload-area').style.display = 'none';
-}
-
-function clearImageSelection() {
-  resetImageUpload();
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
 }
 
 // トリミングなしで使用
