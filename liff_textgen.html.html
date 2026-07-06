@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>文章を作る - AiPost</title>
+<title>SNS投稿作成 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -557,7 +557,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">文章を作る</span>
+  <span class="header-logo">SNS投稿作成</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -593,24 +593,46 @@
 
 <!-- ステップナビ -->
 <div class="steps">
-  <div class="step active" id="step1"><div class="step-circle">1</div><div class="step-label">キーワード</div></div>
+  <div class="step active" id="step1"><div class="step-circle">1</div><div class="step-label">SNS選択</div></div>
   <div class="step-line" id="line1"></div>
-  <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">訴求パターン</div></div>
+  <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">キーワード</div></div>
   <div class="step-line" id="line2"></div>
-  <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">生成</div></div>
+  <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">訴求</div></div>
   <div class="step-line" id="line3"></div>
-  <div class="step" id="step4"><div class="step-circle">4</div><div class="step-label">文章確認</div></div>
+  <div class="step" id="step4"><div class="step-circle">4</div><div class="step-label">生成</div></div>
   <div class="step-line" id="line4"></div>
   <div class="step" id="step5"><div class="step-circle">5</div><div class="step-label">予約</div></div>
 </div>
 
 <div class="content">
 
-  <div class="section-title">AIで文章を作る</div>
+  <div class="section-title">SNS投稿作成</div>
 
-  <!-- ① キーワード入力 -->
+  <!-- ① 投稿先SNS選択 -->
   <div class="card">
-    <div class="card-title">① キーワードを入力する</div>
+    <div class="card-title">① 投稿先のSNSを選ぶ</div>
+    <div class="sns-check-list">
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-ig">IG</div>
+        <div class="sns-check-name">Instagram</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-fb">f</div>
+        <div class="sns-check-name">Facebook</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-x">X</div>
+        <div class="sns-check-name">X（Twitter）</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② キーワード入力 -->
+  <div class="card">
+    <div class="card-title">② キーワードを入力する</div>
     <div class="keyword-input-wrap">
       <input type="text" class="keyword-input" id="keyword-input"
         placeholder="例：新メニュー、抹茶、週末限定"
@@ -626,9 +648,9 @@
     <div class="keyword-hint" style="margin-top:6px;">✏️ 自分で文章を書く場合は④の入力欄に直接入力してください</div>
   </div>
 
-  <!-- ② 訴求パターン -->
+  <!-- ③ 訴求パターン -->
   <div class="card">
-    <div class="card-title">② 訴求パターンを選ぶ（任意）</div>
+    <div class="card-title">③ 訴求パターンを選ぶ（任意）</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">どんな雰囲気で伝えたいですか？選ばなくてもAIが自動で判断します。</p>
     <div class="pattern-grid">
       <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
@@ -642,9 +664,9 @@
     </div>
   </div>
 
-  <!-- ③ AI生成ボタン -->
+  <!-- ④ AI生成ボタン -->
   <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
-    <span style="font-size:20px;">✨</span>③ AIで投稿文を作成する
+    <span style="font-size:20px;">✨</span>④ AIで投稿文を作成する
   </button>
 
   <!-- ローディング -->
@@ -653,9 +675,9 @@
     <div class="loading-text">AIが投稿文を考えています…<br>少々お待ちください</div>
   </div>
 
-  <!-- ④ 文章確認・編集 -->
+  <!-- ⑤ 文章確認・編集 -->
   <div class="card">
-    <div class="card-title">④ 文章を確認・編集する</div>
+    <div class="card-title">⑤ 文章を確認・編集する</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで作成した文章が表示されます。自由に編集できます。直接入力することもできます。</p>
     <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount()"
       placeholder="AIで生成した文章がここに表示されます。直接入力することもできます。"></textarea>
@@ -682,10 +704,10 @@
   <!-- 下書き保存 -->
   <button class="draft-btn" onclick="saveDraft()">💾 下書き保存</button>
 
-  <!-- ⑤ 画像選択（インライン） -->
+  <!-- ⑥ 画像選択（インライン） -->
   <div class="image-section">
     <div class="image-section-header">
-      <div class="image-section-title">⑤ 画像を選ぶ（任意）</div>
+      <div class="image-section-title">⑥ 画像を選ぶ（任意）</div>
     </div>
 
     <!-- 選択中プレビューバー -->
@@ -727,28 +749,6 @@
       <button onclick="selectNoImage()" id="no-image-btn" style="width:100%;padding:8px;background:transparent;color:var(--text-sub);border:1px solid var(--border);border-radius:10px;font-size:12px;cursor:pointer;">🚫 画像なしで投稿する</button>
     </div>
 
-  </div>
-
-  <!-- ⑥ 投稿先SNS -->
-  <div class="card">
-    <div class="card-title">⑥ 投稿先のSNSを選ぶ</div>
-    <div class="sns-check-list">
-      <div class="sns-check-item checked" onclick="toggleSns(this)">
-        <div class="sns-icon-sm sns-ig">IG</div>
-        <div class="sns-check-name">Instagram</div>
-        <div class="sns-checkbox">✓</div>
-      </div>
-      <div class="sns-check-item checked" onclick="toggleSns(this)">
-        <div class="sns-icon-sm sns-fb">f</div>
-        <div class="sns-check-name">Facebook</div>
-        <div class="sns-checkbox">✓</div>
-      </div>
-      <div class="sns-check-item checked" onclick="toggleSns(this)">
-        <div class="sns-icon-sm sns-x">X</div>
-        <div class="sns-check-name">X（Twitter）</div>
-        <div class="sns-checkbox">✓</div>
-      </div>
-    </div>
   </div>
 
   <!-- ⑦ 投稿日時：カレンダー -->
@@ -883,7 +883,7 @@
 
 <!-- ナビゲーションバー -->
 <nav class="bottom-nav">
-  <button class="nav-item active" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">文章を作る</span></button>
+  <button class="nav-item active" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">SNS投稿作成</span></button>
   <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">予約確認</span></button>
   <button class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
   <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
@@ -1576,16 +1576,6 @@ function confirmTrim() {
 // このSNSをスキップ
 
 // トリミングフロー完了
-function finishTrimFlow() {
-  updateTrimStatusList();
-  // 完了済みのトリミング結果をセット（最初のSNSの結果をプレビューに使用）
-  const firstResult = Object.values(trimResults)[0];
-  if (firstResult) {
-    document.getElementById('img-selected-bar').style.display = 'flex';
-    document.getElementById('img-selected-thumb').textContent = '✂️';
-    document.getElementById('img-selected-name').textContent = 'トリミング済み（' + Object.keys(trimResults).join('・') + '）';
-  }
-}
 
 // トリミングキャンセル
 function cancelTrim() {
@@ -1619,9 +1609,71 @@ function clearImageSelection() {
 
 // トリミングなしで使用
 function selectMyImageWithoutTrim() {
-  document.getElementById('img-selected-bar').style.display = 'flex';
+  const bar = document.getElementById('img-selected-bar');
+  bar.style.display = 'flex';
   document.getElementById('img-selected-thumb').textContent = '📷';
   document.getElementById('img-selected-name').textContent = 'マイ画像（トリミングなし）';
+  document.getElementById('my-img-preview-wrap').style.display = 'none';
+}
+
+// トリミングフロー完了後の確定・やり直し画面
+function finishTrimFlow() {
+  document.body.style.overflow = '';
+  updateTrimStatusList();
+
+  // 完了確認画面を表示
+  const wrap = document.getElementById('my-img-preview-wrap');
+  // 既存の確認エリアがあれば削除
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+
+  const confirmArea = document.createElement('div');
+  confirmArea.id = 'trim-confirm-area';
+  confirmArea.style.cssText = 'margin-top:10px;';
+
+  const doneCount = Object.keys(trimResults).length;
+  const totalCount = trimQueue.length;
+
+  confirmArea.innerHTML = `
+    <div style="padding:10px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:4px;">✅ トリミング完了（${doneCount}/${totalCount}件）</div>
+      <div style="font-size:10px;color:#555;">${Object.keys(trimResults).join('・')} のトリミングが完了しました。</div>
+    </div>
+    <button onclick="confirmTrimResult()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:6px;">✅ これで決定する</button>
+    <button onclick="retryTrimFlow()" style="width:100%;padding:8px;background:transparent;color:var(--text-sub);border:1px solid var(--border);border-radius:10px;font-size:12px;cursor:pointer;">🔄 やり直す</button>
+  `;
+  wrap.appendChild(confirmArea);
+
+  // トリミングボタンを非表示
+  const trimBtn = wrap.querySelector('button[onclick="startTrimFlow()"]');
+  if (trimBtn) trimBtn.style.display = 'none';
+  const noTrimBtn = wrap.querySelector('button[onclick="selectMyImageWithoutTrim()"]');
+  if (noTrimBtn) noTrimBtn.style.display = 'none';
+}
+
+// トリミング結果を決定
+function confirmTrimResult() {
+  const bar = document.getElementById('img-selected-bar');
+  bar.style.display = 'flex';
+  document.getElementById('img-selected-thumb').textContent = '✂️';
+  const snsLabels = Object.keys(trimResults).join('・');
+  document.getElementById('img-selected-name').textContent = `トリミング済み（${snsLabels}）`;
+  document.getElementById('my-img-preview-wrap').style.display = 'none';
+}
+
+// トリミングやり直し
+function retryTrimFlow() {
+  // 確認エリアを削除
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+  // トリミングボタンを再表示
+  const wrap = document.getElementById('my-img-preview-wrap');
+  const trimBtn = wrap.querySelector('button[onclick="startTrimFlow()"]');
+  if (trimBtn) trimBtn.style.display = 'block';
+  const noTrimBtn = wrap.querySelector('button[onclick="selectMyImageWithoutTrim()"]');
+  if (noTrimBtn) noTrimBtn.style.display = 'block';
+  // やり直し
+  startTrimFlow();
 }
 </script>
 </body>
