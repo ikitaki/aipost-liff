@@ -506,12 +506,21 @@
   }
   .trim-ratio-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-right: 4px; }
   .trim-hint {
-    text-align: center;
-    font-size: 10px;
-    color: rgba(255,255,255,0.45);
-    padding: 5px;
-    background: #111;
+    background: #fff;
+    padding: 8px 16px;
     flex-shrink: 0;
+    border-top: 1px solid #e0e0e0;
+  }
+  .trim-hint-main {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a237e;
+    margin-bottom: 2px;
+  }
+  .trim-hint-sub {
+    font-size: 10px;
+    color: #555;
+    line-height: 1.6;
   }
   .trim-actions {
     background: #1a1a2e;
@@ -694,7 +703,11 @@
         <div style="font-size:11px;line-height:1.7;">アップロード後にSNSごとのトリミングができます。</div>
       </div>
       <input type="file" id="my-img-input" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
-      <button onclick="document.getElementById('my-img-input').click()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 画像を選ぶ</button>
+      <input type="file" id="my-cam-input" accept="image/*" capture="environment" style="display:none;" onchange="handleImageUpload(event)">
+      <div style="display:flex;gap:8px;">
+        <button onclick="document.getElementById('my-img-input').click()" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 フォルダから選ぶ</button>
+        <button onclick="document.getElementById('my-cam-input').click()" style="flex:1;padding:10px;background:#2e7d32;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📷 写真を撮る</button>
+      </div>
       <p style="font-size:10px;color:var(--text-light);text-align:center;margin-top:8px;">JPG・PNG対応　推奨：2MB以下</p>
     </div>
 
@@ -809,7 +822,10 @@
   </div>
 
   <!-- ヒント -->
-  <div class="trim-hint">枠をドラッグして切り抜く位置を調整してください</div>
+  <div class="trim-hint">
+    <div class="trim-hint-main">✋ 枠を動かして切り抜く位置を調整してください</div>
+    <div class="trim-hint-sub">・枠の内側をドラッグ → 位置を移動<br>・枠の四隅をドラッグ → 拡大・縮小<br>・2本指のピンチ操作 → 拡大・縮小</div>
+  </div>
 
   <!-- アクションボタン -->
   <div class="trim-actions">
