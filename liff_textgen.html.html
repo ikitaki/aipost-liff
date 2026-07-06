@@ -1103,12 +1103,27 @@ function showConfirm() {
   const ta = document.getElementById('post-textarea');
   if (!ta.value.trim()) { alert('文章を入力してください。'); return; }
   if (!selectedDay) { alert('投稿日を選んでください。'); return; }
+
+  // 画像状態確認
+  if (imageState === null) {
+    if (!confirm('画像が選択されていません。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。')) return;
+    imageState = 'none';
+  }
+
   const checkedSns = [...document.querySelectorAll('.sns-check-item.checked')]
     .map(el => el.querySelector('.sns-check-name').textContent).join('・');
   const time = document.getElementById('post-time').value;
   document.getElementById('confirm-sns').textContent = checkedSns || '未選択';
   document.getElementById('confirm-date').textContent = '6月' + selectedDay + '日 ' + time;
-  document.getElementById('confirm-image').textContent = selectedImage ? selectedImage.name : '未選択';
+
+  // 画像状態を正確に表示
+  let imageLabel = '';
+  if (imageState === 'none') imageLabel = '画像なし';
+  else if (imageState === 'trimmed') imageLabel = 'トリミング済み（' + Object.keys(trimResults).join('・') + '）';
+  else if (imageState === 'raw') imageLabel = 'マイ画像（トリミングなし）';
+  else imageLabel = '未選択';
+  document.getElementById('confirm-image').textContent = imageLabel;
+
   document.getElementById('confirm-remain').textContent = '残り22件 / 30件';
   document.getElementById('confirm-modal').classList.add('open');
 }
@@ -1165,6 +1180,8 @@ let trimQueue = [];              // トリミング対象のSNSキュー
 let currentTrimIndex = 0;       // 現在処理中のキューインデックス
 let currentRatio = null;        // 現在の比率 { w, h }
 let trimResults = {};           // SNSごとのトリミング結果 { 'X': base64, ... }
+// 画像状態管理: null=未選択 / 'none'=画像なし / 'trimmed'=トリミング済み / 'raw'=そのまま使う
+let imageState = null;
 
 // 枠の位置・サイズ（canvas座標）
 let frame = { x:0, y:0, w:0, h:0 };
@@ -1173,7 +1190,7 @@ let dragStart = { x:0, y:0 };
 let frameStart = { x:0, y:0 };
 let canvasScale = 1;            // 表示canvas vs 実際のcanvas比率
 
-// 画像アップロード処理
+// 画像アップロード処理（選択バーは表示しない・プレビューのみ）
 function handleImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -1182,9 +1199,11 @@ function handleImageUpload(event) {
     const img = new Image();
     img.onload = () => {
       originalImage = img;
+      imageState = null; // まだ確定していない
       document.getElementById('my-img-preview').src = e.target.result;
       document.getElementById('my-img-preview-wrap').style.display = 'block';
       document.getElementById('img-upload-area').style.display = 'none';
+      document.getElementById('img-selected-bar').style.display = 'none'; // 確定前は非表示
       updateTrimStatusList();
     };
     img.src = e.target.result;
@@ -1584,21 +1603,31 @@ function cancelTrim() {
 
 // 画像リセット
 function resetImageUpload() {
+  if (!confirm('アップロードした画像を削除しますか？')) return;
   originalImage = null;
   trimResults = {};
+  imageState = null;
   document.getElementById('my-img-input').value = '';
   document.getElementById('my-img-preview-wrap').style.display = 'none';
   document.getElementById('img-upload-area').style.display = 'block';
   document.getElementById('img-selected-bar').style.display = 'none';
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
 }
 
-// 画像なし選択
+// 画像なし選択（確認ダイアログ付き）
 function selectNoImage() {
+  if (originalImage) {
+    // 既に画像がある場合は確認
+    if (!confirm('アップロードした画像を削除して「画像なし」で投稿しますか？')) return;
+  }
   originalImage = null;
   trimResults = {};
+  imageState = 'none';
   document.getElementById('img-selected-bar').style.display = 'flex';
   document.getElementById('img-selected-thumb').textContent = '🚫';
   document.getElementById('img-selected-name').textContent = '画像なしで投稿';
+  document.getElementById('img-selected-name').style.color = '#9e9e9e';
   document.getElementById('my-img-preview-wrap').style.display = 'none';
   document.getElementById('img-upload-area').style.display = 'none';
 }
@@ -1609,11 +1638,13 @@ function clearImageSelection() {
 
 // トリミングなしで使用
 function selectMyImageWithoutTrim() {
-  const bar = document.getElementById('img-selected-bar');
-  bar.style.display = 'flex';
-  document.getElementById('img-selected-thumb').textContent = '📷';
-  document.getElementById('img-selected-name').textContent = 'マイ画像（トリミングなし）';
-  document.getElementById('my-img-preview-wrap').style.display = 'none';
+  imageState = "raw";
+  const bar = document.getElementById("img-selected-bar");
+  bar.style.display = "flex";
+  document.getElementById("img-selected-thumb").textContent = "📷";
+  document.getElementById("img-selected-name").textContent = "マイ画像（トリミングなし）";
+  document.getElementById("img-selected-name").style.color = "#2e7d32";
+  document.getElementById("my-img-preview-wrap").style.display = "none";
 }
 
 // トリミングフロー完了後の確定・やり直し画面
@@ -1653,11 +1684,13 @@ function finishTrimFlow() {
 
 // トリミング結果を決定
 function confirmTrimResult() {
-  const bar = document.getElementById('img-selected-bar');
-  bar.style.display = 'flex';
-  document.getElementById('img-selected-thumb').textContent = '✂️';
-  const snsLabels = Object.keys(trimResults).join('・');
-  document.getElementById('img-selected-name').textContent = `トリミング済み（${snsLabels}）`;
+  imageState = "trimmed";
+  const bar = document.getElementById("img-selected-bar");
+  bar.style.display = "flex";
+  document.getElementById("img-selected-thumb").textContent = "✂️";
+  const snsLabels = Object.keys(trimResults).join("・");
+  document.getElementById("img-selected-name").textContent = `トリミング済み（${snsLabels}）`;
+  document.getElementById("img-selected-name").style.color = "#2e7d32";
   document.getElementById('my-img-preview-wrap').style.display = 'none';
 }
 
