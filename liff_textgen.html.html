@@ -426,15 +426,17 @@
     background: rgba(0,0,0,0.85);
     z-index: 200;
     flex-direction: column;
+    overflow: hidden;
   }
   .trim-overlay.open { display: flex; }
   .trim-header {
     background: var(--primary);
     color: #fff;
-    padding: 12px 16px;
+    padding: 10px 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-shrink: 0;
   }
   .trim-header-title { font-size: 13px; font-weight: 700; }
   .trim-header-sub { font-size: 10px; opacity: 0.8; margin-top: 2px; }
@@ -445,6 +447,7 @@
     gap: 8px;
     align-items: center;
     overflow-x: auto;
+    flex-shrink: 0;
   }
   .trim-step-chip {
     font-size: 10px;
@@ -471,16 +474,17 @@
     justify-content: center;
     overflow: hidden;
     position: relative;
-    touch-action: none;
     background: #111;
+    touch-action: none;
   }
-  .trim-canvas-wrap canvas { display: block; max-width: 100%; max-height: 100%; }
+  .trim-canvas-wrap canvas { display: block; max-width: 100%; max-height: 100%; touch-action: none; }
   .trim-ratio-bar {
     background: #1a1a2e;
-    padding: 10px 16px;
+    padding: 8px 16px;
     display: flex;
     gap: 8px;
     align-items: center;
+    flex-shrink: 0;
   }
   .trim-ratio-btn {
     padding: 5px 14px;
@@ -498,15 +502,25 @@
     border-color: #fff;
   }
   .trim-ratio-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-right: 4px; }
+  .trim-hint {
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    padding: 5px;
+    background: #111;
+    flex-shrink: 0;
+  }
   .trim-actions {
     background: #1a1a2e;
-    padding: 12px 16px;
+    padding: 10px 16px;
     display: flex;
     gap: 10px;
+    flex-shrink: 0;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
   }
   .trim-btn-skip {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     border: 1.5px solid rgba(255,255,255,0.3);
     background: transparent;
     color: rgba(255,255,255,0.7);
@@ -516,7 +530,7 @@
   }
   .trim-btn-ok {
     flex: 2;
-    padding: 10px;
+    padding: 12px;
     background: var(--primary);
     color: #fff;
     border: none;
@@ -524,13 +538,6 @@
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-  }
-  .trim-hint {
-    text-align: center;
-    font-size: 10px;
-    color: rgba(255,255,255,0.45);
-    padding: 6px;
-    background: #111;
   }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -1223,7 +1230,7 @@ function openTrimForCurrent() {
 
   // ヘッダー更新
   document.getElementById('trim-sns-title').textContent = cfg.label + ' 用トリミング';
-  document.getElementById('trim-sns-sub').textContent = '切り抜き枠を動かして位置を決めてください';
+  document.getElementById('trim-sns-sub').textContent = '枠を動かして位置・サイズを調整してください';
 
   // 進捗チップ更新
   const progress = document.getElementById('trim-progress');
@@ -1235,7 +1242,7 @@ function openTrimForCurrent() {
     progress.appendChild(chip);
   });
 
-  // 比率選択バー（複数比率あるSNSのみ表示）
+  // 比率選択バー
   if (cfg.ratios.length > 1) {
     ratioBar.style.display = 'flex';
     ratioBar.innerHTML = '<span class="trim-ratio-label">比率：</span>';
@@ -1256,7 +1263,9 @@ function openTrimForCurrent() {
   const isLast = currentTrimIndex === trimQueue.length - 1;
   document.getElementById('trim-btn-ok').textContent = isLast ? '切り抜いて完了 ✂️' : '切り抜いて次へ ✂️';
 
+  // モーダルを開く・bodyスクロールをロック
   document.getElementById('trim-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
   setTimeout(() => drawTrimCanvas(), 50);
 }
 
@@ -1428,6 +1437,18 @@ function getPinchDist(e) {
   return Math.sqrt(dx*dx + dy*dy);
 }
 
+function getTouchPos(e) {
+  const canvas = document.getElementById('trim-canvas');
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches[0];
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return {
+    x: (t.clientX - rect.left) * scaleX,
+    y: (t.clientY - rect.top) * scaleY
+  };
+}
+
 function doPinch(e, ratio) {
   if (!pinchStartFrame) return;
   const canvas = document.getElementById('trim-canvas');
@@ -1492,6 +1513,20 @@ function moveDrag(x, y) {
   renderCanvas();
 }
 
+// トリミングキャンセル
+function cancelTrim() {
+  document.getElementById('trim-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// このSNSをスキップ
+function skipTrim() {
+  currentTrimIndex++;
+  document.getElementById('trim-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => openTrimForCurrent(), 200);
+}
+
 // トリミング確定
 function confirmTrim() {
   const sns = trimQueue[currentTrimIndex];
@@ -1516,15 +1551,11 @@ function confirmTrim() {
   updateTrimStatusList();
   currentTrimIndex++;
   document.getElementById('trim-overlay').classList.remove('open');
+  document.body.style.overflow = '';
   setTimeout(() => openTrimForCurrent(), 200);
 }
 
 // このSNSをスキップ
-function skipTrim() {
-  currentTrimIndex++;
-  document.getElementById('trim-overlay').classList.remove('open');
-  setTimeout(() => openTrimForCurrent(), 200);
-}
 
 // トリミングフロー完了
 function finishTrimFlow() {
