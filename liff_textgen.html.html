@@ -422,7 +422,10 @@
   .trim-overlay {
     display: none;
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px; /* ナビゲーションバー分上げる */
     background: rgba(0,0,0,0.85);
     z-index: 200;
     flex-direction: column;
@@ -516,7 +519,6 @@
     display: flex;
     gap: 10px;
     flex-shrink: 0;
-    padding-bottom: max(10px, env(safe-area-inset-bottom));
   }
   .trim-btn-skip {
     flex: 1;
