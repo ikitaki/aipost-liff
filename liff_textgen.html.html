@@ -182,15 +182,35 @@
 
   /* ハッシュタグ */
   .hashtag-area { background: #f0f2ff; border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
-  .hashtag-label { font-size: 11px; color: var(--primary); font-weight: 700; margin-bottom: 4px; }
-  .hashtag-text { font-size: 13px; color: var(--primary); line-height: 1.8; }
+  .hashtag-label { font-size: 11px; color: var(--primary); font-weight: 700; margin-bottom: 8px; }
+  .hashtag-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .hashtag-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--primary); color: #fff;
+    border-radius: 16px; padding: 3px 10px;
+    font-size: 12px; font-weight: 600;
+  }
+  .hashtag-tag-del {
+    background: none; border: none; color: rgba(255,255,255,0.8);
+    font-size: 13px; cursor: pointer; padding: 0; line-height: 1;
+  }
+  .hashtag-input-wrap { display: flex; gap: 6px; margin-top: 4px; }
+  .hashtag-input {
+    flex: 1; border: 1px solid #c5cae9; border-radius: 8px;
+    padding: 6px 10px; font-size: 12px; outline: none;
+    background: #fff;
+  }
+  .hashtag-add-btn {
+    padding: 6px 12px; background: var(--primary); color: #fff;
+    border: none; border-radius: 8px; font-size: 12px; cursor: pointer;
+  }
 
   /* 再生成ボタン */
   .regen-btns { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
   .regen-btn { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); font-size: 12px; color: var(--text-sub); cursor: pointer; font-family: inherit; }
 
-  /* 下書き保存 */
-  .draft-btn {
+  /* 下書き保存（廃止） */
+  .draft-btn-disabled {
     width: 100%; padding: 11px; border: 1.5px solid var(--primary);
     border-radius: 10px; background: none; color: var(--primary);
     font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
@@ -693,8 +713,12 @@
     </div>
     <div class="x-warning" id="x-warning"></div>
     <div class="hashtag-area" id="hashtag-area" style="display:none;">
-      <div class="hashtag-label">AIが提案するハッシュタグ</div>
-      <div class="hashtag-text" id="hashtag-text"></div>
+      <div class="hashtag-label">#️⃣ AIが提案するハッシュタグ（タップで削除・追加できます）</div>
+      <div class="hashtag-tags" id="hashtag-tags"></div>
+      <div class="hashtag-input-wrap">
+        <input type="text" class="hashtag-input" id="hashtag-input" placeholder="#タグを追加" onkeydown="if(event.key==='Enter')addHashtag()">
+        <button class="hashtag-add-btn" onclick="addHashtag()">追加</button>
+      </div>
     </div>
     <div class="regen-btns" id="regen-btns" style="display:none;">
       <button class="regen-btn" onclick="confirmAndGenerate()">🔄 作り直す</button>
@@ -703,8 +727,7 @@
     </div>
   </div>
 
-  <!-- 下書き保存 -->
-  <button class="draft-btn" onclick="saveDraft()">💾 下書き保存</button>
+
 
   <!-- ⑥ 画像選択（インライン） -->
   <div class="image-section">
@@ -894,7 +917,7 @@
 </div>
 
 <!-- トースト -->
-<div class="toast" id="draft-toast">💾 下書きを保存しました</div>
+
 
 <!-- ナビゲーションバー -->
 <nav class="bottom-nav">
@@ -954,13 +977,47 @@ function executeGenerate() {
     const ta = document.getElementById('post-textarea');
     ta.value = '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりをぜひお試しください。';
     document.getElementById('hashtag-area').style.display = 'block';
-    document.getElementById('hashtag-text').textContent = '#渋谷カフェ #週末限定 #抹茶スイーツ #新メニュー #カフェ巡り';
+    // ハッシュタグをタグ形式で表示
+    const tags = ['#渋谷カフェ', '#週末限定', '#抹茶スイーツ', '#新メニュー', '#カフェ巡り'];
+    renderHashtags(tags);
     document.getElementById('regen-btns').style.display = 'flex';
     setStep(4);
     updateCharCount();
     ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, 2000);
 }
+function renderHashtags(tags) {
+  const container = document.getElementById('hashtag-tags');
+  container.innerHTML = '';
+  tags.forEach(tag => {
+    const el = document.createElement('span');
+    el.className = 'hashtag-tag';
+    el.innerHTML = `${tag}<button class="hashtag-tag-del" onclick="removeHashtag(this)">×</button>`;
+    container.appendChild(el);
+  });
+}
+
+// ハッシュタグ削除
+function removeHashtag(btn) {
+  btn.parentElement.remove();
+}
+
+// ハッシュタグ追加
+function addHashtag() {
+  const input = document.getElementById('hashtag-input');
+  let val = input.value.trim();
+  if (!val) return;
+  if (!val.startsWith('#')) val = '#' + val;
+  const container = document.getElementById('hashtag-tags');
+  const el = document.createElement('span');
+  el.className = 'hashtag-tag';
+  el.innerHTML = `${val}<button class="hashtag-tag-del" onclick="removeHashtag(this)">×</button>`;
+  container.appendChild(el);
+  input.value = '';
+  input.focus();
+}
+
+// ハッシュタグをタグ形式でレンダリング}
 
 // ===== 下書き =====
 let draftSaved = false;
