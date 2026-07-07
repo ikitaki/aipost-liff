@@ -1132,8 +1132,54 @@ function showConfirm() {
 }
 
 function executeReserve() {
+  // 二重送信防止
+  const btn = document.querySelector('.modal-btn-success');
+  if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
+
   closeModal('confirm-modal');
   document.getElementById('complete-modal').classList.add('open');
+
+  // フォームをリセット
+  resetAllForm();
+}
+
+function resetAllForm() {
+  // 文章
+  const ta = document.getElementById('post-textarea');
+  if (ta) ta.value = '';
+  updateCharCount();
+
+  // キーワード
+  const kw = document.getElementById('keyword-input');
+  if (kw) kw.value = '';
+
+  // 訴求パターン選択解除
+  document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('active'));
+
+  // 画像リセット
+  originalImage = null;
+  trimResults = {};
+  imageState = null;
+  const imgInput = document.getElementById('my-img-input');
+  if (imgInput) imgInput.value = '';
+  const camInput = document.getElementById('my-cam-input');
+  if (camInput) camInput.value = '';
+  document.getElementById('img-selected-bar').style.display = 'none';
+  document.getElementById('img-upload-area').style.display = 'block';
+  document.getElementById('my-img-preview-wrap').style.display = 'none';
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+
+  // 日付リセット
+  selectedDay = null;
+  buildCalendar();
+
+  // ステップをリセット
+  setStep(1);
+
+  // 予約ボタン再度有効化
+  const btn = document.querySelector('.modal-btn-success');
+  if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
