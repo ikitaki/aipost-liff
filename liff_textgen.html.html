@@ -345,6 +345,8 @@
   .cal-date.today .cal-post-count { background: rgba(255,255,255,0.9); color: var(--primary); }
   .cal-date.selected .cal-post-count { background: rgba(255,255,255,0.9); color: var(--accent); }
   .cal-date.other-month { color: var(--text-light); }
+  .cal-date.past { color: #ccc; cursor: not-allowed; }
+  .cal-date.past:hover { background: transparent; }
   .cal-date.sunday { color: var(--danger); }
   .cal-date.saturday { color: var(--accent); }
   .cal-date.today.sunday, .cal-date.today.saturday { color: white; }
@@ -1070,6 +1072,7 @@ function buildCalendar() {
     const el = document.createElement('div');
     const dayOfWeek = (firstDay + d - 1) % 7;
     let cls = 'cal-date';
+    if (d < todayDate) cls += ' past';           // 過去日
     if (dayOfWeek === 0) cls += ' sunday';
     if (dayOfWeek === 6) cls += ' saturday';
     if (d === todayDate) cls += ' today';
@@ -1082,12 +1085,13 @@ function buildCalendar() {
     } else {
       el.textContent = d;
     }
-    el.onclick = () => selectCalDay(d);
+    if (d >= todayDate) el.onclick = () => selectCalDay(d);
     grid.appendChild(el);
   }
 }
 
 function selectCalDay(d) {
+  if (d < todayDate) return; // 過去日は選択不可
   selectedDay = d;
   buildCalendar();
   const bar = document.getElementById('selected-date-bar');
