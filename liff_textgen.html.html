@@ -626,7 +626,7 @@
   <div class="step" id="step5"><div class="step-circle">5</div><div class="step-label">予約</div></div>
 </div>
 
-<div class="content">
+<div class="content" id="content-wrap">
 
   <div class="section-title">SNS投稿作成</div>
 
@@ -961,11 +961,13 @@ function executeGenerate() {
   document.getElementById('generate-btn').disabled = true;
   document.getElementById('loading').classList.add('show');
   document.getElementById('regen-btns').style.display = 'none';
-  document.getElementById('hashtag-area').style.display = 'none';
+  // ローディング中はコンテンツ操作をブロック
+  document.getElementById('content-wrap').style.pointerEvents = 'none';
   setStep(3);
   setTimeout(() => {
     document.getElementById('loading').classList.remove('show');
     document.getElementById('generate-btn').disabled = false;
+    document.getElementById('content-wrap').style.pointerEvents = '';
     const ta = document.getElementById('post-textarea');
     // 本文＋ハッシュタグを一体でテキストエリアに挿入
     ta.value = '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりをぜひお試しください。\n#渋谷カフェ #週末限定 #抹茶スイーツ #新メニュー';
@@ -975,36 +977,7 @@ function executeGenerate() {
     ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, 2000);
 }
-function renderHashtags(tags) {
-  const container = document.getElementById('hashtag-tags');
-  container.innerHTML = '';
-  tags.forEach(tag => {
-    const el = document.createElement('span');
-    el.className = 'hashtag-tag';
-    el.innerHTML = `${tag}<button class="hashtag-tag-del" onclick="removeHashtag(this)">×</button>`;
-    container.appendChild(el);
-  });
-}
 
-// ハッシュタグ削除
-function removeHashtag(btn) {
-  btn.parentElement.remove();
-}
-
-// ハッシュタグ追加
-function addHashtag() {
-  const input = document.getElementById('hashtag-input');
-  let val = input.value.trim();
-  if (!val) return;
-  if (!val.startsWith('#')) val = '#' + val;
-  const container = document.getElementById('hashtag-tags');
-  const el = document.createElement('span');
-  el.className = 'hashtag-tag';
-  el.innerHTML = `${val}<button class="hashtag-tag-del" onclick="removeHashtag(this)">×</button>`;
-  container.appendChild(el);
-  input.value = '';
-  input.focus();
-}
 
 // ハッシュタグをタグ形式でレンダリング}
 
