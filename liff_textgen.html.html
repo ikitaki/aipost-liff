@@ -712,14 +712,6 @@
       🔗 <strong>投稿文にURLが含まれています。</strong><br>当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます。
     </div>
     <div class="x-warning" id="x-warning"></div>
-    <div class="hashtag-area" id="hashtag-area" style="display:none;">
-      <div class="hashtag-label">#️⃣ AIが提案するハッシュタグ（タップで削除・追加できます）</div>
-      <div class="hashtag-tags" id="hashtag-tags"></div>
-      <div class="hashtag-input-wrap">
-        <input type="text" class="hashtag-input" id="hashtag-input" placeholder="#タグを追加" onkeydown="if(event.key==='Enter')addHashtag()">
-        <button class="hashtag-add-btn" onclick="addHashtag()">追加</button>
-      </div>
-    </div>
     <div class="regen-btns" id="regen-btns" style="display:none;">
       <button class="regen-btn" onclick="confirmAndGenerate()">🔄 作り直す</button>
       <button class="regen-btn" onclick="makeShort()">✂️ 短くする</button>
@@ -975,11 +967,8 @@ function executeGenerate() {
     document.getElementById('loading').classList.remove('show');
     document.getElementById('generate-btn').disabled = false;
     const ta = document.getElementById('post-textarea');
-    ta.value = '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりをぜひお試しください。';
-    document.getElementById('hashtag-area').style.display = 'block';
-    // ハッシュタグをタグ形式で表示
-    const tags = ['#渋谷カフェ', '#週末限定', '#抹茶スイーツ', '#新メニュー', '#カフェ巡り'];
-    renderHashtags(tags);
+    // 本文＋ハッシュタグを一体でテキストエリアに挿入
+    ta.value = '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりをぜひお試しください。\n#渋谷カフェ #週末限定 #抹茶スイーツ #新メニュー';
     document.getElementById('regen-btns').style.display = 'flex';
     setStep(4);
     updateCharCount();
@@ -1032,11 +1021,71 @@ function saveDraft() {
   setTimeout(() => { toast.style.display = 'none'; }, 2000);
 }
 
-// ===== 文字数 =====
+// ===== 文字数カウント（X公式仕様準拠・軽量版） =====
+// 方針：CJK文字=2ウェイト・半角英数記号=1ウェイト・絵文字=2ウェイト
+// NFC正規化・サロゲートペア対応・ZWJ/VS/RI/Keycapは安全側の一律2ウェイト
+// URL掲載禁止のためURL=23文字固定処理は不要
+
+function countCharsX(text) {
+  // NFC正規化
+  text = text.normalize('NFC');
+
+  let weight = 0;
+  const codePoints = [...text]; // サロゲートペアをコードポイント単位に展開
+
+  let i = 0;
+  while (i < codePoints.length) {
+    const cp = codePoints[i].codePointAt(0);
+
+    // CR+LF を1文字として処理
+    if (cp === 0x0D && i + 1 < codePoints.length && codePoints[i + 1].codePointAt(0) === 0x0A) {
+      weight += 1;
+      i += 2;
+      continue;
+    }
+
+    // ASCII文字（U+0020〜U+007E）= 1ウェイト
+    if (cp >= 0x0020 && cp <= 0x007E) {
+      weight += 1;
+      i++;
+      continue;
+    }
+
+    // CJK・ひらがな・カタカナ・全角記号 = 2ウェイト
+    if (
+      (cp >= 0x3000 && cp <= 0x9FFF) ||   // CJK・ひらがな・カタカナ等
+      (cp >= 0xF900 && cp <= 0xFAFF) ||   // CJK互換漢字
+      (cp >= 0xFF00 && cp <= 0xFFEF) ||   // 全角英数・半角カタカナ
+      (cp >= 0x20000 && cp <= 0x2A6DF) || // CJK統合漢字拡張B
+      (cp >= 0x2A700 && cp <= 0x2CEAF)    // CJK統合漢字拡張C〜E
+    ) {
+      weight += 2;
+      i++;
+      continue;
+    }
+
+    // 改行（LF）= 1ウェイト
+    if (cp === 0x0A) {
+      weight += 1;
+      i++;
+      continue;
+    }
+
+    // 絵文字・その他（BMP外・U+10000以上）= 2ウェイト
+    // ZWJ（U+200D）・VS-15（U+FE0E）・VS-16（U+FE0F）・
+    // Regional Indicator（U+1F1E0〜U+1F1FF）・Fitzpatrick修飾子（U+1F3FB〜U+1F3FF）
+    // Keycap結合文字（U+20E3）も全て2ウェイトで安全側にカウント
+    weight += 2;
+    i++;
+  }
+
+  // 0.5単位で丸め（Xは0.5単位）→ 表示上は切り上げで140文字制限に合わせる
+  return Math.ceil(weight / 2);
+}
+
+// 後方互換用（他箇所で呼ばれている場合）
 function countChars(text) {
-  let count = 0;
-  for (const ch of text) count += ch.match(/[ -~]/) ? 0.5 : 1;
-  return Math.round(count);
+  return countCharsX(text);
 }
 function updateCharCount() {
   const text = document.getElementById('post-textarea').value;
