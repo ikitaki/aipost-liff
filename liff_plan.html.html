@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AiPost</title>
+  <title>プラン・料金1 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -265,7 +265,7 @@
 
     <div class="topbar">
       <span style="font-size:20px;">💎</span>
-      <span class="topbar-logo">プラン・料金</span>
+      <span class="topbar-logo">プラン・料金1</span>
       <span class="topbar-sub">AiPost</span>
     </div>
     
@@ -278,17 +278,10 @@
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Facebook</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
-  </div>
-</div>
-  <div style="display:flex;align-items:center;gap:4px;">
-    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
   </div>
 </div>
 
@@ -329,19 +322,19 @@
         <td class="col-lite">2つ</td><td class="col-standard">3つ</td><td class="col-pro">4つ</td>
       </tr>
       <tr class="data-row">
-        <td class="key-td">月間投稿数</td>
+        <td class="key-td">予約可能件数</td>
         <td class="col-free">4件</td><td class="col-personal">8件</td>
-        <td class="col-lite">15件</td><td class="col-standard">30件</td><td class="col-pro">60件</td>
+        <td class="col-lite">10件</td><td class="col-standard">20件</td><td class="col-pro">40件</td>
       </tr>
       <tr class="data-row">
         <td class="key-td">実質最大投稿回数</td>
         <td class="col-free">4回</td><td class="col-personal">8回</td>
-        <td class="col-lite">30回</td><td class="col-standard">90回</td><td class="col-pro">240回</td>
+        <td class="col-lite">20回</td><td class="col-standard">60回</td><td class="col-pro">160回</td>
       </tr>
       <tr class="data-row">
         <td class="key-td">文字数上限</td>
-        <td class="col-free">60字</td><td class="col-personal">140字</td>
-        <td class="col-lite">280字</td><td class="col-standard">280字</td><td class="col-pro">280字</td>
+        <td class="col-free">70字<br><span style="font-size:10px;color:#888;">(半角140字)</span></td><td class="col-personal">140字<br><span style="font-size:10px;color:#888;">(半角280字)</span></td>
+        <td class="col-lite">140字<br><span style="font-size:10px;color:#888;">(半角280字)</span></td><td class="col-standard">140字<br><span style="font-size:10px;color:#888;">(半角280字)</span></td><td class="col-pro">140字<br><span style="font-size:10px;color:#888;">(半角280字)</span></td>
       </tr>
       <tr class="data-row">
         <td class="key-td">同時投稿</td>
@@ -363,7 +356,7 @@
 
       <tr class="sec-row"><td colspan="6">■ 画像</td></tr>
       <tr class="data-row">
-        <td class="key-td">アップロード</td>
+        <td class="key-td">マイ画像<br>アップロード</td>
         <td class="col-free ok">✓</td><td class="col-personal ok">✓</td>
         <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
       </tr>
@@ -374,6 +367,11 @@
       </tr>
 
       <tr class="sec-row"><td colspan="6">■ 分析レポート</td></tr>
+      <tr class="data-row">
+        <td class="key-td">データ取得<br>タイミング</td>
+        <td class="col-free no">－</td><td class="col-personal no">－</td>
+        <td class="col-lite">24時間後<br>1回</td><td class="col-standard">24時間後<br>1回</td><td class="col-pro">1時間後<br>3時間後<br>24時間後</td>
+      </tr>
       <tr class="data-row">
         <td class="key-td">分析の段階</td>
         <td class="col-free no">－</td><td class="col-personal no">－</td>
@@ -570,16 +568,16 @@
 
   function closeToLine() {
     if (typeof liff !== "undefined" && liff.isInClient()) {
-      liff.closeWindow();
+      window.location.replace('about:blank');
     } else {
       window.history.back();
     }
   }
 
   const DOWNGRADE_WARNINGS = {
-    'STANDARD→FREE':     ['SNSが3つ→1つに減ります','月間投稿数が30件→4件に減ります','文字数上限が280字→60字に減ります','同時投稿ができなくなります','素材画像が利用できなくなります','分析・レポート機能が全て利用できなくなります'],
-    'STANDARD→PERSONAL': ['SNSが3つ→1つに減ります','月間投稿数が30件→8件に減ります','文字数上限が280字→140字に減ります','同時投稿ができなくなります','素材画像が利用できなくなります','分析・レポート機能が全て利用できなくなります'],
-    'STANDARD→LITE':     ['SNSが3つ→2つに減ります','月間投稿数が30件→15件に減ります','AI要因分析が利用できなくなります','週次レポートが利用できなくなります'],
+    'STANDARD→FREE':     ['SNSが3つ→1つに減ります','予約可能件数が20件→4件に減ります','文字数上限が140字→70字に減ります','同時投稿ができなくなります','素材画像が利用できなくなります','分析・レポート機能が全て利用できなくなります'],
+    'STANDARD→PERSONAL': ['SNSが3つ→1つに減ります','予約可能件数が20件→8件に減ります','同時投稿ができなくなります','素材画像が利用できなくなります','分析・レポート機能が全て利用できなくなります'],
+    'STANDARD→LITE':     ['SNSが3つ→2つに減ります','予約可能件数が20件→10件に減ります','AI要因分析が利用できなくなります','週次レポートが利用できなくなります'],
   };
 
   function selectPlan(plan) {

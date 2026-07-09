@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AiPost</title>
+  <title>AiPostとは1 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -288,7 +288,7 @@
 
   <!-- ヘッダー -->
   <div class="header">
-    <div class="header-logo">AiPost</div>
+    <div class="header-logo">AiPostとは1</div>
     <div class="header-tagline">AIが文章を作り、SNSへ自動投稿。<br>忙しい店舗オーナーのためのSNS運用サービス</div>
   </div>
 
@@ -382,7 +382,7 @@
       <div class="card-title">💡 同時投稿で実質の投稿数が増える</div>
       <div class="card-text">
         AiPostでは同じ内容を複数のSNSに同時投稿した場合、<strong style="color:var(--primary);">1件としてカウント</strong>されます。<br><br>
-        例えばSTANDARDプラン（月30件・SNS3つ）の場合、毎回3つのSNSに同時投稿すれば実質<strong style="color:var(--primary);">最大90回分</strong>の投稿が可能です。<br><br>
+        例えばSTANDARDプラン（予約可能20件・SNS3つ）の場合、毎回3つのSNSに同時投稿すれば実質<strong style="color:var(--primary);">最大60回分</strong>の投稿が可能です。<br><br>
         ただし同時投稿扱いになるのは<strong style="color:var(--primary);">同一テキスト・同一画像・同時刻</strong>の3条件が揃った場合のみです。テキストや画像を変えた場合は別々にカウントされます。
       </div>
     </div>
@@ -462,28 +462,28 @@
             <td>4つ</td>
           </tr>
           <tr>
-            <td class="feature-name-col">月間投稿数（件）</td>
+            <td class="feature-name-col">予約可能件数（件）</td>
             <td>4件</td>
             <td>8件</td>
-            <td>15件</td>
-            <td>30件</td>
-            <td>60件</td>
+            <td>10件</td>
+            <td>20件</td>
+            <td>40件</td>
           </tr>
           <tr>
             <td class="feature-name-col">実質最大投稿回数</td>
             <td>4回</td>
             <td>8回</td>
-            <td>30回</td>
-            <td>90回</td>
-            <td>240回</td>
+            <td>20回</td>
+            <td>60回</td>
+            <td>160回</td>
           </tr>
           <tr>
             <td class="feature-name-col">文字数上限</td>
-            <td>60字</td>
-            <td>140字</td>
-            <td>280字</td>
-            <td>280字</td>
-            <td>280字</td>
+            <td>70字<br><span style="font-size:10px;color:#888;">(半角140字)</span></td>
+            <td>140字<br><span style="font-size:10px;color:#888;">(半角280字)</span></td>
+            <td>140字<br><span style="font-size:10px;color:#888;">(半角280字)</span></td>
+            <td>140字<br><span style="font-size:10px;color:#888;">(半角280字)</span></td>
+            <td>140字<br><span style="font-size:10px;color:#888;">(半角280字)</span></td>
           </tr>
           <tr>
             <td class="feature-name-col">複数SNS同時投稿</td>
@@ -757,16 +757,12 @@
   <!-- ナビゲーションバー -->
   <nav class="bottom-nav" id="bottom-nav">
     <button class="nav-item" onclick="navigateTo('textgen')">
-      <span class="nav-icon">✏️</span>
+      <span class="nav-icon">📝</span>
       <span class="nav-label">文章を作る</span>
     </button>
     <button class="nav-item" onclick="navigateTo('reservation')">
       <span class="nav-icon">📅</span>
-      <span class="nav-label">投稿予約</span>
-    </button>
-    <button class="nav-item" onclick="navigateTo('image')">
-      <span class="nav-icon">🖼️</span>
-      <span class="nav-label">画像選択</span>
+      <span class="nav-label">予約確認</span>
     </button>
     <button class="nav-item" onclick="navigateTo('analytics')">
       <span class="nav-icon">📊</span>
@@ -776,9 +772,13 @@
       <span class="nav-icon">⚙️</span>
       <span class="nav-label">設定</span>
     </button>
-    <button class="nav-item active" onclick="navigateTo('about')">
-      <span class="nav-icon">ℹ️</span>
-      <span class="nav-label">使い方</span>
+    <button class="nav-item" onclick="navigateTo('support')">
+      <span class="nav-icon">🤖</span>
+      <span class="nav-label">AIサポート</span>
+    </button>
+    <button class="nav-item active" onclick="navigateTo('plan')">
+      <span class="nav-icon">💎</span>
+      <span class="nav-label">プラン</span>
     </button>
   </nav>
 

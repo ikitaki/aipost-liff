@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AIサポート - AiPost</title>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js">
+  <title>AIサポート1 - AiPost</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
   function openMailModal() {
     document.getElementById('mail-content').value = '';
     const btn = document.getElementById('mail-confirm-btn');
@@ -57,7 +58,7 @@
   function closeMailComplete() {
     document.getElementById('mail-complete-modal').classList.remove('open');
   }
-</script>
+  </script>
   <style>
     :root {
       --primary: #1a237e;
@@ -357,7 +358,7 @@
   <!-- ヘッダー -->
   <div class="header">
     <span style="font-size:20px;">🤖</span>
-    <span class="header-logo">AIサポート</span>
+    <span class="header-logo">AIサポート1</span>
     <span class="header-sub">AiPost</span>
   </div>
 
@@ -499,7 +500,7 @@
         <div class="faq-q-left"><span class="faq-q-icon">Q</span>解約はいつでもできますか？</div>
         <span class="faq-arrow">▼</span>
       </div>
-      <div class="faq-a">はい、設定画面の「登録」タブからいつでも解約できます。解約後は当月末まで引き続きご利用いただけます。日割り返金はございません。</div>
+      <div class="faq-a">はい、設定画面の「登録」タブからいつでも解約できます。解約後は翌月末まで引き続きご利用いただけます。日割り返金はございません。</div>
     </div>
 
     <div class="faq-card" onclick="toggleFAQ(this)">
@@ -660,7 +661,7 @@
     'プラン': 'プラン・料金画面から変更できます。アップグレードは即時反映、ダウングレードは当月末に反映されます。',
     'キャンセル': '予約確認・変更画面から予約をタップして「キャンセル」ボタンで取り消せます。キャンセルした分の予約枠は即時解放されます。',
     '分析': '分析画面でいいね数・EG率・フォロワー推移を確認できます。EG率とはフォロワーに対する反応率で、高いほど投稿が刺さっていることを意味します。',
-    '解約': '設定画面の「登録」タブの最下部から解約手続きができます。解約後は当月末までご利用いただけます。',
+    '解約': '設定画面の「登録」タブの最下部から解約手続きができます。解約後は翌月末までご利用いただけます。',
     '画像': '文章を作る画面の「画像を選ぶ」セクションから素材画像またはご自身の画像を選択できます。',
     'EG率': 'EG率（エンゲージメント率）とは、フォロワー数に対していいね・コメント・保存の合計がどれだけあるかを示す指標です。一般的に3〜5%以上が良好とされています。',
     '素材画像': 'LITEプラン以上では、当サービスが提供するプロ品質の素材画像を使い放題でご利用いただけます。人物・食べ物・季節・自然など18カテゴリ・豊富なラインナップから選べます。投稿のクオリティが格段に上がります。',

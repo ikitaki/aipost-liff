@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録 - AiPost</title>
+<title>設定・登録1 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -370,7 +370,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録</span>
+  <span class="header-logo">設定・登録1</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -958,7 +958,7 @@ function closeCompareOnBg(e) {
   // LINEトークルームに戻る
   function closeToLine() {
     liff.init({ liffId: '2010401177-XJw2kDQV' }).then(function() {
-      liff.closeWindow();
+      window.location.replace('about:blank');
     }).catch(function() {
       window.history.back();
     });

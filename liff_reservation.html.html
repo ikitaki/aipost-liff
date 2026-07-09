@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更 - AiPost</title>
+<title>予約確認・変更1 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -85,33 +85,35 @@
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  /* 予約可能件数バナー */
+  /* 使用状況バー */
   .usage-bar {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 8px 14px;
-    margin-bottom: 12px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
   .usage-circle {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    border: 3px solid var(--warning);
+    border: 4px solid var(--warning);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
   }
-  .usage-num { font-size: 13px; font-weight: 700; line-height: 1; }
-  .usage-denom { font-size: 8px; color: var(--text-sub); }
+  .usage-num { font-size: 14px; font-weight: 700; line-height: 1; }
+  .usage-denom { font-size: 9px; color: var(--text-sub); }
   .usage-info { flex: 1; }
-  .usage-title { font-size: 12px; font-weight: 600; }
-  .usage-sub { font-size: 10px; color: var(--text-sub); margin-top: 1px; }
+  .usage-title { font-size: 13px; font-weight: 600; }
+  .usage-sub { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+  .usage-bar-bg { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .usage-bar-fill { height: 100%; border-radius: 3px; background: var(--warning); }
 
   /* 予約カード */
   .reservation-card {
@@ -318,16 +320,7 @@
     width: 100%;
     max-width: 480px;
     max-height: 88vh;
-    display: flex;
-    flex-direction: column;
-  }
-  .modal-body {
     overflow-y: auto;
-    flex: 1;
-  }
-  .modal-footer {
-    padding-top: 10px;
-    flex-shrink: 0;
   }
   .modal-handle {
     width: 40px; height: 4px;
@@ -362,15 +355,15 @@
 
   .modal-img {
     width: 100%;
-    height: 100px;
+    height: 140px;
     object-fit: cover;
     border-radius: 8px;
     background: var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    margin-bottom: 8px;
+    font-size: 32px;
+    margin-bottom: 12px;
   }
 
   .btn-row { display: flex; gap: 8px; margin-top: 14px; }
@@ -446,26 +439,6 @@
   .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
   .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
 
-  /* SNSフィルターボタン */
-  .sns-filter {
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-sub);
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    font-family: inherit;
-    transition: all 0.2s;
-  }
-  .sns-filter.active {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-  }
-
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -473,7 +446,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更</span>
+  <span class="header-logo">予約確認・変更1</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -486,16 +459,30 @@
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">IG</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">FB</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Facebook</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">TH</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+  </div>
+</div>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
+  </div>
+</div>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
   </div>
 </div>
 
 <div class="tab-nav">
   <button class="tab-btn active" onclick="switchTab('list')">
-    <span class="tab-icon">📋</span>SNS別予約一覧
+    <span class="tab-icon">📋</span>予約一覧
   </button>
   <button class="tab-btn" onclick="switchTab('calendar')">
     <span class="tab-icon">📆</span>予約カレンダー
@@ -516,24 +503,18 @@
         <span class="usage-denom">/ 30</span>
       </div>
       <div class="usage-info">
-        <div class="usage-title">予約可能件数</div>
+        <div class="usage-title">今月の投稿予約数</div>
         <div class="usage-sub">あと22件予約できます・月末まで18日</div>
+        <div class="usage-bar-bg">
+          <div class="usage-bar-fill" style="width:27%;background:var(--success);"></div>
+        </div>
       </div>
     </div>
 
-    <!-- SNSフィルター -->
-    <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;">
-      <button class="sns-filter active" data-sns="all" onclick="filterSNS('all')">全て</button>
-      <button class="sns-filter" data-sns="IG" onclick="filterSNS('IG')">IG</button>
-      <button class="sns-filter" data-sns="FB" onclick="filterSNS('FB')">FB</button>
-      <button class="sns-filter" data-sns="X" onclick="filterSNS('X')">X</button>
-      <button class="sns-filter" data-sns="TH" onclick="filterSNS('TH')">TH</button>
-    </div>
-
-    <div class="section-label" id="list-count-label">予約中（3件）</div>
+    <div class="section-label">予約中（8件）</div>
 
     <!-- 予約カード1 -->
-    <div class="reservation-card" data-sns="IG FB X" onclick="openDetail(1)">
+    <div class="reservation-card" onclick="openDetail(1)">
       <div class="card-header">
         <div class="status-dot dot-pending"></div>
         <div class="card-date">6月15日（日）</div>
@@ -544,21 +525,19 @@
           <span class="sns-tag tag-x">X</span>
         </div>
       </div>
-      <div class="card-body" style="display:flex;gap:10px;align-items:flex-start;">
-        <div style="width:72px;height:72px;border-radius:10px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;">🍵</div>
-        <div style="flex:1;min-width:0;">
-          <div class="card-text">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。</div>
-          <div class="card-hashtag">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
-        </div>
+      <div class="card-body">
+        <div class="card-text">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。</div>
+        <div class="card-hashtag">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
       </div>
       <div class="card-footer">
+        <div class="card-img-thumb">🍵</div>
         <div class="card-chars">32文字</div>
         <span class="card-ai-badge">✨ AI生成</span>
       </div>
     </div>
 
     <!-- 予約カード2 -->
-    <div class="reservation-card" data-sns="IG" onclick="openDetail(2)">
+    <div class="reservation-card" onclick="openDetail(2)">
       <div class="card-header">
         <div class="status-dot dot-pending"></div>
         <div class="card-date">6月17日（火）</div>
@@ -567,21 +546,19 @@
           <span class="sns-tag tag-ig">IG</span>
         </div>
       </div>
-      <div class="card-body" style="display:flex;gap:10px;align-items:flex-start;">
-        <div style="width:72px;height:72px;border-radius:10px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;">☕</div>
-        <div style="flex:1;min-width:0;">
-          <div class="card-text">本日のスペシャルティコーヒーはエチオピア産。フルーティな香りが特徴です。</div>
-          <div class="card-hashtag">#スペシャルティコーヒー #エチオピア #渋谷カフェ</div>
-        </div>
+      <div class="card-body">
+        <div class="card-text">本日のスペシャルティコーヒーはエチオピア産。フルーティな香りが特徴です。</div>
+        <div class="card-hashtag">#スペシャルティコーヒー #エチオピア #渋谷カフェ</div>
       </div>
       <div class="card-footer">
+        <div class="card-img-thumb">☕</div>
         <div class="card-chars">31文字</div>
         <span class="card-ai-badge">✨ AI生成</span>
       </div>
     </div>
 
     <!-- 予約カード3 -->
-    <div class="reservation-card" data-sns="IG X" onclick="openDetail(3)">
+    <div class="reservation-card" onclick="openDetail(3)">
       <div class="card-header">
         <div class="status-dot dot-pending"></div>
         <div class="card-date">6月20日（金）</div>
@@ -591,42 +568,21 @@
           <span class="sns-tag tag-x">X</span>
         </div>
       </div>
-      <div class="card-body" style="display:flex;gap:10px;align-items:flex-start;">
-        <div style="width:72px;height:72px;border-radius:10px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;">🍓</div>
-        <div style="flex:1;min-width:0;">
-          <div class="card-text">夏季限定メニューが始まります。冷たいフルーツティーとサマーパフェをぜひ。</div>
-          <div class="card-hashtag">#夏限定 #フルーツティー #渋谷グルメ</div>
-        </div>
+      <div class="card-body">
+        <div class="card-text">夏季限定メニューが始まります。冷たいフルーツティーとサマーパフェをぜひ。</div>
+        <div class="card-hashtag">#夏限定 #フルーツティー #渋谷グルメ</div>
       </div>
       <div class="card-footer">
+        <div class="card-img-thumb">🍓</div>
         <div class="card-chars">34文字</div>
         <span class="card-ai-badge">✨ AI生成</span>
       </div>
-    </div>
-
-    <div id="list-empty" style="display:none;text-align:center;padding:24px;color:var(--text-sub);font-size:13px;">
-      該当するSNSの予約はありません
     </div>
 
   </div>
 
   <!-- カレンダータブ -->
   <div id="tab-calendar" class="tab-panel">
-
-    <div class="usage-bar">
-      <div class="usage-circle">
-        <span class="usage-num">8</span>
-        <span class="usage-denom">/ 30</span>
-      </div>
-      <div class="usage-info">
-        <div class="usage-title">予約可能件数</div>
-        <div class="usage-sub">あと22件予約できます・月末まで18日</div>
-      </div>
-    </div>
-
-    <div id="no-selected" style="text-align:center;padding:4px 0 10px;">
-      <span style="font-size:13px;color:var(--text-sub);">📆 日付をタップしてください</span>
-    </div>
 
     <div class="calendar-wrap">
       <div class="cal-header">
@@ -656,87 +612,64 @@
       <div id="selected-day-cards"></div>
     </div>
 
+    <div id="no-selected" class="empty-state" style="padding:24px 20px;">
+      <div class="empty-icon">📆</div>
+      <div class="empty-title">日付をタップしてください</div>
+      <div class="empty-sub">投稿予約がある日には件数が表示されます</div>
+    </div>
+
   </div>
 
   <!-- 投稿履歴タブ -->
   <div id="tab-history" class="tab-panel">
 
-    <div class="usage-bar">
-      <div class="usage-circle">
-        <span class="usage-num">8</span>
-        <span class="usage-denom">/ 30</span>
+    <!-- 投稿件数表示 -->
+    <div style="background:var(--surface);border-radius:12px;padding:12px 14px;margin-bottom:12px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;">
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="font-size:24px;font-weight:700;color:var(--primary);">22</div>
+        <div style="font-size:10px;color:var(--text-sub);">件投稿済み</div>
       </div>
-      <div class="usage-info">
-        <div class="usage-title">予約可能件数</div>
-        <div class="usage-sub">あと22件予約できます・月末まで18日</div>
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">今月の投稿済み件数</div>
+        <div style="height:6px;background:#e0e4ed;border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:73%;background:var(--primary);border-radius:3px;"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">30件中22件（月末まで13日）</div>
       </div>
     </div>
 
-    <div class="section-label">投稿済み（22件）</div>
-
-    <div class="reservation-card">
-      <div class="card-header">
-        <div class="status-dot dot-done"></div>
-        <div class="card-date">6月13日（金）</div>
-        <div class="card-time">18:01 投稿済み</div>
+    <div class="calendar-wrap">
+      <div class="cal-header">
+        <button class="cal-nav">‹</button>
+        <div class="cal-title">2026年6月</div>
+        <button class="cal-nav">›</button>
       </div>
-      <div class="card-body">
-        <div class="card-text">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。</div>
-        <div class="card-hashtag">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
-      </div>
-      <div class="card-footer" style="background:var(--surface);flex-direction:column;align-items:flex-start;gap:4px;">
-        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">❤️いいね　💬コメント　🔁リポスト　📤シェア　↩️リプライ　🗨️引用　👍リアクション</div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);">
-          <span class="sns-tag tag-ig">IG</span>❤️ 142　💬 18
+      <div class="cal-grid">
+        <div class="cal-days">
+          <div class="cal-day-label">日</div>
+          <div class="cal-day-label">月</div>
+          <div class="cal-day-label">火</div>
+          <div class="cal-day-label">水</div>
+          <div class="cal-day-label">木</div>
+          <div class="cal-day-label">金</div>
+          <div class="cal-day-label">土</div>
         </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);">
-          <span class="sns-tag tag-fb">FB</span>❤️ 98　💬 12　📤 8　👍 24
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);">
-          <span class="sns-tag tag-x">X</span>❤️ 87　🔁 34　↩️ 9
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);">
-            <span class="sns-tag tag-th">TH</span>❤️ 62　🔁 18　↩️ 7　🗨️ 4
-          </div>
-          <span class="card-ai-badge" style="background:#e8f5e9;color:var(--success);">✓ 投稿済み</span>
-        </div>
+        <div class="cal-dates" id="history-cal-dates"></div>
       </div>
     </div>
 
-    <div class="reservation-card">
-      <div class="card-header">
-        <div class="status-dot dot-done"></div>
-        <div class="card-date">6月12日（木）</div>
-        <div class="card-time">19:01 投稿済み</div>
+    <div id="history-selected-section" style="display:none;">
+      <div class="selected-date-label">
+        <span>✅</span>
+        <span id="history-day-label">6月1日の投稿</span>
       </div>
-      <div class="card-body">
-        <div class="card-text">本日のスペシャルティコーヒーはエチオピア産。フルーティな香りが特徴です。</div>
-        <div class="card-hashtag">#スペシャルティコーヒー #エチオピア #渋谷カフェ</div>
-      </div>
-      <div class="card-footer" style="background:var(--surface);flex-direction:column;align-items:flex-start;gap:4px;">
-        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">❤️いいね　💬コメント　🔁リポスト　📤シェア　↩️リプライ　🗨️引用　👍リアクション</div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text);flex:1;">
-          <span class="sns-tag tag-ig">IG</span>❤️ 98　💬 12
-        </div>
-        <span class="card-ai-badge" style="background:#e8f5e9;color:var(--success);">✓ 投稿済み</span>
-      </div>
+      <div id="history-day-cards"></div>
     </div>
 
-    <div class="reservation-card">
-      <div class="card-header">
-        <div class="status-dot dot-fail"></div>
-        <div class="card-date">6月11日（水）</div>
-        <div class="card-time">13:01 失敗</div>
-      </div>
-      <div class="card-body">
-        <div class="card-text">本日のランチセットは限定10食。お早めにどうぞ。</div>
-        <div class="card-hashtag">#ランチ #限定 #渋谷カフェ</div>
-      </div>
-      <div class="card-footer" style="background:var(--surface);">
-        <div style="font-size:11px;color:var(--danger);">⚠️ X APIエラー：トークン期限切れ</div>
-        <button style="margin-left:auto;background:var(--primary);color:white;border:none;border-radius:16px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;" onclick="navigateTo('textgen')">再予約</button>
-      </div>
+    <div id="history-no-selected" class="empty-state" style="padding:24px 20px;">
+      <div class="empty-icon">📋</div>
+      <div class="empty-title">日付をタップしてください</div>
+      <div class="empty-sub">投稿済みの日には件数が表示されます</div>
     </div>
 
   </div>
@@ -755,36 +688,38 @@
 <div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeDetail()">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-body">
-      <div class="modal-title">予約の詳細</div>
-      <div class="modal-img">🍵</div>
-      <div class="detail-row">
-        <span class="detail-key">投稿予定</span>
-        <span class="detail-val">6月15日（日）13時ごろ</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-key">投稿先SNS</span>
-        <span class="detail-val">Instagram・Facebook・X</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-key">文字数</span>
-        <span class="detail-val">32文字</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-key">AI生成</span>
-        <span class="detail-val">✨ AI生成文章</span>
-      </div>
-      <div class="post-text-box">
-        週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。
-        <div class="hashtag-box">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
-      </div>
+    <div class="modal-title">予約の詳細</div>
+
+    <div class="modal-img">🍵</div>
+
+    <div class="detail-row">
+      <span class="detail-key">投稿予定</span>
+      <span class="detail-val">6月15日（日）13時ごろ</span>
     </div>
-    <div class="modal-footer">
-      <div class="btn-row" style="margin-top:0;">
-        <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
-        <button class="btn btn-primary" onclick="navigateTo('textgen')">編集する</button>
-        <button class="btn btn-danger" onclick="confirmCancel()">キャンセル</button>
-      </div>
+    <div class="detail-row">
+      <span class="detail-key">投稿先SNS</span>
+      <span class="detail-val">Instagram・Facebook・X</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">文字数</span>
+      <span class="detail-val">32文字</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">AI生成</span>
+      <span class="detail-val">✨ AI生成文章</span>
+    </div>
+
+    <div class="post-text-box">
+      週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。
+      <div class="hashtag-box">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
+      <button class="btn btn-primary" onclick="alert('編集画面に移動します')">編集する</button>
+    </div>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn btn-danger" onclick="confirmCancel()">この予約をキャンセル</button>
     </div>
   </div>
 </div>
@@ -806,6 +741,83 @@
 </div>
 
 <script>
+
+// 投稿履歴データ
+const historyPostCounts = {1:3, 3:2, 5:1, 7:2, 9:3, 11:1, 13:2, 15:1};
+const historyPostData = {
+  1:  [{sns:'Instagram',text:'週末限定の抹茶テリーヌが登場しました。',likes:142,comments:18},
+       {sns:'Facebook', text:'週末限定の抹茶テリーヌが登場しました。',likes:98, comments:12},
+       {sns:'X',        text:'週末限定の抹茶テリーヌが登場しました。',likes:87, comments:9}],
+  3:  [{sns:'Instagram',text:'本日のスペシャルティコーヒーはエチオピア産。',likes:76,comments:8},
+       {sns:'Facebook', text:'本日のスペシャルティコーヒーはエチオピア産。',likes:54,comments:6}],
+  5:  [{sns:'X',text:'夏季限定メニュー開始のお知らせ。',likes:65,comments:7}],
+  7:  [{sns:'Instagram',text:'新しいランチセットが始まりました。',likes:112,comments:15},
+       {sns:'X',        text:'新しいランチセットが始まりました。',likes:88, comments:11}],
+  9:  [{sns:'Instagram',text:'今週のおすすめスイーツをご紹介。',likes:134,comments:18},
+       {sns:'Facebook', text:'今週のおすすめスイーツをご紹介。',likes:92, comments:13},
+       {sns:'X',        text:'今週のおすすめスイーツをご紹介。',likes:76, comments:9}],
+  11: [{sns:'Instagram',text:'スタッフのおすすめメニューです。',likes:88,comments:11}],
+  13: [{sns:'Instagram',text:'週末限定ドリンクが登場しました。',likes:169,comments:24},
+       {sns:'Facebook', text:'週末限定ドリンクが登場しました。',likes:121,comments:18}],
+  15: [{sns:'X',text:'本日のランチ情報をお届けします。',likes:76,comments:8}],
+};
+
+let historySelectedDay = null;
+
+function buildHistoryCalendar() {
+  const grid = document.getElementById('history-cal-dates');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const firstDay = 1; // 6月1日=月曜
+  const days = 30;
+  const todayNum = 17;
+
+  for (let i = 0; i < firstDay; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'cal-date other-month';
+    blank.textContent = 31;
+    grid.appendChild(blank);
+  }
+  for (let d = 1; d <= days; d++) {
+    const el = document.createElement('div');
+    const dayOfWeek = (firstDay + d - 1) % 7;
+    let cls = 'cal-date';
+    if (dayOfWeek === 0) cls += ' sunday';
+    if (dayOfWeek === 6) cls += ' saturday';
+    if (d === todayNum) cls += ' today';
+    if (historyPostCounts[d]) cls += ' has-post';
+    if (d === historySelectedDay) cls += ' selected';
+    el.className = cls;
+    const count = historyPostCounts[d];
+    if (count) {
+      el.innerHTML = `<span>${d}</span><span class="cal-post-count">${count}件</span>`;
+    } else {
+      el.textContent = d;
+    }
+    el.onclick = () => selectHistoryDay(d);
+    grid.appendChild(el);
+  }
+}
+
+function selectHistoryDay(d) {
+  historySelectedDay = d;
+  buildHistoryCalendar();
+  const posts = historyPostData[d];
+  document.getElementById('history-no-selected').style.display = posts ? 'none' : 'block';
+  document.getElementById('history-selected-section').style.display = posts ? 'block' : 'none';
+  if (posts) {
+    document.getElementById('history-day-label').textContent = `6月${d}日の投稿（${posts.length}件）`;
+    document.getElementById('history-day-cards').innerHTML = posts.map(p => `
+      <div style="background:var(--surface);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:3px;">${p.sns}</div>
+        <div style="font-size:12px;color:var(--text);line-height:1.6;margin-bottom:6px;">${p.text}</div>
+        <div style="display:flex;gap:12px;font-size:11px;color:var(--text-sub);">
+          <span>❤️ ${p.likes}</span><span>💬 ${p.comments}</span>
+        </div>
+      </div>`).join('');
+  }
+}
+
 function switchTab(id) {
   const tabs = ['list','calendar','history'];
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===id));
@@ -813,35 +825,20 @@ function switchTab(id) {
   document.getElementById('tab-'+id).classList.add('active');
 }
 
-function filterSNS(sns) {
-  document.querySelectorAll('.sns-filter').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.sns === sns);
-  });
-  const cards = document.querySelectorAll('#tab-list .reservation-card');
-  let count = 0;
-  cards.forEach(card => {
-    const cardSns = card.dataset.sns || '';
-    const show = sns === 'all' || cardSns.includes(sns);
-    card.style.display = show ? 'block' : 'none';
-    if (show) count++;
-  });
-  const label = document.getElementById('list-count-label');
-  if (label) label.textContent = '予約中（' + count + '件）';
-  const empty = document.getElementById('list-empty');
-  if (empty) empty.style.display = count === 0 ? 'block' : 'none';
-}
-
 // カレンダー生成
-const postCounts = {15: 3, 17: 1, 20: 2, 25: 5, 28: 1};
+const postCounts = {15: 3, 17: 1, 20: 2, 25: 5, 28: 1}; // 日付:件数のマップ
 const today = 13;
 let selectedDay = null;
 
 function buildCalendar() {
   const grid = document.getElementById('cal-dates');
   grid.innerHTML = '';
-  const firstDay = 1;
+  // 2026年6月は月曜日始まり→日曜日=0から
+  // 6月1日は月曜日
+  const firstDay = 1; // 月曜=1、日曜スタートなので1マス空ける
   const days = 30;
 
+  // 空白
   for (let i = 0; i < firstDay; i++) {
     const blank = document.createElement('div');
     blank.className = 'cal-date other-month';
@@ -859,9 +856,10 @@ function buildCalendar() {
     if (postCounts[d]) cls += ' has-post';
     if (d === selectedDay) cls += ' selected';
     el.className = cls;
+    // 件数バッジを含むHTML
     const count = postCounts[d];
     if (count) {
-      el.innerHTML = `<span>${d}</span><span class="cal-post-count">${count}</span>`;
+      el.innerHTML = `<span>${d}</span><span class="cal-post-count">${count}件</span>`;
     } else {
       el.textContent = d;
     }
@@ -886,14 +884,12 @@ function selectDay(d) {
           <div class="card-time">13時ごろ</div>
           <div class="sns-tags"><span class="sns-tag tag-ig">IG</span><span class="sns-tag tag-fb">FB</span><span class="sns-tag tag-x">X</span></div>
         </div>
-        <div class="card-body" style="display:flex;gap:10px;align-items:flex-start;">
-          <div style="width:72px;height:72px;border-radius:10px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;">🍵</div>
-          <div style="flex:1;min-width:0;">
-            <div class="card-text">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。</div>
-            <div class="card-hashtag">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
-          </div>
+        <div class="card-body">
+          <div class="card-text">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。</div>
+          <div class="card-hashtag">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
         </div>
         <div class="card-footer">
+          <div class="card-img-thumb">🍵</div>
           <div class="card-chars">32文字</div>
           <span class="card-ai-badge">✨ AI生成</span>
         </div>
@@ -920,6 +916,7 @@ function executeCancel() {
 }
 
 buildCalendar();
+buildHistoryCalendar();
 </script>
 
 <!-- ボトムナビゲーションバー -->
@@ -949,19 +946,22 @@ buildCalendar();
   // ボトムナビゲーション共通処理
   // ============================================
 
+  // 各LIFF画面のURL
   const LIFF_URLS = {
     textgen:     'https://liff.line.me/2010401177-OpvemMmh',
     reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
     analytics:   'https://liff.line.me/2010401177-qKtfKWP0',
+    image:       'https://liff.line.me/2010401177-3pV56kDU',
     settings:    'https://liff.line.me/2010401177-XJw2kDQV',
     about:       'https://liff.line.me/2010401177-PtX79ibV',
     plan:        'https://liff.line.me/2010401177-IstPDnls',
     support:     'https://liff.line.me/2010401177-vwzTH30h',
   };
 
+  // 他のLIFF画面に移動する
   function navigateTo(page) {
     if (LIFF_URLS[page]) {
-      window.location.replace(LIFF_URLS[page]);
+      window.location.href = LIFF_URLS[page];
     }
   }
 
