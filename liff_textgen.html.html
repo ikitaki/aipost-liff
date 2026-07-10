@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成2 - AiPost</title>
+<title>SNS投稿作成1 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -155,7 +155,7 @@
 
   /* 文章エリア */
   .post-textarea {
-    width: 100%; min-height: 120px; padding: 12px;
+    width: 100%; min-height: 220px; padding: 12px;
     border: 1.5px solid var(--border); border-radius: 8px;
     font-size: 14px; font-family: inherit; line-height: 1.8;
     resize: none; outline: none; transition: border-color 0.2s;
@@ -164,7 +164,17 @@
   .post-textarea.warn { border-color: var(--warning); }
   .post-textarea.over { border-color: var(--danger); }
 
-  /* 文字数 */
+  /* 業種ベース生成メッセージ */
+  .genre-notice {
+    display:none;
+    background:#f0fdf4;
+    border:1px solid #86efac;
+    border-radius:8px;
+    padding:8px 12px;
+    font-size:11px;
+    color:#166534;
+    margin-bottom:8px;
+  }
   .char-counter { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
   .char-count { font-size: 12px; font-weight: 600; color: var(--text-sub); min-width: 70px; }
   .char-count.warn { color: var(--warning); }
@@ -205,6 +215,9 @@
     border: none; border-radius: 8px; font-size: 12px; cursor: pointer;
   }
 
+  /* 再生成ボタン */
+  .regen-btns { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .regen-btn { padding: 7px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); font-size: 12px; color: var(--text-sub); cursor: pointer; font-family: inherit; }
 
   /* 下書き保存（廃止） */
   .draft-btn-disabled {
@@ -576,7 +589,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成2</span>
+  <span class="header-logo">SNS投稿作成1</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -698,17 +711,23 @@
   <div class="card">
     <div class="card-title">⑤ 文章を確認・編集する</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで作成した文章が表示されます。自由に編集できます。直接入力することもできます。</p>
+    <div class="genre-notice" id="genre-notice">📍 登録業種（<span id="genre-label"></span>）をもとに文章を生成しました。</div>
     <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount()"
       placeholder="AIで生成した文章がここに表示されます。直接入力することもできます。"></textarea>
     <div class="char-counter">
       <span class="char-count" id="char-count">0文字</span>
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
-      <span style="font-size:11px;color:var(--text-light);">上限140字（半角280字）</span>
+      <span style="font-size:11px;color:var(--text-light);">上限 280文字</span>
     </div>
     <div class="url-warning" id="url-warning">
       🔗 <strong>投稿文にURLが含まれています。</strong><br>当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます。
     </div>
     <div class="x-warning" id="x-warning"></div>
+    <div class="regen-btns" id="regen-btns" style="display:none;">
+      <button class="regen-btn" onclick="confirmAndGenerate()">🔄 作り直す</button>
+      <button class="regen-btn" onclick="makeShort()">✂️ 短くする</button>
+      <button class="regen-btn" onclick="makeFormal()">👔 丁寧にする</button>
+    </div>
   </div>
 
 
@@ -914,7 +933,7 @@
 </nav>
 
 <script>
-const CHAR_LIMIT = 140; // 全角換算の文字数上限（PERSONAL以上：140字＝半角280字相当）
+const CHAR_LIMIT = 280;
 const X_LIMIT = 140;
 
 // ===== キーワード =====
@@ -939,7 +958,24 @@ function selectPattern(btn) {
 }
 
 // ===== AI生成 =====
+// ===== デモ用業種データ（実装時はGASから取得） =====
+// null = 業種未登録・値あり = 登録済み
+const USER_GENRE = { main: 'カフェ・喫茶店', sub: '和スイーツ' }; // デモ：登録済み状態
+// const USER_GENRE = null; // デモ：未登録状態
+
 function confirmAndGenerate() {
+  // キーワード取得
+  const keywordTags = document.querySelectorAll('#keyword-tags .keyword-tag');
+  const hasKeyword = keywordTags.length > 0;
+
+  // 業種未登録・キーワード未入力の場合はアラート
+  if (!USER_GENRE && !hasKeyword) {
+    alert('キーワードを入力してください。\n業種が未登録の場合、キーワードの入力が必要です。');
+    document.getElementById('keyword-input').focus();
+    return;
+  }
+
+  // テキストエリアに文章がある場合は上書き確認
   const ta = document.getElementById('post-textarea');
   if (ta.value.trim() !== '') {
     document.getElementById('overwrite-modal').classList.add('open');
@@ -952,9 +988,17 @@ function executeGenerate() {
   closeModal('overwrite-modal');
   document.getElementById('generate-btn').disabled = true;
   document.getElementById('loading').classList.add('show');
+  document.getElementById('regen-btns').style.display = 'none';
+  document.getElementById('genre-notice').style.display = 'none';
   // ローディング中はコンテンツ操作をブロック
   document.getElementById('content-wrap').style.pointerEvents = 'none';
   setStep(3);
+
+  // キーワード取得
+  const keywordTags = document.querySelectorAll('#keyword-tags .keyword-tag');
+  const hasKeyword = keywordTags.length > 0;
+  const useGenre = USER_GENRE && !hasKeyword; // 業種ベース生成かどうか
+
   setTimeout(() => {
     document.getElementById('loading').classList.remove('show');
     document.getElementById('generate-btn').disabled = false;
@@ -962,6 +1006,14 @@ function executeGenerate() {
     const ta = document.getElementById('post-textarea');
     // 本文＋ハッシュタグを一体でテキストエリアに挿入
     ta.value = '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりをぜひお試しください。\n#渋谷カフェ #週末限定 #抹茶スイーツ #新メニュー';
+
+    // 業種ベース生成の場合は通知を表示
+    if (useGenre) {
+      document.getElementById('genre-label').textContent = `${USER_GENRE.main}・${USER_GENRE.sub}`;
+      document.getElementById('genre-notice').style.display = 'block';
+    }
+
+    document.getElementById('regen-btns').style.display = 'flex';
     setStep(4);
     updateCharCount();
     ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1079,6 +1131,14 @@ function updateCharCount() {
     xWarn.classList.remove('show');
   }
   if (text.trim()) setStep(4);
+}
+function makeShort() {
+  document.getElementById('post-textarea').value = '週末限定の抹茶テリーヌが登場。濃厚な香りとなめらかな口当たりをぜひ。';
+  updateCharCount();
+}
+function makeFormal() {
+  document.getElementById('post-textarea').value = '週末限定の抹茶テリーヌをご用意いたしました。濃厚な抹茶の香りとなめらかな口当たりを、ぜひご堪能ください。';
+  updateCharCount();
 }
 
 // ===== SNS =====
