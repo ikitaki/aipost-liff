@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録1 - AiPost</title>
+<title>設定・登録2 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -207,7 +207,7 @@
   /* 比較モーダル */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5); z-index: 200;
+    background: rgba(0,0,0,0.5); z-index: 1010; /* ★下部ナビバー(z-index:1000)より上に表示 */
     align-items: flex-end; justify-content: center;
   }
   .modal-overlay.open { display: flex; }
@@ -370,7 +370,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録1</span>
+  <span class="header-logo">設定・登録2</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -683,7 +683,7 @@
 </div>
 
 <!-- 退会完了モーダル -->
-<div class="modal-overlay" id="cancel-complete-modal" style="z-index:400;">
+<div class="modal-overlay" id="cancel-complete-modal" style="z-index:1030;">
   <div class="modal" style="padding:28px 20px;text-align:center;">
     <div style="font-size:48px;margin-bottom:16px;">🙏</div>
     <div style="font-size:18px;font-weight:700;margin-bottom:10px;">ご利用ありがとうございました</div>
@@ -704,7 +704,7 @@
 </div>
 
 <!-- 用語説明モーダル -->
-<div class="modal-overlay" id="term-modal" style="z-index:300;" onclick="if(event.target===this)closeTerm()">
+<div class="modal-overlay" id="term-modal" style="z-index:1020;" onclick="if(event.target===this)closeTerm()">
   <div class="modal" style="padding:20px 16px;">
     <div class="modal-handle"></div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
