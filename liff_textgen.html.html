@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成12 - AiPost</title>
+<title>SNS投稿作成17 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -131,20 +131,28 @@
   .hashtag-desc { font-size: 12px; color: var(--text-sub); margin: -4px 0 10px; }
   .hashtag-header { display: flex; align-items: center; margin-bottom: 4px; }
   .hashtag-header-spacer { flex: 1; }
-  .hashtag-checks { display: flex; gap: 10px; width: 116px; justify-content: space-around; }
-  .hashtag-col { width: 20px; text-align: center; font-size: 14px; }
+  .hashtag-checks { display: flex; gap: 8px; width: 128px; justify-content: space-around; flex-shrink: 0; }
+  .hashtag-col { width: 20px; text-align: center; font-size: 13px; }
   .hashtag-col input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
   .hashtag-col input[type="checkbox"]:disabled { opacity: 0.25; cursor: not-allowed; }
   .hashtag-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .hashtag-input-wrap {
+    flex: 1; display: flex; align-items: center;
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 0 10px; background: #fff;
+  }
+  .hashtag-input-wrap:focus-within { border-color: var(--primary); }
+  .hashtag-prefix { font-size: 13px; color: var(--primary); font-weight: 700; margin-right: 2px; }
   .hashtag-input {
-    flex: 1; padding: 9px 10px; border: 1px solid var(--border);
-    border-radius: 8px; font-size: 13px; font-family: inherit; outline: none;
+    flex: 1; padding: 9px 2px; border: none;
+    font-size: 13px; font-family: inherit; outline: none; background: transparent;
   }
   .hashtag-input:focus { border-color: var(--primary); }
   .x-hashtag-count {
     display: flex; justify-content: space-between; align-items: center;
     background: #fff3e0; color: #e65100; border-radius: 8px;
-    padding: 8px 10px; font-size: 12px; font-weight: 700; margin-top: 4px;
+    padding: 8px 10px; font-size: 11px; font-weight: 700; margin: 8px 0;
+    flex-wrap: wrap; gap: 4px;
   }
   .x-hashtag-count.over { background: #ffebee; color: var(--danger); }
 
@@ -203,31 +211,6 @@
   .url-warning.show { display: block; }
   .x-warning { display: none; background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #5d4037; margin: 8px 0; line-height: 1.7; }
   .x-warning.show { display: block; }
-
-  /* ハッシュタグ */
-  .hashtag-area { background: #f0f2ff; border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
-  .hashtag-label { font-size: 11px; color: var(--primary); font-weight: 700; margin-bottom: 8px; }
-  .hashtag-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-  .hashtag-tag {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: var(--primary); color: #fff;
-    border-radius: 16px; padding: 3px 10px;
-    font-size: 12px; font-weight: 600;
-  }
-  .hashtag-tag-del {
-    background: none; border: none; color: rgba(255,255,255,0.8);
-    font-size: 13px; cursor: pointer; padding: 0; line-height: 1;
-  }
-  .hashtag-input-wrap { display: flex; gap: 6px; margin-top: 4px; }
-  .hashtag-input {
-    flex: 1; border: 1px solid #c5cae9; border-radius: 8px;
-    padding: 6px 10px; font-size: 12px; outline: none;
-    background: #fff;
-  }
-  .hashtag-add-btn {
-    padding: 6px 12px; background: var(--primary); color: #fff;
-    border: none; border-radius: 8px; font-size: 12px; cursor: pointer;
-  }
 
   /* 下書き保存（廃止） */
   .draft-btn-disabled {
@@ -340,6 +323,14 @@
   .sns-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
   .sns-fb { background: #1877f2; }
   .sns-x  { background: #000000; }
+  .sns-th { background: #555555; font-size: 12px; }
+  .plan-demo-btn {
+    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
+    cursor: pointer;
+  }
+  .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
+  .sns-plan-note { font-size: 11px; color: #e65100; margin: 8px 0 0; }
   .sns-check-name { flex: 1; font-size: 14px; font-weight: 600; }
   .sns-checkbox {
     width: 22px; height: 22px; border-radius: 50%;
@@ -612,16 +603,20 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成12</span>
+  <span class="header-logo">SNS投稿作成17</span>
   <span class="header-sub">AiPost</span>
 </div>
 
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
-    <span>¥1,280/月</span>
+    <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">PRO</span>
+    <span id="plan-price">¥1,980/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
+    <span style="margin-left:auto;display:flex;gap:4px;">
+      <button class="plan-demo-btn" id="plan-demo-standard" onclick="setDemoPlan('STANDARD')">STANDARD</button>
+      <button class="plan-demo-btn active" id="plan-demo-pro" onclick="setDemoPlan('PRO')">PRO</button>
+    </span>
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
@@ -629,20 +624,6 @@
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Facebook</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
-  </div>
-</div>
-  <div style="display:flex;align-items:center;gap:4px;">
-    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
-  </div>
-</div>
-  <div style="display:flex;align-items:center;gap:4px;">
-    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
   </div>
 </div>
 
@@ -682,7 +663,13 @@
         <div class="sns-check-name">X（Twitter）</div>
         <div class="sns-checkbox">✓</div>
       </div>
+      <div class="sns-check-item checked" id="sns-item-threads" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-th">🧵</div>
+        <div class="sns-check-name">Threads</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
     </div>
+    <p class="sns-plan-note" id="sns-plan-note" style="display:none;">💎 Threadsへの投稿はPROプラン限定です</p>
   </div>
 
   <!-- ② キーワード入力 -->
@@ -690,85 +677,17 @@
     <div class="card-title">② キーワードを入力する</div>
     <div class="keyword-guide" id="keyword-guide"></div>
     <div class="keyword-input-grid">
-      <input type="text" class="keyword-input" id="keyword-input-1" maxlength="20" placeholder="キーワード1">
-      <input type="text" class="keyword-input" id="keyword-input-2" maxlength="20" placeholder="キーワード2">
-      <input type="text" class="keyword-input" id="keyword-input-3" maxlength="20" placeholder="キーワード3">
-      <input type="text" class="keyword-input" id="keyword-input-4" maxlength="20" placeholder="キーワード4">
-      <input type="text" class="keyword-input" id="keyword-input-5" maxlength="20" placeholder="キーワード5">
+      <input type="text" class="keyword-input" id="keyword-input-1" maxlength="10" placeholder="キーワード1">
+      <input type="text" class="keyword-input" id="keyword-input-2" maxlength="10" placeholder="キーワード2">
+      <input type="text" class="keyword-input" id="keyword-input-3" maxlength="10" placeholder="キーワード3">
     </div>
-    <div class="keyword-hint">💡 キーワードは最大5個・1個20文字までです。商品名・特徴・季節など</div>
-    <div class="keyword-hint" style="margin-top:6px;">✏️ 自分で文章を書く場合は⑥の入力欄に直接入力してください</div>
+    <div class="keyword-hint">💡 キーワードは最大3個・1個10文字までです。商品名・特徴・季節など</div>
+    <div class="keyword-hint" style="margin-top:6px;">✏️ 自分で文章を書く場合は④の入力欄に直接入力してください</div>
   </div>
 
-  <!-- ③ ハッシュタグ -->
+  <!-- ③ 訴求パターン -->
   <div class="card">
-    <div class="card-title">③ ハッシュタグ</div>
-    <p class="hashtag-desc">チェックしたSNSにだけ付与されます</p>
-    <div class="hashtag-header">
-      <div class="hashtag-header-spacer"></div>
-      <div class="hashtag-checks">
-        <span class="hashtag-col hashtag-col-X">🐦</span>
-        <span class="hashtag-col hashtag-col-IG">📱</span>
-        <span class="hashtag-col hashtag-col-FB">💻</span>
-        <span class="hashtag-col hashtag-col-TH">🧵</span>
-      </div>
-    </div>
-    <div class="hashtag-rows" id="hashtag-rows">
-      <div class="hashtag-row">
-        <input type="text" class="hashtag-input" id="hashtag-input-1" maxlength="20" placeholder="ハッシュタグ1" oninput="onHashtagChange()">
-        <div class="hashtag-checks">
-          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-1-X" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-1-IG" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-1-FB" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-1-TH" onchange="onHashtagChange()"></span>
-        </div>
-      </div>
-      <div class="hashtag-row">
-        <input type="text" class="hashtag-input" id="hashtag-input-2" maxlength="20" placeholder="ハッシュタグ2" oninput="onHashtagChange()">
-        <div class="hashtag-checks">
-          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-2-X" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-2-IG" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-2-FB" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-2-TH" onchange="onHashtagChange()" disabled></span>
-        </div>
-      </div>
-      <div class="hashtag-row">
-        <input type="text" class="hashtag-input" id="hashtag-input-3" maxlength="20" placeholder="ハッシュタグ3" oninput="onHashtagChange()">
-        <div class="hashtag-checks">
-          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-3-X" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-3-IG" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-3-FB" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-3-TH" onchange="onHashtagChange()" disabled></span>
-        </div>
-      </div>
-      <div class="hashtag-row">
-        <input type="text" class="hashtag-input" id="hashtag-input-4" maxlength="20" placeholder="ハッシュタグ4" oninput="onHashtagChange()">
-        <div class="hashtag-checks">
-          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-4-X" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-4-IG" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-4-FB" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-4-TH" onchange="onHashtagChange()" disabled></span>
-        </div>
-      </div>
-      <div class="hashtag-row">
-        <input type="text" class="hashtag-input" id="hashtag-input-5" maxlength="20" placeholder="ハッシュタグ5" oninput="onHashtagChange()">
-        <div class="hashtag-checks">
-          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-5-X" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-5-IG" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-5-FB" onchange="onHashtagChange()"></span>
-          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-5-TH" onchange="onHashtagChange()" disabled></span>
-        </div>
-      </div>
-    </div>
-    <div class="x-hashtag-count" id="x-hashtag-count" style="display:none;">
-      <span>🐦 X投稿時の合計文字数</span>
-      <span id="x-hashtag-count-val">0 / 140</span>
-    </div>
-  </div>
-
-  <!-- ④ 訴求パターン -->
-  <div class="card">
-    <div class="card-title">④ 訴求パターンを選ぶ（任意）</div>
+    <div class="card-title">③ 訴求パターンを選ぶ（任意）</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">どんな雰囲気で伝えたいですか？選ばなくてもAIが自動で判断します。</p>
     <div class="pattern-grid">
       <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
@@ -784,7 +703,7 @@
 
   <!-- ⑤ AI生成ボタン -->
   <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
-    <span style="font-size:20px;">✨</span>④ AIで投稿文を作成する
+    <span style="font-size:20px;">✨</span>AIで投稿文とハッシュタグを作成する
   </button>
 
   <!-- ローディング -->
@@ -793,9 +712,9 @@
     <div class="loading-text">AIが投稿文を考えています…<br>少々お待ちください</div>
   </div>
 
-  <!-- ⑥ 文章確認・編集 -->
+  <!-- ④ 文章確認・編集 -->
   <div class="card">
-    <div class="card-title">⑥ 文章を確認・編集する</div>
+    <div class="card-title">④ 文章を確認・編集する</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで作成した文章が表示されます。自由に編集できます。直接入力することもできます。</p>
     <div class="genre-notice" id="genre-notice">📍 登録業種（<span id="genre-label"></span>）をもとに文章を生成しました。</div>
     <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount()"
@@ -805,6 +724,10 @@
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
       <span style="font-size:11px;color:var(--text-light);">上限140字（半角280字）</span>
     </div>
+    <div class="x-hashtag-count" id="x-hashtag-count" style="display:none;">
+      <span>🐦 本文<span id="x-hashtag-count-text">0</span>字 ＋ ハッシュタグ<span id="x-hashtag-count-tagnum">0</span>個<span id="x-hashtag-count-tagchar">0</span>字</span>
+      <span id="x-hashtag-count-val">＝ 0 / 140</span>
+    </div>
     <div class="url-warning" id="url-warning">
       🔗 <strong>投稿文にURLが含まれています。</strong><br>当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます。
     </div>
@@ -812,6 +735,68 @@
   </div>
 
 
+
+  <!-- ⑤ ハッシュタグ -->
+  <div class="card">
+    <div class="card-title">⑤ ハッシュタグ</div>
+    <p class="hashtag-desc">AIで作成したハッシュタグが表示されます。文章と同様、自由に編集できます。チェックしたSNSにだけ付与されます。「#」は自動で挿入されるため入力不要です。</p>
+    <div class="hashtag-header">
+      <div class="hashtag-header-spacer"></div>
+      <div class="hashtag-checks">
+        <span class="hashtag-col hashtag-col-X">🐦</span>
+        <span class="hashtag-col hashtag-col-IG">📱</span>
+        <span class="hashtag-col hashtag-col-FB">💻</span>
+        <span class="hashtag-col hashtag-col-TH">🧵</span>
+      </div>
+    </div>
+    <div class="hashtag-rows" id="hashtag-rows">
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-1" maxlength="20" placeholder="キーワード1" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-1-X" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-1-IG" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-1-FB" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-1-TH" onchange="onHashtagChange()"></span>
+        </div>
+      </div>
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-2" maxlength="20" placeholder="キーワード2" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-2-X" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-2-IG" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-2-FB" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-2-TH" onchange="onHashtagChange()" disabled></span>
+        </div>
+      </div>
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-3" maxlength="20" placeholder="キーワード3" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-3-X" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-3-IG" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-3-FB" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-3-TH" onchange="onHashtagChange()" disabled></span>
+        </div>
+      </div>
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-4" maxlength="20" placeholder="キーワード4" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-4-X" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-4-IG" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-4-FB" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-4-TH" onchange="onHashtagChange()" disabled></span>
+        </div>
+      </div>
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-5" maxlength="20" placeholder="キーワード5" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-5-X" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-5-IG" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-5-FB" onchange="onHashtagChange()"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-5-TH" onchange="onHashtagChange()" disabled></span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ⑦ 画像選択（インライン） -->
   <div class="image-section">
@@ -1022,7 +1007,7 @@ const X_LIMIT = 140;
 // 入力済みキーワード（空欄を除く）を配列で取得
 function getKeywords() {
   const result = [];
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 3; i++) {
     const el = document.getElementById('keyword-input-' + i);
     const val = el ? el.value.trim() : '';
     if (val) result.push(val);
@@ -1100,20 +1085,46 @@ function getXCombinedTotal() {
   return total;
 }
 
-// Xの本文＋ハッシュタグ合計文字数を計算して表示
+// Xの本文＋ハッシュタグ合計文字数を計算して内訳付きで表示
 function updateXHashtagCount() {
   const badge = document.getElementById('x-hashtag-count');
   const xChecked = document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-x');
   if (!xChecked) { badge.style.display = 'none'; return; }
   badge.style.display = 'flex';
 
-  const total = getXCombinedTotal();
-  document.getElementById('x-hashtag-count-val').textContent = total + ' / ' + CHAR_LIMIT;
+  const text = document.getElementById('post-textarea').value;
+  const textCount = countCharsX(text);
+  const tags = getHashtagsForSns('X');
+  let tagCharTotal = 0;
+  if (tags.length) {
+    tagCharTotal += 1; // 本文とハッシュタグの間のスペース
+    tags.forEach((tag, idx) => {
+      tagCharTotal += countCharsX('#' + tag);
+      if (idx < tags.length - 1) tagCharTotal += 1; // タグ間のスペース
+    });
+  }
+  const total = textCount + tagCharTotal;
+
+  document.getElementById('x-hashtag-count-text').textContent = textCount;
+  document.getElementById('x-hashtag-count-tagnum').textContent = tags.length;
+  document.getElementById('x-hashtag-count-tagchar').textContent = tagCharTotal;
+  document.getElementById('x-hashtag-count-val').textContent = '＝ ' + total + ' / ' + CHAR_LIMIT;
   badge.classList.toggle('over', total > CHAR_LIMIT);
 }
 
 // ハッシュタグ入力欄・チェックボックスの変更時に呼び出す
+// 入力欄に#や全角/半角スペースが混入していた場合、自動で除去する
+function sanitizeHashtagInputs() {
+  for (let i = 1; i <= 5; i++) {
+    const input = document.getElementById('hashtag-input-' + i);
+    if (!input) continue;
+    const cleaned = input.value.replace(/[#＃\s]/g, '');
+    if (cleaned !== input.value) input.value = cleaned;
+  }
+}
+
 function onHashtagChange() {
+  sanitizeHashtagInputs();
   syncHashtagRowState();
   updateXHashtagCount();
 }
@@ -1317,6 +1328,31 @@ function updateCharCount() {
   if (text.trim()) setStep(4);
 }
 
+// ===== デモ用プラン切替（PROプランでのThreads表示確認用） =====
+function setDemoPlan(plan) {
+  document.getElementById('plan-demo-standard').classList.toggle('active', plan === 'STANDARD');
+  document.getElementById('plan-demo-pro').classList.toggle('active', plan === 'PRO');
+  document.getElementById('plan-badge').textContent = plan;
+  document.getElementById('plan-price').textContent = plan === 'PRO' ? '¥1,980/月' : '¥1,280/月';
+
+  const thItem = document.getElementById('sns-item-threads');
+  const thNote = document.getElementById('sns-plan-note');
+  if (plan === 'PRO') {
+    thItem.style.display = 'flex';
+    thNote.style.display = 'none';
+  } else {
+    // STANDARDに戻す場合、Threadsが選択済みなら解除してから隠す
+    if (thItem.classList.contains('checked')) {
+      thItem.classList.remove('checked');
+      thItem.querySelector('.sns-checkbox').textContent = '';
+    }
+    thItem.style.display = 'none';
+    thNote.style.display = 'block';
+  }
+  updateHashtagColumns();
+  updateCharCount();
+}
+
 // ===== SNS =====
 function toggleSns(el) {
   el.classList.toggle('checked');
@@ -1452,7 +1488,7 @@ function resetAllForm() {
   updateCharCount();
 
   // キーワード
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 3; i++) {
     const kw = document.getElementById('keyword-input-' + i);
     if (kw) kw.value = '';
   }
