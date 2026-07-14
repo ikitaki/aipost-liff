@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成17 - AiPost</title>
+<title>SNS投稿作成19 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -137,7 +137,7 @@
   .hashtag-col input[type="checkbox"]:disabled { opacity: 0.25; cursor: not-allowed; }
   .hashtag-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .hashtag-input-wrap {
-    flex: 1; display: flex; align-items: center;
+    flex: 1; min-width: 0; display: flex; align-items: center;
     border: 1px solid var(--border); border-radius: 8px;
     padding: 0 10px; background: #fff;
   }
@@ -177,7 +177,7 @@
 
   /* 文章エリア */
   .post-textarea {
-    width: 100%; min-height: 320px; padding: 12px;
+    width: 100%; min-height: 280px; padding: 12px;
     border: 1.5px solid var(--border); border-radius: 8px;
     font-size: 14px; font-family: inherit; line-height: 1.8;
     resize: none; outline: none; transition: border-color 0.2s;
@@ -603,7 +603,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成17</span>
+  <span class="header-logo">SNS投稿作成19</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1198,7 +1198,7 @@ function executeGenerate() {
     document.getElementById('content-wrap').style.pointerEvents = '';
     const ta = document.getElementById('post-textarea');
     // 本文とハッシュタグを分けて設定
-    ta.value = '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりをぜひお試しください。';
+    ta.value = '週末限定で人気の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりが自慢の一品です。厳選した宇治抹茶をたっぷり使用し、甘さ控えめに仕上げました。コーヒーや紅茶との相性も抜群なので、ぜひご一緒にお楽しみください。数量限定のため、お早めにどうぞ。';
     setGeneratedHashtags(['渋谷カフェ', '週末限定', '抹茶スイーツ', '新メニュー', 'カフェ巡り']);
 
     // 業種ベース生成の場合は通知を表示
