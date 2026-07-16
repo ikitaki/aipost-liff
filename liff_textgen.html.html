@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成19 - AiPost</title>
+<title>SNS投稿作成20 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -309,21 +309,21 @@
   .no-image-desc { font-size: 12px; color: var(--text-sub); text-align: center; line-height: 1.7; }
 
   /* SNS選択 */
-  .sns-check-list { display: flex; flex-direction: column; gap: 8px; }
+  .sns-check-list { display: flex; flex-wrap: wrap; gap: 6px; }
   .sns-check-item {
-    display: flex; align-items: center; gap: 12px; padding: 12px;
-    border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; padding: 6px 10px;
+    border: 1.5px solid var(--border); border-radius: 20px; cursor: pointer;
   }
   .sns-check-item.checked { border-color: var(--primary); background: #f0f2ff; }
   .sns-icon-sm {
-    width: 28px; height: 28px; border-radius: 6px;
+    width: 18px; height: 18px; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
+    font-size: 9px; font-weight: 700; color: white; flex-shrink: 0;
   }
   .sns-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
   .sns-fb { background: #1877f2; }
   .sns-x  { background: #000000; }
-  .sns-th { background: #555555; font-size: 12px; }
+  .sns-th { background: #555555; font-size: 10px; }
   .plan-demo-btn {
     font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
@@ -331,11 +331,11 @@
   }
   .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
   .sns-plan-note { font-size: 11px; color: #e65100; margin: 8px 0 0; }
-  .sns-check-name { flex: 1; font-size: 14px; font-weight: 600; }
+  .sns-check-name { font-size: 12px; font-weight: 600; }
   .sns-checkbox {
-    width: 22px; height: 22px; border-radius: 50%;
-    border: 2px solid var(--border); display: flex; align-items: center;
-    justify-content: center; font-size: 12px; color: white; flex-shrink: 0;
+    width: 15px; height: 15px; border-radius: 50%;
+    border: 1.5px solid var(--border); display: flex; align-items: center;
+    justify-content: center; font-size: 9px; color: white; flex-shrink: 0;
   }
   .sns-check-item.checked .sns-checkbox { background: var(--primary); border-color: var(--primary); }
 
@@ -603,7 +603,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成19</span>
+  <span class="header-logo">SNS投稿作成20</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -688,9 +688,10 @@
   <!-- ③ 訴求パターン -->
   <div class="card">
     <div class="card-title">③ 訴求パターンを選ぶ（任意）</div>
-    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">どんな雰囲気で伝えたいですか？選ばなくてもAIが自動で判断します。</p>
+    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">どんな雰囲気で伝えたいですか？</p>
     <div class="pattern-grid">
-      <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
+      <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">🤖</span>AIに任せる</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💰</span>お得</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💡</span>悩み解決</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🔥</span>トレンド</button>
@@ -703,7 +704,7 @@
 
   <!-- ⑤ AI生成ボタン -->
   <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
-    <span style="font-size:20px;">✨</span>AIで投稿文とハッシュタグを作成する
+    <span style="font-size:20px;">✨</span>投稿文・ハッシュタグを作成
   </button>
 
   <!-- ローディング -->
