@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成20 - AiPost</title>
+<title>SNS投稿作成21 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -603,7 +603,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成20</span>
+  <span class="header-logo">SNS投稿作成21</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -725,8 +725,8 @@
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
       <span style="font-size:11px;color:var(--text-light);">上限140字（半角280字）</span>
     </div>
-    <div class="x-hashtag-count" id="x-hashtag-count" style="display:none;">
-      <span>🐦 本文<span id="x-hashtag-count-text">0</span>字 ＋ ハッシュタグ<span id="x-hashtag-count-tagnum">0</span>個<span id="x-hashtag-count-tagchar">0</span>字</span>
+    <div class="x-hashtag-count" id="x-hashtag-count">
+      <span>🐦 本文<span id="x-hashtag-count-text">0</span>字 ＋ ハッシュタグ<span id="x-hashtag-count-tagnum">0</span>個<span id="x-hashtag-count-tagchar">0</span>字（Xの上限を基準に統一）</span>
       <span id="x-hashtag-count-val">＝ 0 / 140</span>
     </div>
     <div class="url-warning" id="url-warning">
@@ -1072,9 +1072,21 @@ function updateHashtagColumns() {
 }
 
 // Xの本文＋ハッシュタグ合計文字数を計算
+// SNS選択・連携状況に関わらず、入力済みの全ハッシュタグを取得
+// （Xの文字数上限は接続の有無を問わずシステム全体の統一基準のため）
+function getAllEnteredHashtags() {
+  const result = [];
+  for (let i = 1; i <= 5; i++) {
+    const input = document.getElementById('hashtag-input-' + i);
+    const val = input ? input.value.trim() : '';
+    if (val) result.push(val);
+  }
+  return result;
+}
+
 function getXCombinedTotal() {
   const text = document.getElementById('post-textarea').value;
-  const tags = getHashtagsForSns('X');
+  const tags = getAllEnteredHashtags();
   let total = countCharsX(text);
   if (tags.length) {
     total += 1; // 本文とハッシュタグの間のスペース
@@ -1086,16 +1098,15 @@ function getXCombinedTotal() {
   return total;
 }
 
-// Xの本文＋ハッシュタグ合計文字数を計算して内訳付きで表示
+// 本文＋ハッシュタグの合計文字数を計算して内訳付きで表示
+// （Xを選択・連携していない場合も、システム全体の上限基準として常に表示）
 function updateXHashtagCount() {
   const badge = document.getElementById('x-hashtag-count');
-  const xChecked = document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-x');
-  if (!xChecked) { badge.style.display = 'none'; return; }
   badge.style.display = 'flex';
 
   const text = document.getElementById('post-textarea').value;
   const textCount = countCharsX(text);
-  const tags = getHashtagsForSns('X');
+  const tags = getAllEnteredHashtags();
   let tagCharTotal = 0;
   if (tags.length) {
     tagCharTotal += 1; // 本文とハッシュタグの間のスペース
@@ -1316,12 +1327,11 @@ function updateCharCount() {
   }
   const hasUrl = /https?:\/\//.test(text);
   document.getElementById('url-warning').classList.toggle('show', hasUrl);
-  const xChecked = document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-x');
   const xWarn = document.getElementById('x-warning');
   const xTotal = getXCombinedTotal();
-  if (!hasUrl && xTotal > X_LIMIT && xChecked) {
+  if (!hasUrl && xTotal > X_LIMIT) {
     xWarn.classList.add('show');
-    xWarn.innerHTML = '⚠️ <strong>Xは140文字が上限です。</strong><br>本文＋ハッシュタグで現在' + xTotal + '文字のため切れる可能性があります。';
+    xWarn.innerHTML = '⚠️ <strong>Xの上限（140文字）を超えています。</strong><br>本文＋ハッシュタグで現在' + xTotal + '文字のため、このままでは予約できません。';
   } else {
     xWarn.classList.remove('show');
   }
@@ -1445,6 +1455,13 @@ function showConfirm() {
   const ta = document.getElementById('post-textarea');
   if (!ta.value.trim()) { alert('文章を入力してください。'); return; }
   if (!selectedDay) { alert('投稿日を選んでください。'); return; }
+
+  // Xの文字数上限チェック（Xの連携・選択有無に関わらず、システム全体の統一基準として常にブロック）
+  const xTotal = getXCombinedTotal();
+  if (xTotal > CHAR_LIMIT) {
+    alert('本文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nXを選択していない場合でも、システム全体でXの上限を基準に統一しているため、このままでは予約できません。\n本文またはハッシュタグを短くしてください。');
+    return;
+  }
 
   // 画像状態確認
   if (imageState === null) {
