@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成21 - AiPost</title>
+<title>SNS投稿作成23 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -129,6 +129,12 @@
 
   /* ハッシュタグ */
   .hashtag-desc { font-size: 12px; color: var(--text-sub); margin: -4px 0 10px; }
+  .hashtag-x-status {
+    display: flex; align-items: center; gap: 6px; border-radius: 8px;
+    padding: 6px 10px; font-size: 11px; font-weight: 700; margin-bottom: 10px;
+  }
+  .hashtag-x-status.ok { background: #e8f5e9; color: #2e7d32; }
+  .hashtag-x-status.error { background: #ffebee; color: var(--danger); }
   .hashtag-header { display: flex; align-items: center; margin-bottom: 4px; }
   .hashtag-header-spacer { flex: 1; }
   .hashtag-checks { display: flex; gap: 8px; width: 128px; justify-content: space-around; flex-shrink: 0; }
@@ -148,13 +154,6 @@
     font-size: 13px; font-family: inherit; outline: none; background: transparent;
   }
   .hashtag-input:focus { border-color: var(--primary); }
-  .x-hashtag-count {
-    display: flex; justify-content: space-between; align-items: center;
-    background: #fff3e0; color: #e65100; border-radius: 8px;
-    padding: 8px 10px; font-size: 11px; font-weight: 700; margin: 8px 0;
-    flex-wrap: wrap; gap: 4px;
-  }
-  .x-hashtag-count.over { background: #ffebee; color: var(--danger); }
 
   /* AI生成ボタン */
   .generate-btn {
@@ -209,8 +208,10 @@
   /* 警告 */
   .url-warning { display: none; background: #fce4ec; border: 1px solid #f48fb1; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #880e4f; margin: 8px 0; line-height: 1.7; }
   .url-warning.show { display: block; }
-  .x-warning { display: none; background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #5d4037; margin: 8px 0; line-height: 1.7; }
+  .x-warning { display: none; border-radius: 8px; padding: 10px 12px; font-size: 12px; margin: 8px 0; line-height: 1.7; }
   .x-warning.show { display: block; }
+  .x-warning.ok { background: #e8f5e9; color: #2e7d32; }
+  .x-warning.error { background: #ffebee; color: var(--danger); }
 
   /* 下書き保存（廃止） */
   .draft-btn-disabled {
@@ -603,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成21</span>
+  <span class="header-logo">SNS投稿作成23</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -725,10 +726,6 @@
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
       <span style="font-size:11px;color:var(--text-light);">上限140字（半角280字）</span>
     </div>
-    <div class="x-hashtag-count" id="x-hashtag-count">
-      <span>🐦 本文<span id="x-hashtag-count-text">0</span>字 ＋ ハッシュタグ<span id="x-hashtag-count-tagnum">0</span>個<span id="x-hashtag-count-tagchar">0</span>字（Xの上限を基準に統一）</span>
-      <span id="x-hashtag-count-val">＝ 0 / 140</span>
-    </div>
     <div class="url-warning" id="url-warning">
       🔗 <strong>投稿文にURLが含まれています。</strong><br>当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます。
     </div>
@@ -741,6 +738,7 @@
   <div class="card">
     <div class="card-title">⑤ ハッシュタグ</div>
     <p class="hashtag-desc">AIで作成したハッシュタグが表示されます。文章と同様、自由に編集できます。チェックしたSNSにだけ付与されます。「#」は自動で挿入されるため入力不要です。</p>
+    <div class="hashtag-x-status" id="hashtag-x-status"></div>
     <div class="hashtag-header">
       <div class="hashtag-header-spacer"></div>
       <div class="hashtag-checks">
@@ -1072,21 +1070,10 @@ function updateHashtagColumns() {
 }
 
 // Xの本文＋ハッシュタグ合計文字数を計算
-// SNS選択・連携状況に関わらず、入力済みの全ハッシュタグを取得
-// （Xの文字数上限は接続の有無を問わずシステム全体の統一基準のため）
-function getAllEnteredHashtags() {
-  const result = [];
-  for (let i = 1; i <= 5; i++) {
-    const input = document.getElementById('hashtag-input-' + i);
-    const val = input ? input.value.trim() : '';
-    if (val) result.push(val);
-  }
-  return result;
-}
-
+// ハッシュタグは「Xにチェックが入っているもの」だけを対象とする
 function getXCombinedTotal() {
   const text = document.getElementById('post-textarea').value;
-  const tags = getAllEnteredHashtags();
+  const tags = getHashtagsForSns('X');
   let total = countCharsX(text);
   if (tags.length) {
     total += 1; // 本文とハッシュタグの間のスペース
@@ -1098,30 +1085,18 @@ function getXCombinedTotal() {
   return total;
 }
 
-// 本文＋ハッシュタグの合計文字数を計算して内訳付きで表示
-// （Xを選択・連携していない場合も、システム全体の上限基準として常に表示）
-function updateXHashtagCount() {
-  const badge = document.getElementById('x-hashtag-count');
-  badge.style.display = 'flex';
-
-  const text = document.getElementById('post-textarea').value;
-  const textCount = countCharsX(text);
-  const tags = getAllEnteredHashtags();
-  let tagCharTotal = 0;
-  if (tags.length) {
-    tagCharTotal += 1; // 本文とハッシュタグの間のスペース
-    tags.forEach((tag, idx) => {
-      tagCharTotal += countCharsX('#' + tag);
-      if (idx < tags.length - 1) tagCharTotal += 1; // タグ間のスペース
-    });
+// ⑤ハッシュタグカード内にXのリアルタイム文字数ステータスを表示
+function updateHashtagXStatus() {
+  const el = document.getElementById('hashtag-x-status');
+  if (!el) return;
+  const total = getXCombinedTotal();
+  if (total > X_LIMIT) {
+    el.className = 'hashtag-x-status error';
+    el.textContent = '🐦 Xだけ投稿エラー：' + total + ' / ' + X_LIMIT + '文字（' + (total - X_LIMIT) + '文字オーバー）';
+  } else {
+    el.className = 'hashtag-x-status ok';
+    el.textContent = '🐦 Xの上限内：' + total + ' / ' + X_LIMIT + '文字';
   }
-  const total = textCount + tagCharTotal;
-
-  document.getElementById('x-hashtag-count-text').textContent = textCount;
-  document.getElementById('x-hashtag-count-tagnum').textContent = tags.length;
-  document.getElementById('x-hashtag-count-tagchar').textContent = tagCharTotal;
-  document.getElementById('x-hashtag-count-val').textContent = '＝ ' + total + ' / ' + CHAR_LIMIT;
-  badge.classList.toggle('over', total > CHAR_LIMIT);
 }
 
 // ハッシュタグ入力欄・チェックボックスの変更時に呼び出す
@@ -1138,7 +1113,7 @@ function sanitizeHashtagInputs() {
 function onHashtagChange() {
   sanitizeHashtagInputs();
   syncHashtagRowState();
-  updateXHashtagCount();
+  updateCharCount();
 }
 
 // AI生成結果のハッシュタグを反映し、SNS別の推奨数だけ初期チェックを入れる
@@ -1155,7 +1130,7 @@ function setGeneratedHashtags(tags) {
       if (cb && !cb.disabled) cb.checked = i <= max;
     }
   });
-  updateXHashtagCount();
+  updateCharCount();
 }
 
 
@@ -1329,13 +1304,18 @@ function updateCharCount() {
   document.getElementById('url-warning').classList.toggle('show', hasUrl);
   const xWarn = document.getElementById('x-warning');
   const xTotal = getXCombinedTotal();
-  if (!hasUrl && xTotal > X_LIMIT) {
-    xWarn.classList.add('show');
-    xWarn.innerHTML = '⚠️ <strong>Xの上限（140文字）を超えています。</strong><br>本文＋ハッシュタグで現在' + xTotal + '文字のため、このままでは予約できません。';
+  if (hasUrl) {
+    xWarn.classList.remove('show', 'ok', 'error');
+  } else if (xTotal > X_LIMIT) {
+    xWarn.classList.add('show', 'error');
+    xWarn.classList.remove('ok');
+    xWarn.innerHTML = '🐦 <strong>Xだけ投稿エラーになります</strong><br>' + xTotal + ' / ' + X_LIMIT + '文字（' + (xTotal - X_LIMIT) + '文字オーバー）。本文かハッシュタグを短くしてください。';
   } else {
-    xWarn.classList.remove('show');
+    xWarn.classList.add('show', 'ok');
+    xWarn.classList.remove('error');
+    xWarn.innerHTML = '🐦 Xの上限内におさまっています（' + xTotal + ' / ' + X_LIMIT + '文字）';
   }
-  updateXHashtagCount();
+  updateHashtagXStatus();
   if (text.trim()) setStep(4);
 }
 
@@ -1517,7 +1497,7 @@ function resetAllForm() {
     if (hw) hw.value = '';
   }
   syncHashtagRowState();
-  updateXHashtagCount();
+  updateCharCount();
 
   // 訴求パターン選択解除
   document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('active'));
