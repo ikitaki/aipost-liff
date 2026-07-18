@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成26 - AiPost</title>
+<title>SNS投稿作成27 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成26</span>
+  <span class="header-logo">SNS投稿作成27</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1118,6 +1118,13 @@ function getXCombinedTotal() {
 function updateHashtagXStatus() {
   const el = document.getElementById('hashtag-x-status');
   if (!el) return;
+  if (!getCheckedSns().includes('X')) {
+    el.className = 'hashtag-x-status';
+    el.style.display = 'none';
+    el.textContent = '';
+    return;
+  }
+  el.style.display = 'flex';
   const total = getXCombinedTotal();
   if (total > X_LIMIT) {
     el.className = 'hashtag-x-status error';
@@ -1349,8 +1356,9 @@ function updateCharCount() {
   const hasUrl = /https?:\/\//.test(text);
   document.getElementById('url-warning').classList.toggle('show', hasUrl);
   const xWarn = document.getElementById('x-warning');
+  const xSelected = getCheckedSns().includes('X');
   const xTotal = getXCombinedTotal();
-  if (hasUrl) {
+  if (hasUrl || !xSelected) {
     xWarn.classList.remove('show', 'ok', 'error');
   } else if (xTotal > X_LIMIT) {
     xWarn.classList.add('show', 'error');
@@ -1395,6 +1403,16 @@ function toggleSns(el) {
   el.classList.toggle('checked');
   el.querySelector('.sns-checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
   updateHashtagColumns();
+  // 選択を外したSNSに紐づくハッシュタグのチェックも、見えなくなると同時に解除する
+  const checkedSns = getCheckedSns();
+  HASHTAG_SNS_ORDER.forEach(sns => {
+    if (checkedSns.includes(sns)) return;
+    for (let i = 1; i <= 5; i++) {
+      const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
+      if (cb) cb.checked = false;
+    }
+    hashtagCheckOrder[sns] = [];
+  });
   updateCharCount();
 }
 
@@ -1482,10 +1500,10 @@ function showConfirm() {
   if (!ta.value.trim()) { alert('文章を入力してください。'); return; }
   if (!selectedDay) { alert('投稿日を選んでください。'); return; }
 
-  // Xの文字数上限チェック（Xの連携・選択有無に関わらず、システム全体の統一基準として常にブロック）
+  // Xの文字数上限チェック（Xを選択している場合のみ、本文＋Xにチェックしたハッシュタグの合計で判定）
   const xTotal = getXCombinedTotal();
   if (xTotal > CHAR_LIMIT) {
-    alert('本文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nXを選択していない場合でも、システム全体でXの上限を基準に統一しているため、このままでは予約できません。\n本文またはハッシュタグを短くしてください。');
+    alert('本文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nこのままでは予約できません。本文またはXに付けるハッシュタグを短く・少なくしてください。');
     return;
   }
 
