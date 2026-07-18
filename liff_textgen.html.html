@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成32 - AiPost</title>
+<title>SNS投稿作成33 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -145,14 +145,14 @@
   .hashtag-col input[type="checkbox"]:disabled { opacity: 0.25; cursor: not-allowed; }
   .hashtag-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .hashtag-input-wrap {
-    flex: 1; min-width: 0; display: flex; align-items: center;
+    flex: 1; min-width: 0; overflow: hidden; display: flex; align-items: center;
     border: 1px solid var(--border); border-radius: 8px;
     padding: 0 10px; background: #fff;
   }
   .hashtag-input-wrap:focus-within { border-color: var(--primary); }
-  .hashtag-prefix { font-size: 13px; color: var(--primary); font-weight: 700; margin-right: 2px; }
+  .hashtag-prefix { font-size: 13px; color: var(--primary); font-weight: 700; margin-right: 2px; flex-shrink: 0; }
   .hashtag-input {
-    flex: 1; padding: 9px 2px; border: none;
+    flex: 1; min-width: 0; padding: 9px 2px; border: none;
     font-size: 13px; font-family: inherit; outline: none; background: transparent;
   }
   .hashtag-input:focus { border-color: var(--primary); }
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成32</span>
+  <span class="header-logo">SNS投稿作成33</span>
   <span class="header-sub">AiPost</span>
 </div>
 
