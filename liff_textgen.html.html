@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成29 - AiPost</title>
+<title>SNS投稿作成31 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -137,8 +137,10 @@
   .hashtag-x-status.error { background: #ffebee; color: var(--danger); }
   .hashtag-header { display: flex; align-items: center; margin-bottom: 4px; }
   .hashtag-header-spacer { flex: 1; }
-  .hashtag-checks { display: flex; gap: 8px; width: 128px; justify-content: space-around; flex-shrink: 0; }
-  .hashtag-col { width: 20px; text-align: center; font-size: 13px; }
+  .hashtag-checks { display: flex; gap: 6px; width: 150px; justify-content: space-around; flex-shrink: 0; }
+  .hashtag-col { width: 30px; text-align: center; font-size: 13px; }
+  .hashtag-col-icon { display: block; }
+  .hashtag-col-limit { display: block; font-size: 8px; color: var(--text-light); font-weight: 400; white-space: nowrap; margin-top: 1px; }
   .hashtag-col input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
   .hashtag-col input[type="checkbox"]:disabled { opacity: 0.25; cursor: not-allowed; }
   .hashtag-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
@@ -313,7 +315,7 @@
   .sns-check-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .sns-check-item {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 4px; padding: 8px 4px;
+    gap: 4px; padding: 8px 4px; min-height: 68px; box-sizing: border-box;
     border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer;
   }
   .sns-check-item.checked { border-color: var(--primary); background: #f0f2ff; }
@@ -605,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成29</span>
+  <span class="header-logo">SNS投稿作成31</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -743,10 +745,10 @@
     <div class="hashtag-header">
       <div class="hashtag-header-spacer"></div>
       <div class="hashtag-checks">
-        <span class="hashtag-col hashtag-col-X">🐦</span>
-        <span class="hashtag-col hashtag-col-IG">📱</span>
-        <span class="hashtag-col hashtag-col-FB">💻</span>
-        <span class="hashtag-col hashtag-col-TH">🧵</span>
+        <span class="hashtag-col hashtag-col-X"><span class="hashtag-col-icon">🐦</span><span class="hashtag-col-limit">3個まで</span></span>
+        <span class="hashtag-col hashtag-col-IG"><span class="hashtag-col-icon">📱</span><span class="hashtag-col-limit">制限なし</span></span>
+        <span class="hashtag-col hashtag-col-FB"><span class="hashtag-col-icon">💻</span><span class="hashtag-col-limit">制限なし</span></span>
+        <span class="hashtag-col hashtag-col-TH"><span class="hashtag-col-icon">🧵</span><span class="hashtag-col-limit">1個のみ</span></span>
       </div>
     </div>
     <div class="hashtag-rows" id="hashtag-rows">
