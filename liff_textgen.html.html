@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成38 - AiPost</title>
+<title>SNS投稿作成47 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -310,13 +310,6 @@
   .sns-fb { background: #1877f2; }
   .sns-x  { background: #000000; }
   .sns-th { background: #555555; font-size: 10px; }
-  .plan-demo-btn {
-    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
-    cursor: pointer;
-  }
-  .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
-  .sns-plan-note { font-size: 11px; color: #e65100; margin: 8px 0 0; }
   .sns-check-name { font-size: 11px; font-weight: 600; text-align: center; }
   .sns-checkbox {
     width: 14px; height: 14px; border-radius: 50%;
@@ -595,20 +588,16 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成38</span>
+  <span class="header-logo">SNS投稿作成47</span>
   <span class="header-sub">AiPost</span>
 </div>
 
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">PRO</span>
-    <span id="plan-price">¥1,980/月</span>
+    <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
+    <span id="plan-price">¥1,280/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
-    <span style="margin-left:auto;display:flex;gap:4px;">
-      <button class="plan-demo-btn" id="plan-demo-standard" onclick="setDemoPlan('STANDARD')">STANDARD</button>
-      <button class="plan-demo-btn active" id="plan-demo-pro" onclick="setDemoPlan('PRO')">PRO</button>
-    </span>
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
@@ -650,13 +639,12 @@
         <div class="sns-check-name">Facebook</div>
         <div class="sns-checkbox">✓</div>
       </div>
-      <div class="sns-check-item checked" id="sns-item-threads" onclick="toggleSns(this)">
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
         <div class="sns-icon-sm sns-th">🧵</div>
         <div class="sns-check-name">Threads</div>
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
-    <p class="sns-plan-note" id="sns-plan-note" style="display:none;">💎 Threadsへの投稿はPROプラン限定です</p>
   </div>
 
   <!-- ② キーワード入力 -->
@@ -880,56 +868,34 @@
   <!-- ===== ガイド（アコーディオン） ===== -->
   <div class="card">
     <div class="card-title" style="font-size:14px;">📖 SNS投稿作成ガイド</div>
-    <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿文の文字数・ハッシュタグ・画像トリミング比率について、それぞれの理由をまとめています。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿作成画面の各項目について、仕様と理由をまとめています。上から投稿作成画面と同じ順番で並んでいます。</div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t1')">① 投稿文が全角140文字である理由<span class="accordion-arrow" id="arr-acc-t1">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t1')">① 投稿先のSNSを選ぶ<span class="accordion-arrow" id="arr-acc-t1">▶</span></div>
     <div class="accordion-body" id="acc-t1">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿文（本文）は、選択したSNSに関わらず全角140文字で統一しています。これは、4大SNSの中で最も文字数制限が厳しいX（全角140文字＝半角280文字）に合わせているためです。</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">全角140文字（半角280文字）が上限。この基準に合わせています。</div>
-        </div>
-        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
-          <div style="font-size:11px;color:#e1306c;line-height:1.7;">上限は全角2,200文字。140文字では全く問題ありません。</div>
-        </div>
-        <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook</div>
-          <div style="font-size:11px;color:#1877f2;line-height:1.7;">上限は約63,000文字。140文字では全く問題ありません。</div>
-        </div>
-        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">上限は500文字。140文字では全く問題ありません。</div>
-        </div>
-      </div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">同じ投稿文を複数SNSへ同時投稿する仕様のため、最も厳しいXの基準に合わせることで、どのSNSでも問題なく投稿できるようにしています。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">連携済みのSNSの中から、今回投稿したいSNSを選びます。ここで選んだSNSに応じて、③ハッシュタグのチェック欄や⑥画像トリミングの比率の選択肢が自動的に切り替わります。1つも選ばずに予約を進めることはできません。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② なぜXだけ文字数オーバーの表示が出るのか<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② キーワードを入力する<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
     <div class="accordion-body" id="acc-t2">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿文は必ず全角140文字以内ですが、そこに<strong>ハッシュタグ</strong>が加わると、SNSによって影響の出方が異なります。</div>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
-        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">投稿文とハッシュタグが同じ140文字の枠を共有します。ハッシュタグを付けた分だけ投稿文を圧迫するため、合計が140文字を超えると<strong>Xだけ投稿できなくなります</strong>。</div>
-        </div>
-        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram／💻 Facebook／🧵 Threads</div>
-          <div style="font-size:11px;color:#e1306c;line-height:1.7;">上限に大きな余裕があるため、投稿文140文字にハッシュタグが加わっても影響はありません。</div>
-        </div>
-      </div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">⑤ハッシュタグのチェックを入れたSNSだけが対象になります。Xにチェックを入れていない・ハッシュタグが原因でなければ、この警告は表示されません。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">入力したキーワードをもとに、AIが投稿文とハッシュタグを作成します。未入力のまま生成すると、業種登録がある場合は登録業種をもとに、業種登録がない場合はキーワードの入力が必須になります。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 最大3個までの理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文は全角140文字という限られた文字数（詳しくは⑤）で作成するため、キーワードが多すぎるとAIが全てを詰め込もうとして不自然な文章になりがちです。3個程度に絞ることで、本文には核となる要素だけを残し、細かい要素は③ハッシュタグ側で補うという役割分担にしています。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 1個15文字までの理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">こちらも外部の調査・研究による数値ではなく、当サービス独自の設計です。短い単語・フレーズでの入力を想定しており、長い文章をそのまま入力できてしまうと「AIが文章を組み立てる」という本来の使い方から外れてしまうため、15文字を上限としています。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t3')">③ ハッシュタグの適切な数・文字数<span class="accordion-arrow" id="arr-acc-t3">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t3')">③ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t3">▶</span></div>
     <div class="accordion-body" id="acc-t3">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 「#」の自動挿入について</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入力欄に「#」を入力する必要はありません。利用者が自分で「#」を入力すると、全角記号になっていたり、スペースが抜けていたりといった入力ミスでハッシュタグとして機能しなくなる場合があるため、システム側で自動的に半角の「#」を付与する仕様にしています。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数のカウントについて</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xの文字数計算では、日本語などの全角文字を全角1文字、半角の英数字・記号・スペースは全角0.5文字として数えます。自動挿入される「#」や、投稿文とハッシュタグの間の区切りスペースも半角扱い（全角0.5文字）になるため、入力した文字数より実際のカウントが多くなります（例：本文が空の状態で、全角15文字のハッシュタグを1個だけXに付けた場合、区切りスペース0.5字＋「#」0.5字＋ハッシュタグ本体15字＝合計16文字扱いになります）。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとの推奨個数</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
         <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
@@ -949,15 +915,75 @@
           <div style="font-size:11px;color:#555;line-height:1.7;">仕様上、2個目以降はリンク化されずただの文字列になってしまうためです。</div>
         </div>
       </div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 1個あたりの文字数（最大15文字）について</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">こちらは外部の調査・研究による推奨値ではなく、短い単語・フレーズでの入力を想定した当サービス独自の設計です。長い文章になってしまうとAIが自然な投稿文を組み立てにくくなるほか、Xの文字数上限（②参照）を圧迫しやすくなるため、15文字を上限としています。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xだけ文字数オーバーの警告が出る理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">Xだけは投稿文とハッシュタグが同じ140文字の枠を共有するため、ハッシュタグを付けた分だけ投稿文を圧迫し、合計が140文字を超えるとXだけ投稿できなくなります。Instagram・Facebook・Threadsは文字数の上限に大きな余裕があるため、この影響を受けません。この警告が対象にするのは、ハッシュタグ欄でXにチェックを入れたハッシュタグだけです。Xにチェックを入れていない場合や、ハッシュタグを使っていない場合は表示されません。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ SNSごとの画像トリミング比率<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ 訴求パターンを選ぶ<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
     <div class="accordion-body" id="acc-t4">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">画像は同じ元写真から、SNSごとに最適な比率でトリミングできます。⭐が付いている比率が特におすすめです。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の雰囲気（限定感・お得感など）を選ぶ任意の項目です。「🤖 AIに任せる」を選んでおけば、AIが投稿内容に合った雰囲気を自動で判断して文章を作成するため、特にこだわりがなければこのままで問題ありません。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">⑤ 投稿文が全角140文字である理由<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
+    <div class="accordion-body" id="acc-t5">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、同じ投稿文・同じ画像であれば複数SNSへの同時投稿を「1投稿」としてカウントする仕様になっています。この「同一投稿」という条件を成立させるには投稿文は全SNS共通で1つだけでなければならないため、最も文字数制限が厳しいX（全角140文字＝半角280文字）に合わせることで、どのSNSを選んでも確実に投稿できるようにしています。「複数SNSに同じ内容をまとめて予約できる」利便性と引き換えに、投稿文の文字数はXの基準に統一している、というのが正確な理由です。</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">全角140文字（半角280文字）が上限。これが投稿文共通の基準になっています。</div>
+        </div>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">本来の上限は全角2,200文字ですが、Xに合わせて140文字までとしています。</div>
+        </div>
+        <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook</div>
+          <div style="font-size:11px;color:#1877f2;line-height:1.7;">本来の上限は約63,000文字ですが、Xに合わせて140文字までとしています。</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">本来の上限は500文字ですが、Xに合わせて140文字までとしています。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t6')">⑥ 投稿文にURLを入れられない理由<span class="accordion-arrow" id="arr-acc-t6">▶</span></div>
+    <div class="accordion-body" id="acc-t6">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、<strong>投稿文にURL（http://・https://から始まるリンク）を含めることができません</strong>。AIによる文章生成ではURLを含む文章は作られませんが、利用者ご自身が本文に直接URLを入力した場合に、以下の動作が発生します。</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+        <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">① 入力中にリアルタイムで警告</div>
+          <div style="font-size:11px;color:#5d4037;line-height:1.7;">本文にURLを入力した瞬間、画面上に「Xは自動的に除外されます」という警告が表示されます。</div>
+        </div>
+        <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">② 予約時：Xだけ自動的に除外</div>
+          <div style="font-size:11px;color:#5d4037;line-height:1.7;">Instagram・Facebook・Threadsを含めて予約した場合、Xだけが対象から自動的に除外され、他のSNSへは通常通り投稿されます。除外された旨はLINEで通知されます。</div>
+        </div>
+        <div style="background:#ffebee;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:3px;">③ Xのみを選んでいる場合：予約不可</div>
+          <div style="font-size:11px;color:var(--danger);line-height:1.7;">投稿先がXだけの場合、URLを含む投稿はそもそも予約できません。URLを削除するか、他のSNSも選択してください。</div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 なぜXだけURL付き投稿に対応していないのか</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xの投稿API（外部連携の仕組み）は、通常のテキストのみの投稿が1件あたり0.015ドルなのに対し、URLを含む投稿は1件あたり0.20ドルと、<strong>13倍以上のコストがかかります</strong>。この費用差が大きいため、当サービスではXへのURL付き投稿には対応せず、URLを使いたい場合はInstagram・Facebook・Threadsをご利用いただく仕様にしています。</div>
+      <div style="background:#ffebee;border-radius:8px;padding:10px 12px;border-left:4px solid var(--danger);">
+        <div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:4px;">⚠️ 迂回行為について</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.8;">「http://〜」の形式以外にも、URLを日本語や記号で表現したもの・短縮URL・QRコードへの誘導テキストなどをXに投稿した場合、X側でURL付き投稿と判定されるリスクがあります。このような迂回行為は利用規約違反にあたり、意図的な行為が確認された場合はアカウントの利用停止・登録解除の対象となります。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑦ SNSごとの画像トリミング比率<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
+    <div class="accordion-body" id="acc-t7">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">画像は同じ元写真から、SNSごとに最適な比率でトリミングできます。⭐が付いている比率が特におすすめです。決まった比率以外にも「自由」を選べば、縦横比を固定せずに自由な形でトリミングすることもできます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">アップロードする<strong>元の画像は1枚だけ</strong>で、⑤で説明した「同一投稿」の条件（投稿文・画像が同じであること）はこの元画像を指します。トリミングでSNSごとに見た目（比率）を変えても、画像そのものは変わらないため、同一投稿の扱いには影響しません。</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
           <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
@@ -976,15 +1002,6 @@
           <div style="font-size:11px;color:#555;line-height:1.7;">⭐4:5（縦長）／1:1（正方形）／16:9（横長）。Instagramと同じMeta基盤のため、縦長が最も見え方が良くなります。</div>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">決まった比率以外にも「自由」を選ぶと、縦横比を固定せず自由にトリミングできます。</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">⑤ キーワード・訴求パターンについて<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
-    <div class="accordion-body" id="acc-t5">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">②キーワードを入力すると、その内容をもとにAIが投稿文とハッシュタグを作成します。未入力の場合は、業種を登録していればその業種をもとに、未登録の場合はキーワードの入力が必須になります。</div>
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">④訴求パターンは、投稿の雰囲気（限定感・お得感など）を選ぶ項目です。「🤖 AIに任せる」を選んでおけば、AIが投稿内容に合った雰囲気を自動で判断します。特にこだわりがなければ、このままで問題ありません。</div>
     </div>
   </div>
 
@@ -1063,6 +1080,7 @@
     <div class="modal-title">📋 予約内容の確認</div>
     <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:16px;">
       <div class="confirm-row"><span class="confirm-key">投稿先</span><span class="confirm-val" id="confirm-sns">Instagram・Facebook・X</span></div>
+      <div id="confirm-url-note" style="display:none;font-size:11px;color:#c62828;background:#ffebee;border-radius:6px;padding:6px 8px;margin:4px 0;line-height:1.6;"></div>
       <div class="confirm-row"><span class="confirm-key">投稿日時</span><span class="confirm-val" id="confirm-date">6月17日 13時ごろ</span></div>
       <div class="confirm-row"><span class="confirm-key">画像</span><span class="confirm-val" id="confirm-image">抹茶ラテ</span></div>
       <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain">残り22</span></div>
@@ -1207,15 +1225,14 @@ function updateHashtagColumns() {
 function getXCombinedTotal() {
   const text = document.getElementById('post-textarea').value;
   const tags = getHashtagsForSns('X');
-  let total = countCharsX(text);
+  // 実際にXへ投稿される文字列を1つに組み立ててから、まとめて一度だけ計算する
+  // （本文・区切りスペース・ハッシュタグをそれぞれ個別に切り上げて足すと、
+  // 　実際より多くカウントされてしまうため）
+  let full = text;
   if (tags.length) {
-    total += 1; // 本文とハッシュタグの間のスペース
-    tags.forEach((tag, idx) => {
-      total += countCharsX('#' + tag);
-      if (idx < tags.length - 1) total += 1; // タグ間のスペース
-    });
+    full += ' ' + tags.map(t => '#' + t).join(' ');
   }
-  return total;
+  return countCharsX(full);
 }
 
 // ⑤ハッシュタグカード内にXのリアルタイム文字数ステータスを表示
@@ -1232,7 +1249,7 @@ function updateHashtagXStatus() {
   const total = getXCombinedTotal();
   if (total > X_LIMIT) {
     el.className = 'hashtag-x-status error';
-    el.textContent = '🐦 Xだけ投稿エラー：' + total + ' / ' + X_LIMIT + '文字（' + (total - X_LIMIT) + '文字オーバー）';
+    el.textContent = '🐦 Xだけ投稿エラー：' + total + ' / ' + X_LIMIT + '文字（' + (total - X_LIMIT) + '文字オーバー）／他のSNSには投稿されます';
   } else {
     el.className = 'hashtag-x-status ok';
     el.textContent = '🐦 Xの上限内：' + total + ' / ' + X_LIMIT + '文字';
@@ -1458,16 +1475,16 @@ function updateCharCount() {
     countEl.classList.add('warn'); barEl.classList.add('warn'); ta.classList.add('warn');
   }
   const hasUrl = /https?:\/\//.test(text);
-  document.getElementById('url-warning').classList.toggle('show', hasUrl);
-  const xWarn = document.getElementById('x-warning');
   const xSelected = getCheckedSns().includes('X');
+  document.getElementById('url-warning').classList.toggle('show', hasUrl && xSelected);
+  const xWarn = document.getElementById('x-warning');
   const xTotal = getXCombinedTotal();
   if (hasUrl || !xSelected) {
     xWarn.classList.remove('show', 'ok', 'error');
   } else if (xTotal > X_LIMIT) {
     xWarn.classList.add('show', 'error');
     xWarn.classList.remove('ok');
-    xWarn.innerHTML = '🐦 <strong>Xだけ投稿エラーになります</strong><br>' + xTotal + ' / ' + X_LIMIT + '文字（' + (xTotal - X_LIMIT) + '文字オーバー）。本文かハッシュタグを短くしてください。';
+    xWarn.innerHTML = '🐦 <strong>Xだけ投稿エラーになります</strong>（他のSNSには投稿されます）<br>' + xTotal + ' / ' + X_LIMIT + '文字（' + (xTotal - X_LIMIT) + '文字オーバー）。本文かハッシュタグを短くしてください。';
   } else {
     xWarn.classList.add('show', 'ok');
     xWarn.classList.remove('error');
@@ -1475,31 +1492,6 @@ function updateCharCount() {
   }
   updateHashtagXStatus();
   if (text.trim()) setStep(4);
-}
-
-// ===== デモ用プラン切替（PROプランでのThreads表示確認用） =====
-function setDemoPlan(plan) {
-  document.getElementById('plan-demo-standard').classList.toggle('active', plan === 'STANDARD');
-  document.getElementById('plan-demo-pro').classList.toggle('active', plan === 'PRO');
-  document.getElementById('plan-badge').textContent = plan;
-  document.getElementById('plan-price').textContent = plan === 'PRO' ? '¥1,980/月' : '¥1,280/月';
-
-  const thItem = document.getElementById('sns-item-threads');
-  const thNote = document.getElementById('sns-plan-note');
-  if (plan === 'PRO') {
-    thItem.style.display = 'flex';
-    thNote.style.display = 'none';
-  } else {
-    // STANDARDに戻す場合、Threadsが選択済みなら解除してから隠す
-    if (thItem.classList.contains('checked')) {
-      thItem.classList.remove('checked');
-      thItem.querySelector('.sns-checkbox').textContent = '';
-    }
-    thItem.style.display = 'none';
-    thNote.style.display = 'block';
-  }
-  updateHashtagColumns();
-  updateCharCount();
 }
 
 // ===== SNS =====
@@ -1604,11 +1596,28 @@ function showConfirm() {
   if (!ta.value.trim()) { alert('文章を入力してください。'); return; }
   if (!selectedDay) { alert('投稿日を選んでください。'); return; }
 
-  // Xの文字数上限チェック（Xを選択している場合のみ、本文＋Xにチェックしたハッシュタグの合計で判定）
-  const xTotal = getXCombinedTotal();
-  if (xTotal > CHAR_LIMIT) {
-    alert('本文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nこのままでは予約できません。本文またはXに付けるハッシュタグを短く・少なくしてください。');
-    return;
+  // URL検知：Xだけ対応不可のため、状況に応じて除外またはブロック
+  const hasUrl = /https?:\/\//.test(ta.value);
+  const checkedItems = [...document.querySelectorAll('.sns-check-item.checked')];
+  const xChecked = checkedItems.some(el => el.querySelector('.sns-icon-sm').classList.contains('sns-x'));
+  let xExcludedByUrl = false;
+  if (hasUrl && xChecked) {
+    if (checkedItems.length === 1) {
+      // Xのみ選択している場合は予約自体をブロック
+      alert('投稿文にURLが含まれているため、Xへは投稿できません。\nXのみが選択されているため、このままでは予約できません。\nURLを削除するか、他のSNSも選択してください。');
+      return;
+    }
+    // 他のSNSも選択している場合はXだけ自動的に除外
+    xExcludedByUrl = true;
+  }
+
+  // Xの文字数上限チェック（URLによりXが除外される場合はスキップ）
+  if (!xExcludedByUrl) {
+    const xTotal = getXCombinedTotal();
+    if (xTotal > CHAR_LIMIT) {
+      alert('本文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nこのままでは予約できません。本文またはXに付けるハッシュタグを短く・少なくしてください。');
+      return;
+    }
   }
 
   // 画像状態確認
@@ -1617,10 +1626,21 @@ function showConfirm() {
     imageState = 'none';
   }
 
-  const checkedSns = [...document.querySelectorAll('.sns-check-item.checked')]
+  const snsNames = checkedItems
+    .filter(el => !(xExcludedByUrl && el.querySelector('.sns-icon-sm').classList.contains('sns-x')))
     .map(el => el.querySelector('.sns-check-name').textContent).join('・');
   const time = document.getElementById('post-time').value;
-  document.getElementById('confirm-sns').textContent = checkedSns || '未選択';
+  document.getElementById('confirm-sns').textContent = snsNames || '未選択';
+
+  const urlNote = document.getElementById('confirm-url-note');
+  if (xExcludedByUrl) {
+    urlNote.style.display = 'block';
+    urlNote.textContent = '🐦 投稿文にURLが含まれているため、Xは自動的に除外されました。';
+  } else {
+    urlNote.style.display = 'none';
+    urlNote.textContent = '';
+  }
+
   document.getElementById('confirm-date').textContent = '6月' + selectedDay + '日 ' + time;
 
   // 画像状態を正確に表示
