@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SNS投稿作成33 - AiPost</title>
+<title>SNS投稿作成38 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -54,38 +54,20 @@
   .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
 
   /* ステップナビ */
-  .steps {
-    display: flex;
-    align-items: center;
-    padding: 10px 12px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-    gap: 0;
-    position: sticky;
-    top: 70px;
-    z-index: 98;
+  /* タブナビ（投稿作成／ガイド） */
+  .tab-nav {
+    display: flex; background: var(--surface); border-bottom: 1px solid var(--border);
+    position: sticky; top: 70px; z-index: 97;
   }
-  .steps::-webkit-scrollbar { display: none; }
-  .step { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; min-width: 48px; }
-  .step-circle {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 700;
-    border: 2px solid var(--border);
-    background: var(--surface);
-    color: var(--text-light);
-    margin-bottom: 3px;
+  .tab-btn {
+    flex: 1; padding: 10px 4px; border: none; background: none;
+    font-size: 12px; font-weight: 600; color: var(--text-sub); cursor: pointer;
+    border-bottom: 2px solid transparent; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
   }
-  .step.active .step-circle { border-color: var(--primary); background: var(--primary); color: white; }
-  .step.done .step-circle { border-color: var(--success); background: var(--success); color: white; }
-  .step-label { font-size: 9px; color: var(--text-light); text-align: center; white-space: nowrap; }
-  .step.active .step-label { color: var(--primary); font-weight: 600; }
-  .step.done .step-label { color: var(--success); }
-  .step-line { flex: 1; height: 2px; background: var(--border); min-width: 6px; margin-bottom: 12px; }
-  .step-line.done { background: var(--success); }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 
   /* コンテンツ */
   .content { padding: 14px 16px; }
@@ -410,6 +392,12 @@
     gap: 8px; font-family: inherit; margin-bottom: 12px;
   }
 
+  /* ガイド（アコーディオン） */
+  .accordion-title { cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .accordion-arrow { font-size: 10px; color: var(--text-sub); transition: transform 0.2s; margin-left: 8px; }
+  .accordion-body { display: none; margin-top: 8px; }
+  .accordion-body.open { display: block; }
+
   /* 確認モーダル */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
@@ -607,7 +595,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">SNS投稿作成33</span>
+  <span class="header-logo">SNS投稿作成38</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -631,20 +619,15 @@
   </div>
 </div>
 
-<!-- ステップナビ -->
-<div class="steps">
-  <div class="step active" id="step1"><div class="step-circle">1</div><div class="step-label">SNS選択</div></div>
-  <div class="step-line" id="line1"></div>
-  <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">キーワード</div></div>
-  <div class="step-line" id="line2"></div>
-  <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">訴求</div></div>
-  <div class="step-line" id="line3"></div>
-  <div class="step" id="step4"><div class="step-circle">4</div><div class="step-label">生成</div></div>
-  <div class="step-line" id="line4"></div>
-  <div class="step" id="step5"><div class="step-circle">5</div><div class="step-label">予約</div></div>
+<!-- タブナビ -->
+<div class="tab-nav">
+  <button class="tab-btn active" id="tab-btn-form" onclick="switchMainTab('form')"><span class="tab-icon">📝</span>投稿作成</button>
+  <button class="tab-btn" id="tab-btn-guide" onclick="switchMainTab('guide')"><span class="tab-icon">📖</span>ガイド</button>
 </div>
 
 <div class="content" id="content-wrap">
+
+  <div id="tab-form" class="tab-panel active">
 
   <div class="section-title">SNS投稿作成</div>
 
@@ -798,6 +781,7 @@
         </div>
       </div>
     </div>
+    <div class="keyword-hint" style="margin-top:6px;">💡 ハッシュタグは1個15文字までです</div>
   </div>
 
   <!-- ⑦ 画像選択（インライン） -->
@@ -888,6 +872,123 @@
   <button class="reserve-btn" onclick="showConfirm()">
     <span style="font-size:20px;">✅</span>この内容で投稿を予約する
   </button>
+
+  </div><!-- /tab-form -->
+
+  <div id="tab-guide" class="tab-panel">
+
+  <!-- ===== ガイド（アコーディオン） ===== -->
+  <div class="card">
+    <div class="card-title" style="font-size:14px;">📖 SNS投稿作成ガイド</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿文の文字数・ハッシュタグ・画像トリミング比率について、それぞれの理由をまとめています。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t1')">① 投稿文が全角140文字である理由<span class="accordion-arrow" id="arr-acc-t1">▶</span></div>
+    <div class="accordion-body" id="acc-t1">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿文（本文）は、選択したSNSに関わらず全角140文字で統一しています。これは、4大SNSの中で最も文字数制限が厳しいX（全角140文字＝半角280文字）に合わせているためです。</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">全角140文字（半角280文字）が上限。この基準に合わせています。</div>
+        </div>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">上限は全角2,200文字。140文字では全く問題ありません。</div>
+        </div>
+        <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook</div>
+          <div style="font-size:11px;color:#1877f2;line-height:1.7;">上限は約63,000文字。140文字では全く問題ありません。</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">上限は500文字。140文字では全く問題ありません。</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">同じ投稿文を複数SNSへ同時投稿する仕様のため、最も厳しいXの基準に合わせることで、どのSNSでも問題なく投稿できるようにしています。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② なぜXだけ文字数オーバーの表示が出るのか<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
+    <div class="accordion-body" id="acc-t2">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿文は必ず全角140文字以内ですが、そこに<strong>ハッシュタグ</strong>が加わると、SNSによって影響の出方が異なります。</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">投稿文とハッシュタグが同じ140文字の枠を共有します。ハッシュタグを付けた分だけ投稿文を圧迫するため、合計が140文字を超えると<strong>Xだけ投稿できなくなります</strong>。</div>
+        </div>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram／💻 Facebook／🧵 Threads</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">上限に大きな余裕があるため、投稿文140文字にハッシュタグが加わっても影響はありません。</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">⑤ハッシュタグのチェックを入れたSNSだけが対象になります。Xにチェックを入れていない・ハッシュタグが原因でなければ、この警告は表示されません。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t3')">③ ハッシュタグの適切な数・文字数<span class="accordion-arrow" id="arr-acc-t3">▶</span></div>
+    <div class="accordion-body" id="acc-t3">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとの推奨個数</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X（推奨1〜2個・最大3個）</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">4個以上付けると、Xのシステムに「インプレッションを稼ごうとしているスパム」と判定され、表示されにくくなるリスクがあるためです。</div>
+        </div>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram（推奨3〜5個）</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">Meta社は「ハッシュタグの量は検索順位に影響しない」と明言しており、量より投稿文の内容が重視される流れのためです。</div>
+        </div>
+        <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook（推奨0〜3個）</div>
+          <div style="font-size:11px;color:#1877f2;line-height:1.7;">ハッシュタグ検索をするユーザー自体が少なく、多用すると宣伝色が強く見えて敬遠されやすいためです。</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads（1個のみ）</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">仕様上、2個目以降はリンク化されずただの文字列になってしまうためです。</div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 1個あたりの文字数（最大15文字）について</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">こちらは外部の調査・研究による推奨値ではなく、短い単語・フレーズでの入力を想定した当サービス独自の設計です。長い文章になってしまうとAIが自然な投稿文を組み立てにくくなるほか、Xの文字数上限（②参照）を圧迫しやすくなるため、15文字を上限としています。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ SNSごとの画像トリミング比率<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
+    <div class="accordion-body" id="acc-t4">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">画像は同じ元写真から、SNSごとに最適な比率でトリミングできます。⭐が付いている比率が特におすすめです。</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">⭐16:9（横長）／1:1（正方形）／3:4（縦長）。16:9はタイムラインで最も美しく収まる標準サイズです。</div>
+        </div>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">⭐4:5（縦長）／1:1（正方形）／1.91:1（横長）。2025年のグリッド仕様変更以降、縦長が最も目立ちやすくなっています。</div>
+        </div>
+        <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook</div>
+          <div style="font-size:11px;color:#1877f2;line-height:1.7;">4:5（縦長）／1:1（正方形）／1.91:1（横長・リンク投稿用）。3つとも同等の扱いで、状況に応じて選べます。</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">⭐4:5（縦長）／1:1（正方形）／16:9（横長）。Instagramと同じMeta基盤のため、縦長が最も見え方が良くなります。</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">決まった比率以外にも「自由」を選ぶと、縦横比を固定せず自由にトリミングできます。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">⑤ キーワード・訴求パターンについて<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
+    <div class="accordion-body" id="acc-t5">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">②キーワードを入力すると、その内容をもとにAIが投稿文とハッシュタグを作成します。未入力の場合は、業種を登録していればその業種をもとに、未登録の場合はキーワードの入力が必須になります。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">④訴求パターンは、投稿の雰囲気（限定感・お得感など）を選ぶ項目です。「🤖 AIに任せる」を選んでおけば、AIが投稿内容に合った雰囲気を自動で判断します。特にこだわりがなければ、このままで問題ありません。</div>
+    </div>
+  </div>
+
+  </div><!-- /tab-guide -->
 
 </div>
 
@@ -1602,12 +1703,14 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
 function setStep(n) {
   for (let i = 1; i <= 5; i++) {
     const s = document.getElementById('step' + i);
+    if (!s) continue;
     s.classList.remove('active', 'done');
     if (i < n) s.classList.add('done');
     else if (i === n) s.classList.add('active');
   }
   for (let i = 1; i <= 4; i++) {
-    document.getElementById('line' + i).classList.toggle('done', i < n);
+    const l = document.getElementById('line' + i);
+    if (l) l.classList.toggle('done', i < n);
   }
 }
 
@@ -1621,8 +1724,47 @@ const LIFF_URLS = {
   about: 'https://liff.line.me/2010401177-PtX79ibV',
   support: 'https://liff.line.me/2010401177-vwzTH30h',
 };
+// 入力途中の内容（本文・キーワード・ハッシュタグ・画像）があるかどうかを判定
+function hasInProgressContent() {
+  const ta = document.getElementById('post-textarea');
+  if (ta && ta.value.trim()) return true;
+  for (let i = 1; i <= 3; i++) {
+    const kw = document.getElementById('keyword-input-' + i);
+    if (kw && kw.value.trim()) return true;
+  }
+  for (let i = 1; i <= 5; i++) {
+    const hw = document.getElementById('hashtag-input-' + i);
+    if (hw && hw.value.trim()) return true;
+  }
+  if (originalImage || imageState) return true;
+  return false;
+}
+
+// ===== タブ切替（投稿作成／ガイド） =====
+function switchMainTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-nav .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.getElementById('tab-btn-' + id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== ガイド（アコーディオン） =====
+function toggleAcc(id) {
+  const body = document.getElementById(id);
+  const arr = document.getElementById('arr-' + id);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  if (arr) arr.style.transform = isOpen ? '' : 'rotate(90deg)';
+}
+
 function navigateTo(page) {
-  if (LIFF_URLS[page]) window.location.replace(LIFF_URLS[page]);
+  if (!LIFF_URLS[page]) return;
+  if (hasInProgressContent()) {
+    if (!confirm('入力中の内容が失われます。移動しますか？')) return;
+  }
+  window.location.replace(LIFF_URLS[page]);
 }
 
 buildCalendar();
