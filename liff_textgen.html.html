@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成51 - AiPost</title>
+<title>投稿文作成52 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -397,7 +397,7 @@
     background: rgba(0,0,0,0.5); z-index: 2000; align-items: flex-end;
   }
   .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border-radius: 16px 16px 0 0; padding: 20px 16px 32px; width: 100%; }
+  .modal { background: var(--surface); border-radius: 16px 16px 0 0; padding: 20px 16px 32px; width: 100%; max-height: 88vh; overflow-y: auto; box-sizing: border-box; }
   .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
   .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
   .modal-desc { font-size: 13px; color: var(--text-sub); line-height: 1.8; margin-bottom: 16px; }
@@ -588,7 +588,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成51</span>
+  <span class="header-logo">投稿文作成52</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1645,6 +1645,12 @@ function showConfirm() {
   }
 
   document.getElementById('confirm-date').textContent = '6月' + selectedDay + '日 ' + time;
+
+  // モーダルを開くたびにプレビューの開閉状態をリセット（閉じた状態から開始）
+  const previewBody = document.getElementById('confirm-preview');
+  const previewArr = document.getElementById('arr-confirm-preview');
+  previewBody.classList.remove('open');
+  if (previewArr) previewArr.style.transform = '';
 
   // SNSごとの投稿文プレビューを生成
   const SNS_CODE_MAP = { 'sns-x': 'X', 'sns-ig': 'IG', 'sns-fb': 'FB', 'sns-th': 'TH' };
