@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成48 - AiPost</title>
+<title>投稿文作成51 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -588,7 +588,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成48</span>
+  <span class="header-logo">投稿文作成51</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -949,6 +949,7 @@
           <div style="font-size:11px;color:#555;line-height:1.7;">本来の上限は500文字ですが、Xに合わせて140文字までとしています。</div>
         </div>
       </div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">Xを選択していない場合でも、投稿文の上限は140文字のままです。SNSの選び方によって上限が変わってしまうと、本文を書いている途中でSNS選択を変えた際に「さっきまで書けていたのに急にオーバー扱いになった」といった混乱が起きやすくなります。Xを利用しない場合であっても、システム全体の一貫性を保つためにこの基準を採用しています。</div>
     </div>
   </div>
 
@@ -1085,6 +1086,8 @@
       <div class="confirm-row"><span class="confirm-key">画像</span><span class="confirm-val" id="confirm-image">抹茶ラテ</span></div>
       <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain">残り22</span></div>
     </div>
+    <div class="accordion-title" style="font-size:12px;color:var(--primary);font-weight:600;margin-bottom:10px;" onclick="toggleAcc('confirm-preview')">▼ SNSごとの投稿文を見る<span class="accordion-arrow" id="arr-confirm-preview">▶</span></div>
+    <div class="accordion-body" id="confirm-preview" style="margin-bottom:10px;"></div>
     <button class="modal-btn modal-btn-success" onclick="executeReserve()">予約を確定する</button>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('confirm-modal')">修正する</button>
   </div>
@@ -1249,7 +1252,7 @@ function updateHashtagXStatus() {
   const total = getXCombinedTotal();
   if (total > X_LIMIT) {
     el.className = 'hashtag-x-status error';
-    el.textContent = '🐦 Xだけ投稿エラー：' + total + ' / ' + X_LIMIT + '文字（' + (total - X_LIMIT) + '文字オーバー）／他のSNSには投稿されます';
+    el.textContent = '🐦 Xだけ投稿エラー：' + total + ' / ' + X_LIMIT + '文字（' + (total - X_LIMIT) + '文字オーバー）';
   } else {
     el.className = 'hashtag-x-status ok';
     el.textContent = '🐦 Xの上限内：' + total + ' / ' + X_LIMIT + '文字';
@@ -1484,7 +1487,7 @@ function updateCharCount() {
   } else if (xTotal > X_LIMIT) {
     xWarn.classList.add('show', 'error');
     xWarn.classList.remove('ok');
-    xWarn.innerHTML = '🐦 <strong>Xだけ投稿エラーになります</strong>（他のSNSには投稿されます）<br>' + xTotal + ' / ' + X_LIMIT + '文字（' + (xTotal - X_LIMIT) + '文字オーバー）。本文かハッシュタグを短くしてください。';
+    xWarn.innerHTML = '🐦 <strong>Xだけ投稿エラーになります</strong><br>' + xTotal + ' / ' + X_LIMIT + '文字（' + (xTotal - X_LIMIT) + '文字オーバー）。本文かハッシュタグを短くしてください。このままでは予約できません。';
   } else {
     xWarn.classList.add('show', 'ok');
     xWarn.classList.remove('error');
@@ -1642,6 +1645,28 @@ function showConfirm() {
   }
 
   document.getElementById('confirm-date').textContent = '6月' + selectedDay + '日 ' + time;
+
+  // SNSごとの投稿文プレビューを生成
+  const SNS_CODE_MAP = { 'sns-x': 'X', 'sns-ig': 'IG', 'sns-fb': 'FB', 'sns-th': 'TH' };
+  const SNS_ICON_MAP = { X: '🐦', IG: '📱', FB: '💻', TH: '🧵' };
+  const previewTargets = checkedItems.filter(el => {
+    const isX = el.querySelector('.sns-icon-sm').classList.contains('sns-x');
+    return !(xExcludedByUrl && isX);
+  });
+  const previewEl = document.getElementById('confirm-preview');
+  previewEl.innerHTML = previewTargets.map(el => {
+    const iconEl = el.querySelector('.sns-icon-sm');
+    const codeClass = [...iconEl.classList].find(c => SNS_CODE_MAP[c]);
+    const code = SNS_CODE_MAP[codeClass];
+    const name = el.querySelector('.sns-check-name').textContent;
+    const tags = getHashtagsForSns(code);
+    const tagText = tags.length ? ' ' + tags.map(t => '#' + t).join(' ') : '';
+    const bodyText = (ta.value + tagText) || '（本文なし）';
+    return `<div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:6px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">${SNS_ICON_MAP[code] || ''} ${name}</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.7;white-space:pre-wrap;">${bodyText.replace(/</g,'&lt;')}</div>
+    </div>`;
+  }).join('');
 
   // 画像状態を正確に表示
   let imageLabel = '';
