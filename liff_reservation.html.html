@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更4 - AiPost</title>
+<title>予約確認・変更6 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -20,6 +20,12 @@
     --text-sub: #6b7280;
     --text-light: #9ca3af;
   }
+  .plan-demo-btn {
+    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
+    cursor: pointer;
+  }
+  .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
   body {
     font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
     background: var(--bg);
@@ -446,15 +452,15 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更4</span>
+  <span class="header-logo">予約確認・変更6</span>
   <span class="header-sub">AiPost</span>
 </div>
 
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
-    <span>¥1,280/月</span>
+    <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
+    <span id="plan-price">¥1,280/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
@@ -464,19 +470,13 @@
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
   </div>
-</div>
-  <div style="display:flex;align-items:center;gap:4px;">
-    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
-  </div>
-</div>
-  <div style="display:flex;align-items:center;gap:4px;">
-    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
+  <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
+    <span style="font-size:9px;color:rgba(255,255,255,0.6);align-self:center;margin-right:2px;">🔧デモ用プラン切替：</span>
+    <button class="plan-demo-btn" id="plan-demo-FREE" onclick="setDemoPlan('FREE')">FREE</button>
+    <button class="plan-demo-btn" id="plan-demo-PERSONAL" onclick="setDemoPlan('PERSONAL')">PERSONAL</button>
+    <button class="plan-demo-btn" id="plan-demo-LITE" onclick="setDemoPlan('LITE')">LITE</button>
+    <button class="plan-demo-btn active" id="plan-demo-STANDARD" onclick="setDemoPlan('STANDARD')">STANDARD</button>
+    <button class="plan-demo-btn" id="plan-demo-PRO" onclick="setDemoPlan('PRO')">PRO</button>
   </div>
 </div>
 
@@ -762,6 +762,21 @@ const historyPostData = {
 
 let historySelectedDay = null;
 
+// ===== デモ用プラン切替（プラン別の履歴表示確認用） =====
+let currentDemoPlan = 'STANDARD';
+const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
+
+function setDemoPlan(plan) {
+  currentDemoPlan = plan;
+  ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'].forEach(p => {
+    document.getElementById('plan-demo-' + p).classList.toggle('active', p === plan);
+  });
+  document.getElementById('plan-badge').textContent = plan;
+  document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
+  // 表示中の履歴があれば、プラン変更を即座に反映
+  if (historySelectedDay) selectHistoryDay(historySelectedDay);
+}
+
 function buildHistoryCalendar() {
   const grid = document.getElementById('history-cal-dates');
   if (!grid) return;
@@ -804,14 +819,16 @@ function selectHistoryDay(d) {
   document.getElementById('history-no-selected').style.display = posts ? 'none' : 'block';
   document.getElementById('history-selected-section').style.display = posts ? 'block' : 'none';
   if (posts) {
+    // FREE・PERSONALは分析サービスがないため、いいね・コメント数は表示しない
+    const hasAnalytics = !['FREE', 'PERSONAL'].includes(currentDemoPlan);
     document.getElementById('history-day-label').textContent = `6月${d}日の投稿（${posts.length}件）`;
     document.getElementById('history-day-cards').innerHTML = posts.map(p => `
       <div style="background:var(--surface);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border);">
         <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:3px;">${p.sns}</div>
         <div style="font-size:12px;color:var(--text);line-height:1.6;margin-bottom:6px;">${p.text}</div>
-        <div style="display:flex;gap:12px;font-size:11px;color:var(--text-sub);">
+        ${hasAnalytics ? `<div style="display:flex;gap:12px;font-size:11px;color:var(--text-sub);">
           <span>❤️ ${p.likes}</span><span>💬 ${p.comments}</span>
-        </div>
+        </div>` : ''}
       </div>`).join('');
   }
 }
@@ -825,6 +842,30 @@ function switchTab(id) {
 
 // カレンダー生成
 const postCounts = {15: 3, 17: 1, 20: 2, 25: 5, 28: 1}; // 日付:件数のマップ
+const postDataByDay = {
+  15: [
+    { time:'11時ごろ', sns:['IG','FB'],     text:'週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。', hashtag:'#渋谷カフェ #週末限定 #抹茶スイーツ', img:'🍵', chars:32 },
+    { time:'15時ごろ', sns:['IG','X'],      text:'本日のスペシャルティコーヒーはエチオピア産。フルーティな酸味が特徴です。', hashtag:'#スペシャルティコーヒー #渋谷カフェ', img:'☕', chars:29 },
+    { time:'18時ごろ', sns:['FB'],          text:'夜カフェタイムにぴったりのデカフェメニューを増やしました。', hashtag:'#デカフェ #夜カフェ', img:'🌙', chars:24 },
+  ],
+  17: [
+    { time:'13時ごろ', sns:['IG','FB','X'], text:'週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。', hashtag:'#渋谷カフェ #週末限定 #抹茶スイーツ', img:'🍵', chars:32 },
+  ],
+  20: [
+    { time:'9時ごろ',  sns:['IG'],          text:'モーニングセット始めました。トーストとスープのお得な組み合わせです。', hashtag:'#モーニング #渋谷カフェ', img:'🍞', chars:27 },
+    { time:'19時ごろ', sns:['IG','FB','X'], text:'新しいランチセットが始まりました。数量限定なのでお早めに。', hashtag:'#ランチセット #新メニュー', img:'🍽️', chars:25 },
+  ],
+  25: [
+    { time:'8時ごろ',  sns:['IG'],          text:'今週のおすすめスイーツをご紹介。季節のフルーツを使った特製タルトです。', hashtag:'#季節のスイーツ #タルト', img:'🍰', chars:28 },
+    { time:'11時ごろ', sns:['FB'],          text:'店内リニューアルのお知らせ。より快適な空間になりました。', hashtag:'#リニューアル #渋谷カフェ', img:'🛋️', chars:22 },
+    { time:'13時ごろ', sns:['IG','X'],      text:'ランチタイム限定、日替わりパスタセットが人気です。', hashtag:'#ランチ #パスタ', img:'🍝', chars:20 },
+    { time:'16時ごろ', sns:['IG','FB'],     text:'カフェタイムのお供に、焼き菓子の新作が仲間入りしました。', hashtag:'#焼き菓子 #新作', img:'🍪', chars:23 },
+    { time:'20時ごろ', sns:['IG','FB','X'], text:'今週のおすすめスイーツをご紹介。季節のフルーツを使った特製タルトです。', hashtag:'#季節のスイーツ #タルト', img:'🍰', chars:28 },
+  ],
+  28: [
+    { time:'12時ごろ', sns:['X'],           text:'本日のランチ情報をお届けします。数量限定のためお早めにどうぞ。', hashtag:'#ランチ情報 #数量限定', img:'🍱', chars:26 },
+  ],
+};
 const today = 13;
 let selectedDay = null;
 
@@ -869,29 +910,32 @@ function buildCalendar() {
 function selectDay(d) {
   selectedDay = d;
   buildCalendar();
-  const posts = !!postCounts[d];
+  const posts = postDataByDay[d];
   document.getElementById('no-selected').style.display = posts ? 'none' : 'block';
   document.getElementById('selected-day-section').style.display = posts ? 'block' : 'none';
   if (posts) {
-    document.getElementById('selected-day-label').textContent = `6月${d}日の予約`;
-    document.getElementById('selected-day-cards').innerHTML = `
-      <div class="reservation-card" onclick="openDetail(1)">
+    document.getElementById('selected-day-label').textContent = `6月${d}日の予約（${posts.length}件）`;
+    document.getElementById('selected-day-cards').innerHTML = posts.map((p, i) => {
+      const snsTags = p.sns.map(s => `<span class="sns-tag tag-${s.toLowerCase()}">${s}</span>`).join('');
+      return `
+      <div class="reservation-card" onclick="openDetail(${i + 1})">
         <div class="card-header">
           <div class="status-dot dot-pending"></div>
           <div class="card-date">6月${d}日</div>
-          <div class="card-time">13時ごろ</div>
-          <div class="sns-tags"><span class="sns-tag tag-ig">IG</span><span class="sns-tag tag-fb">FB</span><span class="sns-tag tag-x">X</span></div>
+          <div class="card-time">${p.time}</div>
+          <div class="sns-tags">${snsTags}</div>
         </div>
         <div class="card-body">
-          <div class="card-text">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。</div>
-          <div class="card-hashtag">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
+          <div class="card-text">${p.text}</div>
+          <div class="card-hashtag">${p.hashtag}</div>
         </div>
         <div class="card-footer">
-          <div class="card-img-thumb">🍵</div>
-          <div class="card-chars">32文字</div>
+          <div class="card-img-thumb">${p.img}</div>
+          <div class="card-chars">${p.chars}文字</div>
           <span class="card-ai-badge">✨ AI生成</span>
         </div>
       </div>`;
+    }).join('');
   }
 }
 
