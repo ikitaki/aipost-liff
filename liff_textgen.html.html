@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成62 - AiPost</title>
+<title>投稿文作成63 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成62</span>
+  <span class="header-logo">投稿文作成63</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1280,7 +1280,7 @@ function updateHashtagXStatus() {
   const total = getXCombinedTotal();
   if (total > X_LIMIT) {
     el.className = 'hashtag-x-status error';
-    el.textContent = '🐦 Xだけ投稿エラー：' + total + ' / ' + X_LIMIT + '文字（' + (total - X_LIMIT) + '文字オーバー）';
+    el.textContent = '🐦 Xだけ投稿エラー：' + total + ' / ' + X_LIMIT + '文字（' + (total - X_LIMIT) + '文字オーバー）／他のSNSは予約できます';
   } else {
     el.className = 'hashtag-x-status ok';
     el.textContent = '🐦 Xの上限内：' + total + ' / ' + X_LIMIT + '文字';
@@ -1515,7 +1515,7 @@ function updateCharCount() {
   } else if (xTotal > X_LIMIT) {
     xWarn.classList.add('show', 'error');
     xWarn.classList.remove('ok');
-    xWarn.innerHTML = '🐦 <strong>Xだけ投稿エラーになります</strong><br>' + xTotal + ' / ' + X_LIMIT + '文字（' + (xTotal - X_LIMIT) + '文字オーバー）。本文かハッシュタグを短くしてください。このままでは予約できません。';
+    xWarn.innerHTML = '🐦 <strong>Xだけ投稿エラーになります</strong><br>' + xTotal + ' / ' + X_LIMIT + '文字（' + (xTotal - X_LIMIT) + '文字オーバー）。Xは予約されませんが、他のSNSは通常通り予約できます。';
   } else {
     xWarn.classList.add('show', 'ok');
     xWarn.classList.remove('error');
@@ -1703,27 +1703,34 @@ function showConfirm() {
     }
   }
 
-  // URL検知：Xだけ対応不可のため、状況に応じて除外またはブロック
+  // URL・文字数超過：Xだけ対応不可のため、状況に応じて除外またはブロック
   const hasUrl = /https?:\/\//.test(ta.value);
   const checkedItems = [...document.querySelectorAll('.sns-check-item.checked')];
   const xChecked = checkedItems.some(el => el.querySelector('.sns-icon-sm').classList.contains('sns-x'));
-  let xExcludedByUrl = false;
+  let xExcluded = false;
+  let xExcludeReason = '';
+
   if (hasUrl && xChecked) {
     if (checkedItems.length === 1) {
       // Xのみ選択している場合は予約自体をブロック
       alert('投稿文にURLが含まれているため、Xへは投稿できません。\nXのみが選択されているため、このままでは予約できません。\nURLを削除するか、他のSNSも選択してください。');
       return;
     }
-    // 他のSNSも選択している場合はXだけ自動的に除外
-    xExcludedByUrl = true;
+    xExcluded = true;
+    xExcludeReason = 'url';
   }
 
-  // Xの文字数上限チェック（URLによりXが除外される場合はスキップ）
-  if (!xExcludedByUrl) {
+  // Xの文字数上限チェック（URLで既に除外が決まっている場合はスキップ）
+  if (!xExcluded && xChecked) {
     const xTotal = getXCombinedTotal();
     if (xTotal > CHAR_LIMIT) {
-      alert('本文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nこのままでは予約できません。本文またはXに付けるハッシュタグを短く・少なくしてください。');
-      return;
+      if (checkedItems.length === 1) {
+        // Xのみ選択している場合は予約自体をブロック
+        alert('本文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nXのみが選択されているため、このままでは予約できません。\n本文またはハッシュタグを短くしてください。');
+        return;
+      }
+      xExcluded = true;
+      xExcludeReason = 'char';
     }
   }
 
@@ -1734,15 +1741,18 @@ function showConfirm() {
   }
 
   const snsNames = checkedItems
-    .filter(el => !(xExcludedByUrl && el.querySelector('.sns-icon-sm').classList.contains('sns-x')))
+    .filter(el => !(xExcluded && el.querySelector('.sns-icon-sm').classList.contains('sns-x')))
     .map(el => el.querySelector('.sns-check-name').textContent).join('・');
   const time = document.getElementById('post-time').value;
   document.getElementById('confirm-sns').textContent = snsNames || '未選択';
 
   const urlNote = document.getElementById('confirm-url-note');
-  if (xExcludedByUrl) {
+  if (xExcludeReason === 'url') {
     urlNote.style.display = 'block';
     urlNote.textContent = '🐦 投稿文にURLが含まれているため、Xは自動的に除外されました。';
+  } else if (xExcludeReason === 'char') {
+    urlNote.style.display = 'block';
+    urlNote.textContent = '🐦 本文＋ハッシュタグの文字数がXの上限を超えているため、Xは自動的に除外されました。';
   } else {
     urlNote.style.display = 'none';
     urlNote.textContent = '';
@@ -1761,7 +1771,7 @@ function showConfirm() {
   const SNS_ICON_MAP = { X: '🐦', IG: '📱', FB: '💻', TH: '🧵' };
   const previewTargets = checkedItems.filter(el => {
     const isX = el.querySelector('.sns-icon-sm').classList.contains('sns-x');
-    return !(xExcludedByUrl && isX);
+    return !(xExcluded && isX);
   });
   const previewEl = document.getElementById('confirm-preview');
   previewEl.innerHTML = previewTargets.map(el => {
