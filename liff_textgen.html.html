@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成59 - AiPost</title>
+<title>投稿文作成60 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成59</span>
+  <span class="header-logo">投稿文作成60</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -715,7 +715,7 @@
     <div class="char-counter">
       <span class="char-count" id="char-count">0文字</span>
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
-      <span style="font-size:11px;color:var(--text-light);">上限140字（半角280字）</span>
+      <span style="font-size:11px;color:var(--text-light);" id="char-limit-label">上限140字（半角280字）</span>
     </div>
     <div class="url-warning" id="url-warning">
       🔗 <strong>投稿文にURLが含まれています。</strong><br>当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます。
@@ -1145,7 +1145,8 @@
 </nav>
 
 <script>
-const CHAR_LIMIT = 140; // 全角換算の文字数上限（PERSONAL以上：140字＝半角280字相当）
+let CHAR_LIMIT = 140; // 全角換算の文字数上限（PERSONAL以上：140字＝半角280字相当）※プランにより可変
+const PLAN_CHAR_LIMIT = { FREE: 70, PERSONAL: 140, LITE: 140, STANDARD: 140, PRO: 140 };
 const X_LIMIT = 140;
 
 // ===== キーワード =====
@@ -1546,6 +1547,16 @@ function setDemoPlan(plan) {
     xNote.style.display = 'none';
   }
   updateHashtagColumns();
+
+  // プランに応じて文字数上限・入力欄の高さ・上限表示ラベルを切り替え
+  CHAR_LIMIT = PLAN_CHAR_LIMIT[plan];
+  const ta = document.getElementById('post-textarea');
+  ta.style.minHeight = (plan === 'FREE') ? '160px' : '280px';
+  const label = document.getElementById('char-limit-label');
+  label.textContent = (plan === 'FREE')
+    ? '上限70字（半角140字）'
+    : '上限140字（半角280字）';
+
   updateCharCount();
 }
 
