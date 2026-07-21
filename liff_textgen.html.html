@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成60 - AiPost</title>
+<title>投稿文作成62 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成60</span>
+  <span class="header-logo">投稿文作成62</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1239,8 +1239,14 @@ function syncHashtagRowState() {
 function updateHashtagColumns() {
   const checked = getCheckedSns();
   HASHTAG_SNS_ORDER.forEach(sns => {
+    const isVisible = checked.includes(sns);
     document.querySelectorAll('.hashtag-col-' + sns).forEach(el => {
-      el.style.display = checked.includes(sns) ? '' : 'none';
+      el.style.display = isVisible ? '' : 'none';
+      // 非表示にする列は、裏側のチェックも解除して文字数計算に影響しないようにする
+      if (!isVisible) {
+        const cb = el.querySelector('input[type="checkbox"]');
+        if (cb && cb.checked) cb.checked = false;
+      }
     });
   });
 }
@@ -1370,7 +1376,7 @@ function executeGenerate() {
     document.getElementById('content-wrap').style.pointerEvents = '';
     const ta = document.getElementById('post-textarea');
     // 本文とハッシュタグを分けて設定
-    ta.value = '週末限定で人気の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりが自慢の一品です。厳選した宇治抹茶をたっぷり使用し、甘さ控えめに仕上げました。コーヒーや紅茶との相性も抜群なので、ぜひご一緒にお楽しみください。数量限定のため、お早めにどうぞ。';
+    ta.value = '週末限定で人気の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりが自慢の一品です。厳選した宇治抹茶をたっぷり使用し、甘さ控えめに仕上げました。コーヒーや紅茶との相性も抜群なので、ぜひご一緒にお楽しみください。数量限定です。';
     setGeneratedHashtags(['渋谷カフェ', '週末限定', '抹茶スイーツ', '新メニュー', 'カフェ巡り']);
 
     // 業種ベース生成の場合は通知を表示
