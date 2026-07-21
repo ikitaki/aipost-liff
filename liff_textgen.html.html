@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成65 - AiPost</title>
+<title>投稿文作成66 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成65</span>
+  <span class="header-logo">投稿文作成66</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1939,6 +1939,26 @@ updateHashtagColumns();
 syncHashtagRowState();
 loadEditModeFromUrl();
 
+// 絵文字から、実際にCanvasで描画・トリミングできる画像データを生成する
+// （予約編集時に引き継ぐ「元画像」はファイル実体を持たないデモデータのため、
+// 　トリミング機能（Canvas API）が実際に動作するよう、ここで本物の画像に変換する）
+function createPlaceholderImage(emoji, callback) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 800;
+  canvas.height = 800;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fdf6ec';
+  ctx.fillRect(0, 0, 800, 800);
+  ctx.font = '420px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(emoji, 400, 440);
+  const dataUrl = canvas.toDataURL('image/png');
+  const img = new Image();
+  img.onload = () => callback(img, dataUrl);
+  img.src = dataUrl;
+}
+
 // ===== 予約確認画面からの編集データを読み込む =====
 function loadEditModeFromUrl() {
   // LIFFはURLパラメータを liff.state に包んでリダイレクトすることがあるため、
@@ -1984,7 +2004,6 @@ function loadEditModeFromUrl() {
   const img = params.get('img');
   if (img) {
     imageState = 'raw';
-    originalImage = { placeholder: img };
     document.getElementById('img-upload-area').style.display = 'none';
     const bar = document.getElementById('img-selected-bar');
     bar.style.display = 'flex';
@@ -1992,11 +2011,18 @@ function loadEditModeFromUrl() {
     document.getElementById('img-selected-name').textContent = '編集前の画像（そのまま使用中）';
     const wrap = document.getElementById('my-img-preview-wrap');
     wrap.style.display = 'block';
-    document.getElementById('my-img-preview').style.display = 'none';
     const note = document.createElement('p');
     note.style.cssText = 'font-size:11px;color:var(--text-sub);text-align:center;margin:-4px 0 10px;';
     note.textContent = `${img} 編集前の画像を引き継いでいます。「SNSごとにトリミングする」から切り直すこともできます。`;
     wrap.insertBefore(note, wrap.firstChild);
+
+    // 絵文字から実際にCanvasで描画可能な画像データを生成し、本物の再トリミングを可能にする
+    createPlaceholderImage(img, (imageObj, dataUrl) => {
+      originalImage = imageObj;
+      const previewImg = document.getElementById('my-img-preview');
+      previewImg.src = dataUrl;
+      previewImg.style.display = 'block';
+    });
   }
 
   // 投稿日時：渡された日付・時間を選択状態にする（編集時は過去日ガードを迂回）
