@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成64 - AiPost</title>
+<title>投稿文作成65 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成64</span>
+  <span class="header-logo">投稿文作成65</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1941,7 +1941,16 @@ loadEditModeFromUrl();
 
 // ===== 予約確認画面からの編集データを読み込む =====
 function loadEditModeFromUrl() {
-  const params = new URLSearchParams(window.location.search);
+  // LIFFはURLパラメータを liff.state に包んでリダイレクトすることがあるため、
+  // 通常のクエリとliff.state内のクエリの両方に対応する
+  let params = new URLSearchParams(window.location.search);
+  if (!params.get('edit')) {
+    const liffState = params.get('liff.state');
+    if (liffState) {
+      const decoded = decodeURIComponent(liffState);
+      params = new URLSearchParams(decoded.startsWith('?') ? decoded.slice(1) : decoded);
+    }
+  }
   if (params.get('edit') !== '1') return;
 
   // ヘッダー・ボタンの文言を編集モード用に変更
@@ -1990,15 +1999,22 @@ function loadEditModeFromUrl() {
     wrap.insertBefore(note, wrap.firstChild);
   }
 
-  // 投稿日時：渡された日付・時間を選択状態にする
+  // 投稿日時：渡された日付・時間を選択状態にする（編集時は過去日ガードを迂回）
   const day = parseInt(params.get('day'), 10);
   const time = params.get('time');
-  if (day) selectCalDay(day);
+  if (day) {
+    selectedDay = day;
+    buildCalendar();
+    const bar = document.getElementById('selected-date-bar');
+    bar.classList.add('show');
+    document.getElementById('selected-date-label').textContent = '6月' + day + '日を選択中（編集中の予約日）';
+  }
   if (time) {
     const timeSelect = document.getElementById('post-time');
     const opt = [...timeSelect.options].find(o => o.textContent === time);
     if (opt) timeSelect.value = opt.value;
   }
+  if (day) updateTimeOptions();
 
   updateHashtagColumns();
   updateCharCount();
