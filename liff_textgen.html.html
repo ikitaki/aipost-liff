@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成63 - AiPost</title>
+<title>投稿文作成64 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成63</span>
+  <span class="header-logo">投稿文作成64</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1937,6 +1937,72 @@ setTimeout(updateCharCount, 100);
 renderKeywordGuide();
 updateHashtagColumns();
 syncHashtagRowState();
+loadEditModeFromUrl();
+
+// ===== 予約確認画面からの編集データを読み込む =====
+function loadEditModeFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('edit') !== '1') return;
+
+  // ヘッダー・ボタンの文言を編集モード用に変更
+  document.querySelector('.section-title').textContent = '投稿文作成（編集中）';
+  const reserveBtn = document.querySelector('.reserve-btn');
+  if (reserveBtn) reserveBtn.innerHTML = '<span style="font-size:20px;">✅</span>この内容で予約を更新する';
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:#fff8e1;color:#e65100;font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:12px;line-height:1.7;';
+  banner.textContent = '📝 既存の予約を編集中です。文章の修正・再生成、SNSの選択、ハッシュタグの変更、画像の再トリミングが行えます。';
+  document.getElementById('tab-form').insertBefore(banner, document.getElementById('tab-form').firstChild);
+
+  // SNS選択：渡されたSNSのみチェックを入れる
+  const snsList = (params.get('sns') || '').split(',').filter(Boolean);
+  document.querySelectorAll('.sns-check-item').forEach(el => {
+    const icon = el.querySelector('.sns-icon-sm');
+    const code = icon.classList.contains('sns-x') ? 'X' : icon.classList.contains('sns-ig') ? 'IG'
+                : icon.classList.contains('sns-fb') ? 'FB' : icon.classList.contains('sns-th') ? 'TH' : null;
+    const shouldCheck = code && snsList.includes(code);
+    if (shouldCheck !== el.classList.contains('checked')) toggleSns(el);
+  });
+
+  // 本文
+  const text = params.get('text');
+  if (text) document.getElementById('post-textarea').value = text;
+
+  // ハッシュタグ：値を入れて、選択中のSNSに応じた推奨個数だけ初期チェック
+  const tags = (params.get('tags') || '').split(',').filter(Boolean);
+  if (tags.length) setGeneratedHashtags(tags);
+
+  // 画像：元画像をそのまま保持している状態として表示（再トリミングも可能）
+  const img = params.get('img');
+  if (img) {
+    imageState = 'raw';
+    originalImage = { placeholder: img };
+    document.getElementById('img-upload-area').style.display = 'none';
+    const bar = document.getElementById('img-selected-bar');
+    bar.style.display = 'flex';
+    document.getElementById('img-selected-thumb').textContent = img;
+    document.getElementById('img-selected-name').textContent = '編集前の画像（そのまま使用中）';
+    const wrap = document.getElementById('my-img-preview-wrap');
+    wrap.style.display = 'block';
+    document.getElementById('my-img-preview').style.display = 'none';
+    const note = document.createElement('p');
+    note.style.cssText = 'font-size:11px;color:var(--text-sub);text-align:center;margin:-4px 0 10px;';
+    note.textContent = `${img} 編集前の画像を引き継いでいます。「SNSごとにトリミングする」から切り直すこともできます。`;
+    wrap.insertBefore(note, wrap.firstChild);
+  }
+
+  // 投稿日時：渡された日付・時間を選択状態にする
+  const day = parseInt(params.get('day'), 10);
+  const time = params.get('time');
+  if (day) selectCalDay(day);
+  if (time) {
+    const timeSelect = document.getElementById('post-time');
+    const opt = [...timeSelect.options].find(o => o.textContent === time);
+    if (opt) timeSelect.value = opt.value;
+  }
+
+  updateHashtagColumns();
+  updateCharCount();
+}
 
 // ===== トリミング機能 =====
 

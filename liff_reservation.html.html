@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更6 - AiPost</title>
+<title>予約確認・変更7 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -452,7 +452,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更6</span>
+  <span class="header-logo">予約確認・変更7</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -716,7 +716,7 @@
 
     <div class="btn-row">
       <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
-      <button class="btn btn-primary" onclick="alert('編集画面に移動します')">編集する</button>
+      <button class="btn btn-primary" onclick="editReservation()">編集する</button>
       <button class="btn btn-danger" onclick="confirmCancel()">キャンセル</button>
     </div>
   </div>
@@ -944,6 +944,19 @@ function openDetail(id) {
 }
 function closeDetail() {
   document.getElementById('detail-modal').classList.remove('open');
+}
+// 予約内容を投稿文作成画面へ引き継ぎ、編集モードで開く
+function editReservation() {
+  const params = new URLSearchParams({
+    edit: '1',
+    day: '15',
+    time: '13時ごろ',
+    sns: 'IG,FB,X',
+    text: '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。',
+    tags: '渋谷カフェ,週末限定,抹茶スイーツ',
+    img: '🍵',
+  });
+  window.location.href = LIFF_URLS.textgen + '?' + params.toString();
 }
 function confirmCancel() {
   document.getElementById('cancel-modal').classList.add('open');
