@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成67 - AiPost</title>
+<title>投稿文作成68 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成67</span>
+  <span class="header-logo">投稿文作成68</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1125,7 +1125,7 @@
       <span id="complete-msg">6月17日（水）13時ごろに<br>Instagram・Facebook・Xへ自動投稿されます。</span>
     </p>
     <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--text-sub);text-align:left;line-height:1.8;margin-bottom:8px;">
-      📋 予約確認から確認・キャンセルができます
+      📋 予約確認から確認・編集・キャンセルができます
     </div>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('complete-modal')">閉じる</button>
   </div>
@@ -1743,7 +1743,8 @@ function showConfirm() {
   const snsNames = checkedItems
     .filter(el => !(xExcluded && el.querySelector('.sns-icon-sm').classList.contains('sns-x')))
     .map(el => el.querySelector('.sns-check-name').textContent).join('・');
-  const time = document.getElementById('post-time').value;
+  const timeSelectEl = document.getElementById('post-time');
+  const time = timeSelectEl.selectedOptions[0] ? timeSelectEl.selectedOptions[0].textContent : timeSelectEl.value;
   document.getElementById('confirm-sns').textContent = snsNames || '未選択';
 
   const urlNote = document.getElementById('confirm-url-note');
@@ -1804,6 +1805,11 @@ function executeReserve() {
   // 二重送信防止
   const btn = document.querySelector('.modal-btn-success');
   if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
+
+  // 実際に投稿されるSNS・日時を完了画面に反映
+  const snsNames = document.getElementById('confirm-sns').textContent;
+  const dateText = document.getElementById('confirm-date').textContent;
+  document.getElementById('complete-msg').innerHTML = dateText + 'に<br>' + snsNames + 'へ自動投稿されます。';
 
   closeModal('confirm-modal');
   document.getElementById('complete-modal').classList.add('open');
