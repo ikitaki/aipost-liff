@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AIサポート2 - AiPost</title>
+  <title>AIサポート3 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
   function openMailModal() {
@@ -359,7 +359,7 @@
   <!-- ヘッダー -->
   <div class="header">
     <span style="font-size:20px;">🤖</span>
-    <span class="header-logo">AIサポート2</span>
+    <span class="header-logo">AIサポート3</span>
     <span class="header-sub">AiPost</span>
   </div>
 
@@ -461,7 +461,7 @@
         <div class="faq-q-left"><span class="faq-q-icon">Q</span>SNS連携はいつ必要になりますか？</div>
         <span class="faq-arrow">▼</span>
       </div>
-      <div class="faq-a">投稿予約・画像選択・投稿履歴の保存を使う際にSNS連携が必要になります。文章を作るだけなら連携は不要です。</div>
+      <div class="faq-a">投稿予約・画像選択・投稿履歴の保存を使う際にSNS連携が必要になります。投稿文作成だけなら連携は不要です。</div>
     </div>
 
     <div class="faq-card" onclick="toggleFAQ(this)">
@@ -509,7 +509,7 @@
         <div class="faq-q-left"><span class="faq-q-icon">Q</span>投稿用画像を持っていないのですが？</div>
         <span class="faq-arrow">▼</span>
       </div>
-      <div class="faq-a">LITEプラン以上でプロ品質の素材画像を使い放題でご利用いただけます。人物・ビジネス・食べ物・飲み物・季節・行事・自然・風景・美容・健康など18カテゴリから選べます。投稿に合った画像を選ぶだけで、SNSの見栄えが格段にアップします。</div>
+      <div class="faq-a">投稿文作成画面の「マイ画像」タブから、お手持ちの画像をアップロードしてご利用いただけます。SNSごとに最適な比率へのトリミングも画面上で簡単に行えます。</div>
     </div>
 
     <div class="faq-card" onclick="toggleFAQ(this)">
@@ -517,7 +517,7 @@
         <div class="faq-q-left"><span class="faq-q-icon">Q</span>自分の画像も使えますか？</div>
         <span class="faq-arrow">▼</span>
       </div>
-      <div class="faq-a">はい、全プランで自分でアップロードした画像をご利用いただけます。文章を作る画面の「マイ画像」タブからアップロードして使用できます。</div>
+      <div class="faq-a">はい、全プランで自分でアップロードした画像をご利用いただけます。投稿文作成画面の「マイ画像」タブからアップロードして使用できます。</div>
     </div>
 
     <div class="faq-card" onclick="toggleFAQ(this)">
@@ -621,7 +621,7 @@
 
   <!-- ナビゲーションバー -->
   <nav class="bottom-nav">
-    <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">文章を作る</span></button>
+    <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">投稿文作成</span></button>
     <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">予約確認</span></button>
     <button class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
     <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
@@ -657,15 +657,15 @@
 
   // AI回答（デモ：本番はGAS経由でOpenAI APIを呼び出す）
   const DEMO_ANSWERS = {
-    '文章生成': 'リッチメニューの「文章を作る」をタップして、投稿したい内容のキーワードを入力してください。AIが自動で投稿文とハッシュタグを生成します。何度でも作り直せます。',
+    '文章生成': 'リッチメニューの「投稿文作成」をタップして、投稿したい内容のキーワードを入力してください。AIが自動で投稿文とハッシュタグを生成します。何度でも作り直せます。',
     'SNS連携': '設定画面の「SNS」タブから連携したいSNSのボタンをタップしてください。各SNSの認証画面が開きますので、ログインして連携を許可してください。',
     'プラン': 'プラン・料金画面から変更できます。アップグレードは即時反映、ダウングレードは当月末に反映されます。',
     'キャンセル': '予約確認・変更画面から予約をタップして「キャンセル」ボタンで取り消せます。キャンセルした分の予約枠は即時解放されます。',
     '分析': '分析画面でいいね数・EG率・フォロワー推移を確認できます。EG率とはフォロワーに対する反応率で、高いほど投稿が刺さっていることを意味します。',
     '解約': '設定画面の「登録」タブの最下部から解約手続きができます。解約後は翌月末までご利用いただけます。',
-    '画像': '文章を作る画面の「画像を選ぶ」セクションから素材画像またはご自身の画像を選択できます。',
+    '画像': '投稿文作成画面の「画像を選ぶ」セクションから、ご自身の画像（マイ画像）を選択・アップロードできます。',
     'EG率': 'EG率（エンゲージメント率）とは、フォロワー数に対していいね・コメント・保存の合計がどれだけあるかを示す指標です。一般的に3〜5%以上が良好とされています。',
-    '素材画像': 'LITEプラン以上では、当サービスが提供するプロ品質の素材画像を使い放題でご利用いただけます。人物・食べ物・季節・自然など18カテゴリ・豊富なラインナップから選べます。投稿のクオリティが格段に上がります。',
+    '素材画像': '投稿文作成画面の「マイ画像」タブから、お手持ちの画像をアップロードしてご利用いただけます。SNSごとに最適な比率へのトリミングも画面上で簡単に行えます。',
   };
 
   function searchFAQ() {

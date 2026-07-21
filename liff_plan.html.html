@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金1 - AiPost</title>
+  <title>プラン・料金2 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -265,7 +265,7 @@
 
     <div class="topbar">
       <span style="font-size:20px;">💎</span>
-      <span class="topbar-logo">プラン・料金1</span>
+      <span class="topbar-logo">プラン・料金2</span>
       <span class="topbar-sub">AiPost</span>
     </div>
     
@@ -360,11 +360,6 @@
         <td class="col-free ok">✓</td><td class="col-personal ok">✓</td>
         <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
       </tr>
-      <tr class="data-row">
-        <td class="key-td">素材画像</td>
-        <td class="col-free no">－</td><td class="col-personal no">－</td>
-        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
-      </tr>
 
       <tr class="sec-row"><td colspan="6">■ 分析レポート</td></tr>
       <tr class="data-row">
@@ -406,18 +401,6 @@
         <td class="key-td">競合比較</td>
         <td class="col-free no">－</td><td class="col-personal no">－</td>
         <td class="col-lite no">－</td><td class="col-standard no">－</td><td class="col-pro ok">✓</td>
-      </tr>
-
-      <tr class="sec-row"><td colspan="6">■ レポート通知</td></tr>
-      <tr class="data-row">
-        <td class="key-td">月次レポート</td>
-        <td class="col-free no">－</td><td class="col-personal no">－</td>
-        <td class="col-lite ok">✓</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
-      </tr>
-      <tr class="data-row">
-        <td class="key-td">週次レポート</td>
-        <td class="col-free no">－</td><td class="col-personal no">－</td>
-        <td class="col-lite no">－</td><td class="col-standard ok">✓</td><td class="col-pro ok">✓</td>
       </tr>
 
       <tr class="sec-row"><td colspan="6">■ PRO限定機能</td></tr>
@@ -542,7 +525,7 @@
 
   <!-- ナビゲーションバー -->
   <nav class="bottom-nav">
-    <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">文章を作る</span></button>
+    <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">投稿文作成</span></button>
     <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">予約確認</span></button>
     <button class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
     <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
@@ -575,9 +558,9 @@
   }
 
   const DOWNGRADE_WARNINGS = {
-    'STANDARD→FREE':     ['SNSが3つ→1つに減ります','予約可能件数が20件→4件に減ります','文字数上限が140字→70字に減ります','同時投稿ができなくなります','素材画像が利用できなくなります','分析・レポート機能が全て利用できなくなります'],
-    'STANDARD→PERSONAL': ['SNSが3つ→1つに減ります','予約可能件数が20件→8件に減ります','同時投稿ができなくなります','素材画像が利用できなくなります','分析・レポート機能が全て利用できなくなります'],
-    'STANDARD→LITE':     ['SNSが3つ→2つに減ります','予約可能件数が20件→10件に減ります','AI要因分析が利用できなくなります','週次レポートが利用できなくなります'],
+    'STANDARD→FREE':     ['SNSが3つ→1つに減ります','予約可能件数が20件→4件に減ります','文字数上限が140字→70字に減ります','同時投稿ができなくなります','分析・レポート機能が全て利用できなくなります'],
+    'STANDARD→PERSONAL': ['SNSが3つ→1つに減ります','予約可能件数が20件→8件に減ります','同時投稿ができなくなります','分析・レポート機能が全て利用できなくなります'],
+    'STANDARD→LITE':     ['SNSが3つ→2つに減ります','予約可能件数が20件→10件に減ります','AI要因分析が利用できなくなります'],
   };
 
   function selectPlan(plan) {
