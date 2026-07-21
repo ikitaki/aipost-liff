@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成56 - AiPost</title>
+<title>投稿文作成59 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -310,6 +310,14 @@
   .sns-fb { background: #1877f2; }
   .sns-x  { background: #000000; }
   .sns-th { background: #555555; font-size: 10px; }
+  .plan-demo-btn {
+    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
+    cursor: pointer;
+  }
+  .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
+  .sns-check-item.disabled { opacity: 0.4; cursor: not-allowed; }
+  .sns-plan-note { font-size: 11px; color: #e65100; margin: 8px 0 0; }
   .sns-check-name { font-size: 11px; font-weight: 600; text-align: center; }
   .sns-checkbox {
     width: 14px; height: 14px; border-radius: 50%;
@@ -588,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成56</span>
+  <span class="header-logo">投稿文作成59</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -605,6 +613,14 @@
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Facebook</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+  </div>
+  <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
+    <span style="font-size:9px;color:rgba(255,255,255,0.6);align-self:center;margin-right:2px;">🔧デモ用プラン切替：</span>
+    <button class="plan-demo-btn" id="plan-demo-FREE" onclick="setDemoPlan('FREE')">FREE</button>
+    <button class="plan-demo-btn" id="plan-demo-PERSONAL" onclick="setDemoPlan('PERSONAL')">PERSONAL</button>
+    <button class="plan-demo-btn" id="plan-demo-LITE" onclick="setDemoPlan('LITE')">LITE</button>
+    <button class="plan-demo-btn active" id="plan-demo-STANDARD" onclick="setDemoPlan('STANDARD')">STANDARD</button>
+    <button class="plan-demo-btn" id="plan-demo-PRO" onclick="setDemoPlan('PRO')">PRO</button>
   </div>
 </div>
 
@@ -624,7 +640,7 @@
   <div class="card">
     <div class="card-title">① 投稿先のSNSを選ぶ</div>
     <div class="sns-check-list">
-      <div class="sns-check-item checked" onclick="toggleSns(this)">
+      <div class="sns-check-item checked" id="sns-item-x" onclick="toggleSns(this)">
         <div class="sns-icon-sm sns-x">X</div>
         <div class="sns-check-name">X</div>
         <div class="sns-checkbox">✓</div>
@@ -645,6 +661,7 @@
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
+    <p class="sns-plan-note" id="sns-plan-note" style="display:none;">💎 FREEプランではXは選択できません（Xの投稿には運営側に費用が発生するAPIを利用するため）</p>
   </div>
 
   <!-- ② キーワード入力 -->
@@ -846,12 +863,13 @@
     <div class="time-select-row">
       <div class="time-select-label">投稿時間を選ぶ</div>
       <select class="datetime-select" id="post-time">
-        <option>8時ごろ</option><option>9時ごろ</option><option>10時ごろ</option>
-        <option>11時ごろ</option><option>12時ごろ</option><option selected>13時ごろ</option>
-        <option>14時ごろ</option><option>15時ごろ</option><option>16時ごろ</option>
-        <option>17時ごろ</option><option>18時ごろ</option><option>19時ごろ</option>
-        <option>20時ごろ</option><option>21時ごろ</option>
+        <option value="8">8時ごろ</option><option value="9">9時ごろ</option><option value="10">10時ごろ</option>
+        <option value="11">11時ごろ</option><option value="12">12時ごろ</option><option value="13" selected>13時ごろ</option>
+        <option value="14">14時ごろ</option><option value="15">15時ごろ</option><option value="16">16時ごろ</option>
+        <option value="17">17時ごろ</option><option value="18">18時ごろ</option><option value="19">19時ごろ</option>
+        <option value="20">20時ごろ</option><option value="21">21時ごろ</option>
       </select>
+      <p id="time-past-hint" style="font-size:11px;color:var(--danger);margin-top:6px;display:none;">⚠️ 本日は現在時刻より前の時間帯は選べません</p>
       <p style="font-size:11px;color:var(--text-sub);margin-top:6px;">💡 指定した時間帯に自動で投稿されます</p>
     </div>
   </div>
@@ -874,7 +892,11 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t1')">① 投稿先のSNSを選ぶ<span class="accordion-arrow" id="arr-acc-t1">▶</span></div>
     <div class="accordion-body" id="acc-t1">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">連携済みのSNSの中から、今回投稿したいSNSを選びます。ここで選んだSNSに応じて、③ハッシュタグのチェック欄や⑥画像トリミングの比率の選択肢が自動的に切り替わります。1つも選ばずに予約を進めることはできません。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">連携済みのSNSの中から、今回投稿したいSNSを選びます。ここで選んだSNSに応じて、⑥ハッシュタグのチェック欄や⑦画像トリミングの比率の選択肢が自動的に切り替わります。1つも選ばずに予約を進めることはできません。</div>
+      <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">💡 FREEプランはXを選択できません</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">X（Twitter）への投稿には、運営側に費用が発生するAPIを利用します。無料プランでの提供が難しいため、FREEプランではXを投稿先として選択できない仕様になっています。</div>
+      </div>
     </div>
   </div>
 
@@ -1497,6 +1519,36 @@ function updateCharCount() {
 }
 
 // ===== SNS =====
+// ===== デモ用プラン切替（プラン別のSNS制限確認用） =====
+const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
+
+function setDemoPlan(plan) {
+  ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'].forEach(p => {
+    document.getElementById('plan-demo-' + p).classList.toggle('active', p === plan);
+  });
+  document.getElementById('plan-badge').textContent = plan;
+  document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
+
+  const xItem = document.getElementById('sns-item-x');
+  const xNote = document.getElementById('sns-plan-note');
+  if (plan === 'FREE') {
+    // FREEプランはXを選択できないため、チェックを外して選択不可にする
+    if (xItem.classList.contains('checked')) {
+      xItem.classList.remove('checked');
+      xItem.querySelector('.sns-checkbox').textContent = '';
+    }
+    xItem.classList.add('disabled');
+    xItem.onclick = null;
+    xNote.style.display = 'block';
+  } else {
+    xItem.classList.remove('disabled');
+    xItem.onclick = () => toggleSns(xItem);
+    xNote.style.display = 'none';
+  }
+  updateHashtagColumns();
+  updateCharCount();
+}
+
 function toggleSns(el) {
   el.classList.toggle('checked');
   el.querySelector('.sns-checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
@@ -1586,7 +1638,33 @@ function selectCalDay(d) {
   const count = postCounts[d] || 0;
   document.getElementById('selected-date-label').textContent =
     '6月' + d + '日を選択中' + (count > 0 ? '（既に' + count + '件予約あり）' : '');
+  updateTimeOptions();
   setStep(5);
+}
+
+// 選択日が本日の場合、現在時刻より前の時間帯を選択不可にする
+function updateTimeOptions() {
+  const select = document.getElementById('post-time');
+  const hint = document.getElementById('time-past-hint');
+  const now = new Date();
+  const isToday = selectedDay === todayDate;
+  const currentHour = now.getHours();
+  let disabledAny = false;
+
+  [...select.options].forEach(opt => {
+    const hour = parseInt(opt.value, 10);
+    const isPast = isToday && hour <= currentHour;
+    opt.disabled = isPast;
+    if (isPast) disabledAny = true;
+  });
+
+  // 選択中のオプションが無効化された場合、選択可能な最初の時間に自動で切り替える
+  if (select.selectedOptions[0] && select.selectedOptions[0].disabled) {
+    const firstEnabled = [...select.options].find(o => !o.disabled);
+    if (firstEnabled) select.value = firstEnabled.value;
+  }
+
+  hint.style.display = (isToday && disabledAny) ? 'block' : 'none';
 }
 
 function prevMonth() {}
@@ -1597,6 +1675,16 @@ function showConfirm() {
   const ta = document.getElementById('post-textarea');
   if (!ta.value.trim()) { alert('文章を入力してください。'); return; }
   if (!selectedDay) { alert('投稿日を選んでください。'); return; }
+
+  // 本日選択時、既に過ぎた時間帯が選ばれていないか再チェック
+  if (selectedDay === todayDate) {
+    const selectedHour = parseInt(document.getElementById('post-time').value, 10);
+    if (selectedHour <= new Date().getHours()) {
+      alert('選択した時間帯は既に過ぎています。\n投稿時間を選び直してください。');
+      updateTimeOptions();
+      return;
+    }
+  }
 
   // URL検知：Xだけ対応不可のため、状況に応じて除外またはブロック
   const hasUrl = /https?:\/\//.test(ta.value);
