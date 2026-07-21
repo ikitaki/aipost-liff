@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成66 - AiPost</title>
+<title>投稿文作成67 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成66</span>
+  <span class="header-logo">投稿文作成67</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1937,7 +1937,6 @@ setTimeout(updateCharCount, 100);
 renderKeywordGuide();
 updateHashtagColumns();
 syncHashtagRowState();
-loadEditModeFromUrl();
 
 // 絵文字から、実際にCanvasで描画・トリミングできる画像データを生成する
 // （予約編集時に引き継ぐ「元画像」はファイル実体を持たないデモデータのため、
@@ -2718,6 +2717,11 @@ function retryTrimFlow() {
   // やり直し
   startTrimFlow();
 }
+
+// 全ての変数宣言・初期化が完了した後に、編集モードの読み込みを実行する
+// （originalImage・trimResults・imageStateはこのファイル後方でletにより宣言されているため、
+// 　それより前に呼び出すとTDZ（temporal dead zone）エラーで失敗する）
+loadEditModeFromUrl();
 </script>
 </body>
 </html>
