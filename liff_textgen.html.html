@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成68 - AiPost</title>
+<title>投稿文作成69 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成68</span>
+  <span class="header-logo">投稿文作成69</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -789,15 +789,15 @@
     <div class="keyword-hint" style="margin-top:6px;">💡 ハッシュタグは1個15文字までです</div>
   </div>
 
-  <!-- ⑥ 画像選択（インライン） -->
+  <!-- ⑥ 画像アップロード（インライン） -->
   <div class="image-section">
     <div class="image-section-header">
-      <div class="image-section-title">⑥ 画像を選ぶ（任意）</div>
+      <div class="image-section-title">⑥ 画像アップロード</div>
     </div>
 
     <!-- 選択中プレビューバー -->
     <div class="img-selected-bar" id="img-selected-bar" style="display:none;">
-      <span class="img-selected-thumb" id="img-selected-thumb">📷</span>
+      <span class="img-selected-thumb" id="img-selected-thumb">🖼️</span>
       <span class="img-selected-name" id="img-selected-name"></span>
       <button class="img-selected-clear" onclick="showImageCancelOptions()">×</button>
     </div>
@@ -805,9 +805,8 @@
     <!-- 画像アップロードエリア -->
     <div id="img-upload-area" style="padding:20px 16px 12px;">
       <div style="text-align:center;color:var(--text-sub);margin-bottom:14px;">
-        <div style="font-size:36px;margin-bottom:8px;">📷</div>
-        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">画像をアップロードする</div>
-        <div style="font-size:11px;line-height:1.7;">アップロード後にSNSごとのトリミングができます。</div>
+        <div style="font-size:36px;margin-bottom:8px;">🖼️</div>
+        <div style="font-size:11px;line-height:1.7;">アップロード後にSNSごとの最適な比率にトリミングできます。</div>
       </div>
       <input type="file" id="my-img-input" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
       <input type="file" id="my-cam-input" accept="image/*" capture="environment" style="display:none;" onchange="handleImageUpload(event)">
@@ -2656,7 +2655,7 @@ function selectMyImageWithoutTrim() {
   imageState = "raw";
   const bar = document.getElementById("img-selected-bar");
   bar.style.display = "flex";
-  document.getElementById("img-selected-thumb").textContent = "📷";
+  document.getElementById("img-selected-thumb").textContent = "🖼️";
   document.getElementById("img-selected-name").textContent = "マイ画像（トリミングなし）";
   document.getElementById("img-selected-name").style.color = "#2e7d32";
   document.getElementById("my-img-preview-wrap").style.display = "none";
