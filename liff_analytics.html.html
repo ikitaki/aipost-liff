@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析3 - AiPost</title>
+<title>分析8 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -21,6 +21,12 @@
   .tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
   .tab-icon { font-size:16px; }
   .tab-panel { display:none; }
+  .plan-demo-btn {
+    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
+    cursor: pointer;
+  }
+  .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
   .tab-panel.active { display:block; }
   .content { padding:14px; }
   .card { background:var(--surface); border-radius:12px; padding:14px; margin-bottom:12px; border:1px solid var(--border); }
@@ -156,7 +162,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析3</span>
+  <span class="header-logo">分析8</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -171,9 +177,17 @@
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Facebook</span>
   </div>
+  <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
+    <span style="font-size:9px;color:rgba(255,255,255,0.6);align-self:center;margin-right:2px;">🔧デモ用プラン切替：</span>
+    <button class="plan-demo-btn" id="plan-demo-FREE" onclick="setDemoPlan('FREE')">FREE</button>
+    <button class="plan-demo-btn" id="plan-demo-PERSONAL" onclick="setDemoPlan('PERSONAL')">PERSONAL</button>
+    <button class="plan-demo-btn active" id="plan-demo-LITE" onclick="setDemoPlan('LITE')">LITE</button>
+    <button class="plan-demo-btn" id="plan-demo-STANDARD" onclick="setDemoPlan('STANDARD')">STANDARD</button>
+    <button class="plan-demo-btn" id="plan-demo-PRO" onclick="setDemoPlan('PRO')">PRO</button>
+  </div>
 </div>
 
-<div class="tab-nav">
+<div class="tab-nav" id="analytics-tab-nav">
   <button class="tab-btn active" onclick="switchTab('lite')" style="font-size:10px;"><span class="tab-icon">🔍</span>LITE</button>
   <button class="tab-btn" onclick="switchTab('standard')" style="font-size:10px;"><span class="tab-icon">📊</span>STANDARD</button>
   <button class="tab-btn" onclick="switchTab('pro')" style="font-size:10px;"><span class="tab-icon">📈</span>PRO</button>
@@ -185,6 +199,30 @@
 <!-- ===== LITE分析タブ ===== -->
 <!-- ===== LITE分析タブ ===== -->
 <div id="tab-lite" class="tab-panel active">
+
+  <div id="plan-relation-lite" style="display:none;"></div>
+
+  <!-- LITE未満（FREE・PERSONAL）向け案内 -->
+  <div id="lite-upgrade-guide" style="display:none;">
+    <div style="text-align:center;padding:20px 16px 12px;">
+      <div style="font-size:28px;margin-bottom:8px;">🔍</div>
+      <div class="already-use-title" style="color:var(--primary);">LITEプランで利用できます</div>
+      <div class="plan-feature-list">
+        <div class="plan-feature-label">LITE分析に含まれる機能</div>
+        <div class="plan-feature-item"><span>📊</span><span>今日の状況（投稿数・反応の概況）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>直近投稿と24時間後の状況</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>投稿日別データ</span></div>
+        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移（SNS別）</span></div>
+        <div class="plan-feature-item"><span>🏆</span><span>今月の人気投稿ランキング</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>先週・先月のまとめ</span></div>
+        <div class="plan-feature-item"><span>🎯</span><span>次回の投稿おすすめ</span></div>
+      </div>
+      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
+      <p class="plan-guide-price">LITEプラン ¥680/月</p>
+    </div>
+  </div>
+
+  <div id="lite-content">
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
@@ -494,11 +532,35 @@
     <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
   </div>
 
+  </div><!-- /lite-content -->
 
 </div><!-- /tab-lite -->
 
 <!-- ===== STANDARD分析タブ ===== -->
 <div id="tab-standard" class="tab-panel">
+
+  <div id="plan-relation-standard" style="display:none;"></div>
+  <div id="standard-upgrade-guide" style="display:none;">
+    <div style="text-align:center;padding:20px 16px 12px;">
+      <div style="font-size:28px;margin-bottom:8px;">📊</div>
+      <div class="already-use-title" style="color:var(--primary);">STANDARDプランで利用できます</div>
+      <div class="plan-feature-list">
+        <div class="plan-feature-label">STANDARD分析に含まれる機能</div>
+        <div class="plan-feature-item"><span>📊</span><span>今日の状況（投稿数・反応の概況）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>直近投稿と24時間後の状況</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>投稿日別データ</span></div>
+        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移（SNS別）</span></div>
+        <div class="plan-feature-item"><span>🏆</span><span>今月の人気投稿ランキング</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>あなたの投稿平均との比較</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>先週・先月のまとめ</span></div>
+        <div class="plan-feature-item"><span>🎯</span><span>次回の投稿おすすめ</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>データ更新：投稿後24時間（毎日）</span></div>
+      </div>
+      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
+      <p class="plan-guide-price">STANDARDプラン ¥1,280/月</p>
+    </div>
+  </div>
+  <div id="standard-content">
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
@@ -840,11 +902,14 @@
     <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
   </div>
 
+  </div><!-- /standard-content -->
 
 </div><!-- /tab-standard -->
 
 <!-- ===== PRO分析タブ ===== -->
 <div id="tab-pro" class="tab-panel">
+
+  <div id="plan-relation-pro" style="display:none;"></div>
 
   <!-- 未利用ユーザー向け案内 -->
   <div id="pro-upgrade-guide" style="display:none;">
@@ -853,22 +918,28 @@
       <div class="already-use-title" style="color:var(--primary);">PROプランで利用できます</div>
       <div class="plan-feature-list">
         <div class="plan-feature-label">PRO分析に含まれる機能</div>
+        <div class="plan-feature-item"><span>📊</span><span>今日の状況（投稿数・反応の概況）</span></div>
         <div class="plan-feature-item"><span>⚡</span><span>投稿後の初速状況をリアルタイムで確認</span></div>
         <div class="plan-feature-item"><span>📈</span><span>1時間・3時間・24時間の成長率表示</span></div>
-        <div class="plan-feature-item"><span>📊</span><span>あなたの投稿平均との比較</span></div>
-        <div class="plan-feature-item"><span>❤️</span><span>いいね数・コメント数・インプレッション・EG率</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>投稿日別データ</span></div>
         <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移・SNS別（毎日更新）</span></div>
         <div class="plan-feature-item"><span>🏆</span><span>今月の人気投稿ランキング</span></div>
-        <div class="plan-feature-item"><span>⏰</span><span>おすすめの投稿時間帯</span></div>
-        <div class="plan-feature-item"><span>😊</span><span>コメントの感情分析</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>あなたの投稿平均との比較</span></div>
         <div class="plan-feature-item"><span>🏙️</span><span>同業種・同エリア平均との比較</span></div>
+        <div class="plan-feature-item"><span>❤️</span><span>いいね数・コメント数・インプレッション・EG率</span></div>
+        <div class="plan-feature-item"><span>😊</span><span>コメントの感情分析</span></div>
         <div class="plan-feature-item"><span>⚠️</span><span>ネガティブコメント検知</span></div>
+        <div class="plan-feature-item"><span>⏰</span><span>おすすめの投稿時間帯</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>先週・先月のまとめ</span></div>
+        <div class="plan-feature-item"><span>🎯</span><span>次回の投稿おすすめ</span></div>
         <div class="plan-feature-item"><span>📅</span><span>データ更新：投稿後1時間・3時間・24時間（毎日）</span></div>
       </div>
       <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
       <p class="plan-guide-price">PROプラン ¥1,980/月</p>
     </div>
   </div>
+
+  <div id="pro-content">
 
   <!-- ===== 上部：今どうなっているか ===== -->
 
@@ -1570,6 +1641,7 @@
     <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
   </div>
 
+  </div><!-- /pro-content -->
 
 </div><!-- /tab-pro -->
 
@@ -1911,6 +1983,83 @@ const LIFF_URLS = {
 };
 function navigateTo(page) { if(LIFF_URLS[page]) window.location.replace(LIFF_URLS[page]); }
 
+// ===== デモ用プラン切替（FREE・PERSONALのロック画面確認用） =====
+const ANALYTICS_PLAN_INFO = {
+  FREE:     { price: '¥0/月',     sns: '' },
+  PERSONAL: { price: '¥300/月',   sns: '' },
+  LITE:     { price: '¥680/月',   sns: 'Instagram・Facebook' },
+  STANDARD: { price: '¥1,280/月', sns: 'X・Instagram・Facebook' },
+  PRO:      { price: '¥1,980/月', sns: 'X・Instagram・Facebook・Threads' },
+};
+
+function setDemoPlan(plan) {
+  ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'].forEach(p => {
+    document.getElementById('plan-demo-' + p).classList.toggle('active', p === plan);
+  });
+
+  currentActualPlan = plan;
+  document.getElementById('plan-badge').textContent = plan;
+  document.getElementById('plan-price').textContent = ANALYTICS_PLAN_INFO[plan].price;
+  const sns = document.getElementById('plan-sns');
+  if (ANALYTICS_PLAN_INFO[plan].sns) {
+    sns.style.display = 'flex';
+    sns.innerHTML = '<span>連携中：</span>' + ANALYTICS_PLAN_INFO[plan].sns.split('・').map(s =>
+      `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${s}</span>`
+    ).join('');
+  } else {
+    sns.style.display = 'none';
+  }
+
+  // FREE・PERSONALでもLITE/STANDARD/PROタブは開ける（各タブでアップグレード案内を表示するため）
+  document.getElementById('analytics-tab-nav').style.display = 'flex';
+  switchTab('lite');
+}
+
+// 契約プランと、各タブ（LITE/STANDARD/PRO）の関係を表すバナー・表示切替
+let currentActualPlan = 'LITE';
+const ANALYTICS_TIER = { FREE: 0, PERSONAL: 0, LITE: 1, STANDARD: 2, PRO: 3 };
+
+// タブ1つ分の表示状態を切り替える共通処理
+// tabKey: 'lite'|'standard'|'pro'、requiredTier: そのタブが要求するプランのティア
+function applyTabLockState(tabKey, requiredTier, planLabel) {
+  const actualTier = ANALYTICS_TIER[currentActualPlan];
+  const banner = document.getElementById('plan-relation-' + tabKey);
+  const guide = document.getElementById(tabKey + '-upgrade-guide');
+  const content = document.getElementById(tabKey + '-content');
+
+  if (actualTier === requiredTier) {
+    // ちょうど契約中のプラン：実データを表示
+    banner.style.display = 'block';
+    banner.innerHTML = bannerHtml('ok', '✓ 現在ご利用中のプランです');
+    guide.style.display = 'none';
+    content.style.display = 'block';
+  } else if (actualTier > requiredTier) {
+    // 契約プランの方が上位：既に含まれているので実データは見せない
+    banner.style.display = 'block';
+    banner.innerHTML = bannerHtml('ok', '✓ 現在のプランに全て含まれています');
+    guide.style.display = 'none';
+    content.style.display = 'none';
+  } else {
+    // 契約プランの方が下位：アップグレード案内（機能一覧）を表示
+    banner.style.display = 'none';
+    guide.style.display = 'block';
+    content.style.display = 'none';
+  }
+}
+
+function updatePlanRelationBanners() {
+  applyTabLockState('lite', ANALYTICS_TIER.LITE);
+  applyTabLockState('standard', ANALYTICS_TIER.STANDARD);
+  applyTabLockState('pro', ANALYTICS_TIER.PRO);
+}
+
+function bannerHtml(type, text) {
+  const style = type === 'ok'
+    ? 'background:#e8f5e9;color:#2e7d32;'
+    : 'background:#fff3e0;color:#e65100;';
+  return `<div style="${style}border-radius:8px;padding:8px 10px;font-size:11px;font-weight:700;margin-bottom:10px;">${text}</div>`;
+}
+
 function switchTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -1919,14 +2068,14 @@ function switchTab(id) {
     document.querySelectorAll('.tab-btn')[i].classList.toggle('active', t===id);
   });
 
-  // プランバッジ・価格・連携SNS連動
+  // プランバッジ・価格・連携SNSは「契約プラン（currentActualPlan）」基準で表示する。
+  // タブはあくまで各プランの内容を見比べるプレビューのため、タブ切替では変更しない。
   const planInfo = {
-    lite:     { badge:'LITE',     price:'¥680/月',   sns:'Instagram・Facebook' },
-    standard: { badge:'STANDARD', price:'¥1,280/月', sns:'X・Instagram・Facebook' },
-    pro:      { badge:'PRO',      price:'¥1,980/月', sns:'X・Instagram・Facebook・Threads' },
-    guide:    { badge:'GUIDE',    price:'',           sns:'' },
+    LITE:     { badge:'LITE',     price:'¥680/月',   sns:'Instagram・Facebook' },
+    STANDARD: { badge:'STANDARD', price:'¥1,280/月', sns:'X・Instagram・Facebook' },
+    PRO:      { badge:'PRO',      price:'¥1,980/月', sns:'X・Instagram・Facebook・Threads' },
   };
-  const info = planInfo[id];
+  const info = planInfo[currentActualPlan];
   if (info) {
     const badge = document.getElementById('plan-badge');
     const price = document.getElementById('plan-price');
@@ -1940,6 +2089,9 @@ function switchTab(id) {
       ).join('');
     }
   }
+
+  // 見ているタブと契約プランの関係バナーを更新
+  updatePlanRelationBanners();
 
   // カレンダー選択状態リセット
   document.querySelectorAll('.cal-day.selected').forEach(el => el.classList.remove('selected'));
@@ -2433,6 +2585,9 @@ function toggleCompare(detailId, btnId) {
     btn.textContent = '詳細を見る ▼';
   }
 }
+
+// 初期表示（LITEタブ・LITE契約）でもバナーを表示しておく
+updatePlanRelationBanners();
 </script>
 </body>
 </html>
