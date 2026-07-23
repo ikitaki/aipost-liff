@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録4 - AiPost</title>
+<title>設定・登録6 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -370,7 +370,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録4</span>
+  <span class="header-logo">設定・登録6</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -387,20 +387,6 @@
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Facebook</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
-  </div>
-</div>
-  <div style="display:flex;align-items:center;gap:4px;">
-    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
-  </div>
-</div>
-  <div style="display:flex;align-items:center;gap:4px;">
-    <span style="font-size:10px;color:rgba(255,255,255,0.6);">連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">IG</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">FB</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;">X</span>
   </div>
 </div>
 <div class="tab-nav">
@@ -477,7 +463,7 @@
       <div class="card-title">ネガティブコメント検知（PROプラン限定）</div>
       <div class="notice" style="margin-bottom:12px;">
         <span>🔒</span>
-        <span>PROプランでご利用いただける機能です。ネガティブなコメントを検知してLINEに通知し、AIが返信文を提案します。</span>
+        <span>PROプランでご利用いただける機能です。ネガティブなコメントを検知し、分析画面に表示します（LINE通知は行いません）。</span>
       </div>
       <div class="toggle-row toggle-disabled">
         <div class="toggle-info">
@@ -638,38 +624,6 @@
 </div>
 
 <!-- 用語説明モーダル -->
-<div class="modal-overlay" id="term-modal" style="z-index:1020;" onclick="if(event.target===this)closeTerm()">
-  <div class="modal" style="padding:20px 16px;">
-    <div class="modal-handle"></div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-      <span style="font-size:20px;">💡</span>
-      <div id="term-title" style="font-size:16px;font-weight:700;"></div>
-    </div>
-    <p id="term-desc" style="font-size:14px;color:var(--text-sub);line-height:1.8;"></p>
-    <button class="modal-close" style="margin-top:16px;" onclick="closeTerm()">閉じる</button>
-  </div>
-</div>
-
-<!-- プラン比較モーダル -->
-<div class="modal-overlay" id="compare-modal" onclick="closeCompareOnBg(event)">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="modal-title">プランを比較する</div>
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th class="feature-name"></th>
-          <th class="current-col">STANDARD<br><span style="font-weight:400;font-size:10px;">現在</span></th>
-          <th class="upper-col" id="compare-col-name">PRO<br><span style="font-weight:400;font-size:10px;">比較</span></th>
-        </tr>
-      </thead>
-      <tbody id="compare-tbody"></tbody>
-    </table>
-    <button class="upgrade-btn" id="upgrade-btn">このプランに変更する</button>
-    <button class="modal-close" onclick="closeCompare()">閉じる</button>
-  </div>
-</div>
-
 <script>
 function showToast(msg) {
   const t = document.createElement('div');
@@ -695,137 +649,6 @@ function hideCancelScreen() {
   document.getElementById('cancel-screen').classList.remove('open');
 }
 
-const planData = {
-  FREE:     {
-    price:'¥0',     sns:1, posts:4,  chars:'60文字',
-    analysis:false, follower:'—', snsCmp:false, hashCmp:false, dayCmp:false, timeCmp:false, sentiment:false,
-    aiLevel:'—', negative:false, competitor:false,
-    stockImage:'—'
-  },
-  PERSONAL: {
-    price:'¥500',   sns:1, posts:8,  chars:'140文字',
-    analysis:false, follower:'—', snsCmp:false, hashCmp:false, dayCmp:false, timeCmp:false, sentiment:false,
-    aiLevel:'—', negative:false, competitor:false,
-    stockImage:'—'
-  },
-  LITE:     {
-    price:'¥780',   sns:2, posts:15, chars:'280文字',
-    analysis:true, follower:'週次', snsCmp:false, hashCmp:false, dayCmp:false, timeCmp:false, sentiment:false,
-    aiLevel:'2段階（現状・提案）', negative:false, competitor:false,
-    stockImage:'✓ 使い放題'
-  },
-  STANDARD: {
-    price:'¥1,280', sns:3, posts:30, chars:'280文字',
-    analysis:true, follower:'日次', snsCmp:'✓', hashCmp:'✓', dayCmp:'✓', timeCmp:false, sentiment:false,
-    aiLevel:'3段階（現状・理由・提案）', negative:false, competitor:false,
-    stockImage:'✓ 使い放題'
-  },
-  PRO:      {
-    price:'¥1,980', sns:4, posts:60, chars:'280文字',
-    analysis:true, follower:'日次', snsCmp:'✓', hashCmp:'✓', dayCmp:'✓', timeCmp:'✓', sentiment:'✓',
-    aiLevel:'4段階（現状・理由・提案・予測）', negative:true, competitor:'※同業種2店舗以上で解放',
-    stockImage:'✓ 使い放題'
-  },
-};
-
-const terms = {
-  'エンゲージメント率': '投稿を見た人のうち、いいね・コメント・シェアなどのアクションをした割合です。数字が高いほど「刺さる投稿」です。',
-  'インプレッション数': '投稿が画面に表示された回数です。同じ人が2回見れば2カウント。「どれだけ目に触れたか」の指標です。',
-  'フォロワー数推移': '日々のフォロワー増減の変化グラフです。どの投稿の後に増えたか・減ったかを確認できます。',
-  'SNS別パフォーマンス比較': 'Instagram・X・FacebookなどSNSごとに反応の違いを比較します。どのSNSが最も効果的かわかります。',
-  'ハッシュタグ効果分析': '使ったハッシュタグごとにエンゲージメント率を比較します。効果的なハッシュタグがわかります。',
-  '曜日別分析': '曜日ごとの反応の違いを分析します。最も反応が良い曜日に投稿することで効果が上がります。',
-  '時間帯別詳細分析': '時間帯ごとの反応の違いを分析します。フォロワーが最もアクティブな時間帯がわかります。',
-  'コメントの感情分析': 'コメントをポジティブ・中立・ネガティブの3段階でAIが自動判定します。お客様の声を素早く把握できます。',
-  'AIの解釈・提案': 'データをAIが分析して「何が起きているか」「なぜそうなったか」「次にすべきこと」をわかりやすく説明します。',
-  '同業種平均との比較': '同じ業種の他の店舗と自分の数値を匿名で比較できます。※同業種のユーザーが5人以上集まると利用可能になります。',
-  'ネガティブコメント検知': 'ネガティブなコメントをAIが自動で検知してLINEに通知します。早期対応でトラブルを防げます。',
-  '返信文のAI提案': 'ネガティブコメントへの適切な返信文をAIが提案します。確認後に投稿するかどうかを選べます。',
-};
-
-function showTerm(term) {
-  const desc = terms[term];
-  if (!desc) return;
-  document.getElementById('term-title').textContent = term;
-  document.getElementById('term-desc').textContent = desc;
-  document.getElementById('term-modal').classList.add('open');
-}
-function closeTerm() {
-  document.getElementById('term-modal').classList.remove('open');
-}
-function showCancelComplete() {
-  document.getElementById('cancel-complete-modal').classList.add('open');
-}
-
-const rows = [
-  ['月額料金',              p => p.price + ' / 月'],
-  ['連携できるSNS数',       p => p.sns + 'つ'],
-  ['月間投稿予約数',        p => p.posts + '件'],
-  ['生成文字数の上限',      p => p.chars],
-  ['── 分析機能 ──',       p => ''],
-  ['いいね・コメント数',    p => p.analysis ? '✓' : '—'],
-  ['エンゲージメント率',    p => p.analysis ? '✓' : '—'],
-  ['インプレッション数',    p => p.analysis ? '✓' : '—'],
-  ['フォロワー数推移',      p => p.follower || '—'],
-  ['上位投稿ランキング',    p => p.analysis ? '✓' : '—'],
-  ['ベストタイム提案',      p => p.analysis ? '✓' : '—'],
-  ['SNS別パフォーマンス比較', p => p.snsCmp || '—'],
-  ['ハッシュタグ効果分析',  p => p.hashCmp || '—'],
-  ['曜日別分析',            p => p.dayCmp || '—'],
-  ['時間帯別詳細分析',      p => p.timeCmp || '—'],
-  ['コメントの感情分析',    p => p.sentiment || '—'],
-  ['AIの解釈・提案',        p => p.aiLevel || '—'],
-  ['── PRO限定機能 ──',   p => ''],
-  ['同業種平均との比較',    p => p.competitor || '—'],
-  ['素材画像の利用',        p => p.stockImage || '—'],
-  ['画像アップロード',       p => '✓'],
-  ['ネガティブコメント検知', p => p.negative ? '✓' : '—'],
-  ['返信文のAI提案',        p => p.negative ? '✓' : '—'],
-];
-
-function openCompare(targetPlan) {
-  const current = planData['STANDARD'];
-  const target  = planData[targetPlan];
-  document.getElementById('modal-title').textContent = 'STANDARD vs ' + targetPlan;
-  document.getElementById('compare-col-name').innerHTML = targetPlan + '<br><span style="font-weight:400;font-size:10px;">比較</span>';
-
-  const btn = document.getElementById('upgrade-btn');
-  if (targetPlan === 'FREE' || targetPlan === 'PERSONAL') {
-    btn.textContent = 'このプランにダウングレードする';
-    btn.style.background = '#e65100';
-  } else {
-    btn.textContent = 'このプランにアップグレードする';
-    btn.style.background = '#6a1b9a';
-  }
-
-  let html = '';
-  rows.forEach(([label, fn]) => {
-    if (label.startsWith('──')) {
-      html += `<tr class="section-row"><td colspan="3">${label.replace(/──/g,'').trim()}</td></tr>`;
-      return;
-    }
-    const cv = fn(current);
-    const tv = fn(target);
-    const diff = cv !== tv && tv !== '';
-    const tvDisplay = tv === true ? '✓' : (tv === false ? '—' : tv);
-    const cvDisplay = cv === true ? '✓' : (cv === false ? '—' : cv);
-    const hasTerm = terms[label] ? `<button onclick="showTerm('${label}')" style="margin-left:3px;background:#e8eaf6;border:none;border-radius:50%;width:16px;height:16px;font-size:9px;color:#3949ab;cursor:pointer;font-weight:700;padding:0;line-height:16px;">?</button>` : '';
-    html += `<tr>
-      <td class="feature-name">${label}${hasTerm}</td>
-      <td class="current-col">${cvDisplay}</td>
-      <td class="upper-col" style="${diff?'font-weight:600;color:#6a1b9a;':''}">${tvDisplay}${tvDisplay==='※同業種5人以上で解放'?'<br><span style="font-size:10px;font-weight:400;color:var(--text-sub);">準備中の場合あり</span>':''}</td>
-    </tr>`;
-  });
-  document.getElementById('compare-tbody').innerHTML = html;
-  document.getElementById('compare-modal').classList.add('open');
-}
-
-function closeCompare() {
-  document.getElementById('compare-modal').classList.remove('open');
-}
-function closeCompareOnBg(e) {
-  if (e.target === document.getElementById('compare-modal')) closeCompare();
-}
 </script>
 
 <!-- ボトムナビゲーションバー -->
