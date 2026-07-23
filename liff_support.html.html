@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AIサポート4 - AiPost</title>
+  <title>AIサポート5 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
   function openMailModal() {
@@ -359,7 +359,7 @@
   <!-- ヘッダー -->
   <div class="header">
     <span style="font-size:20px;">🤖</span>
-    <span class="header-logo">AIサポート4</span>
+    <span class="header-logo">AIサポート5</span>
     <span class="header-sub">AiPost</span>
   </div>
 
@@ -460,6 +460,22 @@
 
     <div class="faq-card" onclick="toggleFAQ(this)">
       <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>ハッシュタグに「#」を自分で入力する必要がありますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">いいえ、入力不要です。「#」は自動的に付与されます。ご自身で入力すると記号の種類やスペースの有無によりハッシュタグとして正しく機能しない場合があるため、あえて自動付与のみとしています。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>キーワード・ハッシュタグの入力に個数・文字数の制限はありますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">キーワードは最大3個・1個15文字までです。ハッシュタグは最大5個・1個15文字までで、Xは3個まで、Threadsは1個までしか同時に選択できません（Instagram・Facebookに個数の制限はありません）。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
         <div class="faq-q-left"><span class="faq-q-icon">Q</span>複数のSNSに同時投稿できますか？</div>
         <span class="faq-arrow">▼</span>
       </div>
@@ -468,10 +484,42 @@
 
     <div class="faq-card" onclick="toggleFAQ(this)">
       <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>予約した投稿は後から編集できますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">はい、予約確認画面から該当の予約を選び「編集する」を押すと、投稿文作成画面に内容（本文・SNS選択・ハッシュタグ・画像）が引き継がれた状態で開き、修正して再度予約できます。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>投稿時間に選べない時間帯があるのですが？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">投稿日として本日を選んだ場合、現在時刻より前の時間帯は選択できない仕様になっています。過去の時間帯を予約してしまうことを防ぐためです。翌日以降の日付であれば、全ての時間帯からお選びいただけます。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
         <div class="faq-q-left"><span class="faq-q-icon">Q</span>XへのURL付き投稿はできますか？</div>
         <span class="faq-arrow">▼</span>
       </div>
       <div class="faq-a">当サービスではXへのURL付き投稿に対応していません。URLが含まれる場合、Xは自動的に投稿先から除外されます。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>Xだけ投稿できないと表示されるのですが？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">Xは、本文とハッシュタグの合計文字数が140字を超える場合や、URLが含まれる場合に自動的に対象から除外されます。Instagram・Facebook・Threadsなど他のSNSは通常通り投稿されます。Xも投稿したい場合は、本文またはXに付けるハッシュタグを短くしてください。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>FREEプランでXが選べないのはなぜですか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">Xへの投稿には運営側に費用が発生するAPIを利用するため、無料プランでの提供が難しく、FREEプランではXを投稿先として選択できない仕様にしています。PERSONALプラン以上ではXをご利用いただけます。</div>
     </div>
 
     <div class="faq-card" onclick="toggleFAQ(this)">
@@ -508,10 +556,34 @@
 
     <div class="faq-card" onclick="toggleFAQ(this)">
       <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>画像はSNSごとに違うサイズで投稿されますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">はい。アップロードした1枚の画像をもとに、SNSごとに最適な比率へ自動でトリミングできます（そのまま使うことも可能です）。トリミングの見た目が異なっても、元の画像が同じであれば同一投稿として扱われます。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
         <div class="faq-q-left"><span class="faq-q-icon">Q</span>SNSのパスワードを預けるのですか？</div>
         <span class="faq-arrow">▼</span>
       </div>
       <div class="faq-a">パスワードはお預かりしていません。各SNSが発行した投稿専用のアクセストークン（許可証）のみお預かりしています。AES-256暗号化で安全に保管しています。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>SNSの連携を解除すると、再連携は簡単にできますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">連携を解除すると、そのSNSへの投稿予約・分析データの取得ができなくなります。再度連携するには、もう一度そのSNSでの認可手続き（許可の確認）が必要です。ログイン中であればパスワードの再入力なしで完了する場合が多いです。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>ネガティブコメント検知の通知は来ますか？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">LINEへの通知は行っておりません。ネガティブコメント検知（PROプラン限定）の結果は、分析画面に表示されますので、そちらでご確認ください。</div>
     </div>
 
     <!-- 運営へのお問い合わせ -->
