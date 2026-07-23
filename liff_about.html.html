@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AiPostとは1 - AiPost</title>
+  <title>AiPostとは3 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -288,7 +288,7 @@
 
   <!-- ヘッダー -->
   <div class="header">
-    <div class="header-logo">AiPostとは1</div>
+    <div class="header-logo">AiPostとは3</div>
     <div class="header-tagline">AIが文章を作り、SNSへ自動投稿。<br>忙しい店舗オーナーのためのSNS運用サービス</div>
   </div>
 
@@ -321,12 +321,12 @@
       <div class="feature-card">
         <div class="feature-icon">📊</div>
         <div class="feature-name">AI分析</div>
-        <div class="feature-desc">いいね・フォロワー推移をAIが分析して次のアクションを提案</div>
+        <div class="feature-desc">投稿の反応やフォロワー推移を分析。次の投稿のヒントを確認できます</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🖼️</div>
-        <div class="feature-name">画像選択</div>
-        <div class="feature-desc">プロが用意した素材画像を自由に使用。自分でアップロードも可能</div>
+        <div class="feature-name">画像アップロード</div>
+        <div class="feature-desc">ご自身の画像をアップロードし、SNSごとに最適な比率へ自動トリミング</div>
       </div>
     </div>
   </div>
@@ -346,21 +346,21 @@
         <div class="step-num">2</div>
         <div class="step-content">
           <div class="step-title">気に入ったらSNSを連携する</div>
-          <div class="step-desc">投稿予約・画像選択・履歴保存を使うにはSNS連携が必要です。連携するとFREEプランが自動適用されます。</div>
+          <div class="step-desc">投稿予約・画像アップロード・履歴保存を使うにはSNS連携が必要です。連携するとFREEプランが自動適用されます。</div>
         </div>
       </div>
       <div class="step-item">
         <div class="step-num">3</div>
         <div class="step-content">
-          <div class="step-title">画像を選んで投稿を予約する</div>
-          <div class="step-desc">素材画像またはご自身でアップロードした画像を選択します。画像なしでも投稿できます。</div>
+          <div class="step-title">画像をアップロードして投稿を予約する</div>
+          <div class="step-desc">ご自身の画像をアップロードし、SNSごとに最適な比率でトリミングします（トリミングせずそのまま使うことも可能）。画像なしでも投稿できます。</div>
         </div>
       </div>
       <div class="step-item">
         <div class="step-num">4</div>
         <div class="step-content">
           <div class="step-title">投稿結果を分析で確認する（LITEプラン以上）</div>
-          <div class="step-desc">AIが投稿結果を分析して次に何をすべきかを提案します。いいね数・EG率・フォロワー推移を確認できます。</div>
+          <div class="step-desc">今日の状況・直近投稿の反応・フォロワー推移・人気投稿ランキングなどを確認できます。次に投稿すべき内容の目安も表示されます。</div>
         </div>
       </div>
       <div class="step-item">
@@ -383,38 +383,39 @@
       <div class="card-text">
         AiPostでは同じ内容を複数のSNSに同時投稿した場合、<strong style="color:var(--primary);">1件としてカウント</strong>されます。<br><br>
         例えばSTANDARDプラン（予約可能20件・SNS3つ）の場合、毎回3つのSNSに同時投稿すれば実質<strong style="color:var(--primary);">最大60回分</strong>の投稿が可能です。<br><br>
-        ただし同時投稿扱いになるのは<strong style="color:var(--primary);">同一テキスト・同一画像・同時刻</strong>の3条件が揃った場合のみです。テキストや画像を変えた場合は別々にカウントされます。
+        ただし同時投稿扱いになるのは<strong style="color:var(--primary);">同一テキスト・同一の元画像・同時刻</strong>の3条件が揃った場合のみです。テキストや元の画像を変えた場合は別々にカウントされます。画像はSNSごとに最適な比率へトリミングされますが、<strong style="color:var(--primary);">元の画像が同じであれば同一投稿として扱われます</strong>（トリミングの見た目の違いは同一投稿の判定に影響しません）。
       </div>
     </div>
 
     <!-- XのURL投稿不可の説明 -->
     <div class="card">
-      <div class="card-title">⚠️ XへのURL付き投稿について</div>
+      <div class="card-title">⚠️ Xへの投稿について（文字数・URL）</div>
       <div class="card-text">
-        当サービスでは<strong style="color:#c62828;">XへのURL付き投稿に対応していません。</strong><br><br>
-        投稿文にURL（http:// または https:// から始まるリンク）が含まれている場合、Xは自動的に同時投稿の対象から除外されます。Instagram・Facebook・Threadsへの投稿は通常通り行われます。<br><br>
-        具体的な動作は以下の通りです。
+        投稿文は全SNS共通で全角140字（半角280字）以内です。これは4SNSの中で最も文字数制限が厳しいXの基準に合わせたもので、複数SNSへ同じ投稿文をまとめて予約できる仕組みを成立させるための共通ルールです。<br><br>
+        また、当サービスでは<strong style="color:#c62828;">XへのURL付き投稿に対応していません。</strong>投稿文にURL（http:// または https:// から始まるリンク）が含まれている場合、Xは自動的に同時投稿の対象から除外されます。Instagram・Facebook・Threadsへの投稿は通常通り行われます。<br><br>
+        理由は、XのAPI利用料が通常のテキスト投稿（1件0.015ドル）に対し、URLを含む投稿は1件0.20ドルと13倍以上になるためです。<br><br>
+        なお、ハッシュタグを多く付けるなどして本文とハッシュタグの合計文字数がXの上限を超えた場合も、同様にXだけが自動的に除外されます（他のSNSには通常通り投稿されます）。具体的な動作は以下の通りです。
       </div>
       <div class="step-list" style="margin-top:12px;">
         <div class="step-item">
           <div class="step-num">1</div>
           <div class="step-content">
-            <div class="step-title">文章入力中にリアルタイムで警告を表示</div>
-            <div class="step-desc">文章生成・編集画面でURLを入力した瞬間に「当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます」と画面上に警告が表示されます。</div>
+            <div class="step-title">入力中にリアルタイムで警告を表示</div>
+            <div class="step-desc">Xが選択されている状態でURLを入力した瞬間、または文字数がXの上限を超えた瞬間に、画面上に警告が表示されます。</div>
           </div>
         </div>
         <div class="step-item">
           <div class="step-num">2</div>
           <div class="step-content">
-            <div class="step-title">予約時にXを自動除外してLINEで通知</div>
-            <div class="step-desc">そのまま投稿を予約した場合、Xは自動的に除外されて他のSNSのみに投稿されます。除外された旨はLINEでお知らせします。</div>
+            <div class="step-title">予約時にXを自動除外</div>
+            <div class="step-desc">そのまま投稿を予約した場合、Xは自動的に除外されて他のSNSのみに投稿されます。</div>
           </div>
         </div>
         <div class="step-item">
           <div class="step-num">3</div>
           <div class="step-content">
             <div class="step-title">Xのみに投稿しようとした場合はエラー</div>
-            <div class="step-desc">投稿先がXだけの場合、URLを含む投稿は予約できません。URLを削除するか、他のSNSを追加してください。</div>
+            <div class="step-desc">投稿先がXだけの場合、URLを含む投稿・文字数オーバーの投稿は予約できません。内容を調整するか、他のSNSを追加してください。</div>
           </div>
         </div>
       </div>
@@ -455,7 +456,7 @@
           <tr class="section-row"><td colspan="6">■ 投稿機能</td></tr>
           <tr>
             <td class="feature-name-col">利用できるSNS数</td>
-            <td>1つ</td>
+            <td>1つ<br><span style="font-size:9px;color:#888;">(Xを除く)</span></td>
             <td>1つ</td>
             <td>2つ</td>
             <td>3つ</td>
@@ -519,17 +520,25 @@
             <td><span class="check">✓</span></td>
             <td><span class="check">✓</span></td>
           </tr>
+          <tr class="section-row"><td colspan="6">■ 分析レポート（LITE以上）</td></tr>
           <tr>
-            <td class="feature-name-col">素材画像（使い放題）</td>
+            <td class="feature-name-col">今日の状況</td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
             <td><span class="check">✓</span></td>
             <td><span class="check">✓</span></td>
             <td><span class="check">✓</span></td>
           </tr>
-          <tr class="section-row"><td colspan="6">■ 分析レポート</td></tr>
           <tr>
-            <td class="feature-name-col">いいね数の推移</td>
+            <td class="feature-name-col">直近投稿と24時間後の状況</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">投稿日別データ</td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
             <td><span class="check">✓</span></td>
@@ -545,7 +554,7 @@
             <td><span class="check">✓</span></td>
           </tr>
           <tr>
-            <td class="feature-name-col">EG率（エンゲージメント率）</td>
+            <td class="feature-name-col">今月の人気投稿ランキング</td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
             <td><span class="check">✓</span></td>
@@ -553,7 +562,7 @@
             <td><span class="check">✓</span></td>
           </tr>
           <tr>
-            <td class="feature-name-col">人気投稿ランキング</td>
+            <td class="feature-name-col">先週・先月のまとめ</td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
             <td><span class="check">✓</span></td>
@@ -561,7 +570,7 @@
             <td><span class="check">✓</span></td>
           </tr>
           <tr>
-            <td class="feature-name-col">AIアクション提案</td>
+            <td class="feature-name-col">次回の投稿おすすめ</td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
             <td><span class="check">✓</span></td>
@@ -569,40 +578,7 @@
             <td><span class="check">✓</span></td>
           </tr>
           <tr>
-            <td class="feature-name-col">AI要因分析</td>
-            <td><span class="cross">－</span></td>
-            <td><span class="cross">－</span></td>
-            <td><span class="cross">－</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="feature-name-col">トレンド予測</td>
-            <td><span class="cross">－</span></td>
-            <td><span class="cross">－</span></td>
-            <td><span class="cross">－</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="feature-name-col">同業種との競合比較</td>
-            <td><span class="cross">－</span></td>
-            <td><span class="cross">－</span></td>
-            <td><span class="cross">－</span></td>
-            <td><span class="cross">－</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr class="section-row"><td colspan="6">■ レポート通知</td></tr>
-          <tr>
-            <td class="feature-name-col">月次レポート（LINE）</td>
-            <td><span class="cross">－</span></td>
-            <td><span class="cross">－</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="feature-name-col">週次レポート（LINE）</td>
+            <td class="feature-name-col">あなたの投稿平均との比較</td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
@@ -611,7 +587,7 @@
           </tr>
           <tr class="section-row"><td colspan="6">■ PRO限定機能</td></tr>
           <tr>
-            <td class="feature-name-col">ネガティブコメント検知</td>
+            <td class="feature-name-col">投稿後の初速状況（1h/3h/24h）</td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
@@ -619,7 +595,39 @@
             <td><span class="check">✓</span></td>
           </tr>
           <tr>
-            <td class="feature-name-col">AIコメント返信提案</td>
+            <td class="feature-name-col">いいね・コメント・インプレッション・EG率</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">コメントの感情分析</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">同業種・同エリア平均との比較</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">おすすめの投稿時間帯</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">ネガティブコメント検知<br><span style="font-size:9px;color:#888;">(分析画面表示のみ)</span></td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
             <td><span class="cross">－</span></td>
@@ -628,7 +636,7 @@
           </tr>
         </tbody>
       </table>
-      <p style="font-size:11px;color:var(--text-sub);margin-top:12px;line-height:1.7;">※ 実質最大投稿回数は全SNSに同時投稿した場合の目安です。<br>※ AI文章生成は全プラン無制限・LINE友達登録のみで利用可能・やり直しも何度でも可能です。<br>※ プランの変更・申し込みはリッチメニューの「プラン・料金」からどうぞ。</p>
+      <p style="font-size:11px;color:var(--text-sub);margin-top:12px;line-height:1.7;">※ 実質最大投稿回数は全SNSに同時投稿した場合の目安です。<br>※ AI文章生成は全プラン無制限・LINE友達登録のみで利用可能・やり直しも何度でも可能です。<br>※ 分析データの更新頻度：LITE・STANDARDは投稿後24時間に1回、PROは投稿後1時間・3時間・24時間の3回です。<br>※ ネガティブコメント検知はLIFF画面への表示のみで、LINE通知は行いません。<br>※ プランの変更・申し込みはリッチメニューの「プラン・料金」からどうぞ。</p>
     </div>
 
     <!-- 分析レポートの段階説明 -->
@@ -638,36 +646,60 @@
       <div style="margin-bottom:16px;">
         <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">各分析項目について</div>
         <div class="faq-item" style="margin-bottom:8px;">
-          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">📈</span>いいね数の推移</div>
-          <div class="faq-a">各投稿のいいね数を日別・週別でグラフ表示します。どの投稿・どの時期に反応が良かったかを一目で把握できます。</div>
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">📊</span>今日の状況</div>
+          <div class="faq-a">本日の投稿数や反応の概況を一目で確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">📊</span>直近投稿と24時間後の状況</div>
+          <div class="faq-a">直近の投稿について、24時間後の反応（いいね・コメント等）を確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">📅</span>投稿日別データ</div>
+          <div class="faq-a">カレンダー形式で、日付ごとの投稿内容と反応データを確認できます。</div>
         </div>
         <div class="faq-item" style="margin-bottom:8px;">
           <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">👥</span>フォロワー数の推移</div>
-          <div class="faq-a">フォロワー数の増減を時系列でグラフ表示します。どの投稿をきっかけにフォロワーが増えたかを分析する手がかりになります。</div>
+          <div class="faq-a">SNSごとのフォロワー数の推移をグラフで確認できます。</div>
         </div>
         <div class="faq-item" style="margin-bottom:8px;">
-          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">💯</span>EG率（エンゲージメント率）</div>
-          <div class="faq-a">投稿ごとのEG率を算出・表示します。フォロワー数に対してどれだけ反応を得られているかがわかります。高いほど「刺さる投稿」ができている証拠です。</div>
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">🏆</span>今月の人気投稿ランキング</div>
+          <div class="faq-a">今月の投稿を反応の良かった順にランキング表示します。「どんな内容が受けるか」のヒントを見つけるのに役立ちます。</div>
         </div>
         <div class="faq-item" style="margin-bottom:8px;">
-          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">🏆</span>人気投稿ランキング</div>
-          <div class="faq-a">直近の投稿をいいね数・EG率でランキング表示します。「どんな内容が受けるか」のヒントを見つけるのに役立ちます。</div>
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">📅</span>先週・先月のまとめ</div>
+          <div class="faq-a">直近1週間・1ヶ月の投稿実績をまとめて振り返ることができます。</div>
         </div>
         <div class="faq-item" style="margin-bottom:8px;">
-          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">💡</span>AIアクション提案（LITE以上）</div>
-          <div class="faq-a">現状のデータをもとにAIが「次に何をすべきか」を具体的に提案します。例：「水曜日の投稿がEG率が高い傾向があります。水曜日を中心に投稿スケジュールを組みましょう」</div>
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">🎯</span>次回の投稿おすすめ</div>
+          <div class="faq-a">これまでのデータをもとに、次に投稿すべき内容やタイミングの目安を確認できます。</div>
         </div>
         <div class="faq-item" style="margin-bottom:8px;">
-          <div class="faq-q"><span class="faq-q-icon" style="background:#e65100;">🔍</span>AI要因分析（STANDARD以上）</div>
-          <div class="faq-a">「なぜいいねが増えた・減ったか」をAIが分析します。投稿の内容・時間帯・ハッシュタグなどの要因を特定して、再現性のある投稿づくりをサポートします。</div>
+          <div class="faq-q"><span class="faq-q-icon" style="background:#e65100;">📊</span>あなたの投稿平均との比較（STANDARD以上）</div>
+          <div class="faq-a">今回の投稿を、自分自身の過去投稿の平均値と比較して確認できます。</div>
         </div>
         <div class="faq-item" style="margin-bottom:8px;">
-          <div class="faq-q"><span class="faq-q-icon" style="background:#e65100;">🔮</span>トレンド予測（STANDARD以上）</div>
-          <div class="faq-a">過去のデータをもとに今後のフォロワー数・EG率の推移をAIが予測します。「このペースで投稿を続けると◯ヶ月後にフォロワー◯人に到達する見込みです」のような予測を表示します。</div>
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">⚡</span>投稿後の初速状況（PRO限定）</div>
+          <div class="faq-a">投稿後1時間・3時間・24時間の3段階で反応の伸びをリアルタイムに確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">❤️</span>いいね・コメント・インプレッション・EG率（PRO限定）</div>
+          <div class="faq-a">投稿ごとの詳細な反応データを、指標別に確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">😊</span>コメントの感情分析（PRO限定）</div>
+          <div class="faq-a">投稿に寄せられたコメントの傾向（好意的か否かなど）を確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">🏙️</span>同業種・同エリア平均との比較（PRO限定）</div>
+          <div class="faq-a">同じ業種・同じエリアの店舗と自分の反応データを匿名で比較できます。個人情報は一切含まれません。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">⏰</span>おすすめの投稿時間帯（PRO限定）</div>
+          <div class="faq-a">これまでの反応データをもとに、投稿に適した時間帯の目安を確認できます。</div>
         </div>
         <div class="faq-item" style="margin-bottom:0;">
-          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">⚔️</span>同業種との競合比較（PRO限定）</div>
-          <div class="faq-a">同じ業種・同じエリアの店舗と自分のEG率・フォロワー数・投稿数を匿名で比較します。「同業種の平均EG率は◯%。あなたは平均より◯%高い水準です」のような比較データを表示します。個人情報は一切含まれません。</div>
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">⚠️</span>ネガティブコメント検知（PRO限定）</div>
+          <div class="faq-a">投稿に寄せられたコメントの中にネガティブな内容がないかを検知し、分析画面に表示します。LINEでの通知は行っていません。</div>
         </div>
       </div>
 
@@ -675,33 +707,27 @@
         <div class="step-item">
           <div class="step-num" style="background:#2e7d32;font-size:10px;">LITE</div>
           <div class="step-content">
-            <div class="step-title">2段階分析</div>
+            <div class="step-title">基本の分析機能</div>
             <div class="step-desc">
-              ①現状把握：いいね数・EG率・フォロワー推移・人気投稿を表示<br>
-              ②アクション提案：次に何をすべきかをAIが提案
+              今日の状況・直近投稿と24時間後の状況・投稿日別データ・フォロワー数の推移・今月の人気投稿ランキング・先週先月のまとめ・次回の投稿おすすめを確認できます。
             </div>
           </div>
         </div>
         <div class="step-item">
           <div class="step-num" style="background:#e65100;font-size:10px;">STD</div>
           <div class="step-content">
-            <div class="step-title">3段階分析</div>
+            <div class="step-title">基本の分析機能＋自己比較</div>
             <div class="step-desc">
-              ①現状把握（LITEと同じ）<br>
-              ②要因分析：なぜいいねが増えた・減ったかをAIが分析<br>
-              ③アクション提案：根拠に基づいた具体的な改善策を提案<br>
-              ＋トレンド予測：今後のフォロワー・EG率の推移をAIが予測
+              LITEの内容に加えて、あなたの投稿平均との比較ができます。
             </div>
           </div>
         </div>
         <div class="step-item">
           <div class="step-num" style="background:#6a1b9a;font-size:10px;">PRO</div>
           <div class="step-content">
-            <div class="step-title">4段階分析＋競合比較</div>
+            <div class="step-title">全機能＋詳細分析</div>
             <div class="step-desc">
-              ①現状把握②要因分析③アクション提案＋トレンド予測（STDと同じ）<br>
-              ④競合比較：同業種・同エリアの店舗との匿名比較データを表示<br>
-              ＋ネガティブコメント検知・AIコメント返信提案
+              STANDARDの内容に加えて、投稿後の初速状況（1h/3h/24h）・詳細な反応指標・コメントの感情分析・同業種同エリア比較・おすすめ投稿時間帯・ネガティブコメント検知（表示のみ）が使えます。
             </div>
           </div>
         </div>
@@ -734,7 +760,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q"><span class="faq-q-icon">Q</span>SNS連携はいつ必要になりますか？</div>
-      <div class="faq-a">投稿予約・画像選択・投稿履歴の保存を使う際にSNS連携が必要になります。文章を作るだけなら連携は不要です。</div>
+      <div class="faq-a">投稿予約・画像アップロード・投稿履歴の保存を使う際にSNS連携が必要になります。投稿文作成だけなら連携は不要です。</div>
     </div>
   </div>
 
@@ -758,7 +784,7 @@
   <nav class="bottom-nav" id="bottom-nav">
     <button class="nav-item" onclick="navigateTo('textgen')">
       <span class="nav-icon">📝</span>
-      <span class="nav-label">文章を作る</span>
+      <span class="nav-label">投稿文作成</span>
     </button>
     <button class="nav-item" onclick="navigateTo('reservation')">
       <span class="nav-icon">📅</span>
