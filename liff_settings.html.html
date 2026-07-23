@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録9 - AiPost</title>
+<title>設定・登録11 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -379,7 +379,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録9</span>
+  <span class="header-logo">設定・登録11</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -612,6 +612,22 @@
   </div>
 </div>
 
+<!-- SNS連携解除の確認モーダル -->
+<div class="modal-overlay" id="sns-disconnect-modal" style="z-index:1030;">
+  <div class="modal" style="padding:24px 20px;text-align:center;">
+    <div style="font-size:40px;margin-bottom:12px;">⚠️</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:10px;" id="sns-disconnect-title">Instagramとの連携を解除しますか？</div>
+    <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:20px;text-align:left;background:var(--bg);border-radius:10px;padding:12px;">
+      解除すると、このSNSへの投稿予約・分析データの取得ができなくなります。<br><br>
+      再度連携するには、もう一度<span id="sns-disconnect-label">Instagram</span>での認可手続きが必要です。
+    </p>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="closeSnsDisconnectModal()">キャンセル</button>
+      <button class="btn" style="flex:1;background:var(--danger);color:#fff;" onclick="confirmSnsDisconnect()">解除する</button>
+    </div>
+  </div>
+</div>
+
 <!-- 用語説明モーダル -->
 <script>
 function showToast(msg) {
@@ -684,10 +700,15 @@ function disconnectSns(sns) {
 }
 
 // SNSの連携・解除ボタンから呼ばれる
+let pendingDisconnectSns = null;
+
 function toggleSnsConnection(sns) {
   if (isConnected(sns)) {
-    disconnectSns(sns);
-    updateSnsSummary();
+    pendingDisconnectSns = sns;
+    const label = SNS_LABEL[sns];
+    document.getElementById('sns-disconnect-title').textContent = label + 'との連携を解除しますか？';
+    document.getElementById('sns-disconnect-label').textContent = label;
+    document.getElementById('sns-disconnect-modal').classList.add('open');
     return;
   }
   // FREEプランはXと連携できない
@@ -716,6 +737,19 @@ function updateSnsSummary() {
   planSns.innerHTML = '<span>連携中：</span>' + connectedList.map(s =>
     `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${SNS_LABEL[s]}</span>`
   ).join('');
+}
+
+function closeSnsDisconnectModal() {
+  document.getElementById('sns-disconnect-modal').classList.remove('open');
+  pendingDisconnectSns = null;
+}
+
+function confirmSnsDisconnect() {
+  if (pendingDisconnectSns) {
+    disconnectSns(pendingDisconnectSns);
+    updateSnsSummary();
+  }
+  closeSnsDisconnectModal();
 }
 
 function showCancelScreen() {
