@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録6 - AiPost</title>
+<title>設定・登録8 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -170,6 +170,12 @@
   .sns-name { font-size: 13px; font-weight: 600; }
   .sns-status { font-size: 11px; color: var(--text-light); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sns-status.ok { color: var(--success); }
+  .plan-demo-btn {
+    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
+    cursor: pointer;
+  }
+  .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
   .sns-btn {
     padding: 5px 12px; border-radius: 16px; border: none;
     font-size: 11px; font-weight: 600; cursor: pointer; flex-shrink: 0;
@@ -370,23 +376,27 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録6</span>
+  <span class="header-logo">設定・登録8</span>
   <span class="header-sub">AiPost</span>
 </div>
 
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
-    <span>¥1,280/月</span>
+    <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
+    <span id="plan-price">¥1,280/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
   </div>
-  <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
+  <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
     <span>連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Facebook</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+  </div>
+  <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
+    <span style="font-size:9px;color:rgba(255,255,255,0.6);align-self:center;margin-right:2px;">🔧デモ用プラン切替：</span>
+    <button class="plan-demo-btn" id="plan-demo-FREE" onclick="setDemoPlan('FREE')">FREE</button>
+    <button class="plan-demo-btn" id="plan-demo-PERSONAL" onclick="setDemoPlan('PERSONAL')">PERSONAL</button>
+    <button class="plan-demo-btn" id="plan-demo-LITE" onclick="setDemoPlan('LITE')">LITE</button>
+    <button class="plan-demo-btn active" id="plan-demo-STANDARD" onclick="setDemoPlan('STANDARD')">STANDARD</button>
+    <button class="plan-demo-btn" id="plan-demo-PRO" onclick="setDemoPlan('PRO')">PRO</button>
   </div>
 </div>
 <div class="tab-nav">
@@ -410,38 +420,38 @@
       <span>SNSと連携することで自動投稿が可能になります。パスワードはお預かりしません。</span>
     </div>
     <div class="card">
-      <div class="card-title">連携状況（3/3）</div>
-      <div class="sns-item connected">
+      <div class="card-title" id="sns-connected-title">連携状況（3/3）</div>
+      <div class="sns-item connected" id="sns-item-ig">
         <div class="sns-icon sns-ig">📷</div>
         <div class="sns-info">
           <div class="sns-name">Instagram</div>
-          <div class="sns-status ok">✓ 連携済み・@yamada_cafe</div>
+          <div class="sns-status ok" id="sns-status-ig">✓ 連携済み</div>
         </div>
-        <button class="sns-btn btn-disconnect">解除</button>
+        <button class="sns-btn btn-disconnect" id="sns-btn-ig" onclick="toggleSnsConnection('ig')">解除</button>
       </div>
-      <div class="sns-item connected">
+      <div class="sns-item connected" id="sns-item-fb">
         <div class="sns-icon sns-fb">f</div>
         <div class="sns-info">
           <div class="sns-name">Facebook</div>
-          <div class="sns-status ok">✓ 連携済み・山田カフェ</div>
+          <div class="sns-status ok" id="sns-status-fb">✓ 連携済み</div>
         </div>
-        <button class="sns-btn btn-disconnect">解除</button>
+        <button class="sns-btn btn-disconnect" id="sns-btn-fb" onclick="toggleSnsConnection('fb')">解除</button>
       </div>
-      <div class="sns-item connected">
+      <div class="sns-item connected" id="sns-item-x">
         <div class="sns-icon sns-x">X</div>
         <div class="sns-info">
           <div class="sns-name">X（Twitter）</div>
-          <div class="sns-status ok">✓ 連携済み・@yamada_cafe</div>
+          <div class="sns-status ok" id="sns-status-x">✓ 連携済み</div>
         </div>
-        <button class="sns-btn btn-disconnect">解除</button>
+        <button class="sns-btn btn-disconnect" id="sns-btn-x" onclick="toggleSnsConnection('x')">解除</button>
       </div>
-      <div class="sns-item" style="margin-bottom:0;opacity:0.5;">
+      <div class="sns-item" id="sns-item-th" style="margin-bottom:0;">
         <div class="sns-icon sns-th">@</div>
         <div class="sns-info">
           <div class="sns-name">Threads</div>
-          <div class="sns-status">PROプランで追加できます</div>
+          <div class="sns-status" id="sns-status-th">未連携</div>
         </div>
-        <button class="sns-btn btn-connect" disabled>連携</button>
+        <button class="sns-btn btn-connect" id="sns-btn-th" onclick="toggleSnsConnection('th')">連携</button>
       </div>
     </div>
   </div>
@@ -456,30 +466,6 @@
           <div class="toggle-desc">投稿枠が余っている場合に月末3日前にLINEで通知</div>
         </div>
         <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">ネガティブコメント検知（PROプラン限定）</div>
-      <div class="notice" style="margin-bottom:12px;">
-        <span>🔒</span>
-        <span>PROプランでご利用いただける機能です。ネガティブなコメントを検知し、分析画面に表示します（LINE通知は行いません）。</span>
-      </div>
-      <div class="toggle-row toggle-disabled">
-        <div class="toggle-info">
-          <div class="toggle-label">ネガティブ検知をONにする</div>
-        </div>
-        <label class="toggle"><input type="checkbox" disabled><span class="toggle-slider"></span></label>
-      </div>
-      <div class="toggle-row toggle-disabled" style="border-bottom:none;">
-        <div class="toggle-info">
-          <div class="toggle-label">検知頻度</div>
-        </div>
-        <div class="select-wrap" style="width:110px;">
-          <select class="form-select" style="padding:6px 10px;font-size:12px;" disabled>
-            <option>1時間ごと</option>
-          </select>
-        </div>
       </div>
     </div>
 
@@ -640,6 +626,95 @@ function switchTab(id) {
   document.getElementById('tab-'+id).classList.add('active');
 }
 
+// ===== デモ用プラン切替（SNS連携数の上限確認用） =====
+const SNS_ORDER = ['ig', 'fb', 'x', 'th'];
+const SNS_LABEL = { ig: 'Instagram', fb: 'Facebook', x: 'X', th: 'Threads' };
+const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 4 };
+const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
+let currentDemoPlan = 'STANDARD';
+
+function setDemoPlan(plan) {
+  currentDemoPlan = plan;
+  ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'].forEach(p => {
+    document.getElementById('plan-demo-' + p).classList.toggle('active', p === plan);
+  });
+  document.getElementById('plan-badge').textContent = plan;
+  document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
+
+  // FREEプランはXと連携できないため、Xが連携済みなら自動的に解除
+  if (plan === 'FREE' && isConnected('x')) disconnectSns('x');
+
+  // 新しい上限を超えている分は、連携が古い順（ig→fb→x→th）に自動解除
+  const limit = PLAN_SNS_LIMIT[plan];
+  let connectedList = SNS_ORDER.filter(isConnected);
+  while (connectedList.length > limit) {
+    disconnectSns(connectedList[connectedList.length - 1]);
+    connectedList = SNS_ORDER.filter(isConnected);
+  }
+
+  updateSnsSummary();
+}
+
+function isConnected(sns) {
+  const el = document.getElementById('sns-item-' + sns);
+  return el && el.classList.contains('connected');
+}
+
+function connectSns(sns) {
+  document.getElementById('sns-item-' + sns).classList.add('connected');
+  document.getElementById('sns-status-' + sns).textContent = '✓ 連携済み';
+  document.getElementById('sns-status-' + sns).classList.add('ok');
+  const btn = document.getElementById('sns-btn-' + sns);
+  btn.textContent = '解除';
+  btn.classList.remove('btn-connect');
+  btn.classList.add('btn-disconnect');
+}
+
+function disconnectSns(sns) {
+  document.getElementById('sns-item-' + sns).classList.remove('connected');
+  document.getElementById('sns-status-' + sns).textContent = '未連携';
+  document.getElementById('sns-status-' + sns).classList.remove('ok');
+  const btn = document.getElementById('sns-btn-' + sns);
+  btn.textContent = '連携';
+  btn.classList.remove('btn-disconnect');
+  btn.classList.add('btn-connect');
+}
+
+// SNSの連携・解除ボタンから呼ばれる
+function toggleSnsConnection(sns) {
+  if (isConnected(sns)) {
+    disconnectSns(sns);
+    updateSnsSummary();
+    return;
+  }
+  // FREEプランはXと連携できない
+  if (sns === 'x' && currentDemoPlan === 'FREE') {
+    alert('FREEプランではXと連携できません。');
+    return;
+  }
+  // 現在のプランの連携上限をチェック
+  const limit = PLAN_SNS_LIMIT[currentDemoPlan];
+  const connectedCount = SNS_ORDER.filter(isConnected).length;
+  if (connectedCount >= limit) {
+    alert('現在の' + currentDemoPlan + 'プランでは、SNSは' + limit + 'つまでしか連携できません。\n他のSNSの連携を解除するか、プランをアップグレードしてください。');
+    return;
+  }
+  connectSns(sns);
+  updateSnsSummary();
+}
+
+// サブバー「連携中：」表示・カード見出しの件数表示を更新
+function updateSnsSummary() {
+  const connectedList = SNS_ORDER.filter(isConnected);
+  const limit = PLAN_SNS_LIMIT[currentDemoPlan];
+  document.getElementById('sns-connected-title').textContent = `連携状況（${connectedList.length}/${limit}）`;
+
+  const planSns = document.getElementById('plan-sns');
+  planSns.innerHTML = '<span>連携中：</span>' + connectedList.map(s =>
+    `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${SNS_LABEL[s]}</span>`
+  ).join('');
+}
+
 function showCancelScreen() {
   document.getElementById('main-account').classList.add('hidden');
   document.getElementById('cancel-screen').classList.add('open');
@@ -648,6 +723,9 @@ function hideCancelScreen() {
   document.getElementById('main-account').classList.remove('hidden');
   document.getElementById('cancel-screen').classList.remove('open');
 }
+
+// 初期表示（IG・FB・Xが連携済みの状態）を整える
+updateSnsSummary();
 
 </script>
 
