@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AIサポート6 - AiPost</title>
+  <title>AIサポート7 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
   function openMailModal() {
@@ -258,26 +258,6 @@
     }
     .faq-card.open .faq-a { display: block; }
 
-    /* クイック質問ボタン */
-    .quick-btns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .quick-btn {
-      padding: 7px 14px;
-      border: 1px solid var(--primary);
-      border-radius: 20px;
-      background: var(--white);
-      color: var(--primary);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .quick-btn:active { background: #f0f2ff; }
-
     /* 運営へのお問い合わせ */
     .contact-card {
       background: var(--white);
@@ -359,7 +339,7 @@
   <!-- ヘッダー -->
   <div class="header">
     <span style="font-size:20px;">🤖</span>
-    <span class="header-logo">AIサポート6</span>
+    <span class="header-logo">AIサポート7</span>
     <span class="header-sub">AiPost</span>
   </div>
 
@@ -417,21 +397,16 @@
       </div>
     </div>
 
-    <!-- クイック質問 -->
-    <div class="section-title">よく聞かれる質問</div>
-    <div class="quick-btns">
-      <button class="quick-btn" onclick="quickSearch('文章生成の使い方')">文章生成の使い方</button>
-      <button class="quick-btn" onclick="quickSearch('SNS連携方法')">SNS連携方法</button>
-      <button class="quick-btn" onclick="quickSearch('プランを変更したい')">プランを変更したい</button>
-      <button class="quick-btn" onclick="quickSearch('投稿予約のキャンセル')">投稿予約のキャンセル</button>
-      <button class="quick-btn" onclick="quickSearch('分析の見方')">分析の見方</button>
-      <button class="quick-btn" onclick="quickSearch('解約したい')">解約したい</button>
-      <button class="quick-btn" onclick="quickSearch('画像のアップロード')">画像のアップロード</button>
-      <button class="quick-btn" onclick="quickSearch('EG率とは')">EG率とは</button>
-    </div>
-
     <!-- よくある質問 -->
     <div class="section-title" style="margin-top:4px;">よくある質問</div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>投稿文の作り方を教えてください</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">リッチメニューの「投稿文作成」をタップし、投稿したい内容のキーワードを入力してください。AIが自動で投稿文とハッシュタグを生成します。何度でも作り直せます。</div>
+    </div>
 
     <div class="faq-card" onclick="toggleFAQ(this)">
       <div class="faq-q">
@@ -447,6 +422,14 @@
         <span class="faq-arrow">▼</span>
       </div>
       <div class="faq-a">投稿予約・画像選択・投稿履歴の保存を使う際にSNS連携が必要になります。投稿文作成だけなら連携は不要です。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>SNS連携の方法を教えてください</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">設定画面の「SNS」タブから連携したいSNSの「連携」ボタンをタップしてください。各SNSの認証画面が開きますので、ログインして許可すると連携が完了します。</div>
     </div>
 
     <div class="faq-card" onclick="toggleFAQ(this)">
@@ -495,6 +478,14 @@
         <span class="faq-arrow">▼</span>
       </div>
       <div class="faq-a">投稿日として本日を選んだ場合、現在時刻より前の時間帯は選択できない仕様になっています。過去の時間帯を予約してしまうことを防ぐためです。翌日以降の日付であれば、全ての時間帯からお選びいただけます。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>投稿予約をキャンセルしたいのですが？</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">予約確認・変更画面から該当の予約をタップし、「キャンセル」ボタンで取り消せます。キャンセルした分の予約枠はすぐに解放され、再度別の投稿にご利用いただけます。</div>
     </div>
 
     <div class="faq-card" onclick="toggleFAQ(this)">
@@ -567,6 +558,14 @@
         <span class="faq-arrow">▼</span>
       </div>
       <div class="faq-a">連携を解除すると、そのSNSへの投稿予約・分析データの取得ができなくなります。再度連携するには、もう一度そのSNSでの認可手続き（許可の確認）が必要です。ログイン中であればパスワードの再入力なしで完了する場合が多いです。</div>
+    </div>
+
+    <div class="faq-card" onclick="toggleFAQ(this)">
+      <div class="faq-q">
+        <div class="faq-q-left"><span class="faq-q-icon">Q</span>分析の見方を教えてください</div>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-a">分析画面（LITEプラン以上）で、今日の状況・直近投稿の反応・フォロワー数の推移・人気投稿ランキングなどを確認できます。詳しい項目の説明は「AiPostとは」ページのガイドもご参照ください。</div>
     </div>
 
     <div class="faq-card" onclick="toggleFAQ(this)">
@@ -698,22 +697,15 @@
     card.classList.toggle('open');
   }
 
-  // クイック質問
-  function quickSearch(text) {
-    document.getElementById('search-input').value = text;
-    searchFAQ();
-  }
-
   // AI回答（デモ：本番はGAS経由でOpenAI APIを呼び出す）
   const DEMO_ANSWERS = {
     '文章生成': 'リッチメニューの「投稿文作成」をタップして、投稿したい内容のキーワードを入力してください。AIが自動で投稿文とハッシュタグを生成します。何度でも作り直せます。',
     'SNS連携': '設定画面の「SNS」タブから連携したいSNSのボタンをタップしてください。各SNSの認証画面が開きますので、ログインして連携を許可してください。',
     'プラン': 'プラン・料金画面から変更できます。アップグレードは即時反映、ダウングレードは当月末に反映されます。',
     'キャンセル': '予約確認・変更画面から予約をタップして「キャンセル」ボタンで取り消せます。キャンセルした分の予約枠は即時解放されます。',
-    '分析': '分析画面でいいね数・EG率・フォロワー推移を確認できます。EG率とはフォロワーに対する反応率で、高いほど投稿が刺さっていることを意味します。',
+    '分析': '分析画面でいいね数・フォロワー推移などを確認できます。',
     '解約': '設定画面の「登録」タブの最下部から解約手続きができます。解約後は翌月末までご利用いただけます。',
     '画像': '投稿文作成画面の「画像を選ぶ」セクションから、ご自身の画像（マイ画像）を選択・アップロードできます。',
-    'EG率': 'EG率（エンゲージメント率）とは、フォロワー数に対していいね・コメント・保存の合計がどれだけあるかを示す指標です。一般的に3〜5%以上が良好とされています。',
   };
 
   function searchFAQ() {
