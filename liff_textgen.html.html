@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成69 - AiPost</title>
+<title>投稿文作成70 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成69</span>
+  <span class="header-logo">投稿文作成70</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -918,28 +918,39 @@
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ 投稿文が全角140文字である理由<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ 投稿文が全角<span id="faq-t4-limit-num">140</span>文字である理由<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
     <div class="accordion-body" id="acc-t4">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、同じ投稿文・同じ画像であれば複数SNSへの同時投稿を「1投稿」としてカウントする仕様になっています。この「同一投稿」という条件を成立させるには投稿文は全SNS共通で1つだけでなければならないため、最も文字数制限が厳しいX（全角140文字＝半角280文字）に合わせることで、どのSNSを選んでも確実に投稿できるようにしています。「複数SNSに同じ内容をまとめて予約できる」利便性と引き換えに、投稿文の文字数はXの基準に統一している、というのが正確な理由です。</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
+      <!-- PERSONAL以上向け：複数SNS同時投稿のためXの上限に統一している、という説明 -->
+      <div id="faq-t4-standard">
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、同じ投稿文・同じ画像であれば複数SNSへの同時投稿を「1投稿」としてカウントする仕様になっています。この「同一投稿」という条件を成立させるには投稿文は全SNS共通で1つだけでなければならないため、最も文字数制限が厳しいX（全角140文字＝半角280文字）に合わせることで、どのSNSを選んでも確実に投稿できるようにしています。「複数SNSに同じ内容をまとめて予約できる」利便性と引き換えに、投稿文の文字数はXの基準に統一している、というのが正確な理由です。</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+            <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
+            <div style="font-size:11px;color:#555;line-height:1.7;">全角140文字（半角280文字）が上限。これが投稿文共通の基準になっています。</div>
+          </div>
+          <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+            <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
+            <div style="font-size:11px;color:#e1306c;line-height:1.7;">本来の上限は全角2,200文字ですが、Xに合わせて140文字までとしています。</div>
+          </div>
+          <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+            <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook</div>
+            <div style="font-size:11px;color:#1877f2;line-height:1.7;">本来の上限は約63,000文字ですが、Xに合わせて140文字までとしています。</div>
+          </div>
+          <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+            <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
+            <div style="font-size:11px;color:#555;line-height:1.7;">本来の上限は500文字ですが、Xに合わせて140文字までとしています。</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">Xを選択していない場合でも、投稿文の上限は140文字のままです。SNSの選び方によって上限が変わってしまうと、本文を書いている途中でSNS選択を変えた際に「さっきまで書けていたのに急にオーバー扱いになった」といった混乱が起きやすくなります。Xを利用しない場合であっても、システム全体の一貫性を保つためにこの基準を採用しています。</div>
+      </div>
+      <!-- FREEプラン向け：SNS側の制限ではなく、プラン独自の上限であるという説明 -->
+      <div id="faq-t4-free" style="display:none;">
+        <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">FREEプランの投稿文は<strong>全角70文字（半角140文字）</strong>が上限です。これはX等のSNS側の制限ではなく、<strong>AiPost独自のプラン別の上限</strong>です（SNS各社の実際の文字数上限は、いずれも70文字よりずっと多く投稿できます）。</div>
         <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">全角140文字（半角280文字）が上限。これが投稿文共通の基準になっています。</div>
-        </div>
-        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
-          <div style="font-size:11px;color:#e1306c;line-height:1.7;">本来の上限は全角2,200文字ですが、Xに合わせて140文字までとしています。</div>
-        </div>
-        <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook</div>
-          <div style="font-size:11px;color:#1877f2;line-height:1.7;">本来の上限は約63,000文字ですが、Xに合わせて140文字までとしています。</div>
-        </div>
-        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">本来の上限は500文字ですが、Xに合わせて140文字までとしています。</div>
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">💡 もっと長い投稿文を書きたい場合</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">PERSONALプラン以上にアップグレードすると、複数SNSへの同時投稿にも対応した全角140文字（半角280文字）までご利用いただけます。</div>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">Xを選択していない場合でも、投稿文の上限は140文字のままです。SNSの選び方によって上限が変わってしまうと、本文を書いている途中でSNS選択を変えた際に「さっきまで書けていたのに急にオーバー扱いになった」といった混乱が起きやすくなります。Xを利用しない場合であっても、システム全体の一貫性を保つためにこの基準を採用しています。</div>
     </div>
   </div>
 
@@ -1561,6 +1572,22 @@ function setDemoPlan(plan) {
   label.textContent = (plan === 'FREE')
     ? '上限70字（半角140字）'
     : '上限140字（半角280字）';
+
+  // FAQ「④投稿文が全角○文字である理由」カードをプランに応じて切り替え
+  const faqLimitNum = document.getElementById('faq-t4-limit-num');
+  const faqStandard = document.getElementById('faq-t4-standard');
+  const faqFree = document.getElementById('faq-t4-free');
+  if (faqLimitNum && faqStandard && faqFree) {
+    if (plan === 'FREE') {
+      faqLimitNum.textContent = '70';
+      faqStandard.style.display = 'none';
+      faqFree.style.display = '';
+    } else {
+      faqLimitNum.textContent = '140';
+      faqStandard.style.display = '';
+      faqFree.style.display = 'none';
+    }
+  }
 
   updateCharCount();
 }
