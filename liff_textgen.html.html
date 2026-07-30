@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成70 - AiPost</title>
+<title>投稿文作成71 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成70</span>
+  <span class="header-logo">投稿文作成71</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -662,6 +662,7 @@
       </div>
     </div>
     <p class="sns-plan-note" id="sns-plan-note" style="display:none;">💎 FREEプランではXは選択できません（Xの投稿には運営側に費用が発生するAPIを利用するため）</p>
+    <p class="sns-plan-note" id="sns-limit-note" style="display:none;color:#e53935;"></p>
   </div>
 
   <!-- ② キーワード入力 -->
@@ -1157,6 +1158,10 @@
 <script>
 let CHAR_LIMIT = 140; // 全角換算の文字数上限（PERSONAL以上：140字＝半角280字相当）※プランにより可変
 const PLAN_CHAR_LIMIT = { FREE: 70, PERSONAL: 140, LITE: 140, STANDARD: 140, PRO: 140 };
+// プランごとの投稿先SNS選択可能数の上限（FREEはXを除く1個のみ・システム設定シートの最大SNS数と一致させること）
+const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 4 };
+// 現在のデモプラン（初期値はデフォルト選択中のSTANDARDに合わせる）
+let currentDemoPlan = 'STANDARD';
 const X_LIMIT = 140;
 
 // ===== キーワード =====
@@ -1540,6 +1545,7 @@ function updateCharCount() {
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
 
 function setDemoPlan(plan) {
+  currentDemoPlan = plan;
   ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'].forEach(p => {
     document.getElementById('plan-demo-' + p).classList.toggle('active', p === plan);
   });
@@ -1562,6 +1568,19 @@ function setDemoPlan(plan) {
     xItem.onclick = () => toggleSns(xItem);
     xNote.style.display = 'none';
   }
+
+  // 新しいプランの上限を超えて選択されているSNSがあれば、超過分を自動的に選択解除する
+  // （PROからFREEへの切替等、上限が小さくなる方向へプラン変更した場合の整合性を保つため）
+  const snsLimit = PLAN_SNS_LIMIT[plan];
+  let checkedItems = document.querySelectorAll('.sns-check-item.checked');
+  while (checkedItems.length > snsLimit) {
+    const last = checkedItems[checkedItems.length - 1];
+    last.classList.remove('checked');
+    const cb = last.querySelector('.sns-checkbox');
+    if (cb) cb.textContent = '';
+    checkedItems = document.querySelectorAll('.sns-check-item.checked');
+  }
+
   updateHashtagColumns();
 
   // プランに応じて文字数上限・入力欄の高さ・上限表示ラベルを切り替え
@@ -1593,6 +1612,19 @@ function setDemoPlan(plan) {
 }
 
 function toggleSns(el) {
+  const isCurrentlyChecked = el.classList.contains('checked');
+  if (!isCurrentlyChecked) {
+    // これから選択しようとしている場合のみ、プラン別の上限をチェックする
+    const limit = PLAN_SNS_LIMIT[currentDemoPlan];
+    const checkedCount = document.querySelectorAll('.sns-check-item.checked').length;
+    if (checkedCount >= limit) {
+      const limitNote = document.getElementById('sns-limit-note');
+      limitNote.textContent = `⚠️ ${currentDemoPlan}プランでは投稿先SNSを最大${limit}個までしか選択できません。他のSNSのチェックを外してから選択してください。`;
+      limitNote.style.display = 'block';
+      setTimeout(() => { limitNote.style.display = 'none'; }, 3000);
+      return; // 上限に達しているため選択させない
+    }
+  }
   el.classList.toggle('checked');
   el.querySelector('.sns-checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
   updateHashtagColumns();
@@ -2750,10 +2782,18 @@ function retryTrimFlow() {
   startTrimFlow();
 }
 
+// ページ読み込み時、デフォルトのSTANDARDプランで初期化する
+// （HTML初期状態ではSNSが4つともチェック済みだが、STANDARDの上限は3個のため、
+// 　setDemoPlan()内の自動調整処理で1つ選択解除され、実際の上限と一致した状態になる）
+setDemoPlan('STANDARD');
+
 // 全ての変数宣言・初期化が完了した後に、編集モードの読み込みを実行する
 // （originalImage・trimResults・imageStateはこのファイル後方でletにより宣言されているため、
 // 　それより前に呼び出すとTDZ（temporal dead zone）エラーで失敗する）
+// ※setDemoPlanより後に実行することで、編集対象の予約が実際に使っていたSNS選択・
+// 　プラン設定で上書きできるようにする
 loadEditModeFromUrl();
+
 </script>
 </body>
 </html>
