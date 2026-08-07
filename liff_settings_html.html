@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録12 - AiPost</title>
+<title>設定・登録13 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -379,7 +379,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録12</span>
+  <span class="header-logo">設定・登録13</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -561,6 +561,32 @@
         <div class="info-row"><span class="info-key">日割り返金</span><span class="info-val">なし</span></div>
       </div>
 
+      <div class="card">
+        <div class="card-title">よろしければ理由をお聞かせください（任意）</div>
+        <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">今後のサービス改善の参考にさせていただきます。</p>
+        <div id="cancel-reason-options" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
+            <input type="radio" name="cancel-reason" value="料金が合わなかった" style="accent-color:var(--primary);">料金が合わなかった
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
+            <input type="radio" name="cancel-reason" value="機能が不足していた" style="accent-color:var(--primary);">機能が不足していた
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
+            <input type="radio" name="cancel-reason" value="使いこなせなかった" style="accent-color:var(--primary);">使いこなせなかった
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
+            <input type="radio" name="cancel-reason" value="他のサービスに移行する" style="accent-color:var(--primary);">他のサービスに移行する
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
+            <input type="radio" name="cancel-reason" value="必要なくなった" style="accent-color:var(--primary);">必要なくなった
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
+            <input type="radio" name="cancel-reason" value="その他" style="accent-color:var(--primary);">その他
+          </label>
+        </div>
+        <textarea id="cancel-reason-detail" placeholder="よろしければ詳しくお聞かせください（任意）" style="width:100%;min-height:70px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
+
       <div class="cancel-note">
         ⚠️ 退会申請後、当月末までは引き続きサービスをご利用いただけます。申請を取り消したい場合はサポートまでご連絡ください。
       </div>
@@ -740,6 +766,31 @@ function showCancelScreen() {
 function hideCancelScreen() {
   document.getElementById('main-account').classList.remove('hidden');
   document.getElementById('cancel-screen').classList.remove('open');
+}
+
+/**
+ * 退会を申請する。
+ * アンケート回答（任意）を取得し、退会完了モーダルを表示する。
+ * 実際のGAS送信処理（退会理由をユーザー管理シートの
+ * 「退会理由（選択式）」「退会理由（自由記述）」列へ書き込む処理）は
+ * 別途バックエンド実装で対応する。ここではフロント側の値取得のみ
+ * 行い、送信ペイロードをコンソールに出力する形にしている。
+ */
+function showCancelComplete() {
+  const selectedReason = document.querySelector('input[name="cancel-reason"]:checked');
+  const cancelReason = selectedReason ? selectedReason.value : '';
+  const cancelReasonDetail = document.getElementById('cancel-reason-detail').value.trim();
+
+  // TODO: 本番実装時、以下のペイロードをGAS（forceWithdrawUser相当の
+  // ユーザー自身による退会申請処理）に送信し、ユーザー管理シートの
+  // 「退会理由（選択式）」「退会理由（自由記述）」列へ反映する。
+  const cancelPayload = {
+    reason: cancelReason,       // 未回答の場合は空文字列
+    reasonDetail: cancelReasonDetail // 未回答の場合は空文字列
+  };
+  console.log('退会アンケート回答（送信予定）:', cancelPayload);
+
+  document.getElementById('cancel-complete-modal').classList.add('open');
 }
 
 // 初期表示（IG・FB・Xが連携済みの状態）を整える
