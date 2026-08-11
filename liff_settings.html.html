@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録13 - AiPost</title>
+<title>設定・登録14 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -379,7 +379,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録13</span>
+  <span class="header-logo">設定・登録14</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -762,10 +762,14 @@ function confirmSnsDisconnect() {
 function showCancelScreen() {
   document.getElementById('main-account').classList.add('hidden');
   document.getElementById('cancel-screen').classList.add('open');
+  // 「退会について」カードは画面下部にあるため、切り替え後は
+  // 必ず先頭（アンケートが見える位置）までスクロールを戻す
+  window.scrollTo(0, 0);
 }
 function hideCancelScreen() {
   document.getElementById('main-account').classList.remove('hidden');
   document.getElementById('cancel-screen').classList.remove('open');
+  window.scrollTo(0, 0);
 }
 
 /**
