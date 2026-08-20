@@ -1164,6 +1164,24 @@ let CHAR_LIMIT = 140; // 全角換算の文字数上限（PERSONAL以上：140�
 const PLAN_CHAR_LIMIT = { FREE: 70, PERSONAL: 140, LITE: 140, STANDARD: 140, PRO: 140 };
 const X_LIMIT = 140;
 
+// ===== LIFF初期化 =====
+let LINE_UID = null;
+
+async function initLiff() {
+  try {
+    await liff.init({ liffId: '2010401177-OpvemMmh' });
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+    const idToken = liff.getDecodedIDToken();
+    LINE_UID = idToken.sub;
+  } catch (err) {
+    console.error('LIFF初期化エラー:', err);
+    alert('LINEアプリ内でこの画面を開いてください。');
+  }
+}
+
 // ===== キーワード =====
 // 入力済みキーワード（空欄を除く）を配列で取得
 function getKeywords() {
@@ -1340,6 +1358,26 @@ function setGeneratedHashtags(tags) {
 }
 
 
+// 訴求パターンボタンの表示文言 → GAS側が期待する内部値の対応表
+const PATTERN_LABEL_MAP = {
+  '限定': '①限定',
+  'お得': '②お得',
+  '悩み解決': '③悩み解決',
+  'トレンド': '④トレンド',
+  '信頼': '⑤信頼',
+  '季節': '⑥季節',
+  '新登場': '⑦新登場',
+  '地域密着': '⑧地域密着'
+};
+
+function getSelectedAppealPattern() {
+  const selectedBtn = document.querySelector('.pattern-btn.selected');
+  if (!selectedBtn) return null;
+  // ボタン内のアイコン（span）を除いたテキスト部分のみを取得
+  const label = selectedBtn.textContent.trim();
+  return PATTERN_LABEL_MAP[label] || null; // 「AIに任せる」等、対応表にない場合はnull
+}
+
 function selectPattern(btn) {
   document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -1372,38 +1410,99 @@ function confirmAndGenerate() {
   }
 }
 
-function executeGenerate() {
+async function executeGenerate() {
   closeModal('overwrite-modal');
   document.getElementById('generate-btn').disabled = true;
   document.getElementById('loading').classList.add('show');
   document.getElementById('genre-notice').style.display = 'none';
-  // ローディング中はコンテンツ操作をブロック
   document.getElementById('content-wrap').style.pointerEvents = 'none';
   setStep(3);
 
-  // キーワード取得
-  const hasKeyword = getKeywords().length > 0;
-  const useGenre = USER_GENRE && !hasKeyword; // 業種ベース生成かどうか
-
-  setTimeout(() => {
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
     document.getElementById('loading').classList.remove('show');
     document.getElementById('generate-btn').disabled = false;
     document.getElementById('content-wrap').style.pointerEvents = '';
-    const ta = document.getElementById('post-textarea');
-    // 本文とハッシュタグを分けて設定
-    ta.value = '週末限定で人気の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たりが自慢の一品です。厳選した宇治抹茶をたっぷり使用し、甘さ控えめに仕上げました。コーヒーや紅茶との相性も抜群なので、ぜひご一緒にお楽しみください。数量限定です。';
-    setGeneratedHashtags(['渋谷カフェ', '週末限定', '抹茶スイーツ', '新メニュー', 'カフェ巡り']);
+    return;
+  }
 
-    // 業種ベース生成の場合は通知を表示
-    if (useGenre) {
-      document.getElementById('genre-label').textContent = `${USER_GENRE.main}・${USER_GENRE.sub}`;
+  const keywords = getKeywords(); // 既存関数。配列（0〜3件）を返す想定
+  const includeFlags = getIncludeFlags(); // liff_textgen_UI追加_01で追加済み
+  const appealPatternOverride = getSelectedAppealPattern();
+
+  const requestPayload = {
+    action: 'generateText',
+    lineUid: LINE_UID,
+    params: {
+      keyword1: keywords[0] || '',
+      keyword2: keywords[1] || '',
+      keyword3: keywords[2] || '',
+      includeShopName: includeFlags.includeShopName,
+      includeArea: includeFlags.includeArea,
+      appealPatternOverride: appealPatternOverride
+    }
+  };
+
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // CORSプリフライト回避のためtext/plainで送る
+      body: JSON.stringify(requestPayload)
+    });
+    const result = await response.json();
+
+    if (!result.success) {
+      alert('生成に失敗しました：' + result.error);
+      setStep(2);
+      return;
+    }
+
+    const ta = document.getElementById('post-textarea');
+    ta.value = result.data.generatedText;
+
+    // ハッシュタグも続けて生成する
+    const hashtagPayload = {
+      action: 'generateHashtags',
+      lineUid: LINE_UID,
+      params: {
+        text: result.data.generatedText,
+        businessMajor: result.data.businessMajor,
+        businessMinor: result.data.businessMinor
+      }
+    };
+    const hashtagResponse = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(hashtagPayload)
+    });
+    const hashtagResult = await hashtagResponse.json();
+    if (hashtagResult.success) {
+      // setGeneratedHashtags()は既存実装上「#」なし前提（HTML側に静的な
+      // 「#」プレフィックスが別途表示されるため）。API応答は「#」付きの
+      // 配列で返るため、ここで「#」を除去してから渡す。
+      setGeneratedHashtags(hashtagResult.data.map(h => h.replace(/^#/, '')));
+    }
+
+    // 業種ベース生成（キーワード未入力）の場合は既存の通知を表示
+    const hasKeyword = keywords.length > 0;
+    if (USER_GENRE && !hasKeyword) {
+      document.getElementById('genre-label').textContent = `${result.data.businessMajor}・${result.data.businessMinor}`;
       document.getElementById('genre-notice').style.display = 'block';
     }
 
     setStep(4);
     updateCharCount();
     ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 2000);
+
+  } catch (err) {
+    console.error('生成リクエストエラー:', err);
+    alert('通信エラーが発生しました。もう一度お試しください。');
+    setStep(2);
+  } finally {
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('generate-btn').disabled = false;
+    document.getElementById('content-wrap').style.pointerEvents = '';
+  }
 }
 
 
@@ -1924,6 +2023,10 @@ const LIFF_URLS = {
   about: 'https://liff.line.me/2010401177-PtX79ibV',
   support: 'https://liff.line.me/2010401177-vwzTH30h',
 };
+
+// ===== GAS Webアプリ接続先 =====
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
+
 // 入力途中の内容（本文・キーワード・ハッシュタグ・画像）があるかどうかを判定
 function hasInProgressContent() {
   const ta = document.getElementById('post-textarea');
@@ -2752,6 +2855,9 @@ function retryTrimFlow() {
   // やり直し
   startTrimFlow();
 }
+
+// LIFF初期化は他の初期化処理より先に実行する
+initLiff();
 
 // 全ての変数宣言・初期化が完了した後に、編集モードの読み込みを実行する
 // （originalImage・trimResults・imageStateはこのファイル後方でletにより宣言されているため、
