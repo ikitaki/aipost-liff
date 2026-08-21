@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成74 - AiPost</title>
+<title>投稿文作成75 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -605,7 +605,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成74</span>
+  <span class="header-logo">投稿文作成75</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1175,6 +1175,7 @@ const X_LIMIT = 140;
 
 // ===== LIFF初期化 =====
 let LINE_UID = null;
+let LAST_APPEAL_PATTERN = null; // executeGenerate()で確定した訴求パターンを、executeReserve()側で参照するための一時保存
 
 async function initLiff() {
   try {
@@ -1392,6 +1393,15 @@ function getSelectedAppealPattern() {
   return PATTERN_LABEL_MAP[label] || null;
 }
 
+function getSnsTargets() {
+  return {
+    x: !!document.querySelector('.sns-check-item.checked .sns-x'),
+    instagram: !!document.querySelector('.sns-check-item.checked .sns-ig'),
+    facebook: !!document.querySelector('.sns-check-item.checked .sns-fb'),
+    threads: !!document.querySelector('.sns-check-item.checked .sns-th')
+  };
+}
+
 function selectPattern(btn) {
   document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -1473,6 +1483,7 @@ async function executeGenerate() {
 
     const ta = document.getElementById('post-textarea');
     ta.value = result.data.generatedText;
+    LAST_APPEAL_PATTERN = result.data.appealPattern;
 
     // ハッシュタグも続けて生成する
     const hashtagPayload = {
@@ -1974,21 +1985,78 @@ function showConfirm() {
   document.getElementById('confirm-modal').classList.add('open');
 }
 
-function executeReserve() {
-  // 二重送信防止
+async function executeReserve() {
   const btn = document.querySelector('.modal-btn-success');
   if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
 
-  // 実際に投稿されるSNS・日時を完了画面に反映
-  const snsNames = document.getElementById('confirm-sns').textContent;
-  const dateText = document.getElementById('confirm-date').textContent;
-  document.getElementById('complete-msg').innerHTML = dateText + 'に<br>' + snsNames + 'へ自動投稿されます。';
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
+    if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
+    return;
+  }
+  if (!selectedYear || !selectedMonth || !selectedDay) {
+    alert('投稿日を選んでください。');
+    if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
+    return;
+  }
 
-  closeModal('confirm-modal');
-  document.getElementById('complete-modal').classList.add('open');
+  const keywords = getKeywords();
+  const includeFlags = getIncludeFlags();
+  const snsTargets = getSnsTargets();
+  const time = document.getElementById('post-time').value;
+  const scheduledAt = new Date(selectedYear, selectedMonth - 1, selectedDay, parseInt(time, 10), 0, 0).toISOString();
 
-  // フォームをリセット
-  resetAllForm();
+  const requestPayload = {
+    action: 'createReservation',
+    lineUid: LINE_UID,
+    params: {
+      keyword1: keywords[0] || '',
+      keyword2: keywords[1] || '',
+      keyword3: keywords[2] || '',
+      includeShopName: includeFlags.includeShopName,
+      includeArea: includeFlags.includeArea,
+      appealPattern: LAST_APPEAL_PATTERN || '⑦新登場',
+      generatedText: document.getElementById('post-textarea').value,
+      hashtagsBySns: {
+        x: getHashtagsForSns('X'),
+        instagram: getHashtagsForSns('IG'),
+        facebook: getHashtagsForSns('FB'),
+        threads: getHashtagsForSns('TH')
+      },
+      scheduledAt: scheduledAt,
+      snsTargets: snsTargets
+    }
+  };
+
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(requestPayload)
+    });
+    const result = await response.json();
+
+    if (!result.success) {
+      alert('予約の確定に失敗しました：' + result.error);
+      if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
+      return;
+    }
+
+    const snsNames = document.getElementById('confirm-sns').textContent;
+    const dateText = document.getElementById('confirm-date').textContent;
+    document.getElementById('complete-msg').innerHTML = dateText + 'に<br>' + snsNames + 'へ自動投稿されます。';
+
+    closeModal('confirm-modal');
+    document.getElementById('complete-modal').classList.add('open');
+
+    resetAllForm();
+
+  } catch (err) {
+    console.error('予約確定リクエストエラー:', err);
+    alert('通信エラーが発生しました。もう一度お試しください。');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
+  }
 }
 
 function resetAllForm() {
