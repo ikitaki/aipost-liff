@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成71 - AiPost</title>
+<title>投稿文作成72 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -326,6 +326,15 @@
   }
   .sns-check-item.checked .sns-checkbox { background: var(--primary); border-color: var(--primary); }
 
+  /* 「店名・エリアを含める」専用（SNS選択のsns-check-itemとクラス名を完全に分離） */
+  .include-check-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; padding: 8px 4px; min-height: 68px; box-sizing: border-box;
+    border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer;
+  }
+  .include-check-item.checked { border-color: var(--primary); background: #f0f2ff; }
+  .include-check-item.checked .sns-checkbox { background: var(--primary); border-color: var(--primary); }
+
   /* ===== カレンダー（予約画面から流用） ===== */
   .calendar-wrap { background: var(--surface); }
   .cal-header {
@@ -596,7 +605,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成71</span>
+  <span class="header-logo">投稿文作成72</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -699,11 +708,11 @@
     <div class="card-title">④ 店名・エリアを含める（任意）</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">投稿文に含める場合は選択してください。店舗名・エリアが未登録の場合は先に設定画面から登録が必要です。</p>
     <div class="sns-check-list">
-      <div class="sns-check-item" id="include-shopname-item" onclick="toggleInclude(this)">
+      <div class="include-check-item" id="include-shopname-item" onclick="toggleInclude(this)">
         <div class="sns-check-name">店名を含める</div>
         <div class="sns-checkbox">✓</div>
       </div>
-      <div class="sns-check-item" id="include-area-item" onclick="toggleInclude(this)">
+      <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
         <div class="sns-check-name">エリアを含める</div>
         <div class="sns-checkbox">✓</div>
       </div>
