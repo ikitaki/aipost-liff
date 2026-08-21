@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成70 - AiPost</title>
+<title>投稿文作成71 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,7 +596,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成70</span>
+  <span class="header-logo">投稿文作成71</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1373,9 +1373,14 @@ const PATTERN_LABEL_MAP = {
 function getSelectedAppealPattern() {
   const selectedBtn = document.querySelector('.pattern-btn.selected');
   if (!selectedBtn) return null;
-  // ボタン内のアイコン（span）を除いたテキスト部分のみを取得
-  const label = selectedBtn.textContent.trim();
-  return PATTERN_LABEL_MAP[label] || null; // 「AIに任せる」等、対応表にない場合はnull
+  // ボタンをクローンし、アイコン用span（.pattern-icon）を除去してから
+  // テキストを取得する（絵文字込みの文字列がPATTERN_LABEL_MAPの
+  // キーと一致しない不具合の修正）
+  const clone = selectedBtn.cloneNode(true);
+  const icon = clone.querySelector('.pattern-icon');
+  if (icon) icon.remove();
+  const label = clone.textContent.trim();
+  return PATTERN_LABEL_MAP[label] || null;
 }
 
 function selectPattern(btn) {
