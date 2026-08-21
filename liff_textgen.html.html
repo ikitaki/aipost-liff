@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成73 - AiPost</title>
+<title>投稿文作成74 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -605,7 +605,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成73</span>
+  <span class="header-logo">投稿文作成74</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1751,31 +1751,50 @@ function filterCat(btn) {
 }
 
 // ===== カレンダー =====
-const postCounts = {15: 3, 17: 1, 20: 2, 25: 5, 28: 1};
-const todayDate = 17;
+const postCounts = {}; // 実際の予約件数との連動は別途今後の課題。当面は空のままでよい
+
+function isPastDate(y, m, d) {
+  const target = new Date(y, m - 1, d);
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return target < todayStart;
+}
+
+const _today = new Date();
+let calYear = _today.getFullYear();
+let calMonth = _today.getMonth() + 1; // 1〜12
 let selectedDay = null;
+let selectedMonth = null;
+let selectedYear = null;
 
 function buildCalendar() {
   const grid = document.getElementById('cal-dates');
   grid.innerHTML = '';
-  const firstDay = 1;
-  const days = 30;
-  for (let i = 0; i < firstDay; i++) {
+  document.getElementById('cal-title').textContent = calYear + '年' + calMonth + '月';
+
+  const firstDayOfWeek = new Date(calYear, calMonth - 1, 1).getDay(); // 0=日曜
+  const daysInMonth = new Date(calYear, calMonth, 0).getDate();
+
+  for (let i = 0; i < firstDayOfWeek; i++) {
     const blank = document.createElement('div');
     blank.className = 'cal-date other-month';
-    blank.textContent = 31 - firstDay + i + 1;
     grid.appendChild(blank);
   }
-  for (let d = 1; d <= days; d++) {
+
+  for (let d = 1; d <= daysInMonth; d++) {
     const el = document.createElement('div');
-    const dayOfWeek = (firstDay + d - 1) % 7;
+    const dayOfWeek = (firstDayOfWeek + d - 1) % 7;
     let cls = 'cal-date';
-    if (d < todayDate) cls += ' past';           // 過去日
+    const isPast = isPastDate(calYear, calMonth, d);
+    if (isPast) cls += ' past';
     if (dayOfWeek === 0) cls += ' sunday';
     if (dayOfWeek === 6) cls += ' saturday';
-    if (d === todayDate) cls += ' today';
+    const now = new Date();
+    if (calYear === now.getFullYear() && calMonth === now.getMonth() + 1 && d === now.getDate()) {
+      cls += ' today';
+    }
     if (postCounts[d]) cls += ' has-post';
-    if (d === selectedDay) cls += ' selected';
+    if (calYear === selectedYear && calMonth === selectedMonth && d === selectedDay) cls += ' selected';
     el.className = cls;
     const count = postCounts[d];
     if (count) {
@@ -1783,20 +1802,22 @@ function buildCalendar() {
     } else {
       el.textContent = d;
     }
-    if (d >= todayDate) el.onclick = () => selectCalDay(d);
+    if (!isPast) el.onclick = () => selectCalDay(d);
     grid.appendChild(el);
   }
 }
 
 function selectCalDay(d) {
-  if (d < todayDate) return; // 過去日は選択不可
+  if (isPastDate(calYear, calMonth, d)) return;
   selectedDay = d;
+  selectedMonth = calMonth;
+  selectedYear = calYear;
   buildCalendar();
   const bar = document.getElementById('selected-date-bar');
   bar.classList.add('show');
   const count = postCounts[d] || 0;
   document.getElementById('selected-date-label').textContent =
-    '6月' + d + '日を選択中' + (count > 0 ? '（既に' + count + '件予約あり）' : '');
+    calMonth + '月' + d + '日を選択中' + (count > 0 ? '（既に' + count + '件予約あり）' : '');
   updateTimeOptions();
   setStep(5);
 }
@@ -1806,7 +1827,7 @@ function updateTimeOptions() {
   const select = document.getElementById('post-time');
   const hint = document.getElementById('time-past-hint');
   const now = new Date();
-  const isToday = selectedDay === todayDate;
+  const isToday = (selectedYear === now.getFullYear() && selectedMonth === now.getMonth() + 1 && selectedDay === now.getDate());
   const currentHour = now.getHours();
   let disabledAny = false;
 
@@ -1826,8 +1847,17 @@ function updateTimeOptions() {
   hint.style.display = (isToday && disabledAny) ? 'block' : 'none';
 }
 
-function prevMonth() {}
-function nextMonth() {}
+function prevMonth() {
+  calMonth--;
+  if (calMonth < 1) { calMonth = 12; calYear--; }
+  buildCalendar();
+}
+
+function nextMonth() {
+  calMonth++;
+  if (calMonth > 12) { calMonth = 1; calYear++; }
+  buildCalendar();
+}
 
 // ===== 予約確認 =====
 function showConfirm() {
@@ -1836,7 +1866,8 @@ function showConfirm() {
   if (!selectedDay) { alert('投稿日を選んでください。'); return; }
 
   // 本日選択時、既に過ぎた時間帯が選ばれていないか再チェック
-  if (selectedDay === todayDate) {
+  const _now = new Date();
+  if (selectedYear === _now.getFullYear() && selectedMonth === _now.getMonth() + 1 && selectedDay === _now.getDate()) {
     const selectedHour = parseInt(document.getElementById('post-time').value, 10);
     if (selectedHour <= new Date().getHours()) {
       alert('選択した時間帯は既に過ぎています。\n投稿時間を選び直してください。');
@@ -1901,7 +1932,7 @@ function showConfirm() {
     urlNote.textContent = '';
   }
 
-  document.getElementById('confirm-date').textContent = '6月' + selectedDay + '日 ' + time;
+  document.getElementById('confirm-date').textContent = selectedMonth + '月' + selectedDay + '日 ' + time;
 
   // モーダルを開くたびにプレビューの開閉状態をリセット（閉じた状態から開始）
   const previewBody = document.getElementById('confirm-preview');
