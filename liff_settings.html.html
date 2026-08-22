@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録15 - AiPost</title>
+<title>設定・登録16 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -379,7 +379,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録15</span>
+  <span class="header-logo">設定・登録16</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -645,6 +645,7 @@ async function initLiff() {
       LINE_DISPLAY_NAME = '';
     }
     await loadMasterDataAndPopulateForm();
+    await loadSavedProfile();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -868,10 +869,51 @@ function populateMinorOptions(selectedMajor) {
   });
 }
 
+async function loadSavedProfile() {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID, params: {} })
+    });
+    const result = await response.json();
+    if (!result.success || !result.data || !result.data.found) {
+      return; // 未登録・取得失敗時は何もしない（空欄のままでよい）
+    }
+
+    const profile = result.data;
+
+    if (profile.shopName) {
+      document.getElementById('shop-name-input').value = profile.shopName;
+    }
+    if (profile.businessMajor) {
+      const majorSelect = document.getElementById('business-major-select');
+      majorSelect.value = profile.businessMajor;
+      populateMinorOptions(profile.businessMajor);
+      if (profile.businessMinor) {
+        document.getElementById('business-minor-select').value = profile.businessMinor;
+      }
+    }
+    if (profile.prefecture) {
+      document.getElementById('prefecture-select').value = profile.prefecture;
+    }
+  } catch (err) {
+    console.error('プロフィール取得エラー:', err);
+    // 読み込み失敗時はエラー表示せず空欄のままにする（保存自体には影響しないため）
+  }
+}
+
 async function saveShopInfo() {
   if (!LINE_UID) {
     alert('LINEアプリ内でこの画面を開いてください。');
     return;
+  }
+
+  const btn = document.querySelector('button[onclick="saveShopInfo()"]');
+  const originalText = btn ? btn.textContent : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '保存中...';
   }
 
   const shopName = document.getElementById('shop-name-input').value.trim();
@@ -907,6 +949,11 @@ async function saveShopInfo() {
   } catch (err) {
     console.error('保存リクエストエラー:', err);
     alert('通信エラーが発生しました。もう一度お試しください。');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
   }
 }
 
