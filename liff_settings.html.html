@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録18 - AiPost</title>
+<title>設定・登録19 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -372,6 +372,11 @@
   .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
   .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
 
+  @keyframes profile-loading-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -379,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録18</span>
+  <span class="header-logo">設定・登録19</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -662,20 +667,13 @@ function setFormLoadingState(isLoading) {
     if (el) el.disabled = isLoading;
   });
 
-  let indicator = document.getElementById('profile-loading-indicator');
-  if (isLoading) {
-    if (!indicator) {
-      indicator = document.createElement('p');
-      indicator.id = 'profile-loading-indicator';
-      indicator.style.cssText = 'font-size:12px;color:var(--text-sub);margin:0 0 10px;';
-      indicator.textContent = '保存済みの情報を読み込んでいます…';
-      const shopNameInput = document.getElementById('shop-name-input');
-      if (shopNameInput && shopNameInput.parentElement) {
-        shopNameInput.parentElement.insertBefore(indicator, shopNameInput);
-      }
+  const overlay = document.getElementById('profile-loading-overlay');
+  if (overlay) {
+    if (isLoading) {
+      overlay.classList.add('open');
+    } else {
+      overlay.classList.remove('open');
     }
-  } else if (indicator) {
-    indicator.remove();
   }
 }
 
@@ -1110,5 +1108,12 @@ updateSnsSummary();
     });
   }
 </script>
+
+<div class="modal-overlay" id="profile-loading-overlay" style="z-index:2000;">
+  <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
+    <div style="font-size:14px;font-weight:700;color:#333;">保存済みの情報を読み込んでいます…</div>
+  </div>
+</div>
 </body>
 </html>
