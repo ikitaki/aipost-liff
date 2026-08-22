@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録16 - AiPost</title>
+<title>設定・登録17 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -379,7 +379,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録16</span>
+  <span class="header-logo">設定・登録17</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -507,9 +507,9 @@
           LINEアカウントが使えなくなった場合の連絡手段として登録できます。登録しなくても利用できます。
         </p>
         <div class="form-group" style="margin-bottom:0;">
-          <input type="email" class="form-input" placeholder="例：info@example.com" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
+          <input type="email" class="form-input" id="email-input" placeholder="例：info@example.com" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
         </div>
-        <button class="btn btn-primary" style="margin-top:10px;" onclick="showToast('メールアドレスを保存しました')">保存する</button>
+        <button class="btn btn-primary" style="margin-top:10px;" onclick="saveEmail()">保存する</button>
       </div>
 
 
@@ -644,11 +644,38 @@ async function initLiff() {
     } catch (profileErr) {
       LINE_DISPLAY_NAME = '';
     }
+    setFormLoadingState(true);
     await loadMasterDataAndPopulateForm();
     await loadSavedProfile();
+    setFormLoadingState(false);
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
+    setFormLoadingState(false);
+  }
+}
+
+function setFormLoadingState(isLoading) {
+  const ids = ['shop-name-input', 'business-major-select', 'business-minor-select', 'prefecture-select', 'email-input'];
+  ids.forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.disabled = isLoading;
+  });
+
+  let indicator = document.getElementById('profile-loading-indicator');
+  if (isLoading) {
+    if (!indicator) {
+      indicator = document.createElement('p');
+      indicator.id = 'profile-loading-indicator';
+      indicator.style.cssText = 'font-size:12px;color:var(--text-sub);margin:0 0 10px;';
+      indicator.textContent = '保存済みの情報を読み込んでいます…';
+      const shopNameInput = document.getElementById('shop-name-input');
+      if (shopNameInput && shopNameInput.parentElement) {
+        shopNameInput.parentElement.insertBefore(indicator, shopNameInput);
+      }
+    }
+  } else if (indicator) {
+    indicator.remove();
   }
 }
 
@@ -897,6 +924,9 @@ async function loadSavedProfile() {
     if (profile.prefecture) {
       document.getElementById('prefecture-select').value = profile.prefecture;
     }
+    if (profile.email) {
+      document.getElementById('email-input').value = profile.email;
+    }
   } catch (err) {
     console.error('プロフィール取得エラー:', err);
     // 読み込み失敗時はエラー表示せず空欄のままにする（保存自体には影響しないため）
@@ -946,6 +976,54 @@ async function saveShopInfo() {
       return;
     }
     showToast('店舗情報を保存しました');
+  } catch (err) {
+    console.error('保存リクエストエラー:', err);
+    alert('通信エラーが発生しました。もう一度お試しください。');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  }
+}
+
+async function saveEmail() {
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
+    return;
+  }
+
+  const btn = document.querySelector('button[onclick="saveEmail()"]');
+  const originalText = btn ? btn.textContent : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '保存中...';
+  }
+
+  const email = document.getElementById('email-input').value.trim();
+
+  const requestPayload = {
+    action: 'updateUserProfile',
+    lineUid: LINE_UID,
+    params: {
+      lineName: LINE_DISPLAY_NAME,
+      email: email
+    }
+  };
+
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(requestPayload)
+    });
+    const result = await response.json();
+
+    if (!result.success) {
+      alert('保存に失敗しました：' + result.error);
+      return;
+    }
+    showToast('メールアドレスを保存しました');
   } catch (err) {
     console.error('保存リクエストエラー:', err);
     alert('通信エラーが発生しました。もう一度お試しください。');
