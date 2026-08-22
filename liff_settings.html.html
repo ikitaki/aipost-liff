@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録21 - AiPost</title>
+<title>設定・登録22 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録21</span>
+  <span class="header-logo">設定・登録22</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -657,9 +657,21 @@ async function initLiff() {
     } catch (profileErr) {
       LINE_DISPLAY_NAME = '';
     }
-    await loadMasterDataAndPopulateForm();
-    await loadSavedProfile();
-    setFormLoadingState(false);
+
+    const cachedMaster = sessionStorage.getItem('aipost_master_data');
+    const cachedProfile = sessionStorage.getItem('aipost_profile_' + LINE_UID);
+
+    if (cachedMaster && cachedProfile) {
+      MASTER_DATA = JSON.parse(cachedMaster);
+      populateSelectsFromMasterData();
+      applyProfileToForm(JSON.parse(cachedProfile));
+      setFormLoadingState(false);
+    } else {
+      setFormLoadingState(true);
+      await loadMasterDataAndPopulateForm();
+      await loadSavedProfile();
+      setFormLoadingState(false);
+    }
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -845,6 +857,30 @@ function showCancelComplete() {
 }
 
 // ===== マスタデータ取得・フォーム反映・保存処理 =====
+function populateSelectsFromMasterData() {
+  const majorSelect = document.getElementById('business-major-select');
+  majorSelect.innerHTML = '';
+  MASTER_DATA.businessCategories.forEach(function(cat) {
+    const opt = document.createElement('option');
+    opt.value = cat.major;
+    opt.textContent = cat.major;
+    majorSelect.appendChild(opt);
+  });
+  majorSelect.addEventListener('change', function(e) {
+    populateMinorOptions(e.target.value);
+  });
+  populateMinorOptions(majorSelect.value);
+
+  const prefSelect = document.getElementById('prefecture-select');
+  prefSelect.innerHTML = '';
+  MASTER_DATA.prefectures.forEach(function(pref) {
+    const opt = document.createElement('option');
+    opt.value = pref;
+    opt.textContent = pref;
+    prefSelect.appendChild(opt);
+  });
+}
+
 async function loadMasterDataAndPopulateForm() {
   try {
     const response = await fetch(WEBAPP_URL, {
@@ -858,28 +894,8 @@ async function loadMasterDataAndPopulateForm() {
       return;
     }
     MASTER_DATA = result.data;
-
-    const majorSelect = document.getElementById('business-major-select');
-    majorSelect.innerHTML = '';
-    MASTER_DATA.businessCategories.forEach(function(cat) {
-      const opt = document.createElement('option');
-      opt.value = cat.major;
-      opt.textContent = cat.major;
-      majorSelect.appendChild(opt);
-    });
-    majorSelect.addEventListener('change', function(e) {
-      populateMinorOptions(e.target.value);
-    });
-    populateMinorOptions(majorSelect.value);
-
-    const prefSelect = document.getElementById('prefecture-select');
-    prefSelect.innerHTML = '';
-    MASTER_DATA.prefectures.forEach(function(pref) {
-      const opt = document.createElement('option');
-      opt.value = pref;
-      opt.textContent = pref;
-      prefSelect.appendChild(opt);
-    });
+    populateSelectsFromMasterData();
+    sessionStorage.setItem('aipost_master_data', JSON.stringify(MASTER_DATA));
   } catch (err) {
     console.error('マスタデータ取得エラー:', err);
     alert('通信エラーが発生しました。もう一度お試しください。');
@@ -901,6 +917,34 @@ function populateMinorOptions(selectedMajor) {
   });
 }
 
+function applyProfileToForm(profile) {
+  if (profile.shopName) {
+    document.getElementById('shop-name-input').value = profile.shopName;
+  }
+  if (profile.businessMajor) {
+    const majorSelect = document.getElementById('business-major-select');
+    majorSelect.value = profile.businessMajor;
+    populateMinorOptions(profile.businessMajor);
+    if (profile.businessMinor) {
+      document.getElementById('business-minor-select').value = profile.businessMinor;
+    }
+  }
+  if (profile.businessMajor || profile.shopName || profile.prefecture) {
+    const shopBtn = document.querySelector('button[onclick="saveShopInfo()"]');
+    if (shopBtn) shopBtn.textContent = '店舗情報を変更する';
+  }
+  if (profile.prefecture) {
+    document.getElementById('prefecture-select').value = profile.prefecture;
+  }
+  if (profile.email) {
+    document.getElementById('email-input').value = profile.email;
+  }
+  if (profile.email) {
+    const emailBtn = document.querySelector('button[onclick="saveEmail()"]');
+    if (emailBtn) emailBtn.textContent = '変更する';
+  }
+}
+
 async function loadSavedProfile() {
   try {
     const response = await fetch(WEBAPP_URL, {
@@ -912,34 +956,8 @@ async function loadSavedProfile() {
     if (!result.success || !result.data || !result.data.found) {
       return; // 未登録・取得失敗時は何もしない（空欄のままでよい）
     }
-
-    const profile = result.data;
-
-    if (profile.shopName) {
-      document.getElementById('shop-name-input').value = profile.shopName;
-    }
-    if (profile.businessMajor) {
-      const majorSelect = document.getElementById('business-major-select');
-      majorSelect.value = profile.businessMajor;
-      populateMinorOptions(profile.businessMajor);
-      if (profile.businessMinor) {
-        document.getElementById('business-minor-select').value = profile.businessMinor;
-      }
-    }
-    if (profile.businessMajor || profile.shopName || profile.prefecture) {
-      const shopBtn = document.querySelector('button[onclick="saveShopInfo()"]');
-      if (shopBtn) shopBtn.textContent = '店舗情報を変更する';
-    }
-    if (profile.prefecture) {
-      document.getElementById('prefecture-select').value = profile.prefecture;
-    }
-    if (profile.email) {
-      document.getElementById('email-input').value = profile.email;
-    }
-    if (profile.email) {
-      const emailBtn = document.querySelector('button[onclick="saveEmail()"]');
-      if (emailBtn) emailBtn.textContent = '変更する';
-    }
+    applyProfileToForm(result.data);
+    sessionStorage.setItem('aipost_profile_' + LINE_UID, JSON.stringify(result.data));
   } catch (err) {
     console.error('プロフィール取得エラー:', err);
     // 読み込み失敗時はエラー表示せず空欄のままにする（保存自体には影響しないため）
@@ -989,6 +1007,13 @@ async function saveShopInfo() {
       return;
     }
     showToast('店舗情報を保存しました');
+    const currentCached = sessionStorage.getItem('aipost_profile_' + LINE_UID);
+    const updatedProfile = currentCached ? JSON.parse(currentCached) : { found: true };
+    updatedProfile.shopName = shopName;
+    updatedProfile.businessMajor = businessMajor;
+    updatedProfile.businessMinor = businessMinor;
+    updatedProfile.prefecture = prefecture;
+    sessionStorage.setItem('aipost_profile_' + LINE_UID, JSON.stringify(updatedProfile));
     if (btn) btn.textContent = '店舗情報を変更する';
     originalText = '店舗情報を変更する';
   } catch (err) {
@@ -1039,6 +1064,10 @@ async function saveEmail() {
       return;
     }
     showToast('メールアドレスを保存しました');
+    const currentCached = sessionStorage.getItem('aipost_profile_' + LINE_UID);
+    const updatedProfile = currentCached ? JSON.parse(currentCached) : { found: true };
+    updatedProfile.email = email;
+    sessionStorage.setItem('aipost_profile_' + LINE_UID, JSON.stringify(updatedProfile));
     if (btn) btn.textContent = '変更する';
     originalText = '変更する';
   } catch (err) {
