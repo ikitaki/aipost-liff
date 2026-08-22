@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録17 - AiPost</title>
+<title>設定・登録18 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -379,7 +379,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録17</span>
+  <span class="header-logo">設定・登録18</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -631,6 +631,7 @@ const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNge
 
 async function initLiff() {
   try {
+    setFormLoadingState(true);
     await liff.init({ liffId: '2010401177-XJw2kDQV' });
     if (!liff.isLoggedIn()) {
       liff.login();
@@ -644,7 +645,6 @@ async function initLiff() {
     } catch (profileErr) {
       LINE_DISPLAY_NAME = '';
     }
-    setFormLoadingState(true);
     await loadMasterDataAndPopulateForm();
     await loadSavedProfile();
     setFormLoadingState(false);
@@ -921,11 +921,19 @@ async function loadSavedProfile() {
         document.getElementById('business-minor-select').value = profile.businessMinor;
       }
     }
+    if (profile.businessMajor || profile.shopName || profile.prefecture) {
+      const shopBtn = document.querySelector('button[onclick="saveShopInfo()"]');
+      if (shopBtn) shopBtn.textContent = '店舗情報を変更する';
+    }
     if (profile.prefecture) {
       document.getElementById('prefecture-select').value = profile.prefecture;
     }
     if (profile.email) {
       document.getElementById('email-input').value = profile.email;
+    }
+    if (profile.email) {
+      const emailBtn = document.querySelector('button[onclick="saveEmail()"]');
+      if (emailBtn) emailBtn.textContent = '変更する';
     }
   } catch (err) {
     console.error('プロフィール取得エラー:', err);
@@ -940,7 +948,7 @@ async function saveShopInfo() {
   }
 
   const btn = document.querySelector('button[onclick="saveShopInfo()"]');
-  const originalText = btn ? btn.textContent : '';
+  let originalText = btn ? btn.textContent : '';
   if (btn) {
     btn.disabled = true;
     btn.textContent = '保存中...';
@@ -976,6 +984,8 @@ async function saveShopInfo() {
       return;
     }
     showToast('店舗情報を保存しました');
+    if (btn) btn.textContent = '店舗情報を変更する';
+    originalText = '店舗情報を変更する';
   } catch (err) {
     console.error('保存リクエストエラー:', err);
     alert('通信エラーが発生しました。もう一度お試しください。');
@@ -994,7 +1004,7 @@ async function saveEmail() {
   }
 
   const btn = document.querySelector('button[onclick="saveEmail()"]');
-  const originalText = btn ? btn.textContent : '';
+  let originalText = btn ? btn.textContent : '';
   if (btn) {
     btn.disabled = true;
     btn.textContent = '保存中...';
@@ -1024,6 +1034,8 @@ async function saveEmail() {
       return;
     }
     showToast('メールアドレスを保存しました');
+    if (btn) btn.textContent = '変更する';
+    originalText = '変更する';
   } catch (err) {
     console.error('保存リクエストエラー:', err);
     alert('通信エラーが発生しました。もう一度お試しください。');
