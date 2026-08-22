@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録15 - AiPost</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>投稿文作成75 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -21,15 +21,15 @@
     --text-light: #9ca3af;
   }
   body {
-    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    font-family: 'Hiragino Sans', 'Noto Sans JP', sans-serif;
     background: var(--bg);
     color: var(--text);
-    min-height: 100vh;
-    padding-bottom: 70px;
     max-width: 480px;
     margin: 0 auto;
-    overflow-x: hidden;
+    padding-bottom: 70px;
   }
+
+  /* ヘッダー */
   .header {
     background: var(--primary);
     color: white;
@@ -53,345 +53,575 @@
   }
   .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
 
-  /* タブ */
+  /* ステップナビ */
+  /* タブナビ（投稿作成／ガイド） */
   .tab-nav {
-    display: flex;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
+    display: flex; background: var(--surface); border-bottom: 1px solid var(--border);
+    position: sticky; top: 70px; z-index: 97;
   }
   .tab-btn {
-    flex: 1;
-    padding: 8px 2px;
-    border: none;
-    background: none;
-    font-size: 10px;
-    color: var(--text-sub);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    min-height: 52px;
+    flex: 1; padding: 10px 4px; border: none; background: none;
+    font-size: 12px; font-weight: 600; color: var(--text-sub); cursor: pointer;
+    border-bottom: 2px solid transparent; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
   }
-  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
-  .tab-icon {
-    font-size: 18px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-  }
-
-  .content { padding: 14px; }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  .card {
-    background: var(--surface);
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border);
-  }
-  .card-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-sub);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 12px;
-  }
+  /* コンテンツ */
+  .content { padding: 14px 16px; }
 
-  .plan-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-  }
-  .plan-FREE { background: #f1f5f9; color: #64748b; }
-  .plan-PERSONAL { background: #e3f2fd; color: #1565c0; }
-  .plan-LITE { background: #e8f5e9; color: #2e7d32; }
-  .plan-STANDARD { background: #fff8e1; color: #e65100; }
-  .plan-PRO { background: #f3e5f5; color: #6a1b9a; }
+  /* カード */
+  .card { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
 
-  .profile-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  .profile-avatar {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: var(--primary);
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 18px; flex-shrink: 0;
+  /* セクションタイトル */
+  .section-title {
+    font-size: 11px; font-weight: 700; color: var(--text-sub);
+    letter-spacing: 0.08em; padding: 8px 0 4px;
+    display: flex; align-items: center; gap: 6px;
   }
-  .profile-name { font-size: 15px; font-weight: 600; }
-  .profile-id { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  .form-group { margin-bottom: 14px; }
-  .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-sub); margin-bottom: 5px; }
-  .form-select, .form-input {
-    width: 100%; padding: 10px 12px;
+  /* キーワード */
+  .keyword-input-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .keyword-input {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 14px; font-family: inherit; outline: none;
+  }
+  .keyword-input:focus { border-color: var(--primary); }
+  .keyword-hint { font-size: 11px; color: var(--text-light); line-height: 1.6; }
+  .keyword-guide { border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; font-size: 12px; line-height: 1.6; }
+  .keyword-guide.registered { background: #e8f5e9; color: #2e7d32; }
+  .keyword-guide.unregistered { background: #fff3e0; color: #e65100; }
+  .keyword-guide p { margin: 0; }
+  .keyword-guide p + p { margin-top: 4px; }
+
+  /* 訴求パターン */
+  .pattern-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .pattern-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 8px 4px; border: 1.5px solid var(--border); border-radius: 8px;
+    background: var(--surface); cursor: pointer; font-size: 11px; color: var(--text-sub);
+    font-family: inherit; transition: all 0.15s;
+  }
+  .pattern-btn.selected { border-color: var(--primary); background: #e8eaf6; color: var(--primary); font-weight: 700; }
+  .pattern-icon { font-size: 18px; }
+
+  /* ハッシュタグ */
+  .hashtag-desc { font-size: 12px; color: var(--text-sub); margin: -4px 0 10px; }
+  .hashtag-x-status {
+    display: flex; align-items: center; gap: 6px; border-radius: 8px;
+    padding: 6px 10px; font-size: 11px; font-weight: 700; margin-bottom: 10px;
+  }
+  .hashtag-x-status.ok { background: #e8f5e9; color: #2e7d32; }
+  .hashtag-x-status.error { background: #ffebee; color: var(--danger); }
+  .hashtag-header { display: flex; align-items: center; margin-bottom: 4px; }
+  .hashtag-header-spacer { flex: 1; }
+  .hashtag-checks { display: flex; gap: 6px; width: 150px; justify-content: space-around; flex-shrink: 0; }
+  .hashtag-col { width: 30px; text-align: center; font-size: 13px; }
+  .hashtag-col-icon { display: block; }
+  .hashtag-col-limit { display: block; font-size: 8px; color: var(--text-light); font-weight: 400; white-space: nowrap; margin-top: 1px; }
+  .hashtag-col input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+  .hashtag-col input[type="checkbox"]:disabled { opacity: 0.25; cursor: not-allowed; }
+  .hashtag-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .hashtag-input-wrap {
+    flex: 1; min-width: 0; overflow: hidden; display: flex; align-items: center;
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 0 10px; background: #fff;
+  }
+  .hashtag-input-wrap:focus-within { border-color: var(--primary); }
+  .hashtag-prefix { font-size: 13px; color: var(--primary); font-weight: 700; margin-right: 2px; flex-shrink: 0; }
+  .hashtag-input {
+    flex: 1; min-width: 0; padding: 9px 2px; border: none;
+    font-size: 13px; font-family: inherit; outline: none; background: transparent;
+  }
+  .hashtag-input:focus { border-color: var(--primary); }
+
+  /* AI生成ボタン */
+  .generate-btn {
+    width: 100%; padding: 14px; background: var(--primary); color: white;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-bottom: 12px; font-family: inherit;
+  }
+  .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* ローディング */
+  .loading { display: none; flex-direction: column; align-items: center; padding: 20px; gap: 12px; }
+  .loading.show { display: flex; }
+  .loading-dots { display: flex; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); animation: bounce 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+  .loading-text { font-size: 13px; color: var(--text-sub); text-align: center; line-height: 1.8; }
+
+  /* 文章エリア */
+  .post-textarea {
+    width: 100%; min-height: 280px; padding: 12px;
     border: 1.5px solid var(--border); border-radius: 8px;
-    font-size: 14px; color: var(--text); background: var(--surface);
-    appearance: none; -webkit-appearance: none; outline: none;
+    font-size: 14px; font-family: inherit; line-height: 1.8;
+    resize: none; outline: none; transition: border-color 0.2s;
   }
-  .form-select:focus, .form-input:focus { border-color: var(--primary); }
-  .select-wrap { position: relative; }
-  .select-wrap::after {
-    content: '▼'; position: absolute; right: 12px; top: 50%;
-    transform: translateY(-50%); font-size: 9px; color: var(--text-sub); pointer-events: none;
+  .post-textarea:focus { border-color: var(--primary); }
+  .post-textarea.warn { border-color: var(--warning); }
+  .post-textarea.over { border-color: var(--danger); }
+
+  /* 業種ベース生成メッセージ */
+  .genre-notice {
+    display:none;
+    background:#f0fdf4;
+    border:1px solid #86efac;
+    border-radius:8px;
+    padding:8px 12px;
+    font-size:11px;
+    color:#166534;
+    margin-bottom:8px;
+  }
+  .char-counter { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+  .char-count { font-size: 12px; font-weight: 600; color: var(--text-sub); min-width: 70px; }
+  .char-count.warn { color: var(--warning); }
+  .char-count.over { color: var(--danger); }
+  .char-bar-bg { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .char-bar-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.3s; }
+  .char-bar-fill.warn { background: var(--warning); }
+  .char-bar-fill.over { background: var(--danger); }
+
+  /* 警告 */
+  .url-warning { display: none; background: #fce4ec; border: 1px solid #f48fb1; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #880e4f; margin: 8px 0; line-height: 1.7; }
+  .url-warning.show { display: block; }
+  .x-warning { display: none; border-radius: 8px; padding: 10px 12px; font-size: 12px; margin: 8px 0; line-height: 1.7; }
+  .x-warning.show { display: block; }
+  .x-warning.ok { background: #e8f5e9; color: #2e7d32; }
+  .x-warning.error { background: #ffebee; color: var(--danger); }
+
+  /* 下書き保存（廃止） */
+  .draft-btn-disabled {
+    width: 100%; padding: 11px; border: 1.5px solid var(--primary);
+    border-radius: 10px; background: none; color: var(--primary);
+    font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px;
   }
 
-  .usage-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
-  .usage-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
-  .usage-bar-fill { height: 100%; border-radius: 3px; background: var(--primary); }
-  .usage-bar-fill.warn { background: var(--warning); }
-  .usage-bar-fill.full { background: var(--danger); }
-  .usage-sub { font-size: 11px; color: var(--text-sub); margin-bottom: 12px; }
-
-  .sns-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px; border: 1.5px solid var(--border);
-    border-radius: 10px; background: var(--bg); margin-bottom: 8px;
+  /* ===== 画像選択エリア（インライン） ===== */
+  .image-section { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; }
+  .image-section-header {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .sns-item.connected { border-color: var(--success); background: #f0faf0; }
-  .sns-item:last-child { margin-bottom: 0; }
-  .sns-icon {
-    width: 34px; height: 34px; border-radius: 8px;
+  .image-section-title { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  /* 選択中プレビュー（コンパクト） */
+  .img-selected-bar {
+    display: none;
+    background: #e8f5e9;
+    border-bottom: 1px solid #a5d6a7;
+    padding: 8px 14px;
+    align-items: center;
+    gap: 10px;
+  }
+  .img-selected-bar.show { display: flex; }
+  .img-selected-thumb { font-size: 24px; }
+  .img-selected-name { font-size: 12px; font-weight: 700; color: #2e7d32; flex: 1; }
+  .img-selected-clear { background: none; border: none; color: #2e7d32; font-size: 18px; cursor: pointer; padding: 0; }
+
+  /* 画像タブ */
+  .img-tab-nav { display: flex; border-bottom: 1px solid var(--border); }
+  .img-tab-btn {
+    flex: 1; padding: 10px 4px; border: none; background: none;
+    font-size: 11px; font-weight: 600; color: var(--text-sub);
+    cursor: pointer; border-bottom: 2px solid transparent;
+    font-family: inherit; display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+  }
+  .img-tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .img-tab-icon { font-size: 16px; }
+  .img-tab-panel { display: none; padding: 12px 14px; }
+  .img-tab-panel.active { display: block; }
+
+  /* カテゴリフィルタ */
+  .category-filter {
+    display: flex; gap: 6px; overflow-x: auto;
+    scrollbar-width: none; padding-bottom: 10px; margin-bottom: 8px;
+  }
+  .category-filter::-webkit-scrollbar { display: none; }
+  .cat-btn {
+    padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px;
+    background: var(--surface); font-size: 11px; color: var(--text-sub);
+    cursor: pointer; white-space: nowrap; font-family: inherit;
+  }
+  .cat-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  /* 画像グリッド */
+  .image-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .image-item {
+    position: relative; aspect-ratio: 1; border-radius: 8px;
+    overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.2s;
+  }
+  .image-item.selected { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); }
+  .image-thumb {
+    width: 100%; height: 100%; object-fit: cover;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0; color: white;
-    font-weight: 700; font-size: 13px;
+    font-size: 28px; background: var(--border);
   }
-  .sns-ig { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+  .image-check {
+    position: absolute; top: 4px; right: 4px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--primary); color: white; font-size: 11px;
+    display: none; align-items: center; justify-content: center; font-weight: 700;
+  }
+  .image-item.selected .image-check { display: flex; }
+  .image-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.5); color: white; font-size: 9px;
+    padding: 3px 5px; text-align: center;
+  }
+
+  /* 画像なしタブ */
+  .no-image-option {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px; gap: 8px; cursor: pointer;
+    border: 2px solid var(--border); border-radius: 10px;
+  }
+  .no-image-option.selected { border-color: var(--primary); background: #f0f2ff; }
+  .no-image-icon { font-size: 36px; }
+  .no-image-label { font-size: 14px; font-weight: 700; color: var(--text); }
+  .no-image-desc { font-size: 12px; color: var(--text-sub); text-align: center; line-height: 1.7; }
+
+  /* SNS選択 */
+  .sns-check-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .sns-check-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; padding: 8px 4px; min-height: 68px; box-sizing: border-box;
+    border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer;
+  }
+  .sns-check-item.checked { border-color: var(--primary); background: #f0f2ff; }
+  .sns-icon-sm {
+    width: 18px; height: 18px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; color: white; flex-shrink: 0;
+  }
+  .sns-ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
   .sns-fb { background: #1877f2; }
-  .sns-th { background: #000; }
-  .sns-x  { background: #000; }
-  .sns-info { flex: 1; min-width: 0; }
-  .sns-name { font-size: 13px; font-weight: 600; }
-  .sns-status { font-size: 11px; color: var(--text-light); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sns-status.ok { color: var(--success); }
+  .sns-x  { background: #000000; }
+  .sns-th { background: #555555; font-size: 10px; }
   .plan-demo-btn {
     font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
     cursor: pointer;
   }
   .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
-  .sns-btn {
-    padding: 5px 12px; border-radius: 16px; border: none;
-    font-size: 11px; font-weight: 600; cursor: pointer; flex-shrink: 0;
+  .sns-check-item.disabled { opacity: 0.4; cursor: not-allowed; }
+  .sns-plan-note { font-size: 11px; color: #e65100; margin: 8px 0 0; }
+  .sns-check-name { font-size: 11px; font-weight: 600; text-align: center; }
+  .sns-checkbox {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 1.5px solid var(--border); display: flex; align-items: center;
+    justify-content: center; font-size: 8px; color: white; flex-shrink: 0;
   }
-  .btn-connect { background: var(--primary); color: white; }
-  .btn-disconnect { background: #fee2e2; color: var(--danger); }
+  .sns-check-item.checked .sns-checkbox { background: var(--primary); border-color: var(--primary); }
 
-  /* プラン比較 */
-  .plan-current-card {
-    background: linear-gradient(135deg, #1a237e, #3949ab);
-    color: white;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
+  /* 「店名・エリアを含める」専用（SNS選択のsns-check-itemとクラス名を完全に分離） */
+  .include-check-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; padding: 8px 4px; min-height: 68px; box-sizing: border-box;
+    border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer;
   }
-  .plan-current-label { font-size: 11px; opacity: 0.75; margin-bottom: 6px; }
-  .plan-current-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-  .plan-current-price { font-size: 13px; opacity: 0.85; margin-bottom: 12px; }
-  .plan-current-features { display: flex; flex-wrap: wrap; gap: 6px; }
-  .plan-feature-tag {
-    background: rgba(255,255,255,0.2);
-    padding: 3px 8px; border-radius: 10px;
-    font-size: 11px;
+  .include-check-item.checked { border-color: var(--primary); background: #f0f2ff; }
+  .include-check-item.checked .sns-checkbox { background: var(--primary); border-color: var(--primary); }
+
+  /* ===== カレンダー（予約画面から流用） ===== */
+  .calendar-wrap { background: var(--surface); }
+  .cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  .cal-title { font-size: 15px; font-weight: 700; }
+  .cal-nav {
+    width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-grid { padding: 8px; }
+  .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
+  .cal-day-label { font-size: 11px; color: var(--text-sub); padding: 4px 0; text-align: center; }
+  .cal-day-label:first-child { color: var(--danger); }
+  .cal-day-label:last-child { color: var(--accent); }
+  .cal-dates { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-date {
+    aspect-ratio: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; border-radius: 8px;
+    font-size: 12px; cursor: pointer; position: relative; padding: 2px;
+    transition: background 0.15s;
+  }
+  .cal-date:hover { background: var(--bg); }
+  .cal-date.today { background: var(--primary); color: white; font-weight: 700; }
+  .cal-date.selected { background: var(--accent); color: white; font-weight: 700; }
+  .cal-date.today.selected { background: var(--accent); }
+  .cal-date.has-post { padding-top: 2px; justify-content: flex-start; gap: 1px; }
+  .cal-post-count {
+    font-size: 9px; font-weight: 700; color: white;
+    background: var(--accent); border-radius: 8px; padding: 0px 4px;
+    line-height: 1.6; min-width: 14px; text-align: center;
+  }
+  .cal-date.today .cal-post-count { background: rgba(255,255,255,0.9); color: var(--primary); }
+  .cal-date.selected .cal-post-count { background: rgba(255,255,255,0.9); color: var(--accent); }
+  .cal-date.other-month { color: var(--text-light); }
+  .cal-date.past { color: #ccc; cursor: not-allowed; }
+  .cal-date.past:hover { background: transparent; }
+  .cal-date.sunday { color: var(--danger); }
+  .cal-date.saturday { color: var(--accent); }
+  .cal-date.today.sunday, .cal-date.today.saturday { color: white; }
+
+  /* 選択日表示 */
+  .selected-date-bar {
+    display: none; background: #e3f2fd; padding: 8px 14px;
+    font-size: 13px; font-weight: 700; color: var(--primary);
+    border-top: 1px solid #bbdefb; align-items: center; gap: 8px;
+  }
+  .selected-date-bar.show { display: flex; }
+
+  /* 時間選択 */
+  .time-select-row { padding: 12px 14px; border-top: 1px solid var(--border); }
+  .time-select-label { font-size: 12px; color: var(--text-sub); margin-bottom: 8px; }
+  .datetime-select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 14px; font-family: inherit; background: var(--surface); outline: none;
   }
 
-  .compare-btn {
-    width: 100%; padding: 12px; border-radius: 10px;
-    border: 1.5px solid var(--primary); background: white;
-    color: var(--primary); font-size: 14px; font-weight: 600;
-    cursor: pointer; margin-bottom: 8px;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
+  /* 予約ボタン */
+  .reserve-btn {
+    width: 100%; padding: 16px; background: var(--success); color: white;
+    border: none; border-radius: 10px; font-size: 16px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 8px; font-family: inherit; margin-bottom: 12px;
   }
-  .compare-btn:active { background: #f0f2ff; }
 
-  /* 比較モーダル */
+  /* ガイド（アコーディオン） */
+  .accordion-title { cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .accordion-arrow { font-size: 10px; color: var(--text-sub); transition: transform 0.2s; margin-left: 8px; }
+  .accordion-body { display: none; margin-top: 8px; }
+  .accordion-body.open { display: block; }
+
+  /* 確認モーダル */
   .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5); z-index: 1010; /* ★下部ナビバー(z-index:1000)より上に表示 */
-    align-items: flex-end; justify-content: center;
+    background: rgba(0,0,0,0.5); z-index: 2000; align-items: flex-end;
   }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: white; border-radius: 20px 20px 0 0;
-    padding: 20px 16px; width: 100%; max-width: 480px;
-    max-height: 85vh; overflow-y: auto;
-  }
-  .modal-handle {
-    width: 40px; height: 4px; background: var(--border);
-    border-radius: 2px; margin: 0 auto 16px;
-  }
-  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; text-align: center; }
+  .modal { background: var(--surface); border-radius: 16px 16px 0 0; padding: 20px 16px 32px; width: 100%; max-height: 88vh; overflow-y: auto; box-sizing: border-box; }
+  .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .modal-desc { font-size: 13px; color: var(--text-sub); line-height: 1.8; margin-bottom: 16px; }
+  .modal-btn { width: 100%; padding: 13px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
+  .modal-btn-primary { background: var(--primary); color: white; }
+  .modal-btn-success { background: var(--success); color: white; }
+  .modal-btn-cancel { background: var(--bg); color: var(--text-sub); }
 
-  .compare-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .compare-table th {
-    padding: 8px 6px; text-align: center;
-    font-weight: 700; border-bottom: 2px solid var(--border);
-  }
-  .compare-table td {
-    padding: 10px 6px; text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-  .compare-table tr:last-child td { border-bottom: none; }
-  .compare-table .feature-name { text-align: left; color: var(--text-sub); font-size: 11px; }
-  .compare-table .section-row td { background: #f8f9fa; color: var(--text-sub); font-size: 10px; font-weight: 700; padding: 6px 6px; text-align: left; letter-spacing: 0.05em; }
-  .compare-table .current-col { background: #f0f2ff; }
-  .compare-table .upper-col { background: #faf0ff; }
-  .check { color: var(--success); font-size: 14px; }
-  .cross { color: var(--text-light); }
-  .modal-close {
-    width: 100%; padding: 13px; border-radius: 10px;
-    border: none; background: var(--primary); color: white;
-    font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 16px;
-  }
-  .upgrade-btn {
-    width: 100%; padding: 13px; border-radius: 10px;
-    border: none; background: #6a1b9a; color: white;
-    font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px;
+  /* 予約確認モーダルの内容 */
+  .confirm-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .confirm-row:last-of-type { border-bottom: none; }
+  .confirm-key { color: var(--text-sub); }
+  .confirm-val { font-weight: 600; color: var(--text); text-align: right; }
+
+  /* トースト */
+  .toast {
+    display: none; position: fixed; bottom: 80px; left: 50%;
+    transform: translateX(-50%); background: var(--primary); color: white;
+    padding: 10px 20px; border-radius: 20px; font-size: 13px;
+    font-weight: 700; z-index: 3000; white-space: nowrap;
   }
 
-  /* トグル */
-  .toggle-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 11px 0; border-bottom: 1px solid var(--border);
-  }
-  .toggle-row:last-child { border-bottom: none; }
-  .toggle-info { flex: 1; padding-right: 12px; }
-  .toggle-label { font-size: 13px; font-weight: 500; }
-  .toggle-desc { font-size: 11px; color: var(--text-sub); margin-top: 2px; line-height: 1.5; }
-  .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider {
-    position: absolute; inset: 0;
-    background: #d1d5db; border-radius: 24px; cursor: pointer; transition: 0.2s;
-  }
-  .toggle-slider::before {
-    content: ''; position: absolute;
-    width: 18px; height: 18px; left: 3px; top: 3px;
-    background: white; border-radius: 50%; transition: 0.2s;
-  }
-  .toggle input:checked + .toggle-slider { background: var(--primary); }
-  .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
-  .toggle-disabled { opacity: 0.4; pointer-events: none; }
-
-  .info-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px;
-  }
-  .info-row:last-child { border-bottom: none; }
-  .info-key { color: var(--text-sub); }
-  .info-val { font-weight: 500; }
-
-  .notice {
-    background: #fff8e1; border: 1px solid #ffe082;
-    border-radius: 8px; padding: 10px 12px;
-    font-size: 12px; color: #5d4037;
-    margin-bottom: 12px; display: flex; gap: 8px; line-height: 1.6;
-  }
-
-  .btn {
-    width: 100%; padding: 13px; border-radius: 10px;
-    border: none; font-size: 14px; font-weight: 600;
-    cursor: pointer; margin-bottom: 8px;
-  }
-  .btn-primary { background: var(--primary); color: white; }
-  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
-  .btn-caution { background: #fff3e0; color: #e65100; }
-
-  /* 解約確認画面 */
-  .cancel-screen { display: none; }
-  .cancel-screen.open { display: block; }
-  .main-screen { }
-  .main-screen.hidden { display: none; }
-
-  .cancel-header {
-    text-align: center; padding: 20px 0 16px;
-  }
-  .cancel-icon { font-size: 48px; margin-bottom: 8px; }
-  .cancel-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-  .cancel-sub { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
-
-  .cancel-note {
-    background: #fff3e0; border-left: 3px solid var(--warning);
-    border-radius: 0 8px 8px 0; padding: 12px;
-    font-size: 12px; line-height: 1.8; color: #5d4037;
-    margin-bottom: 12px;
-  }
-  .btn-cancel-execute {
-    width: 100%; padding: 13px; border-radius: 10px;
-    border: none; background: var(--danger); color: white;
-    font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px;
-  }
-
-  /* ============================================ */
-  /* ボトムナビゲーションバー（全画面共通） */
-  /* ============================================ */
+  /* ナビゲーション */
   .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: #ffffff;
-    border-top: 1px solid #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    z-index: 1000;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+    background: #ffffff; border-top: 1px solid #e0e0e0;
+    display: flex; align-items: center; justify-content: space-around;
+    z-index: 1000; box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
   }
   .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    height: 100%;
-    cursor: pointer;
-    text-decoration: none;
-    color: #9e9e9e;
-    transition: color 0.2s;
-    -webkit-tap-highlight-color: transparent;
-    background: none;
-    border: none;
-    padding: 0;
-    font-family: inherit;
-    font-size: inherit;
-    outline: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex: 1; height: 100%; cursor: pointer; color: #9e9e9e;
+    -webkit-tap-highlight-color: transparent; background: none; border: none;
+    padding: 0; font-family: inherit; outline: none;
   }
   .nav-item.active { color: #1a237e; }
-  .nav-item:active { opacity: 0.7; }
   .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
   .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
-
+  /* ===== トリミングモーダル ===== */
+  .trim-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px; /* ナビゲーションバー分上げる */
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .trim-overlay.open { display: flex; }
+  .trim-header {
+    background: var(--primary);
+    color: #fff;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .trim-header-title { font-size: 13px; font-weight: 700; }
+  .trim-header-sub { font-size: 10px; opacity: 0.8; margin-top: 2px; }
+  .trim-progress {
+    background: #13195f;
+    padding: 6px 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  .trim-step-chip {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.6);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .trim-step-chip.active {
+    background: #fff;
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .trim-step-chip.done {
+    background: rgba(255,255,255,0.35);
+    color: #fff;
+  }
+  .trim-canvas-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    background: #111;
+    touch-action: none;
+  }
+  .trim-canvas-wrap canvas { display: block; max-width: 100%; max-height: 100%; touch-action: none; }
+  .trim-live-ratio {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.65);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    pointer-events: none;
+    letter-spacing: 0.02em;
+  }
+  .trim-ratio-bar {
+    background: #1a1a2e;
+    padding: 8px 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .trim-ratio-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .trim-ratio-btn.active {
+    background: #fff;
+    color: var(--primary);
+    border-color: #fff;
+  }
+  .trim-ratio-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-right: 4px; }
+  .trim-hint {
+    background: #fff;
+    padding: 8px 16px;
+    flex-shrink: 0;
+    border-top: 1px solid #e0e0e0;
+  }
+  .trim-hint-main {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a237e;
+    margin-bottom: 2px;
+  }
+  .trim-hint-sub {
+    font-size: 10px;
+    color: #555;
+    line-height: 1.6;
+  }
+  .trim-actions {
+    background: #1a1a2e;
+    padding: 10px 16px;
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .trim-btn-skip {
+    flex: 1;
+    padding: 12px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .trim-btn-ok {
+    flex: 2;
+    padding: 12px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
 
 <div class="header">
-  <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録15</span>
+  <span style="font-size:20px;">📝</span>
+  <span class="header-logo">投稿文作成75</span>
   <span class="header-sub">AiPost</span>
 </div>
 
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
+    <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
     <span id="plan-price">¥1,280/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
   </div>
-  <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+  <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Facebook</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
   </div>
   <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
     <span style="font-size:9px;color:rgba(255,255,255,0.6);align-self:center;margin-right:2px;">🔧デモ用プラン切替：</span>
@@ -402,492 +632,1399 @@
     <button class="plan-demo-btn" id="plan-demo-PRO" onclick="setDemoPlan('PRO')">PRO</button>
   </div>
 </div>
+
+<!-- タブナビ -->
 <div class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('sns')">
-    <span class="tab-icon">📱</span>SNS
+  <button class="tab-btn active" id="tab-btn-form" onclick="switchMainTab('form')"><span class="tab-icon">📝</span>投稿作成</button>
+  <button class="tab-btn" id="tab-btn-guide" onclick="switchMainTab('guide')"><span class="tab-icon">📖</span>ガイド</button>
+</div>
+
+<div class="content" id="content-wrap">
+
+  <div id="tab-form" class="tab-panel active">
+
+  <div class="section-title">投稿文作成</div>
+
+  <!-- ① 投稿先SNS選択 -->
+  <div class="card">
+    <div class="card-title">① 投稿先のSNSを選ぶ</div>
+    <div class="sns-check-list">
+      <div class="sns-check-item checked" id="sns-item-x" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-x">X</div>
+        <div class="sns-check-name">X</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-ig">IG</div>
+        <div class="sns-check-name">Instagram</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-fb">f</div>
+        <div class="sns-check-name">Facebook</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="sns-check-item checked" onclick="toggleSns(this)">
+        <div class="sns-icon-sm sns-th">🧵</div>
+        <div class="sns-check-name">Threads</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+    </div>
+    <p class="sns-plan-note" id="sns-plan-note" style="display:none;">💎 FREEプランではXは選択できません（Xの投稿には運営側に費用が発生するAPIを利用するため）</p>
+  </div>
+
+  <!-- ② キーワード入力 -->
+  <div class="card">
+    <div class="card-title">② キーワードを入力する</div>
+    <div class="keyword-guide" id="keyword-guide"></div>
+    <div class="keyword-input-grid">
+      <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" placeholder="キーワード1">
+      <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" placeholder="キーワード2">
+      <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" placeholder="キーワード3">
+    </div>
+    <div class="keyword-hint">💡 キーワードは最大3個・1個15文字までです。商品名・特徴・季節など</div>
+    <div class="keyword-hint" style="margin-top:6px;">✏️ 自分で文章を書く場合は④の入力欄に直接入力してください</div>
+  </div>
+
+  <!-- ③ 訴求パターン -->
+  <div class="card">
+    <div class="card-title">③ 訴求パターンを選ぶ（任意）</div>
+    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">どんな雰囲気で伝えたいですか？</p>
+    <div class="pattern-grid">
+      <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">🤖</span>AIに任せる</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💰</span>お得</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💡</span>悩み解決</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🔥</span>トレンド</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">⭐</span>信頼</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🌸</span>季節</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🆕</span>新登場</button>
+      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">📍</span>地域密着</button>
+    </div>
+  </div>
+
+  <!-- ④ 店名・エリアを含める -->
+  <div class="card">
+    <div class="card-title">④ 店名・エリアを含める（任意）</div>
+    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">投稿文に含める場合は選択してください。店舗名・エリアが未登録の場合は先に設定画面から登録が必要です。</p>
+    <div class="sns-check-list">
+      <div class="include-check-item" id="include-shopname-item" onclick="toggleInclude(this)">
+        <div class="sns-check-name">店名を含める</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
+        <div class="sns-check-name">エリアを含める</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI生成ボタン -->
+  <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
+    <span style="font-size:20px;">✨</span>投稿文・ハッシュタグを作成
   </button>
-  <button class="tab-btn" onclick="switchTab('account')">
-    <span class="tab-icon">👤</span>登録
+
+  <!-- ローディング -->
+  <div class="loading" id="loading">
+    <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="loading-text">AIが投稿文を考えています…<br>少々お待ちください</div>
+  </div>
+
+  <!-- ④ 文章確認・編集 -->
+  <div class="card">
+    <div class="card-title">④ 文章を確認・編集する</div>
+    <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで作成した文章が表示されます。自由に編集できます。直接入力することもできます。</p>
+    <div class="genre-notice" id="genre-notice">📍 登録業種（<span id="genre-label"></span>）をもとに文章を生成しました。</div>
+    <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount()"
+      placeholder="AIで生成した文章がここに表示されます。直接入力することもできます。"></textarea>
+    <div class="char-counter">
+      <span class="char-count" id="char-count">0文字</span>
+      <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
+      <span style="font-size:11px;color:var(--text-light);" id="char-limit-label">上限140字（半角280字）</span>
+    </div>
+    <div class="url-warning" id="url-warning">
+      🔗 <strong>投稿文にURLが含まれています。</strong><br>当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます。
+    </div>
+    <div class="x-warning" id="x-warning"></div>
+  </div>
+
+
+
+  <!-- ⑤ ハッシュタグ -->
+  <div class="card">
+    <div class="card-title">⑤ ハッシュタグ</div>
+    <p class="hashtag-desc">AIで作成したハッシュタグが表示されます。文章と同様、自由に編集できます。チェックしたSNSにだけ付与されます。「#」は自動で挿入されるため入力不要です。</p>
+    <div class="hashtag-x-status" id="hashtag-x-status"></div>
+    <div class="hashtag-header">
+      <div class="hashtag-header-spacer"></div>
+      <div class="hashtag-checks">
+        <span class="hashtag-col hashtag-col-X"><span class="hashtag-col-icon">🐦</span><span class="hashtag-col-limit">3個まで</span></span>
+        <span class="hashtag-col hashtag-col-IG"><span class="hashtag-col-icon">📱</span><span class="hashtag-col-limit">制限なし</span></span>
+        <span class="hashtag-col hashtag-col-FB"><span class="hashtag-col-icon">💻</span><span class="hashtag-col-limit">制限なし</span></span>
+        <span class="hashtag-col hashtag-col-TH"><span class="hashtag-col-icon">🧵</span><span class="hashtag-col-limit">1個のみ</span></span>
+      </div>
+    </div>
+    <div class="hashtag-rows" id="hashtag-rows">
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-1" maxlength="15" placeholder="ハッシュタグ1" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-1-X" onchange="onHashtagCheckToggle(1,'X')"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-1-IG" onchange="onHashtagCheckToggle(1,'IG')"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-1-FB" onchange="onHashtagCheckToggle(1,'FB')"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-1-TH" onchange="onHashtagCheckToggle(1,'TH')"></span>
+        </div>
+      </div>
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-2" maxlength="15" placeholder="ハッシュタグ2" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-2-X" onchange="onHashtagCheckToggle(2,'X')"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-2-IG" onchange="onHashtagCheckToggle(2,'IG')"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-2-FB" onchange="onHashtagCheckToggle(2,'FB')"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-2-TH" onchange="onHashtagCheckToggle(2,'TH')"></span>
+        </div>
+      </div>
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-3" maxlength="15" placeholder="ハッシュタグ3" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-3-X" onchange="onHashtagCheckToggle(3,'X')"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-3-IG" onchange="onHashtagCheckToggle(3,'IG')"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-3-FB" onchange="onHashtagCheckToggle(3,'FB')"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-3-TH" onchange="onHashtagCheckToggle(3,'TH')"></span>
+        </div>
+      </div>
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-4" maxlength="15" placeholder="ハッシュタグ4" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-4-X" onchange="onHashtagCheckToggle(4,'X')"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-4-IG" onchange="onHashtagCheckToggle(4,'IG')"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-4-FB" onchange="onHashtagCheckToggle(4,'FB')"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-4-TH" onchange="onHashtagCheckToggle(4,'TH')"></span>
+        </div>
+      </div>
+      <div class="hashtag-row">
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-5" maxlength="15" placeholder="ハッシュタグ5" oninput="onHashtagChange()"></div>
+        <div class="hashtag-checks">
+          <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-5-X" onchange="onHashtagCheckToggle(5,'X')"></span>
+          <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-5-IG" onchange="onHashtagCheckToggle(5,'IG')"></span>
+          <span class="hashtag-col hashtag-col-FB"><input type="checkbox" id="hashtag-check-5-FB" onchange="onHashtagCheckToggle(5,'FB')"></span>
+          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-5-TH" onchange="onHashtagCheckToggle(5,'TH')"></span>
+        </div>
+      </div>
+    </div>
+    <div class="keyword-hint" style="margin-top:6px;">💡 ハッシュタグは1個15文字までです</div>
+  </div>
+
+  <!-- ⑥ 画像アップロード（インライン） -->
+  <div class="image-section">
+    <div class="image-section-header">
+      <div class="image-section-title">⑥ 画像アップロード</div>
+    </div>
+
+    <!-- 選択中プレビューバー -->
+    <div class="img-selected-bar" id="img-selected-bar" style="display:none;">
+      <span class="img-selected-thumb" id="img-selected-thumb">🖼️</span>
+      <span class="img-selected-name" id="img-selected-name"></span>
+      <button class="img-selected-clear" onclick="showImageCancelOptions()">×</button>
+    </div>
+
+    <!-- 画像アップロードエリア -->
+    <div id="img-upload-area" style="padding:20px 16px 12px;">
+      <div style="text-align:center;color:var(--text-sub);margin-bottom:14px;">
+        <div style="font-size:36px;margin-bottom:8px;">🖼️</div>
+        <div style="font-size:11px;line-height:1.7;">アップロード後にSNSごとの最適な比率にトリミングできます。</div>
+      </div>
+      <input type="file" id="my-img-input" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+      <input type="file" id="my-cam-input" accept="image/*" capture="environment" style="display:none;" onchange="handleImageUpload(event)">
+      <div style="display:flex;gap:8px;">
+        <button onclick="document.getElementById('my-img-input').click()" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 フォルダから選ぶ</button>
+        <button onclick="document.getElementById('my-cam-input').click()" style="flex:1;padding:10px;background:#2e7d32;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📷 写真を撮る</button>
+      </div>
+      <p style="font-size:10px;color:var(--text-light);text-align:center;margin-top:8px;">JPG・PNG対応　推奨：2MB以下</p>
+    </div>
+
+    <!-- アップロード済み画像プレビュー -->
+    <div id="my-img-preview-wrap" style="display:none;padding:12px 16px;">
+      <div style="position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:10px;">
+        <img id="my-img-preview" style="width:100%;display:block;" alt="アップロード画像">
+        <button onclick="resetImagePreview()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer;line-height:24px;text-align:center;">×</button>
+      </div>
+      <div id="trim-status-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+      <button onclick="startTrimFlow()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">✂️ SNSごとにトリミングする</button>
+      <button onclick="selectMyImageWithoutTrim()" style="width:100%;padding:8px;background:transparent;color:var(--text-sub);border:1px solid var(--border);border-radius:10px;font-size:12px;cursor:pointer;margin-top:6px;">トリミングせずにそのまま使う</button>
+    </div>
+
+    <!-- 画像なし選択肢 -->
+    <div style="padding:0 16px 12px;">
+      <button onclick="selectNoImage()" id="no-image-btn" style="width:100%;padding:8px;background:transparent;color:var(--text-sub);border:1px solid var(--border);border-radius:10px;font-size:12px;cursor:pointer;">🚫 画像なしで投稿する</button>
+    </div>
+
+  </div>
+
+  <!-- ⑦ 投稿日時：カレンダー -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);">
+      <div class="card-title" style="margin-bottom:0;">⑦ 投稿日を選ぶ</div>
+    </div>
+    <div class="calendar-wrap">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="prevMonth()">‹</button>
+        <div class="cal-title" id="cal-title">2026年6月</div>
+        <button class="cal-nav" onclick="nextMonth()">›</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-days">
+          <div class="cal-day-label">日</div><div class="cal-day-label">月</div>
+          <div class="cal-day-label">火</div><div class="cal-day-label">水</div>
+          <div class="cal-day-label">木</div><div class="cal-day-label">金</div>
+          <div class="cal-day-label">土</div>
+        </div>
+        <div class="cal-dates" id="cal-dates"></div>
+      </div>
+    </div>
+    <div class="selected-date-bar" id="selected-date-bar">
+      📌 <span id="selected-date-label">日付を選んでください</span>
+    </div>
+    <div class="time-select-row">
+      <div class="time-select-label">投稿時間を選ぶ</div>
+      <select class="datetime-select" id="post-time">
+        <option value="8">8時ごろ</option><option value="9">9時ごろ</option><option value="10">10時ごろ</option>
+        <option value="11">11時ごろ</option><option value="12">12時ごろ</option><option value="13" selected>13時ごろ</option>
+        <option value="14">14時ごろ</option><option value="15">15時ごろ</option><option value="16">16時ごろ</option>
+        <option value="17">17時ごろ</option><option value="18">18時ごろ</option><option value="19">19時ごろ</option>
+        <option value="20">20時ごろ</option><option value="21">21時ごろ</option>
+      </select>
+      <p id="time-past-hint" style="font-size:11px;color:var(--danger);margin-top:6px;display:none;">⚠️ 本日は現在時刻より前の時間帯は選べません</p>
+      <p style="font-size:11px;color:var(--text-sub);margin-top:6px;">💡 指定した時間帯に自動で投稿されます</p>
+    </div>
+  </div>
+
+  <!-- 予約ボタン -->
+  <button class="reserve-btn" onclick="showConfirm()">
+    <span style="font-size:20px;">✅</span>内容を確認する
   </button>
-</div>
 
-<div class="content">
+  </div><!-- /tab-form -->
 
-  <!-- SNSタブ -->
-  <div id="tab-sns" class="tab-panel active">
-    <div class="notice">
-      <span>💡</span>
-      <span>SNSと連携することで自動投稿が可能になります。パスワードはお預かりしません。</span>
-    </div>
-    <div class="card">
-      <div class="card-title" id="sns-connected-title">連携状況（3/3）</div>
-      <div class="sns-item connected" id="sns-item-ig">
-        <div class="sns-icon sns-ig">📷</div>
-        <div class="sns-info">
-          <div class="sns-name">Instagram</div>
-          <div class="sns-status ok" id="sns-status-ig">✓ 連携済み</div>
-        </div>
-        <button class="sns-btn btn-disconnect" id="sns-btn-ig" onclick="toggleSnsConnection('ig')">解除</button>
-      </div>
-      <div class="sns-item connected" id="sns-item-fb">
-        <div class="sns-icon sns-fb">f</div>
-        <div class="sns-info">
-          <div class="sns-name">Facebook</div>
-          <div class="sns-status ok" id="sns-status-fb">✓ 連携済み</div>
-        </div>
-        <button class="sns-btn btn-disconnect" id="sns-btn-fb" onclick="toggleSnsConnection('fb')">解除</button>
-      </div>
-      <div class="sns-item connected" id="sns-item-x">
-        <div class="sns-icon sns-x">X</div>
-        <div class="sns-info">
-          <div class="sns-name">X（Twitter）</div>
-          <div class="sns-status ok" id="sns-status-x">✓ 連携済み</div>
-        </div>
-        <button class="sns-btn btn-disconnect" id="sns-btn-x" onclick="toggleSnsConnection('x')">解除</button>
-      </div>
-      <div class="sns-item" id="sns-item-th" style="margin-bottom:0;">
-        <div class="sns-icon sns-th">@</div>
-        <div class="sns-info">
-          <div class="sns-name">Threads</div>
-          <div class="sns-status" id="sns-status-th">未連携</div>
-        </div>
-        <button class="sns-btn btn-connect" id="sns-btn-th" onclick="toggleSnsConnection('th')">連携</button>
+  <div id="tab-guide" class="tab-panel">
+
+  <!-- ===== ガイド（アコーディオン） ===== -->
+  <div class="card">
+    <div class="card-title" style="font-size:14px;">📖 投稿文作成ガイド</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿作成画面の各項目について、仕様と理由をまとめています。上から投稿作成画面と同じ順番で並んでいます。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t1')">① 投稿先のSNSを選ぶ<span class="accordion-arrow" id="arr-acc-t1">▶</span></div>
+    <div class="accordion-body" id="acc-t1">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">連携済みのSNSの中から、今回投稿したいSNSを選びます。ここで選んだSNSに応じて、⑥ハッシュタグのチェック欄や⑦画像トリミングの比率の選択肢が自動的に切り替わります。1つも選ばずに予約を進めることはできません。</div>
+      <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">💡 FREEプランはXを選択できません</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">X（Twitter）への投稿には、運営側に費用が発生するAPIを利用します。無料プランでの提供が難しいため、FREEプランではXを投稿先として選択できない仕様になっています。</div>
       </div>
     </div>
   </div>
 
-  <!-- 登録タブ -->
-  <div id="tab-account" class="tab-panel">
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② キーワードを入力する<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
+    <div class="accordion-body" id="acc-t2">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">入力したキーワードをもとに、AIが投稿文とハッシュタグを作成します。未入力のまま生成すると、業種登録がある場合は登録業種をもとに、業種登録がない場合はキーワードの入力が必須になります。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 最大3個までの理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文は全角140文字という限られた文字数（詳しくは⑤）で作成するため、キーワードが多すぎるとAIが全てを詰め込もうとして不自然な文章になりがちです。3個程度に絞ることで、本文には核となる要素だけを残し、細かい要素は③ハッシュタグ側で補うという役割分担にしています。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 1個15文字までの理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">こちらも外部の調査・研究による数値ではなく、当サービス独自の設計です。短い単語・フレーズでの入力を想定しており、長い文章をそのまま入力できてしまうと「AIが文章を組み立てる」という本来の使い方から外れてしまうため、15文字を上限としています。</div>
+    </div>
+  </div>
 
-    <div class="main-screen" id="main-account">
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t3')">③ 訴求パターンを選ぶ<span class="accordion-arrow" id="arr-acc-t3">▶</span></div>
+    <div class="accordion-body" id="acc-t3">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の雰囲気（限定感・お得感など）を選ぶ任意の項目です。「🤖 AIに任せる」を選んでおけば、AIが投稿内容に合った雰囲気を自動で判断して文章を作成するため、特にこだわりがなければこのままで問題ありません。</div>
+    </div>
+  </div>
 
-      <!-- 店舗情報 -->
-      <div class="card">
-        <div class="card-title">店舗情報</div>
-        <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
-          AI文章生成の精度向上のために登録してください。入力しなくても文章生成は利用できます。
-        </p>
-        <div class="form-group">
-          <label class="form-label">店舗名</label>
-          <input type="text" class="form-input" id="shop-name-input" placeholder="例：山田カフェ" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ 投稿文が全角140文字である理由<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
+    <div class="accordion-body" id="acc-t4">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、同じ投稿文・同じ画像であれば複数SNSへの同時投稿を「1投稿」としてカウントする仕様になっています。この「同一投稿」という条件を成立させるには投稿文は全SNS共通で1つだけでなければならないため、最も文字数制限が厳しいX（全角140文字＝半角280文字）に合わせることで、どのSNSを選んでも確実に投稿できるようにしています。「複数SNSに同じ内容をまとめて予約できる」利便性と引き換えに、投稿文の文字数はXの基準に統一している、というのが正確な理由です。</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">全角140文字（半角280文字）が上限。これが投稿文共通の基準になっています。</div>
         </div>
-        <div class="form-group">
-          <label class="form-label">業種（大分類）</label>
-          <div class="select-wrap">
-            <select class="form-select" id="business-major-select"></select>
-          </div>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">本来の上限は全角2,200文字ですが、Xに合わせて140文字までとしています。</div>
         </div>
-        <div class="form-group">
-          <label class="form-label">業種（小分類）</label>
-          <div class="select-wrap">
-            <select class="form-select" id="business-minor-select"></select>
-          </div>
+        <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook</div>
+          <div style="font-size:11px;color:#1877f2;line-height:1.7;">本来の上限は約63,000文字ですが、Xに合わせて140文字までとしています。</div>
         </div>
-        <div class="form-group">
-          <label class="form-label">エリア（都道府県）</label>
-          <div class="select-wrap">
-            <select class="form-select" id="prefecture-select"></select>
-          </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">本来の上限は500文字ですが、Xに合わせて140文字までとしています。</div>
         </div>
-        <button class="btn btn-primary" onclick="saveShopInfo()">店舗情報を保存する</button>
       </div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">Xを選択していない場合でも、投稿文の上限は140文字のままです。SNSの選び方によって上限が変わってしまうと、本文を書いている途中でSNS選択を変えた際に「さっきまで書けていたのに急にオーバー扱いになった」といった混乱が起きやすくなります。Xを利用しない場合であっても、システム全体の一貫性を保つためにこの基準を採用しています。</div>
+    </div>
+  </div>
 
-      <!-- アカウント情報 -->
-      <div class="card">
-        <div class="card-title">アカウント情報</div>
-        <div class="info-row"><span class="info-key">ユーザーID</span><span class="info-val" style="font-size:12px;color:var(--text-sub);">USR-000001</span></div>
-        <div class="info-row"><span class="info-key">登録日</span><span class="info-val">2026年6月1日</span></div>
-        <div class="info-row"><span class="info-key">最終アクセス</span><span class="info-val">本日</span></div>
-      </div>
-
-      <!-- 連絡先メール -->
-      <div class="card">
-        <div class="card-title">連絡先メールアドレス（任意）</div>
-        <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
-          LINEアカウントが使えなくなった場合の連絡手段として登録できます。登録しなくても利用できます。
-        </p>
-        <div class="form-group" style="margin-bottom:0;">
-          <input type="email" class="form-input" placeholder="例：info@example.com" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">⑤ 投稿文にURLを入れられない理由<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
+    <div class="accordion-body" id="acc-t5">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、<strong>Xへの投稿文にURL（http://・https://から始まるリンク）を含めることができません</strong>。Instagram・Facebook・ThreadsはURLを含めても通常通り投稿できます。AIによる文章生成ではURLを含む文章は作られませんが、利用者ご自身が本文に直接URLを入力した場合に、以下の動作が発生します。</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+        <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">① 入力中にリアルタイムで警告</div>
+          <div style="font-size:11px;color:#5d4037;line-height:1.7;">本文にURLを入力した瞬間、画面上に「Xは自動的に除外されます」という警告が表示されます。</div>
         </div>
-        <button class="btn btn-primary" style="margin-top:10px;" onclick="showToast('メールアドレスを保存しました')">保存する</button>
+        <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">② 予約時：Xだけ自動的に除外</div>
+          <div style="font-size:11px;color:#5d4037;line-height:1.7;">Instagram・Facebook・Threadsを含めて予約した場合、Xだけが対象から自動的に除外され、他のSNSへは通常通り投稿されます。</div>
+        </div>
+        <div style="background:#ffebee;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:3px;">③ Xのみを選んでいる場合：予約不可</div>
+          <div style="font-size:11px;color:var(--danger);line-height:1.7;">投稿先がXだけの場合、URLを含む投稿はそもそも予約できません。URLを削除するか、他のSNSも選択してください。</div>
+        </div>
       </div>
-
-
-
-      <div class="card">
-        <div class="card-title">SNSトークンについて</div>
-        <p style="font-size:12px;color:var(--text-sub);line-height:1.8;">
-          パスワードはお預かりしていません。各SNSが発行した投稿専用の許可証のみお預かりしています。<br>許可の取り消しは各SNSの設定画面からいつでも可能です。
-        </p>
-      </div>
-
-      <div class="card">
-        <div class="card-title">退会について</div>
-        <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
-          退会すると当月末をもってサービスが終了します。退会後は投稿予約・分析データが削除されます。
-        </p>
-        <button class="btn btn-caution" onclick="showCancelScreen()">退会の手続きへ進む</button>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 なぜXだけURL付き投稿に対応していないのか</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xの投稿API（外部連携の仕組み）は、通常のテキストのみの投稿が1件あたり0.015ドルなのに対し、URLを含む投稿は1件あたり0.20ドルと、<strong>13倍以上のコストがかかります</strong>。この費用差が大きいため、当サービスではXへのURL付き投稿には対応せず、URLを使いたい場合はInstagram・Facebook・Threadsをご利用いただく仕様にしています。</div>
+      <div style="background:#ffebee;border-radius:8px;padding:10px 12px;border-left:4px solid var(--danger);">
+        <div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:4px;">⚠️ 迂回行為について</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.8;">「http://〜」の形式以外にも、URLを日本語や記号で表現したもの・短縮URL・QRコードへの誘導テキストなどをXに投稿した場合、X側でURL付き投稿と判定されるリスクがあります。このような迂回行為は利用規約違反にあたり、意図的な行為が確認された場合はアカウントの利用停止・登録解除の対象となります。</div>
       </div>
     </div>
+  </div>
 
-    <!-- 解約確認画面 -->
-    <div class="cancel-screen" id="cancel-screen">
-      <div class="cancel-header">
-        <div class="cancel-icon">📋</div>
-        <div class="cancel-title">退会の確認</div>
-        <div class="cancel-sub">退会申請の前にご確認ください。</div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">退会後に起こること</div>
-        <div class="info-row"><span class="info-key">サービス終了日</span><span class="info-val">2026年6月30日</span></div>
-        <div class="info-row"><span class="info-key">投稿予約</span><span class="info-val" style="color:var(--danger);">全て削除</span></div>
-        <div class="info-row"><span class="info-key">分析データ</span><span class="info-val" style="color:var(--danger);">30日後に削除</span></div>
-        <div class="info-row"><span class="info-key">日割り返金</span><span class="info-val">なし</span></div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">よろしければ理由をお聞かせください（任意）</div>
-        <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">今後のサービス改善の参考にさせていただきます。</p>
-        <div id="cancel-reason-options" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
-          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
-            <input type="radio" name="cancel-reason" value="料金が合わなかった" style="accent-color:var(--primary);">料金が合わなかった
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
-            <input type="radio" name="cancel-reason" value="機能が不足していた" style="accent-color:var(--primary);">機能が不足していた
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
-            <input type="radio" name="cancel-reason" value="使いこなせなかった" style="accent-color:var(--primary);">使いこなせなかった
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
-            <input type="radio" name="cancel-reason" value="他のサービスに移行する" style="accent-color:var(--primary);">他のサービスに移行する
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
-            <input type="radio" name="cancel-reason" value="必要なくなった" style="accent-color:var(--primary);">必要なくなった
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
-            <input type="radio" name="cancel-reason" value="その他" style="accent-color:var(--primary);">その他
-          </label>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t6')">⑥ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t6">▶</span></div>
+    <div class="accordion-body" id="acc-t6">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 「#」の自動挿入について</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入力欄に「#」を入力する必要はありません。利用者が自分で「#」を入力すると、全角記号になっていたり、スペースが抜けていたりといった入力ミスでハッシュタグとして機能しなくなる場合があるため、システム側で自動的に半角の「#」を付与する仕様にしています。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数のカウントについて</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xの文字数計算では、日本語などの全角文字を全角1文字、半角の英数字・記号・スペースは全角0.5文字として数えます。自動挿入される「#」や、投稿文とハッシュタグの間の区切りスペースも半角扱い（全角0.5文字）になるため、入力した文字数より実際のカウントが多くなります（例：本文が空の状態で、全角15文字のハッシュタグを1個だけXに付けた場合、区切りスペース0.5字＋「#」0.5字＋ハッシュタグ本体15字＝合計16文字扱いになります）。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとの推奨個数</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X（推奨1〜2個・最大3個）</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">4個以上付けると、Xのシステムに「インプレッションを稼ごうとしているスパム」と判定され、表示されにくくなるリスクがあるためです。</div>
         </div>
-        <textarea id="cancel-reason-detail" placeholder="よろしければ詳しくお聞かせください（任意）" style="width:100%;min-height:70px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram（推奨3〜5個）</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">Meta社は「ハッシュタグの量は検索順位に影響しない」と明言しており、量より投稿文の内容が重視される流れのためです。</div>
+        </div>
+        <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook（推奨0〜3個）</div>
+          <div style="font-size:11px;color:#1877f2;line-height:1.7;">ハッシュタグ検索をするユーザー自体が少なく、多用すると宣伝色が強く見えて敬遠されやすいためです。</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads（1個のみ）</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">仕様上、2個目以降はリンク化されずただの文字列になってしまうためです。</div>
+        </div>
       </div>
-
-      <div class="cancel-note">
-        ⚠️ 退会申請後、当月末までは引き続きサービスをご利用いただけます。申請を取り消したい場合はサポートまでご連絡ください。
-      </div>
-
-      <button class="btn-cancel-execute" onclick="showCancelComplete()">退会を申請する</button>
-      <button class="btn btn-outline" onclick="hideCancelScreen()">キャンセル・戻る</button>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xだけ文字数オーバーの警告が出る理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">Xだけは投稿文とハッシュタグが同じ140文字の枠を共有するため、ハッシュタグを付けた分だけ投稿文を圧迫し、合計が140文字を超えるとXだけ投稿できなくなります。Instagram・Facebook・Threadsは文字数の上限に大きな余裕があるため、この影響を受けません。この警告が対象にするのは、ハッシュタグ欄でXにチェックを入れたハッシュタグだけです。Xにチェックを入れていない場合や、ハッシュタグを使っていない場合は表示されません。</div>
     </div>
+  </div>
 
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑦ SNSごとの画像トリミング比率<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
+    <div class="accordion-body" id="acc-t7">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">画像は同じ元写真から、SNSごとに最適な比率でトリミングできます。⭐が付いている比率が特におすすめです。決まった比率以外にも「自由」を選べば、縦横比を固定せずに自由な形でトリミングすることもできます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">アップロードする<strong>元の画像は1枚だけ</strong>で、⑤で説明した「同一投稿」の条件（投稿文・画像が同じであること）はこの元画像を指します。トリミングでSNSごとに見た目（比率）を変えても、画像そのものは変わらないため、同一投稿の扱いには影響しません。</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">⭐16:9（横長）／1:1（正方形）／3:4（縦長）。16:9はタイムラインで最も美しく収まる標準サイズです。</div>
+        </div>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">⭐4:5（縦長）／1:1（正方形）／1.91:1（横長）。2025年のグリッド仕様変更以降、縦長が最も目立ちやすくなっています。</div>
+        </div>
+        <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook</div>
+          <div style="font-size:11px;color:#1877f2;line-height:1.7;">4:5（縦長）／1:1（正方形）／1.91:1（横長・リンク投稿用）。3つとも同等の扱いで、状況に応じて選べます。</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">⭐4:5（縦長）／1:1（正方形）／16:9（横長）。Instagramと同じMeta基盤のため、縦長が最も見え方が良くなります。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /tab-guide -->
+
+</div>
+
+<!-- ===== 画像キャンセル選択モーダル ===== -->
+<div id="img-cancel-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1010;align-items:flex-end;">
+  <div style="background:#fff;border-radius:16px 16px 0 0;padding:20px 16px;width:100%;box-sizing:border-box;">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px;text-align:center;">画像の選択をどうしますか？</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button id="img-cancel-reupload" onclick="imgCancelReupload()" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 画像を選び直す</button>
+      <button id="img-cancel-retrim" onclick="imgCancelRetrim()" style="width:100%;padding:12px;background:#f5f5f5;color:var(--text);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">✂️ トリミングをやり直す</button>
+      <button id="img-cancel-none" onclick="imgCancelNone()" style="width:100%;padding:12px;background:#fff5f5;color:#e53935;border:1px solid #ffcdd2;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">🚫 削除して画像なしにする</button>
+      <button onclick="closeImgCancelModal()" style="width:100%;padding:10px;background:transparent;color:var(--text-sub);border:none;border-radius:10px;font-size:12px;cursor:pointer;">キャンセル</button>
+    </div>
   </div>
 </div>
 
-<!-- 退会完了モーダル -->
-<div class="modal-overlay" id="cancel-complete-modal" style="z-index:1030;">
-  <div class="modal" style="padding:28px 20px;text-align:center;">
-    <div style="font-size:48px;margin-bottom:16px;">🙏</div>
-    <div style="font-size:18px;font-weight:700;margin-bottom:10px;">ご利用ありがとうございました</div>
-    <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:20px;">
-      退会のお申し込みを受け付けました。<br>
-      <strong style="color:var(--text);">2026年6月30日</strong>をもってサービスが終了します。<br><br>
-      それまでの間は引き続きご利用いただけます。<br><br>
-      AiPostをご利用いただきありがとうございました。またのご利用を心よりお待ちしております。
+<!-- ===== トリミングモーダル ===== -->
+<div class="trim-overlay" id="trim-overlay">
+  <!-- ヘッダー -->
+  <div class="trim-header">
+    <div>
+      <div class="trim-header-title" id="trim-sns-title">🐦 X用 トリミング</div>
+      <div class="trim-header-sub" id="trim-sns-sub">切り抜き枠を動かして位置を決めてください</div>
+    </div>
+    <button onclick="cancelTrim()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;">キャンセル</button>
+  </div>
+
+  <!-- 進捗チップ -->
+  <div class="trim-progress" id="trim-progress"></div>
+
+  <!-- 比率選択バー（IG・THのみ表示） -->
+  <div class="trim-ratio-bar" id="trim-ratio-bar" style="display:none;">
+    <span class="trim-ratio-label">比率：</span>
+    <button class="trim-ratio-btn active" onclick="setRatio('1:1',this)">1:1（正方形）</button>
+    <button class="trim-ratio-btn" onclick="setRatio('4:5',this)">4:5（縦長）</button>
+  </div>
+
+  <!-- キャンバスエリア -->
+  <div class="trim-canvas-wrap" id="trim-canvas-wrap">
+    <canvas id="trim-canvas"></canvas>
+    <div class="trim-live-ratio" id="trim-live-ratio">16:9</div>
+  </div>
+
+  <!-- ヒント -->
+  <div class="trim-hint">
+    <div class="trim-hint-main">✋ 枠を動かして切り抜く位置を調整してください</div>
+    <div class="trim-hint-sub">・枠の内側をドラッグ → 位置を移動<br>・枠の四隅をドラッグ → 拡大・縮小<br>・2本指のピンチ操作 → 拡大・縮小</div>
+  </div>
+
+  <!-- アクションボタン -->
+  <div class="trim-actions">
+    <button class="trim-btn-skip" onclick="skipTrim()">このSNSはスキップ</button>
+    <button class="trim-btn-ok" onclick="confirmTrim()" id="trim-btn-ok">切り抜いて確定 ✂️</button>
+  </div>
+</div>
+
+<!-- 上書き確認モーダル -->
+<div class="modal-overlay" id="overwrite-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚠️ 入力中の文章があります</div>
+    <div class="modal-desc">AIが生成した文章で上書きされます。現在入力中の文章は消えますがよろしいですか？</div>
+    <button class="modal-btn modal-btn-primary" onclick="executeGenerate()">上書きして生成する</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeModal('overwrite-modal')">キャンセル</button>
+  </div>
+</div>
+
+<!-- 予約確認モーダル -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📋 予約内容の確認</div>
+    <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:16px;">
+      <div class="confirm-row"><span class="confirm-key">投稿先</span><span class="confirm-val" id="confirm-sns">Instagram・Facebook・X</span></div>
+      <div id="confirm-url-note" style="display:none;font-size:11px;color:#c62828;background:#ffebee;border-radius:6px;padding:6px 8px;margin:4px 0;line-height:1.6;"></div>
+      <div class="confirm-row"><span class="confirm-key">投稿日時</span><span class="confirm-val" id="confirm-date">6月17日 13時ごろ</span></div>
+      <div class="confirm-row"><span class="confirm-key">画像</span><span class="confirm-val" id="confirm-image">抹茶ラテ</span></div>
+      <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain">残り22</span></div>
+    </div>
+    <div class="accordion-title" style="font-size:12px;color:var(--primary);font-weight:600;margin-bottom:10px;" onclick="toggleAcc('confirm-preview')">▼ SNSごとの投稿文を見る<span class="accordion-arrow" id="arr-confirm-preview">▶</span></div>
+    <div class="accordion-body" id="confirm-preview" style="margin-bottom:10px;"></div>
+    <button class="modal-btn modal-btn-success" onclick="executeReserve()">予約を確定する</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeModal('confirm-modal')">修正する</button>
+  </div>
+</div>
+
+<!-- 予約完了モーダル -->
+<div class="modal-overlay" id="complete-modal">
+  <div class="modal" style="text-align:center;">
+    <div class="modal-handle"></div>
+    <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px;">予約が完了しました！</div>
+    <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:16px;">
+      <span id="complete-msg">6月17日（水）13時ごろに<br>Instagram・Facebook・Xへ自動投稿されます。</span>
     </p>
-    <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:20px;text-align:left;">
-      📌 <strong>退会後のご案内</strong><br>
-      ・投稿予約は自動でキャンセルされます<br>
-      ・分析データは30日後に削除されます<br>
-      ・SNS連携の許可は各SNSの設定から解除できます
+    <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--text-sub);text-align:left;line-height:1.8;margin-bottom:8px;">
+      📋 予約確認から確認・編集・キャンセルができます
     </div>
-    <button class="modal-close" onclick="document.getElementById('cancel-complete-modal').classList.remove('open')">閉じる</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeModal('complete-modal')">閉じる</button>
   </div>
 </div>
 
-<!-- SNS連携解除の確認モーダル -->
-<div class="modal-overlay" id="sns-disconnect-modal" style="z-index:1030;">
-  <div class="modal" style="padding:24px 20px;text-align:center;">
-    <div style="font-size:40px;margin-bottom:12px;">⚠️</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:10px;" id="sns-disconnect-title">Instagramとの連携を解除しますか？</div>
-    <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:20px;text-align:left;background:var(--bg);border-radius:10px;padding:12px;">
-      解除すると、このSNSへの投稿予約・分析データの取得ができなくなります。<br><br>
-      再度連携するには、もう一度<span id="sns-disconnect-label">Instagram</span>での認可手続きが必要です。
-    </p>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-outline" style="flex:1;" onclick="closeSnsDisconnectModal()">キャンセル</button>
-      <button class="btn" style="flex:1;background:var(--danger);color:#fff;" onclick="confirmSnsDisconnect()">解除する</button>
-    </div>
-  </div>
-</div>
+<!-- トースト -->
 
-<!-- 用語説明モーダル -->
+
+<!-- ナビゲーションバー -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">投稿文作成</span></button>
+  <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">予約確認</span></button>
+  <button class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
+  <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
+  <button class="nav-item" onclick="navigateTo('support')"><span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span></button>
+  <button class="nav-item" onclick="navigateTo('plan')"><span class="nav-icon">💎</span><span class="nav-label">プラン</span></button>
+</nav>
+
 <script>
-// ===== LIFF初期化・GAS Webアプリ接続 =====
-let LINE_UID = null;
-let LINE_DISPLAY_NAME = '';
-let MASTER_DATA = null;
+let CHAR_LIMIT = 140; // 全角換算の文字数上限（PERSONAL以上：140字＝半角280字相当）※プランにより可変
+const PLAN_CHAR_LIMIT = { FREE: 70, PERSONAL: 140, LITE: 140, STANDARD: 140, PRO: 140 };
+const X_LIMIT = 140;
 
-const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
+// ===== LIFF初期化 =====
+let LINE_UID = null;
+let LAST_APPEAL_PATTERN = null; // executeGenerate()で確定した訴求パターンを、executeReserve()側で参照するための一時保存
 
 async function initLiff() {
   try {
-    await liff.init({ liffId: '2010401177-XJw2kDQV' });
+    await liff.init({ liffId: '2010401177-OpvemMmh' });
     if (!liff.isLoggedIn()) {
       liff.login();
       return;
     }
     const idToken = liff.getDecodedIDToken();
     LINE_UID = idToken.sub;
-    try {
-      const profile = await liff.getProfile();
-      LINE_DISPLAY_NAME = profile.displayName || '';
-    } catch (profileErr) {
-      LINE_DISPLAY_NAME = '';
-    }
-    await loadMasterDataAndPopulateForm();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
   }
 }
 
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a237e;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:3000;white-space:nowrap;';
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2000);
+// ===== キーワード =====
+// 入力済みキーワード（空欄を除く）を配列で取得
+function getKeywords() {
+  const result = [];
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('keyword-input-' + i);
+    const val = el ? el.value.trim() : '';
+    if (val) result.push(val);
+  }
+  return result;
 }
 
-function switchTab(id) {
-  const tabs = ['sns','account'];
-  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===id));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
+// ② キーワード入力欄の案内文（業種登録の有無で出し分け）
+function renderKeywordGuide() {
+  const el = document.getElementById('keyword-guide');
+  if (!el) return;
+  if (USER_GENRE) {
+    el.className = 'keyword-guide registered';
+    el.innerHTML = `<p>AIで投稿文を生成するには、キーワードの入力が必要です。なお、未入力のまま登録業種（${USER_GENRE.main}・${USER_GENRE.sub}）をもとに生成することもできます</p>`;
+  } else {
+    el.className = 'keyword-guide unregistered';
+    el.innerHTML = `<p>AIで投稿文を生成するには、キーワードを入力してください。</p><p>※業種を登録すると、キーワード未入力でも生成できるようになります</p>`;
+  }
 }
 
-// ===== デモ用プラン切替（SNS連携数の上限確認用） =====
-const SNS_ORDER = ['ig', 'fb', 'x', 'th'];
-const SNS_LABEL = { ig: 'Instagram', fb: 'Facebook', x: 'X', th: 'Threads' };
-const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 4 };
+// ===== ハッシュタグ =====
+const HASHTAG_RECOMMEND = { X: 2, IG: 5, FB: 3, TH: 1 };
+const HASHTAG_SNS_ORDER = ['X', 'IG', 'FB', 'TH'];
+
+// SNSごとに、チェックが入っている有効なハッシュタグ値を取得
+function getHashtagsForSns(sns) {
+  const result = [];
+  for (let i = 1; i <= 5; i++) {
+    const input = document.getElementById('hashtag-input-' + i);
+    const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
+    const val = input ? input.value.trim() : '';
+    if (val && cb && cb.checked) result.push(val);
+  }
+  return result;
+}
+
+// SNSごとのチェック可能な最大数（超えた分は自動で一番古いチェックを外す）
+const HASHTAG_SNS_MAX = { X: 3, IG: 5, FB: 5, TH: 1 };
+// SNSごとに、チェックした順番を記録（古い順）
+const hashtagCheckOrder = { X: [], IG: [], FB: [], TH: [] };
+
+// チェックボックスがクリックされた時に呼び出す（行番号・SNSを指定）
+// 上限を超える場合は、一番古くチェックされていた行を自動で外す（ラジオボタン的な挙動）
+function onHashtagCheckToggle(i, sns) {
+  const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
+  if (!cb) return;
+  const order = hashtagCheckOrder[sns];
+  const idx = order.indexOf(i);
+  if (cb.checked) {
+    if (idx === -1) order.push(i);
+    const max = HASHTAG_SNS_MAX[sns];
+    while (order.length > max) {
+      const oldest = order.shift();
+      const oldCb = document.getElementById(`hashtag-check-${oldest}-${sns}`);
+      if (oldCb) oldCb.checked = false;
+    }
+  } else if (idx !== -1) {
+    order.splice(idx, 1);
+  }
+  onHashtagChange();
+}
+
+// 入力欄が空の行はチェックボックスを自動的に外す（グレーアウトは行わない）
+function syncHashtagRowState() {
+  for (let i = 1; i <= 5; i++) {
+    const input = document.getElementById('hashtag-input-' + i);
+    const hasValue = input && input.value.trim() !== '';
+    HASHTAG_SNS_ORDER.forEach(sns => {
+      const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
+      if (!cb) return;
+      cb.disabled = !hasValue;
+      if (!hasValue && cb.checked) {
+        cb.checked = false;
+        const order = hashtagCheckOrder[sns];
+        const idx = order.indexOf(i);
+        if (idx !== -1) order.splice(idx, 1);
+      }
+    });
+  }
+}
+
+// ①で選択中のSNSに応じてチェック列の表示/非表示を切り替え
+function updateHashtagColumns() {
+  const checked = getCheckedSns();
+  HASHTAG_SNS_ORDER.forEach(sns => {
+    const isVisible = checked.includes(sns);
+    document.querySelectorAll('.hashtag-col-' + sns).forEach(el => {
+      el.style.display = isVisible ? '' : 'none';
+      // 非表示にする列は、裏側のチェックも解除して文字数計算に影響しないようにする
+      if (!isVisible) {
+        const cb = el.querySelector('input[type="checkbox"]');
+        if (cb && cb.checked) cb.checked = false;
+      }
+    });
+  });
+}
+
+// Xの本文＋ハッシュタグ合計文字数を計算
+// ハッシュタグは「Xにチェックが入っているもの」だけを対象とする
+function getXCombinedTotal() {
+  const text = document.getElementById('post-textarea').value;
+  const tags = getHashtagsForSns('X');
+  // 実際にXへ投稿される文字列を1つに組み立ててから、まとめて一度だけ計算する
+  // （本文・区切りスペース・ハッシュタグをそれぞれ個別に切り上げて足すと、
+  // 　実際より多くカウントされてしまうため）
+  let full = text;
+  if (tags.length) {
+    full += ' ' + tags.map(t => '#' + t).join(' ');
+  }
+  return countCharsX(full);
+}
+
+// ⑤ハッシュタグカード内にXのリアルタイム文字数ステータスを表示
+function updateHashtagXStatus() {
+  const el = document.getElementById('hashtag-x-status');
+  if (!el) return;
+  if (!getCheckedSns().includes('X')) {
+    el.className = 'hashtag-x-status';
+    el.style.display = 'none';
+    el.textContent = '';
+    return;
+  }
+  el.style.display = 'flex';
+  const total = getXCombinedTotal();
+  if (total > X_LIMIT) {
+    el.className = 'hashtag-x-status error';
+    el.textContent = '🐦 Xだけ投稿エラー：' + total + ' / ' + X_LIMIT + '文字（' + (total - X_LIMIT) + '文字オーバー）／他のSNSは予約できます';
+  } else {
+    el.className = 'hashtag-x-status ok';
+    el.textContent = '🐦 Xの上限内：' + total + ' / ' + X_LIMIT + '文字';
+  }
+}
+
+// ハッシュタグ入力欄・チェックボックスの変更時に呼び出す
+// 入力欄に#や全角/半角スペースが混入していた場合、自動で除去する
+function sanitizeHashtagInputs() {
+  for (let i = 1; i <= 5; i++) {
+    const input = document.getElementById('hashtag-input-' + i);
+    if (!input) continue;
+    const cleaned = input.value.replace(/[#＃\s]/g, '');
+    if (cleaned !== input.value) input.value = cleaned;
+  }
+}
+
+function onHashtagChange() {
+  sanitizeHashtagInputs();
+  syncHashtagRowState();
+  updateCharCount();
+}
+
+// AI生成結果のハッシュタグを反映し、SNS別の推奨数だけ初期チェックを入れる
+function setGeneratedHashtags(tags) {
+  for (let i = 1; i <= 5; i++) {
+    const input = document.getElementById('hashtag-input-' + i);
+    if (input) input.value = tags[i - 1] || '';
+  }
+  syncHashtagRowState();
+  HASHTAG_SNS_ORDER.forEach(sns => {
+    const max = HASHTAG_RECOMMEND[sns];
+    hashtagCheckOrder[sns] = [];
+    for (let i = 1; i <= 5; i++) {
+      const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
+      if (!cb || cb.disabled) continue;
+      cb.checked = i <= max;
+      if (cb.checked) hashtagCheckOrder[sns].push(i);
+    }
+  });
+  updateCharCount();
+}
+
+
+// 訴求パターンボタンの表示文言 → GAS側が期待する内部値の対応表
+const PATTERN_LABEL_MAP = {
+  '限定': '①限定',
+  'お得': '②お得',
+  '悩み解決': '③悩み解決',
+  'トレンド': '④トレンド',
+  '信頼': '⑤信頼',
+  '季節': '⑥季節',
+  '新登場': '⑦新登場',
+  '地域密着': '⑧地域密着'
+};
+
+function getSelectedAppealPattern() {
+  const selectedBtn = document.querySelector('.pattern-btn.selected');
+  if (!selectedBtn) return null;
+  // ボタンをクローンし、アイコン用span（.pattern-icon）を除去してから
+  // テキストを取得する（絵文字込みの文字列がPATTERN_LABEL_MAPの
+  // キーと一致しない不具合の修正）
+  const clone = selectedBtn.cloneNode(true);
+  const icon = clone.querySelector('.pattern-icon');
+  if (icon) icon.remove();
+  const label = clone.textContent.trim();
+  return PATTERN_LABEL_MAP[label] || null;
+}
+
+function getSnsTargets() {
+  return {
+    x: !!document.querySelector('.sns-check-item.checked .sns-x'),
+    instagram: !!document.querySelector('.sns-check-item.checked .sns-ig'),
+    facebook: !!document.querySelector('.sns-check-item.checked .sns-fb'),
+    threads: !!document.querySelector('.sns-check-item.checked .sns-th')
+  };
+}
+
+function selectPattern(btn) {
+  document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  setStep(2);
+}
+
+// ===== AI生成 =====
+// ===== デモ用業種データ（実装時はGASから取得） =====
+// null = 業種未登録・値あり = 登録済み
+const USER_GENRE = { main: 'カフェ・喫茶店', sub: '和スイーツ' }; // デモ：登録済み状態
+// const USER_GENRE = null; // デモ：未登録状態
+
+function confirmAndGenerate() {
+  // キーワード取得
+  const hasKeyword = getKeywords().length > 0;
+
+  // 業種未登録・キーワード未入力の場合はアラート
+  if (!USER_GENRE && !hasKeyword) {
+    alert('キーワードを入力してください。\n業種が未登録の場合、キーワードの入力が必要です。');
+    document.getElementById('keyword-input-1').focus();
+    return;
+  }
+
+  // テキストエリアに文章がある場合は上書き確認
+  const ta = document.getElementById('post-textarea');
+  if (ta.value.trim() !== '') {
+    document.getElementById('overwrite-modal').classList.add('open');
+  } else {
+    executeGenerate();
+  }
+}
+
+async function executeGenerate() {
+  closeModal('overwrite-modal');
+  document.getElementById('generate-btn').disabled = true;
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('genre-notice').style.display = 'none';
+  document.getElementById('content-wrap').style.pointerEvents = 'none';
+  setStep(3);
+
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('generate-btn').disabled = false;
+    document.getElementById('content-wrap').style.pointerEvents = '';
+    return;
+  }
+
+  const keywords = getKeywords(); // 既存関数。配列（0〜3件）を返す想定
+  const includeFlags = getIncludeFlags(); // liff_textgen_UI追加_01で追加済み
+  const appealPatternOverride = getSelectedAppealPattern();
+
+  const requestPayload = {
+    action: 'generateText',
+    lineUid: LINE_UID,
+    params: {
+      keyword1: keywords[0] || '',
+      keyword2: keywords[1] || '',
+      keyword3: keywords[2] || '',
+      includeShopName: includeFlags.includeShopName,
+      includeArea: includeFlags.includeArea,
+      appealPatternOverride: appealPatternOverride
+    }
+  };
+
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // CORSプリフライト回避のためtext/plainで送る
+      body: JSON.stringify(requestPayload)
+    });
+    const result = await response.json();
+
+    if (!result.success) {
+      alert('生成に失敗しました：' + result.error);
+      setStep(2);
+      return;
+    }
+
+    const ta = document.getElementById('post-textarea');
+    ta.value = result.data.generatedText;
+    LAST_APPEAL_PATTERN = result.data.appealPattern;
+
+    // ハッシュタグも続けて生成する
+    const hashtagPayload = {
+      action: 'generateHashtags',
+      lineUid: LINE_UID,
+      params: {
+        text: result.data.generatedText,
+        businessMajor: result.data.businessMajor,
+        businessMinor: result.data.businessMinor
+      }
+    };
+    const hashtagResponse = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(hashtagPayload)
+    });
+    const hashtagResult = await hashtagResponse.json();
+    if (hashtagResult.success) {
+      // setGeneratedHashtags()は既存実装上「#」なし前提（HTML側に静的な
+      // 「#」プレフィックスが別途表示されるため）。API応答は「#」付きの
+      // 配列で返るため、ここで「#」を除去してから渡す。
+      setGeneratedHashtags(hashtagResult.data.map(h => h.replace(/^#/, '')));
+    }
+
+    // 業種ベース生成（キーワード未入力）の場合は既存の通知を表示
+    const hasKeyword = keywords.length > 0;
+    if (USER_GENRE && !hasKeyword) {
+      document.getElementById('genre-label').textContent = `${result.data.businessMajor}・${result.data.businessMinor}`;
+      document.getElementById('genre-notice').style.display = 'block';
+    }
+
+    setStep(4);
+    updateCharCount();
+    ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  } catch (err) {
+    console.error('生成リクエストエラー:', err);
+    alert('通信エラーが発生しました。もう一度お試しください。');
+    setStep(2);
+  } finally {
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('generate-btn').disabled = false;
+    document.getElementById('content-wrap').style.pointerEvents = '';
+  }
+}
+
+
+// ハッシュタグをタグ形式でレンダリング}
+
+// ===== 下書き =====
+let draftSaved = false;
+function saveDraft() {
+  const ta = document.getElementById('post-textarea');
+  if (!ta.value.trim()) { alert('文章を入力してから保存してください。'); return; }
+  if (draftSaved && !confirm('保存済みの下書きを上書きしますか？')) return;
+  window._draft = ta.value;
+  draftSaved = true;
+  const toast = document.getElementById('draft-toast');
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 2000);
+}
+
+// ===== 文字数カウント（X公式仕様準拠・軽量版） =====
+// 方針：CJK文字=2ウェイト・半角英数記号=1ウェイト・絵文字=2ウェイト
+// NFC正規化・サロゲートペア対応・ZWJ/VS/RI/Keycapは安全側の一律2ウェイト
+// URL掲載禁止のためURL=23文字固定処理は不要
+
+function countCharsX(text) {
+  // NFC正規化
+  text = text.normalize('NFC');
+
+  let weight = 0;
+  const codePoints = [...text]; // サロゲートペアをコードポイント単位に展開
+
+  let i = 0;
+  while (i < codePoints.length) {
+    const cp = codePoints[i].codePointAt(0);
+
+    // CR+LF を1文字として処理
+    if (cp === 0x0D && i + 1 < codePoints.length && codePoints[i + 1].codePointAt(0) === 0x0A) {
+      weight += 1;
+      i += 2;
+      continue;
+    }
+
+    // ASCII文字（U+0020〜U+007E）= 1ウェイト
+    if (cp >= 0x0020 && cp <= 0x007E) {
+      weight += 1;
+      i++;
+      continue;
+    }
+
+    // CJK・ひらがな・カタカナ・全角記号 = 2ウェイト
+    if (
+      (cp >= 0x3000 && cp <= 0x9FFF) ||   // CJK・ひらがな・カタカナ等
+      (cp >= 0xF900 && cp <= 0xFAFF) ||   // CJK互換漢字
+      (cp >= 0xFF00 && cp <= 0xFFEF) ||   // 全角英数・半角カタカナ
+      (cp >= 0x20000 && cp <= 0x2A6DF) || // CJK統合漢字拡張B
+      (cp >= 0x2A700 && cp <= 0x2CEAF)    // CJK統合漢字拡張C〜E
+    ) {
+      weight += 2;
+      i++;
+      continue;
+    }
+
+    // 改行（LF）= 1ウェイト
+    if (cp === 0x0A) {
+      weight += 1;
+      i++;
+      continue;
+    }
+
+    // 絵文字・その他（BMP外・U+10000以上）= 2ウェイト
+    // ZWJ（U+200D）・VS-15（U+FE0E）・VS-16（U+FE0F）・
+    // Regional Indicator（U+1F1E0〜U+1F1FF）・Fitzpatrick修飾子（U+1F3FB〜U+1F3FF）
+    // Keycap結合文字（U+20E3）も全て2ウェイトで安全側にカウント
+    weight += 2;
+    i++;
+  }
+
+  // 0.5単位で丸め（Xは0.5単位）→ 表示上は切り上げで140文字制限に合わせる
+  return Math.ceil(weight / 2);
+}
+
+// 後方互換用（他箇所で呼ばれている場合）
+function countChars(text) {
+  return countCharsX(text);
+}
+
+// 本文が全角換算140字を超えないよう、超過分を末尾から物理的に削る
+function enforceCharLimit(ta) {
+  let text = ta.value;
+  if (countCharsX(text) <= CHAR_LIMIT) return;
+  while (countCharsX(text) > CHAR_LIMIT && text.length > 0) {
+    text = text.slice(0, -1);
+  }
+  if (text !== ta.value) {
+    ta.value = text;
+    ta.selectionStart = ta.selectionEnd = text.length;
+  }
+}
+function updateCharCount() {
+  const ta = document.getElementById('post-textarea');
+  enforceCharLimit(ta);
+  const text = ta.value;
+  const count = countChars(text);
+  const ratio = count / CHAR_LIMIT;
+  const countEl = document.getElementById('char-count');
+  const barEl = document.getElementById('char-bar');
+  countEl.textContent = count + '文字';
+  barEl.style.width = Math.min(ratio * 100, 100) + '%';
+  countEl.className = 'char-count';
+  barEl.className = 'char-bar-fill';
+  ta.className = 'post-textarea';
+  if (count > CHAR_LIMIT) {
+    countEl.classList.add('over'); barEl.classList.add('over'); ta.classList.add('over');
+    countEl.textContent = count + '文字（' + (count - CHAR_LIMIT) + '文字オーバー）';
+  } else if (ratio > 0.8) {
+    countEl.classList.add('warn'); barEl.classList.add('warn'); ta.classList.add('warn');
+  }
+  const hasUrl = /https?:\/\//.test(text);
+  const xSelected = getCheckedSns().includes('X');
+  document.getElementById('url-warning').classList.toggle('show', hasUrl && xSelected);
+  const xWarn = document.getElementById('x-warning');
+  const xTotal = getXCombinedTotal();
+  if (hasUrl || !xSelected) {
+    xWarn.classList.remove('show', 'ok', 'error');
+  } else if (xTotal > X_LIMIT) {
+    xWarn.classList.add('show', 'error');
+    xWarn.classList.remove('ok');
+    xWarn.innerHTML = '🐦 <strong>Xだけ投稿エラーになります</strong><br>' + xTotal + ' / ' + X_LIMIT + '文字（' + (xTotal - X_LIMIT) + '文字オーバー）。Xは予約されませんが、他のSNSは通常通り予約できます。';
+  } else {
+    xWarn.classList.add('show', 'ok');
+    xWarn.classList.remove('error');
+    xWarn.innerHTML = '🐦 Xの上限内におさまっています（' + xTotal + ' / ' + X_LIMIT + '文字）';
+  }
+  updateHashtagXStatus();
+  if (text.trim()) setStep(4);
+}
+
+// ===== SNS =====
+// ===== デモ用プラン切替（プラン別のSNS制限確認用） =====
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
-let currentDemoPlan = 'STANDARD';
 
 function setDemoPlan(plan) {
-  currentDemoPlan = plan;
   ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'].forEach(p => {
     document.getElementById('plan-demo-' + p).classList.toggle('active', p === plan);
   });
   document.getElementById('plan-badge').textContent = plan;
   document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
 
-  // FREEプランはXと連携できないため、Xが連携済みなら自動的に解除
-  if (plan === 'FREE' && isConnected('x')) disconnectSns('x');
-
-  // 新しい上限を超えている分は、連携が古い順（ig→fb→x→th）に自動解除
-  const limit = PLAN_SNS_LIMIT[plan];
-  let connectedList = SNS_ORDER.filter(isConnected);
-  while (connectedList.length > limit) {
-    disconnectSns(connectedList[connectedList.length - 1]);
-    connectedList = SNS_ORDER.filter(isConnected);
+  const xItem = document.getElementById('sns-item-x');
+  const xNote = document.getElementById('sns-plan-note');
+  if (plan === 'FREE') {
+    // FREEプランはXを選択できないため、チェックを外して選択不可にする
+    if (xItem.classList.contains('checked')) {
+      xItem.classList.remove('checked');
+      xItem.querySelector('.sns-checkbox').textContent = '';
+    }
+    xItem.classList.add('disabled');
+    xItem.onclick = null;
+    xNote.style.display = 'block';
+  } else {
+    xItem.classList.remove('disabled');
+    xItem.onclick = () => toggleSns(xItem);
+    xNote.style.display = 'none';
   }
+  updateHashtagColumns();
 
-  updateSnsSummary();
+  // プランに応じて文字数上限・入力欄の高さ・上限表示ラベルを切り替え
+  CHAR_LIMIT = PLAN_CHAR_LIMIT[plan];
+  const ta = document.getElementById('post-textarea');
+  ta.style.minHeight = (plan === 'FREE') ? '160px' : '280px';
+  const label = document.getElementById('char-limit-label');
+  label.textContent = (plan === 'FREE')
+    ? '上限70字（半角140字）'
+    : '上限140字（半角280字）';
+
+  updateCharCount();
 }
 
-function isConnected(sns) {
-  const el = document.getElementById('sns-item-' + sns);
-  return el && el.classList.contains('connected');
+function toggleSns(el) {
+  el.classList.toggle('checked');
+  el.querySelector('.sns-checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
+  updateHashtagColumns();
+  // 選択を外したSNSに紐づくハッシュタグのチェックも、見えなくなると同時に解除する
+  const checkedSns = getCheckedSns();
+  HASHTAG_SNS_ORDER.forEach(sns => {
+    if (checkedSns.includes(sns)) return;
+    for (let i = 1; i <= 5; i++) {
+      const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
+      if (cb) cb.checked = false;
+    }
+    hashtagCheckOrder[sns] = [];
+  });
+  updateCharCount();
 }
 
-function connectSns(sns) {
-  document.getElementById('sns-item-' + sns).classList.add('connected');
-  document.getElementById('sns-status-' + sns).textContent = '✓ 連携済み';
-  document.getElementById('sns-status-' + sns).classList.add('ok');
-  const btn = document.getElementById('sns-btn-' + sns);
-  btn.textContent = '解除';
-  btn.classList.remove('btn-connect');
-  btn.classList.add('btn-disconnect');
+// ★toggleSns(el)の実装（checkedクラスの付け外し＋sns-checkboxのテキスト切り替え）に
+// 合わせて、見た目のON/OFF表現を完全に一致させている
+function toggleInclude(el) {
+  el.classList.toggle('checked');
+  el.querySelector('.sns-checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
 }
 
-function disconnectSns(sns) {
-  document.getElementById('sns-item-' + sns).classList.remove('connected');
-  document.getElementById('sns-status-' + sns).textContent = '未連携';
-  document.getElementById('sns-status-' + sns).classList.remove('ok');
-  const btn = document.getElementById('sns-btn-' + sns);
-  btn.textContent = '連携';
-  btn.classList.remove('btn-disconnect');
-  btn.classList.add('btn-connect');
-}
-
-// SNSの連携・解除ボタンから呼ばれる
-let pendingDisconnectSns = null;
-
-function toggleSnsConnection(sns) {
-  if (isConnected(sns)) {
-    pendingDisconnectSns = sns;
-    const label = SNS_LABEL[sns];
-    document.getElementById('sns-disconnect-title').textContent = label + 'との連携を解除しますか？';
-    document.getElementById('sns-disconnect-label').textContent = label;
-    document.getElementById('sns-disconnect-modal').classList.add('open');
-    return;
-  }
-  // FREEプランはXと連携できない
-  if (sns === 'x' && currentDemoPlan === 'FREE') {
-    alert('FREEプランではXと連携できません。');
-    return;
-  }
-  // 現在のプランの連携上限をチェック
-  const limit = PLAN_SNS_LIMIT[currentDemoPlan];
-  const connectedCount = SNS_ORDER.filter(isConnected).length;
-  if (connectedCount >= limit) {
-    alert('現在の' + currentDemoPlan + 'プランでは、SNSは' + limit + 'つまでしか連携できません。\n他のSNSの連携を解除するか、プランをアップグレードしてください。');
-    return;
-  }
-  connectSns(sns);
-  updateSnsSummary();
-}
-
-// サブバー「連携中：」表示・カード見出しの件数表示を更新
-function updateSnsSummary() {
-  const connectedList = SNS_ORDER.filter(isConnected);
-  const limit = PLAN_SNS_LIMIT[currentDemoPlan];
-  document.getElementById('sns-connected-title').textContent = `連携状況（${connectedList.length}/${limit}）`;
-
-  const planSns = document.getElementById('plan-sns');
-  planSns.innerHTML = '<span>連携中：</span>' + connectedList.map(s =>
-    `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${SNS_LABEL[s]}</span>`
-  ).join('');
-}
-
-function closeSnsDisconnectModal() {
-  document.getElementById('sns-disconnect-modal').classList.remove('open');
-  pendingDisconnectSns = null;
-}
-
-function confirmSnsDisconnect() {
-  if (pendingDisconnectSns) {
-    disconnectSns(pendingDisconnectSns);
-    updateSnsSummary();
-  }
-  closeSnsDisconnectModal();
-}
-
-function showCancelScreen() {
-  document.getElementById('main-account').classList.add('hidden');
-  document.getElementById('cancel-screen').classList.add('open');
-  // 「退会について」カードは画面下部にあるため、切り替え後は
-  // 必ず先頭（アンケートが見える位置）までスクロールを戻す
-  window.scrollTo(0, 0);
-}
-function hideCancelScreen() {
-  document.getElementById('main-account').classList.remove('hidden');
-  document.getElementById('cancel-screen').classList.remove('open');
-  window.scrollTo(0, 0);
-}
-
-/**
- * 退会を申請する。
- * アンケート回答（任意）を取得し、退会完了モーダルを表示する。
- * 実際のGAS送信処理（退会理由をユーザー管理シートの
- * 「退会理由（選択式）」「退会理由（自由記述）」列へ書き込む処理）は
- * 別途バックエンド実装で対応する。ここではフロント側の値取得のみ
- * 行い、送信ペイロードをコンソールに出力する形にしている。
- */
-function showCancelComplete() {
-  const selectedReason = document.querySelector('input[name="cancel-reason"]:checked');
-  const cancelReason = selectedReason ? selectedReason.value : '';
-  const cancelReasonDetail = document.getElementById('cancel-reason-detail').value.trim();
-
-  // TODO: 本番実装時、以下のペイロードをGAS（forceWithdrawUser相当の
-  // ユーザー自身による退会申請処理）に送信し、ユーザー管理シートの
-  // 「退会理由（選択式）」「退会理由（自由記述）」列へ反映する。
-  const cancelPayload = {
-    reason: cancelReason,       // 未回答の場合は空文字列
-    reasonDetail: cancelReasonDetail // 未回答の場合は空文字列
+function getIncludeFlags() {
+  return {
+    includeShopName: document.getElementById('include-shopname-item').classList.contains('checked'),
+    includeArea: document.getElementById('include-area-item').classList.contains('checked')
   };
-  console.log('退会アンケート回答（送信予定）:', cancelPayload);
-
-  document.getElementById('cancel-complete-modal').classList.add('open');
 }
 
-// ===== マスタデータ取得・フォーム反映・保存処理 =====
-async function loadMasterDataAndPopulateForm() {
-  try {
-    const response = await fetch(WEBAPP_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'getMasterData', lineUid: LINE_UID, params: {} })
-    });
-    const result = await response.json();
-    if (!result.success) {
-      alert('業種・エリアの選択肢の取得に失敗しました：' + result.error);
+// ===== 画像選択 =====
+let selectedImage = null;
+function switchImgTab(id, btn) {
+  document.querySelectorAll('.img-tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.img-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('img-tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+function selectImage(el, emoji, name) {
+  document.querySelectorAll('.image-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedImage = { emoji, name };
+  document.getElementById('img-selected-bar').classList.add('show');
+  document.getElementById('img-selected-thumb').textContent = emoji;
+  document.getElementById('img-selected-name').textContent = name;
+  document.getElementById('no-image-opt').classList.remove('selected');
+}
+function clearImageSelection() {
+  resetImageUpload();
+}
+function filterCat(btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ===== カレンダー =====
+const postCounts = {}; // 実際の予約件数との連動は別途今後の課題。当面は空のままでよい
+
+function isPastDate(y, m, d) {
+  const target = new Date(y, m - 1, d);
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return target < todayStart;
+}
+
+const _today = new Date();
+let calYear = _today.getFullYear();
+let calMonth = _today.getMonth() + 1; // 1〜12
+let selectedDay = null;
+let selectedMonth = null;
+let selectedYear = null;
+
+function buildCalendar() {
+  const grid = document.getElementById('cal-dates');
+  grid.innerHTML = '';
+  document.getElementById('cal-title').textContent = calYear + '年' + calMonth + '月';
+
+  const firstDayOfWeek = new Date(calYear, calMonth - 1, 1).getDay(); // 0=日曜
+  const daysInMonth = new Date(calYear, calMonth, 0).getDate();
+
+  for (let i = 0; i < firstDayOfWeek; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'cal-date other-month';
+    grid.appendChild(blank);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    const dayOfWeek = (firstDayOfWeek + d - 1) % 7;
+    let cls = 'cal-date';
+    const isPast = isPastDate(calYear, calMonth, d);
+    if (isPast) cls += ' past';
+    if (dayOfWeek === 0) cls += ' sunday';
+    if (dayOfWeek === 6) cls += ' saturday';
+    const now = new Date();
+    if (calYear === now.getFullYear() && calMonth === now.getMonth() + 1 && d === now.getDate()) {
+      cls += ' today';
+    }
+    if (postCounts[d]) cls += ' has-post';
+    if (calYear === selectedYear && calMonth === selectedMonth && d === selectedDay) cls += ' selected';
+    el.className = cls;
+    const count = postCounts[d];
+    if (count) {
+      el.innerHTML = '<span>' + d + '</span><span class="cal-post-count">' + count + '</span>';
+    } else {
+      el.textContent = d;
+    }
+    if (!isPast) el.onclick = () => selectCalDay(d);
+    grid.appendChild(el);
+  }
+}
+
+function selectCalDay(d) {
+  if (isPastDate(calYear, calMonth, d)) return;
+  selectedDay = d;
+  selectedMonth = calMonth;
+  selectedYear = calYear;
+  buildCalendar();
+  const bar = document.getElementById('selected-date-bar');
+  bar.classList.add('show');
+  const count = postCounts[d] || 0;
+  document.getElementById('selected-date-label').textContent =
+    calMonth + '月' + d + '日を選択中' + (count > 0 ? '（既に' + count + '件予約あり）' : '');
+  updateTimeOptions();
+  setStep(5);
+}
+
+// 選択日が本日の場合、現在時刻より前の時間帯を選択不可にする
+function updateTimeOptions() {
+  const select = document.getElementById('post-time');
+  const hint = document.getElementById('time-past-hint');
+  const now = new Date();
+  const isToday = (selectedYear === now.getFullYear() && selectedMonth === now.getMonth() + 1 && selectedDay === now.getDate());
+  const currentHour = now.getHours();
+  let disabledAny = false;
+
+  [...select.options].forEach(opt => {
+    const hour = parseInt(opt.value, 10);
+    const isPast = isToday && hour <= currentHour;
+    opt.disabled = isPast;
+    if (isPast) disabledAny = true;
+  });
+
+  // 選択中のオプションが無効化された場合、選択可能な最初の時間に自動で切り替える
+  if (select.selectedOptions[0] && select.selectedOptions[0].disabled) {
+    const firstEnabled = [...select.options].find(o => !o.disabled);
+    if (firstEnabled) select.value = firstEnabled.value;
+  }
+
+  hint.style.display = (isToday && disabledAny) ? 'block' : 'none';
+}
+
+function prevMonth() {
+  calMonth--;
+  if (calMonth < 1) { calMonth = 12; calYear--; }
+  buildCalendar();
+}
+
+function nextMonth() {
+  calMonth++;
+  if (calMonth > 12) { calMonth = 1; calYear++; }
+  buildCalendar();
+}
+
+// ===== 予約確認 =====
+function showConfirm() {
+  const ta = document.getElementById('post-textarea');
+  if (!ta.value.trim()) { alert('文章を入力してください。'); return; }
+  if (!selectedDay) { alert('投稿日を選んでください。'); return; }
+
+  // 本日選択時、既に過ぎた時間帯が選ばれていないか再チェック
+  const _now = new Date();
+  if (selectedYear === _now.getFullYear() && selectedMonth === _now.getMonth() + 1 && selectedDay === _now.getDate()) {
+    const selectedHour = parseInt(document.getElementById('post-time').value, 10);
+    if (selectedHour <= new Date().getHours()) {
+      alert('選択した時間帯は既に過ぎています。\n投稿時間を選び直してください。');
+      updateTimeOptions();
       return;
     }
-    MASTER_DATA = result.data;
-
-    const majorSelect = document.getElementById('business-major-select');
-    majorSelect.innerHTML = '';
-    MASTER_DATA.businessCategories.forEach(function(cat) {
-      const opt = document.createElement('option');
-      opt.value = cat.major;
-      opt.textContent = cat.major;
-      majorSelect.appendChild(opt);
-    });
-    majorSelect.addEventListener('change', function(e) {
-      populateMinorOptions(e.target.value);
-    });
-    populateMinorOptions(majorSelect.value);
-
-    const prefSelect = document.getElementById('prefecture-select');
-    prefSelect.innerHTML = '';
-    MASTER_DATA.prefectures.forEach(function(pref) {
-      const opt = document.createElement('option');
-      opt.value = pref;
-      opt.textContent = pref;
-      prefSelect.appendChild(opt);
-    });
-  } catch (err) {
-    console.error('マスタデータ取得エラー:', err);
-    alert('通信エラーが発生しました。もう一度お試しください。');
   }
+
+  // URL・文字数超過：Xだけ対応不可のため、状況に応じて除外またはブロック
+  const hasUrl = /https?:\/\//.test(ta.value);
+  const checkedItems = [...document.querySelectorAll('.sns-check-item.checked')];
+  const xChecked = checkedItems.some(el => el.querySelector('.sns-icon-sm').classList.contains('sns-x'));
+  let xExcluded = false;
+  let xExcludeReason = '';
+
+  if (hasUrl && xChecked) {
+    if (checkedItems.length === 1) {
+      // Xのみ選択している場合は予約自体をブロック
+      alert('投稿文にURLが含まれているため、Xへは投稿できません。\nXのみが選択されているため、このままでは予約できません。\nURLを削除するか、他のSNSも選択してください。');
+      return;
+    }
+    xExcluded = true;
+    xExcludeReason = 'url';
+  }
+
+  // Xの文字数上限チェック（URLで既に除外が決まっている場合はスキップ）
+  if (!xExcluded && xChecked) {
+    const xTotal = getXCombinedTotal();
+    if (xTotal > CHAR_LIMIT) {
+      if (checkedItems.length === 1) {
+        // Xのみ選択している場合は予約自体をブロック
+        alert('本文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nXのみが選択されているため、このままでは予約できません。\n本文またはハッシュタグを短くしてください。');
+        return;
+      }
+      xExcluded = true;
+      xExcludeReason = 'char';
+    }
+  }
+
+  // 画像状態確認
+  if (imageState === null) {
+    if (!confirm('画像が選択されていません。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。')) return;
+    imageState = 'none';
+  }
+
+  const snsNames = checkedItems
+    .filter(el => !(xExcluded && el.querySelector('.sns-icon-sm').classList.contains('sns-x')))
+    .map(el => el.querySelector('.sns-check-name').textContent).join('・');
+  const timeSelectEl = document.getElementById('post-time');
+  const time = timeSelectEl.selectedOptions[0] ? timeSelectEl.selectedOptions[0].textContent : timeSelectEl.value;
+  document.getElementById('confirm-sns').textContent = snsNames || '未選択';
+
+  const urlNote = document.getElementById('confirm-url-note');
+  if (xExcludeReason === 'url') {
+    urlNote.style.display = 'block';
+    urlNote.textContent = '🐦 投稿文にURLが含まれているため、Xは自動的に除外されました。';
+  } else if (xExcludeReason === 'char') {
+    urlNote.style.display = 'block';
+    urlNote.textContent = '🐦 本文＋ハッシュタグの文字数がXの上限を超えているため、Xは自動的に除外されました。';
+  } else {
+    urlNote.style.display = 'none';
+    urlNote.textContent = '';
+  }
+
+  document.getElementById('confirm-date').textContent = selectedMonth + '月' + selectedDay + '日 ' + time;
+
+  // モーダルを開くたびにプレビューの開閉状態をリセット（閉じた状態から開始）
+  const previewBody = document.getElementById('confirm-preview');
+  const previewArr = document.getElementById('arr-confirm-preview');
+  previewBody.classList.remove('open');
+  if (previewArr) previewArr.style.transform = '';
+
+  // SNSごとの投稿文プレビューを生成
+  const SNS_CODE_MAP = { 'sns-x': 'X', 'sns-ig': 'IG', 'sns-fb': 'FB', 'sns-th': 'TH' };
+  const SNS_ICON_MAP = { X: '🐦', IG: '📱', FB: '💻', TH: '🧵' };
+  const previewTargets = checkedItems.filter(el => {
+    const isX = el.querySelector('.sns-icon-sm').classList.contains('sns-x');
+    return !(xExcluded && isX);
+  });
+  const previewEl = document.getElementById('confirm-preview');
+  previewEl.innerHTML = previewTargets.map(el => {
+    const iconEl = el.querySelector('.sns-icon-sm');
+    const codeClass = [...iconEl.classList].find(c => SNS_CODE_MAP[c]);
+    const code = SNS_CODE_MAP[codeClass];
+    const name = el.querySelector('.sns-check-name').textContent;
+    const tags = getHashtagsForSns(code);
+    const tagText = tags.length ? ' ' + tags.map(t => '#' + t).join(' ') : '';
+    const bodyText = (ta.value + tagText) || '（本文なし）';
+    return `<div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:6px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">${SNS_ICON_MAP[code] || ''} ${name}</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.7;white-space:pre-wrap;">${bodyText.replace(/</g,'&lt;')}</div>
+    </div>`;
+  }).join('');
+
+  // 画像状態を正確に表示
+  let imageLabel = '';
+  if (imageState === 'none') imageLabel = '画像なし';
+  else if (imageState === 'trimmed') imageLabel = 'トリミング済み（' + Object.keys(trimResults).join('・') + '）';
+  else if (imageState === 'raw') imageLabel = 'マイ画像（トリミングなし）';
+  else imageLabel = '未選択';
+  document.getElementById('confirm-image').textContent = imageLabel;
+
+  document.getElementById('confirm-remain').textContent = '残り22件 / 30件';
+  document.getElementById('confirm-modal').classList.add('open');
 }
 
-function populateMinorOptions(selectedMajor) {
-  const minorSelect = document.getElementById('business-minor-select');
-  minorSelect.innerHTML = '';
-  const category = MASTER_DATA.businessCategories.find(function(c) {
-    return c.major === selectedMajor;
-  });
-  const minors = category ? category.minors : [];
-  minors.forEach(function(minor) {
-    const opt = document.createElement('option');
-    opt.value = minor;
-    opt.textContent = minor;
-    minorSelect.appendChild(opt);
-  });
-}
+async function executeReserve() {
+  const btn = document.querySelector('.modal-btn-success');
+  if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
 
-async function saveShopInfo() {
   if (!LINE_UID) {
     alert('LINEアプリ内でこの画面を開いてください。');
+    if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
+    return;
+  }
+  if (!selectedYear || !selectedMonth || !selectedDay) {
+    alert('投稿日を選んでください。');
+    if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
     return;
   }
 
-  const shopName = document.getElementById('shop-name-input').value.trim();
-  const businessMajor = document.getElementById('business-major-select').value;
-  const businessMinor = document.getElementById('business-minor-select').value;
-  const prefecture = document.getElementById('prefecture-select').value;
+  const keywords = getKeywords();
+  const includeFlags = getIncludeFlags();
+  const snsTargets = getSnsTargets();
+  const time = document.getElementById('post-time').value;
+  const scheduledAt = new Date(selectedYear, selectedMonth - 1, selectedDay, parseInt(time, 10), 0, 0).toISOString();
 
   const requestPayload = {
-    action: 'updateUserProfile',
+    action: 'createReservation',
     lineUid: LINE_UID,
     params: {
-      lineName: LINE_DISPLAY_NAME,
-      businessMajor: businessMajor,
-      businessMinor: businessMinor,
-      prefecture: prefecture,
-      shopName: shopName
+      keyword1: keywords[0] || '',
+      keyword2: keywords[1] || '',
+      keyword3: keywords[2] || '',
+      includeShopName: includeFlags.includeShopName,
+      includeArea: includeFlags.includeArea,
+      appealPattern: LAST_APPEAL_PATTERN || '⑦新登場',
+      generatedText: document.getElementById('post-textarea').value,
+      hashtagsBySns: {
+        x: getHashtagsForSns('X'),
+        instagram: getHashtagsForSns('IG'),
+        facebook: getHashtagsForSns('FB'),
+        threads: getHashtagsForSns('TH')
+      },
+      scheduledAt: scheduledAt,
+      snsTargets: snsTargets
     }
   };
 
@@ -900,78 +2037,945 @@ async function saveShopInfo() {
     const result = await response.json();
 
     if (!result.success) {
-      alert('保存に失敗しました：' + result.error);
+      alert('予約の確定に失敗しました：' + result.error);
+      if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
       return;
     }
-    showToast('店舗情報を保存しました');
+
+    const snsNames = document.getElementById('confirm-sns').textContent;
+    const dateText = document.getElementById('confirm-date').textContent;
+    document.getElementById('complete-msg').innerHTML = dateText + 'に<br>' + snsNames + 'へ自動投稿されます。';
+
+    closeModal('confirm-modal');
+    document.getElementById('complete-modal').classList.add('open');
+
+    resetAllForm();
+
   } catch (err) {
-    console.error('保存リクエストエラー:', err);
+    console.error('予約確定リクエストエラー:', err);
     alert('通信エラーが発生しました。もう一度お試しください。');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
   }
+}
+
+function resetAllForm() {
+  // 文章
+  const ta = document.getElementById('post-textarea');
+  if (ta) ta.value = '';
+  updateCharCount();
+
+  // キーワード
+  for (let i = 1; i <= 3; i++) {
+    const kw = document.getElementById('keyword-input-' + i);
+    if (kw) kw.value = '';
+  }
+
+  // ハッシュタグ
+  for (let i = 1; i <= 5; i++) {
+    const hw = document.getElementById('hashtag-input-' + i);
+    if (hw) hw.value = '';
+  }
+  HASHTAG_SNS_ORDER.forEach(sns => { hashtagCheckOrder[sns] = []; });
+  syncHashtagRowState();
+  updateCharCount();
+
+  // 訴求パターン選択解除
+  document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('active'));
+
+  // 画像リセット
+  originalImage = null;
+  trimResults = {};
+  imageState = null;
+  const imgInput = document.getElementById('my-img-input');
+  if (imgInput) imgInput.value = '';
+  const camInput = document.getElementById('my-cam-input');
+  if (camInput) camInput.value = '';
+  document.getElementById('img-selected-bar').style.display = 'none';
+  document.getElementById('img-upload-area').style.display = 'block';
+  document.getElementById('my-img-preview-wrap').style.display = 'none';
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+
+  // 日付リセット
+  selectedDay = null;
+  buildCalendar();
+
+  // ステップをリセット
+  setStep(1);
+
+  // 予約ボタン再度有効化
+  const btn = document.querySelector('.modal-btn-success');
+  if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ===== ステップ =====
+function setStep(n) {
+  for (let i = 1; i <= 5; i++) {
+    const s = document.getElementById('step' + i);
+    if (!s) continue;
+    s.classList.remove('active', 'done');
+    if (i < n) s.classList.add('done');
+    else if (i === n) s.classList.add('active');
+  }
+  for (let i = 1; i <= 4; i++) {
+    const l = document.getElementById('line' + i);
+    if (l) l.classList.toggle('done', i < n);
+  }
+}
+
+// ===== ナビゲーション =====
+const LIFF_URLS = {
+  textgen: 'https://liff.line.me/2010401177-OpvemMmh',
+  reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
+  analytics: 'https://liff.line.me/2010401177-qKtfKWP0',
+  settings: 'https://liff.line.me/2010401177-XJw2kDQV',
+  plan: 'https://liff.line.me/2010401177-IstPDnls',
+  about: 'https://liff.line.me/2010401177-PtX79ibV',
+  support: 'https://liff.line.me/2010401177-vwzTH30h',
+};
+
+// ===== GAS Webアプリ接続先 =====
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
+
+// 入力途中の内容（本文・キーワード・ハッシュタグ・画像）があるかどうかを判定
+function hasInProgressContent() {
+  const ta = document.getElementById('post-textarea');
+  if (ta && ta.value.trim()) return true;
+  for (let i = 1; i <= 3; i++) {
+    const kw = document.getElementById('keyword-input-' + i);
+    if (kw && kw.value.trim()) return true;
+  }
+  for (let i = 1; i <= 5; i++) {
+    const hw = document.getElementById('hashtag-input-' + i);
+    if (hw && hw.value.trim()) return true;
+  }
+  if (originalImage || imageState) return true;
+  return false;
+}
+
+// ===== タブ切替（投稿作成／ガイド） =====
+function switchMainTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-nav .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.getElementById('tab-btn-' + id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== ガイド（アコーディオン） =====
+function toggleAcc(id) {
+  const body = document.getElementById(id);
+  const arr = document.getElementById('arr-' + id);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  if (arr) arr.style.transform = isOpen ? '' : 'rotate(90deg)';
+}
+
+function navigateTo(page) {
+  if (!LIFF_URLS[page]) return;
+  if (hasInProgressContent()) {
+    if (!confirm('入力中の内容が失われます。移動しますか？')) return;
+  }
+  window.location.replace(LIFF_URLS[page]);
+}
+
+buildCalendar();
+setTimeout(updateCharCount, 100);
+renderKeywordGuide();
+updateHashtagColumns();
+syncHashtagRowState();
+
+// 絵文字から、実際にCanvasで描画・トリミングできる画像データを生成する
+// （予約編集時に引き継ぐ「元画像」はファイル実体を持たないデモデータのため、
+// 　トリミング機能（Canvas API）が実際に動作するよう、ここで本物の画像に変換する）
+function createPlaceholderImage(emoji, callback) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 800;
+  canvas.height = 800;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fdf6ec';
+  ctx.fillRect(0, 0, 800, 800);
+  ctx.font = '420px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(emoji, 400, 440);
+  const dataUrl = canvas.toDataURL('image/png');
+  const img = new Image();
+  img.onload = () => callback(img, dataUrl);
+  img.src = dataUrl;
+}
+
+// ===== 予約確認画面からの編集データを読み込む =====
+function loadEditModeFromUrl() {
+  // LIFFはURLパラメータを liff.state に包んでリダイレクトすることがあるため、
+  // 通常のクエリとliff.state内のクエリの両方に対応する
+  let params = new URLSearchParams(window.location.search);
+  if (!params.get('edit')) {
+    const liffState = params.get('liff.state');
+    if (liffState) {
+      const decoded = decodeURIComponent(liffState);
+      params = new URLSearchParams(decoded.startsWith('?') ? decoded.slice(1) : decoded);
+    }
+  }
+  if (params.get('edit') !== '1') return;
+
+  // ヘッダー・ボタンの文言を編集モード用に変更
+  document.querySelector('.section-title').textContent = '投稿文作成（編集中）';
+  const reserveBtn = document.querySelector('.reserve-btn');
+  if (reserveBtn) reserveBtn.innerHTML = '<span style="font-size:20px;">✅</span>この内容で予約を更新する';
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:#fff8e1;color:#e65100;font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:12px;line-height:1.7;';
+  banner.textContent = '📝 既存の予約を編集中です。文章の修正・再生成、SNSの選択、ハッシュタグの変更、画像の再トリミングが行えます。';
+  document.getElementById('tab-form').insertBefore(banner, document.getElementById('tab-form').firstChild);
+
+  // SNS選択：渡されたSNSのみチェックを入れる
+  const snsList = (params.get('sns') || '').split(',').filter(Boolean);
+  document.querySelectorAll('.sns-check-item').forEach(el => {
+    const icon = el.querySelector('.sns-icon-sm');
+    const code = icon.classList.contains('sns-x') ? 'X' : icon.classList.contains('sns-ig') ? 'IG'
+                : icon.classList.contains('sns-fb') ? 'FB' : icon.classList.contains('sns-th') ? 'TH' : null;
+    const shouldCheck = code && snsList.includes(code);
+    if (shouldCheck !== el.classList.contains('checked')) toggleSns(el);
+  });
+
+  // 本文
+  const text = params.get('text');
+  if (text) document.getElementById('post-textarea').value = text;
+
+  // ハッシュタグ：値を入れて、選択中のSNSに応じた推奨個数だけ初期チェック
+  const tags = (params.get('tags') || '').split(',').filter(Boolean);
+  if (tags.length) setGeneratedHashtags(tags);
+
+  // 画像：元画像をそのまま保持している状態として表示（再トリミングも可能）
+  const img = params.get('img');
+  if (img) {
+    imageState = 'raw';
+    document.getElementById('img-upload-area').style.display = 'none';
+    const bar = document.getElementById('img-selected-bar');
+    bar.style.display = 'flex';
+    document.getElementById('img-selected-thumb').textContent = img;
+    document.getElementById('img-selected-name').textContent = '編集前の画像（そのまま使用中）';
+    const wrap = document.getElementById('my-img-preview-wrap');
+    wrap.style.display = 'block';
+    const note = document.createElement('p');
+    note.style.cssText = 'font-size:11px;color:var(--text-sub);text-align:center;margin:-4px 0 10px;';
+    note.textContent = `${img} 編集前の画像を引き継いでいます。「SNSごとにトリミングする」から切り直すこともできます。`;
+    wrap.insertBefore(note, wrap.firstChild);
+
+    // 絵文字から実際にCanvasで描画可能な画像データを生成し、本物の再トリミングを可能にする
+    createPlaceholderImage(img, (imageObj, dataUrl) => {
+      originalImage = imageObj;
+      const previewImg = document.getElementById('my-img-preview');
+      previewImg.src = dataUrl;
+      previewImg.style.display = 'block';
+    });
+  }
+
+  // 投稿日時：渡された日付・時間を選択状態にする（編集時は過去日ガードを迂回）
+  const day = parseInt(params.get('day'), 10);
+  const time = params.get('time');
+  if (day) {
+    selectedDay = day;
+    buildCalendar();
+    const bar = document.getElementById('selected-date-bar');
+    bar.classList.add('show');
+    document.getElementById('selected-date-label').textContent = '6月' + day + '日を選択中（編集中の予約日）';
+  }
+  if (time) {
+    const timeSelect = document.getElementById('post-time');
+    const opt = [...timeSelect.options].find(o => o.textContent === time);
+    if (opt) timeSelect.value = opt.value;
+  }
+  if (day) updateTimeOptions();
+
+  updateHashtagColumns();
+  updateCharCount();
+}
+
+// ===== トリミング機能 =====
+
+// SNS別設定（2026年7月確定・3者調査ベース）
+const SNS_TRIM_CONFIG = {
+  'X':  { label: '🐦 X', ratios: [
+            { name:'16:9', w:16, h:9, recommend:true },
+            { name:'1:1',  w:1,  h:1 },
+            { name:'3:4',  w:3,  h:4 },
+            { name:'自由', free:true }
+          ], color:'#000' },
+  'IG': { label: '📱 Instagram', ratios: [
+            { name:'4:5',    w:4,   h:5, recommend:true },
+            { name:'1:1',    w:1,   h:1 },
+            { name:'1.91:1', w:191, h:100 },
+            { name:'自由',   free:true }
+          ], color:'#e1306c' },
+  'FB': { label: '💻 Facebook', ratios: [
+            { name:'4:5',    w:4,   h:5 },
+            { name:'1:1',    w:1,   h:1 },
+            { name:'1.91:1', w:191, h:100 },
+            { name:'自由',   free:true }
+          ], color:'#1877f2' },
+  'TH': { label: '🧵 Threads', ratios: [
+            { name:'4:5',  w:4,  h:5, recommend:true },
+            { name:'1:1',  w:1,  h:1 },
+            { name:'16:9', w:16, h:9 },
+            { name:'自由', free:true }
+          ], color:'#555' },
+};
+
+let originalImage = null;       // アップロードされた元画像
+let trimQueue = [];              // トリミング対象のSNSキュー
+let currentTrimIndex = 0;       // 現在処理中のキューインデックス
+let currentRatio = null;        // 現在の比率 { w, h }
+let trimResults = {};           // SNSごとのトリミング結果 { 'X': base64, ... }
+// 画像状態管理: null=未選択 / 'none'=画像なし / 'trimmed'=トリミング済み / 'raw'=そのまま使う
+let imageState = null;
+
+// 枠の位置・サイズ（canvas座標）
+let frame = { x:0, y:0, w:0, h:0 };
+let dragging = false;
+let dragStart = { x:0, y:0 };
+let frameStart = { x:0, y:0 };
+let canvasScale = 1;            // 表示canvas vs 実際のcanvas比率
+
+// 画像アップロード処理（選択バーは表示しない・プレビューのみ）
+function handleImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      originalImage = img;
+      imageState = null; // まだ確定していない
+      document.getElementById('my-img-preview').src = e.target.result;
+      document.getElementById('my-img-preview-wrap').style.display = 'block';
+      document.getElementById('img-upload-area').style.display = 'none';
+      document.getElementById('img-selected-bar').style.display = 'none'; // 確定前は非表示
+      updateTrimStatusList();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// トリミング状況リストを更新
+function updateTrimStatusList() {
+  const checkedSns = getCheckedSns();
+  const list = document.getElementById('trim-status-list');
+  list.innerHTML = '';
+  checkedSns.forEach(sns => {
+    const cfg = SNS_TRIM_CONFIG[sns];
+    if (!cfg) return;
+    const done = trimResults[sns];
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg);border-radius:6px;font-size:11px;';
+    div.innerHTML = `
+      <span style="color:${cfg.color};font-weight:700;">${cfg.label}</span>
+      <span style="flex:1;color:var(--text-sub);">${cfg.ratios.map(r=>r.name).join(' / ')}</span>
+      <span style="font-weight:700;color:${done?'#2e7d32':'var(--text-light)'};">${done?'✅ 完了':'未処理'}</span>
+    `;
+    list.appendChild(div);
+  });
+}
+
+// 連携中かつチェック済みのSNSを取得
+function getCheckedSns() {
+  const items = document.querySelectorAll('.sns-check-item.checked .sns-icon-sm');
+  const result = [];
+  items.forEach(el => {
+    const t = el.textContent.trim();
+    if (t === 'X') result.push('X');
+    else if (t === 'IG') result.push('IG');
+    else if (t === 'f') result.push('FB');
+    else if (el.textContent.includes('TH') || el.closest('.sns-check-item').querySelector('.sns-check-name').textContent.includes('Threads')) result.push('TH');
+  });
+  return result;
+}
+
+// トリミングフロー開始
+function startTrimFlow() {
+  if (!originalImage) return;
+  const checkedSns = getCheckedSns();
+  trimQueue = checkedSns.filter(s => SNS_TRIM_CONFIG[s]);
+  currentTrimIndex = 0;
+  trimResults = {};
+  openTrimForCurrent();
+}
+
+// 現在のSNSのトリミング画面を開く
+function openTrimForCurrent() {
+  if (currentTrimIndex >= trimQueue.length) {
+    finishTrimFlow();
+    return;
+  }
+  const sns = trimQueue[currentTrimIndex];
+  const cfg = SNS_TRIM_CONFIG[sns];
+  const ratioBar = document.getElementById('trim-ratio-bar');
+
+  // ヘッダー更新
+  document.getElementById('trim-sns-title').textContent = cfg.label + ' 用トリミング';
+  document.getElementById('trim-sns-sub').textContent = '枠を動かして位置・サイズを調整してください';
+
+  // 進捗チップ更新
+  const progress = document.getElementById('trim-progress');
+  progress.innerHTML = '';
+  trimQueue.forEach((s, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'trim-step-chip' + (i < currentTrimIndex ? ' done' : i === currentTrimIndex ? ' active' : '');
+    chip.textContent = SNS_TRIM_CONFIG[s].label;
+    progress.appendChild(chip);
+  });
+
+  // 比率選択バー
+  if (cfg.ratios.length > 1) {
+    ratioBar.style.display = 'flex';
+    ratioBar.innerHTML = '<span class="trim-ratio-label">比率：</span>';
+    const defaultIndex = Math.max(0, cfg.ratios.findIndex(r => r.recommend));
+    cfg.ratios.forEach((r, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'trim-ratio-btn' + (i === defaultIndex ? ' active' : '');
+      btn.textContent = r.recommend ? '⭐ ' + r.name : r.name;
+      btn.onclick = () => { setRatio(r, btn); };
+      ratioBar.appendChild(btn);
+    });
+    currentRatio = cfg.ratios[defaultIndex];
+  } else {
+    ratioBar.style.display = 'none';
+    currentRatio = cfg.ratios[0];
+  }
+
+  // ボタンラベル
+  const isLast = currentTrimIndex === trimQueue.length - 1;
+  document.getElementById('trim-btn-ok').textContent = isLast ? '切り抜いて完了 ✂️' : '切り抜いて次へ ✂️';
+
+  // モーダルを開く・bodyスクロールをロック
+  document.getElementById('trim-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => drawTrimCanvas(), 50);
+}
+
+// 比率変更
+function setRatio(ratio, btn) {
+  document.querySelectorAll('.trim-ratio-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRatio = typeof ratio === 'string'
+    ? SNS_TRIM_CONFIG[trimQueue[currentTrimIndex]].ratios.find(r => r.name === ratio)
+    : ratio;
+  drawTrimCanvas();
+}
+
+// canvasを描画
+function drawTrimCanvas() {
+  const wrap = document.getElementById('trim-canvas-wrap');
+  const canvas = document.getElementById('trim-canvas');
+  const ctx = canvas.getContext('2d');
+  const img = originalImage;
+
+  // canvas実サイズを表示エリアに合わせる
+  const wrapW = wrap.clientWidth;
+  const wrapH = wrap.clientHeight;
+  const scale = Math.min(wrapW / img.naturalWidth, wrapH / img.naturalHeight);
+  canvas.width = Math.round(img.naturalWidth * scale);
+  canvas.height = Math.round(img.naturalHeight * scale);
+  canvasScale = scale;
+
+  // 初期フレームを中央に配置（自由トリミングの場合は画像全体に近い4:5相当で開始）
+  const rw = currentRatio.free ? 4 : currentRatio.w;
+  const rh = currentRatio.free ? 5 : currentRatio.h;
+  const maxFW = canvas.width * 0.9;
+  const maxFH = canvas.height * 0.9;
+  let fW = maxFW, fH = fW * rh / rw;
+  if (fH > maxFH) { fH = maxFH; fW = fH * rw / rh; }
+  frame = {
+    x: (canvas.width - fW) / 2,
+    y: (canvas.height - fH) / 2,
+    w: fW,
+    h: fH
+  };
+
+  renderCanvas();
+  setupTrimEvents();
+}
+
+// 現在の枠の縦横比を分かりやすい表記に変換して表示
+function updateLiveRatio() {
+  const label = document.getElementById('trim-live-ratio');
+  if (!label || !frame.w || !frame.h) return;
+  label.textContent = formatRatio(frame.w, frame.h);
+}
+
+function formatRatio(w, h) {
+  // よく使われる比率に近ければそのまま表示（誤差2%以内）
+  const known = [
+    [16,9],[9,16],[4,5],[5,4],[1,1],[3,4],[4,3],[191,100],[100,191]
+  ];
+  const val = w / h;
+  for (const [kw, kh] of known) {
+    if (Math.abs(val - kw/kh) / (kw/kh) < 0.02) {
+      return kw + ':' + kh;
+    }
+  }
+  // 一致しない場合は小数表記
+  return val >= 1 ? val.toFixed(2) + ':1' : '1:' + (1/val).toFixed(2);
+}
+
+// canvas描画
+function renderCanvas() {
+  const canvas = document.getElementById('trim-canvas');
+  const ctx = canvas.getContext('2d');
+  const img = originalImage;
+
+  // ライブ比率表示を更新
+  updateLiveRatio();
+
+  // 画像描画
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  // 暗幕（フレーム外）
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // フレーム内をクリア（元画像を表示）
+  ctx.save();
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = 'rgba(0,0,0,1)';
+  ctx.fillRect(frame.x, frame.y, frame.w, frame.h);
+  ctx.restore();
+  ctx.drawImage(img, frame.x/canvasScale, frame.y/canvasScale, frame.w/canvasScale, frame.h/canvasScale,
+    frame.x, frame.y, frame.w, frame.h);
+
+  // フレーム枠線
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(frame.x, frame.y, frame.w, frame.h);
+
+  // 三分割線
+  ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+  ctx.lineWidth = 0.8;
+  for (let i = 1; i < 3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(frame.x + frame.w * i/3, frame.y);
+    ctx.lineTo(frame.x + frame.w * i/3, frame.y + frame.h);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(frame.x, frame.y + frame.h * i/3);
+    ctx.lineTo(frame.x + frame.w, frame.y + frame.h * i/3);
+    ctx.stroke();
+  }
+
+  // 四隅のハンドル
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 3;
+  const hs = 14;
+  [[frame.x,frame.y],[frame.x+frame.w,frame.y],[frame.x,frame.y+frame.h],[frame.x+frame.w,frame.y+frame.h]].forEach(([cx,cy],i) => {
+    const dx = i%2===0?1:-1, dy = i<2?1:-1;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+dx*hs,cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx,cy+dy*hs); ctx.stroke();
+  });
+}
+
+// タッチ・マウスイベント設定
+const HANDLE_SIZE = 20; // 四隅ハンドルの当たり判定サイズ
+
+let resizing = false;
+let resizeCorner = null; // 'tl','tr','bl','br'
+let pinchStartDist = 0;
+let pinchStartFrame = null;
+
+function getCorner(x, y) {
+  const { x:fx, y:fy, w:fw, h:fh } = frame;
+  const corners = {
+    tl: [fx, fy],
+    tr: [fx+fw, fy],
+    bl: [fx, fy+fh],
+    br: [fx+fw, fy+fh],
+  };
+  for (const [key, [cx, cy]] of Object.entries(corners)) {
+    if (Math.abs(x-cx) <= HANDLE_SIZE && Math.abs(y-cy) <= HANDLE_SIZE) return key;
+  }
+  return null;
+}
+
+function setupTrimEvents() {
+  const canvas = document.getElementById('trim-canvas');
+  const ratio = currentRatio.free ? null : currentRatio.w / currentRatio.h;
+
+  // マウス
+  canvas.onmousedown = e => {
+    const corner = getCorner(e.offsetX, e.offsetY);
+    if (corner) { resizing=true; resizeCorner=corner; dragStart={x:e.offsetX,y:e.offsetY}; frameStart={...frame}; }
+    else if (e.offsetX>=frame.x&&e.offsetX<=frame.x+frame.w&&e.offsetY>=frame.y&&e.offsetY<=frame.y+frame.h) {
+      dragging=true; dragStart={x:e.offsetX,y:e.offsetY}; frameStart={x:frame.x,y:frame.y};
+    }
+  };
+  canvas.onmousemove = e => {
+    if (resizing) doResize(e.offsetX, e.offsetY, ratio);
+    else if (dragging) moveDrag(e.offsetX, e.offsetY);
+  };
+  canvas.onmouseup = () => { dragging=false; resizing=false; resizeCorner=null; };
+
+  // タッチ
+  canvas.ontouchstart = e => {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+      pinchStartDist = getPinchDist(e);
+      pinchStartFrame = {...frame};
+      dragging=false; resizing=false;
+      return;
+    }
+    const t = getTouchPos(e);
+    const corner = getCorner(t.x, t.y);
+    if (corner) { resizing=true; resizeCorner=corner; dragStart={...t}; frameStart={...frame}; }
+    else if (t.x>=frame.x&&t.x<=frame.x+frame.w&&t.y>=frame.y&&t.y<=frame.y+frame.h) {
+      dragging=true; dragStart={...t}; frameStart={x:frame.x,y:frame.y};
+    }
+  };
+  canvas.ontouchmove = e => {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+      doPinch(e, ratio); return;
+    }
+    const t = getTouchPos(e);
+    if (resizing) doResize(t.x, t.y, ratio);
+    else if (dragging) moveDrag(t.x, t.y);
+  };
+  canvas.ontouchend = () => { dragging=false; resizing=false; resizeCorner=null; pinchStartFrame=null; };
+}
+
+function getPinchDist(e) {
+  const dx = e.touches[0].clientX - e.touches[1].clientX;
+  const dy = e.touches[0].clientY - e.touches[1].clientY;
+  return Math.sqrt(dx*dx + dy*dy);
+}
+
+function getTouchPos(e) {
+  const canvas = document.getElementById('trim-canvas');
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches[0];
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return {
+    x: (t.clientX - rect.left) * scaleX,
+    y: (t.clientY - rect.top) * scaleY
+  };
+}
+
+function doPinch(e, ratio) {
+  if (!pinchStartFrame) return;
+  const canvas = document.getElementById('trim-canvas');
+  const dist = getPinchDist(e);
+  const scale = dist / pinchStartDist;
+  const effectiveRatio = ratio === null ? (pinchStartFrame.w / pinchStartFrame.h) : ratio;
+  const minW = 60;
+  const maxW = canvas.width - pinchStartFrame.x;
+  let newW = Math.max(minW, Math.min(maxW, pinchStartFrame.w * scale));
+  let newH = newW / effectiveRatio;
+  if (pinchStartFrame.y + newH > canvas.height) { newH = canvas.height - pinchStartFrame.y; newW = newH * effectiveRatio; }
+  frame.w = newW;
+  frame.h = newH;
+  frame.x = Math.max(0, Math.min(canvas.width - frame.w, pinchStartFrame.x));
+  frame.y = Math.max(0, Math.min(canvas.height - frame.h, pinchStartFrame.y));
+  renderCanvas();
+}
+
+function doResize(x, y, ratio) {
+  const canvas = document.getElementById('trim-canvas');
+  const minW = 60, minH = 60;
+  let { x:fx, y:fy, w:fw, h:fh } = frameStart;
+  const dx = x - dragStart.x;
+  const dy = y - dragStart.y;
+
+  // 自由トリミング：縦横比を固定せず、縦横を独立してリサイズ
+  if (ratio === null) {
+    if (resizeCorner === 'br') {
+      let nw = Math.max(minW, Math.min(canvas.width - fx, fw + dx));
+      let nh = Math.max(minH, Math.min(canvas.height - fy, fh + dy));
+      frame.w = nw; frame.h = nh;
+    } else if (resizeCorner === 'bl') {
+      let nw = Math.max(minW, Math.min(fx + fw, fw - dx));
+      let nh = Math.max(minH, Math.min(canvas.height - fy, fh + dy));
+      frame.x = fx + fw - nw; frame.w = nw; frame.h = nh;
+    } else if (resizeCorner === 'tr') {
+      let nw = Math.max(minW, Math.min(canvas.width - fx, fw + dx));
+      let nh = Math.max(minH, Math.min(fy + fh, fh - dy));
+      frame.y = fy + fh - nh; frame.w = nw; frame.h = nh;
+    } else if (resizeCorner === 'tl') {
+      let nw = Math.max(minW, Math.min(fx + fw, fw - dx));
+      let nh = Math.max(minH, Math.min(fy + fh, fh - dy));
+      frame.x = fx + fw - nw; frame.y = fy + fh - nh; frame.w = nw; frame.h = nh;
+    }
+    renderCanvas();
+    return;
+  }
+
+  if (resizeCorner === 'br') {
+    let nw = Math.max(minW, fw + dx);
+    let nh = nw / ratio;
+    if (fx+nw > canvas.width) { nw=canvas.width-fx; nh=nw/ratio; }
+    if (fy+nh > canvas.height) { nh=canvas.height-fy; nw=nh*ratio; }
+    frame.w=nw; frame.h=nh;
+  } else if (resizeCorner === 'bl') {
+    let nw = Math.max(minW, fw - dx);
+    let nh = nw / ratio;
+    let nx = fx + fw - nw;
+    if (nx < 0) { nx=0; nw=fx+fw; nh=nw/ratio; }
+    if (fy+nh > canvas.height) { nh=canvas.height-fy; nw=nh*ratio; nx=fx+fw-nw; }
+    frame.x=nx; frame.w=nw; frame.h=nh;
+  } else if (resizeCorner === 'tr') {
+    let nw = Math.max(minW, fw + dx);
+    let nh = nw / ratio;
+    let ny = fy + fh - nh;
+    if (fx+nw > canvas.width) { nw=canvas.width-fx; nh=nw/ratio; ny=fy+fh-nh; }
+    if (ny < 0) { ny=0; nh=fy+fh; nw=nh*ratio; }
+    frame.y=ny; frame.w=nw; frame.h=nh;
+  } else if (resizeCorner === 'tl') {
+    let nw = Math.max(minW, fw - dx);
+    let nh = nw / ratio;
+    let nx = fx + fw - nw;
+    let ny = fy + fh - nh;
+    if (nx < 0) { nx=0; nw=fx+fw; nh=nw/ratio; ny=fy+fh-nh; }
+    if (ny < 0) { ny=0; nh=fy+fh; nw=nh*ratio; nx=fx+fw-nw; }
+    frame.x=nx; frame.y=ny; frame.w=nw; frame.h=nh;
+  }
+  renderCanvas();
+}
+
+function moveDrag(x, y) {
+  const canvas = document.getElementById('trim-canvas');
+  const dx = x - dragStart.x, dy = y - dragStart.y;
+  frame.x = Math.max(0, Math.min(canvas.width - frame.w, frameStart.x + dx));
+  frame.y = Math.max(0, Math.min(canvas.height - frame.h, frameStart.y + dy));
+  renderCanvas();
+}
+
+// トリミングキャンセル
+function cancelTrim() {
+  document.getElementById('trim-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// このSNSをスキップ
+function skipTrim() {
+  currentTrimIndex++;
+  document.getElementById('trim-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => openTrimForCurrent(), 200);
+}
+
+// トリミング確定
+function confirmTrim() {
+  const sns = trimQueue[currentTrimIndex];
+  // Canvasでクロップ
+  const offCanvas = document.createElement('canvas');
+  const rw = currentRatio.w, rh = currentRatio.h;
+  // 出力サイズ（推奨解像度）
+  const outSizes = { 'X':{ w:1200,h:675 }, 'IG':{ w:1080,h:1080 }, 'FB':{ w:1200,h:630 }, 'TH':{ w:1080,h:1080 } };
+  const outW = outSizes[sns]?.w || 1080;
+  const outH = Math.round(outW * rh / rw);
+  offCanvas.width = outW;
+  offCanvas.height = outH;
+  const octx = offCanvas.getContext('2d');
+  // フレームをoriginalImageの座標に変換
+  const srcX = frame.x / canvasScale;
+  const srcY = frame.y / canvasScale;
+  const srcW = frame.w / canvasScale;
+  const srcH = frame.h / canvasScale;
+  octx.drawImage(originalImage, srcX, srcY, srcW, srcH, 0, 0, outW, outH);
+  trimResults[sns] = offCanvas.toDataURL('image/jpeg', 0.9);
+
+  updateTrimStatusList();
+  currentTrimIndex++;
+  document.getElementById('trim-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => openTrimForCurrent(), 200);
+}
+
+// このSNSをスキップ
+
+// トリミングフロー完了
+
+// トリミングキャンセル
+function cancelTrim() {
+  document.getElementById('trim-overlay').classList.remove('open');
+}
+
+// ×ボタンのやり直し選択モーダル
+function showImageCancelOptions() {
+  const modal = document.getElementById('img-cancel-modal');
+  // 画像なし状態の場合はトリミングやり直しを非表示
+  const retrimBtn = document.getElementById('img-cancel-retrim');
+  retrimBtn.style.display = (imageState === 'none' || !originalImage) ? 'none' : 'block';
+  modal.style.display = 'flex';
+}
+
+function closeImgCancelModal() {
+  document.getElementById('img-cancel-modal').style.display = 'none';
+}
+
+// 画像を選び直す
+function imgCancelReupload() {
+  closeImgCancelModal();
+  originalImage = null;
+  trimResults = {};
+  imageState = null;
+  document.getElementById('my-img-input').value = '';
+  document.getElementById('my-cam-input').value = '';
+  document.getElementById('img-selected-bar').style.display = 'none';
+  document.getElementById('my-img-preview-wrap').style.display = 'none';
+  document.getElementById('img-upload-area').style.display = 'block';
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+}
+
+// トリミングをやり直す
+function imgCancelRetrim() {
+  closeImgCancelModal();
+  imageState = null;
+  trimResults = {};
+  document.getElementById('img-selected-bar').style.display = 'none';
+  // プレビューを再表示してトリミングボタンを出す
+  const wrap = document.getElementById('my-img-preview-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('img-upload-area').style.display = 'none';
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+  const trimBtn = wrap.querySelector('button[onclick="startTrimFlow()"]');
+  if (trimBtn) trimBtn.style.display = 'block';
+  const noTrimBtn = wrap.querySelector('button[onclick="selectMyImageWithoutTrim()"]');
+  if (noTrimBtn) noTrimBtn.style.display = 'block';
+  updateTrimStatusList();
+}
+
+// 削除して画像なしにする
+function imgCancelNone() {
+  closeImgCancelModal();
+  originalImage = null;
+  trimResults = {};
+  imageState = 'none';
+  document.getElementById('img-selected-bar').style.display = 'flex';
+  document.getElementById('img-selected-thumb').textContent = '🚫';
+  document.getElementById('img-selected-name').textContent = '画像なしで投稿';
+  document.getElementById('img-selected-name').style.color = '#9e9e9e';
+  document.getElementById('my-img-preview-wrap').style.display = 'none';
+  document.getElementById('img-upload-area').style.display = 'none';
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+}
+
+
+// 画像リセット（×ボタンからも呼ばれる）
+function resetImageUpload() {
+  showImageCancelOptions();
+}
+
+// 画像アップロード後の×ボタン用（プレビュー上のボタン）
+function resetImagePreview() {
+  if (!confirm('アップロードした画像を削除しますか？')) return;
+  imgCancelReupload();
+}
+
+// 画像なし選択（確認ダイアログ付き）
+function selectNoImage() {
+  if (originalImage) {
+    if (!confirm('アップロードした画像を削除して「画像なし」で投稿しますか？')) return;
+  }
+  originalImage = null;
+  trimResults = {};
+  imageState = 'none';
+  document.getElementById('img-selected-bar').style.display = 'flex';
+  document.getElementById('img-selected-thumb').textContent = '🚫';
+  document.getElementById('img-selected-name').textContent = '画像なしで投稿';
+  document.getElementById('img-selected-name').style.color = '#9e9e9e';
+  document.getElementById('my-img-preview-wrap').style.display = 'none';
+  document.getElementById('img-upload-area').style.display = 'none';
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+}
+
+// トリミングなしで使用
+function selectMyImageWithoutTrim() {
+  imageState = "raw";
+  const bar = document.getElementById("img-selected-bar");
+  bar.style.display = "flex";
+  document.getElementById("img-selected-thumb").textContent = "🖼️";
+  document.getElementById("img-selected-name").textContent = "マイ画像（トリミングなし）";
+  document.getElementById("img-selected-name").style.color = "#2e7d32";
+  document.getElementById("my-img-preview-wrap").style.display = "none";
+}
+
+// トリミングフロー完了後の確定・やり直し画面
+function finishTrimFlow() {
+  document.body.style.overflow = '';
+  updateTrimStatusList();
+
+  // 完了確認画面を表示
+  const wrap = document.getElementById('my-img-preview-wrap');
+  // 既存の確認エリアがあれば削除
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+
+  const confirmArea = document.createElement('div');
+  confirmArea.id = 'trim-confirm-area';
+  confirmArea.style.cssText = 'margin-top:10px;';
+
+  const doneCount = Object.keys(trimResults).length;
+  const totalCount = trimQueue.length;
+
+  confirmArea.innerHTML = `
+    <div style="padding:10px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:4px;">✅ トリミング完了（${doneCount}/${totalCount}件）</div>
+      <div style="font-size:10px;color:#555;">${Object.keys(trimResults).join('・')} のトリミングが完了しました。</div>
+    </div>
+    <button onclick="confirmTrimResult()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:6px;">✅ これで決定する</button>
+    <button onclick="retryTrimFlow()" style="width:100%;padding:8px;background:transparent;color:var(--text-sub);border:1px solid var(--border);border-radius:10px;font-size:12px;cursor:pointer;">🔄 やり直す</button>
+  `;
+  wrap.appendChild(confirmArea);
+
+  // トリミングボタンを非表示
+  const trimBtn = wrap.querySelector('button[onclick="startTrimFlow()"]');
+  if (trimBtn) trimBtn.style.display = 'none';
+  const noTrimBtn = wrap.querySelector('button[onclick="selectMyImageWithoutTrim()"]');
+  if (noTrimBtn) noTrimBtn.style.display = 'none';
+}
+
+// トリミング結果を決定
+function confirmTrimResult() {
+  imageState = "trimmed";
+  const bar = document.getElementById("img-selected-bar");
+  bar.style.display = "flex";
+  document.getElementById("img-selected-thumb").textContent = "✂️";
+  const snsLabels = Object.keys(trimResults).join("・");
+  document.getElementById("img-selected-name").textContent = `トリミング済み（${snsLabels}）`;
+  document.getElementById("img-selected-name").style.color = "#2e7d32";
+  document.getElementById('my-img-preview-wrap').style.display = 'none';
+}
+
+// トリミングやり直し
+function retryTrimFlow() {
+  // 確認エリアを削除
+  const existing = document.getElementById('trim-confirm-area');
+  if (existing) existing.remove();
+  // トリミングボタンを再表示
+  const wrap = document.getElementById('my-img-preview-wrap');
+  const trimBtn = wrap.querySelector('button[onclick="startTrimFlow()"]');
+  if (trimBtn) trimBtn.style.display = 'block';
+  const noTrimBtn = wrap.querySelector('button[onclick="selectMyImageWithoutTrim()"]');
+  if (noTrimBtn) noTrimBtn.style.display = 'block';
+  // やり直し
+  startTrimFlow();
 }
 
 // LIFF初期化は他の初期化処理より先に実行する
 initLiff();
 
-// 初期表示（IG・FB・Xが連携済みの状態）を整える
-updateSnsSummary();
-
-</script>
-
-<!-- ボトムナビゲーションバー -->
-<nav class="bottom-nav" id="bottom-nav">
-  <button class="nav-item" onclick="navigateTo('textgen')">
-    <span class="nav-icon">📝</span><span class="nav-label">投稿文作成</span>
-  </button>
-  <button class="nav-item" onclick="navigateTo('reservation')">
-    <span class="nav-icon">📅</span><span class="nav-label">予約確認</span>
-  </button>
-  <button class="nav-item" onclick="navigateTo('analytics')">
-    <span class="nav-icon">📊</span><span class="nav-label">分析</span>
-  </button>
-  <button class="nav-item active" onclick="navigateTo('settings')">
-    <span class="nav-icon">⚙️</span><span class="nav-label">設定</span>
-  </button>
-  <button class="nav-item" onclick="navigateTo('support')">
-    <span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span>
-  </button>
-  <button class="nav-item" onclick="navigateTo('plan')">
-    <span class="nav-icon">💎</span><span class="nav-label">プラン</span>
-  </button>
-</nav>
-
-<script>
-  // ============================================
-  // ボトムナビゲーション共通処理
-  // ============================================
-
-  // 各LIFF画面のURL
-  const LIFF_URLS = {
-    textgen:     'https://liff.line.me/2010401177-OpvemMmh',
-    reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
-    analytics:   'https://liff.line.me/2010401177-qKtfKWP0',
-    image:       'https://liff.line.me/2010401177-3pV56kDU',
-    settings:    'https://liff.line.me/2010401177-XJw2kDQV',
-    about:       'https://liff.line.me/2010401177-PtX79ibV',
-    plan:        'https://liff.line.me/2010401177-IstPDnls',
-    support:     'https://liff.line.me/2010401177-vwzTH30h',
-  };
-
-  // 他のLIFF画面に移動する
-  function navigateTo(page) {
-    if (LIFF_URLS[page]) {
-      window.location.href = LIFF_URLS[page];
-    }
-  }
-
-  // LINEトークルームに戻る
-  function closeToLine() {
-    liff.init({ liffId: '2010401177-XJw2kDQV' }).then(function() {
-      window.location.replace('about:blank');
-    }).catch(function() {
-      window.history.back();
-    });
-  }
+// 全ての変数宣言・初期化が完了した後に、編集モードの読み込みを実行する
+// （originalImage・trimResults・imageStateはこのファイル後方でletにより宣言されているため、
+// 　それより前に呼び出すとTDZ（temporal dead zone）エラーで失敗する）
+loadEditModeFromUrl();
 </script>
 </body>
 </html>
