@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録22 - AiPost</title>
+<title>設定・登録23 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録22</span>
+  <span class="header-logo">設定・登録23</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -672,6 +672,7 @@ async function initLiff() {
       await loadSavedProfile();
       setFormLoadingState(false);
     }
+    await loadSnsConnectionStatus();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -789,8 +790,44 @@ function toggleSnsConnection(sns) {
     alert('現在の' + currentDemoPlan + 'プランでは、SNSは' + limit + 'つまでしか連携できません。\n他のSNSの連携を解除するか、プランをアップグレードしてください。');
     return;
   }
+
+  // Xのみ実際のOAuth連携フローを開始する（他のSNSは未実装のためデモ動作のまま）
+  if (sns === 'x') {
+    startXConnection();
+    return;
+  }
+
   connectSns(sns);
   updateSnsSummary();
+}
+
+/**
+ * Xの認証URLをバックエンドから取得し、外部ブラウザで開く。
+ * 実際の連携完了は、Xの認証画面での許可操作後に行われる
+ * （このタイミングではUIを直接connectedにしない）。
+ */
+async function startXConnection() {
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
+    return;
+  }
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'startXAuth', lineUid: LINE_UID, params: {} })
+    });
+    const result = await response.json();
+    if (!result.success || !result.data || !result.data.authUrl) {
+      alert('X連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+      return;
+    }
+    liff.openWindow({ url: result.data.authUrl, external: true });
+    showToast('ブラウザでXの連携を完了したら、この画面を開き直してください');
+  } catch (err) {
+    console.error('X連携開始エラー:', err);
+    alert('X連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+  }
 }
 
 // サブバー「連携中：」表示・カード見出しの件数表示を更新
@@ -805,17 +842,82 @@ function updateSnsSummary() {
   ).join('');
 }
 
+/**
+ * バックエンドから実際のX連携状態を取得し、画面表示に反映する。
+ * Instagram・Facebook・Threadsはバックエンド未実装のため対象外
+ * （デモ表示のまま）。
+ */
+async function loadSnsConnectionStatus() {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID, params: {} })
+    });
+    const result = await response.json();
+    if (!result.success || !result.data) return;
+    if (result.data.x === '連携中') {
+      connectSns('x');
+    } else {
+      disconnectSns('x');
+    }
+    updateSnsSummary();
+  } catch (err) {
+    console.error('SNS連携状態の取得エラー:', err);
+  }
+}
+
 function closeSnsDisconnectModal() {
   document.getElementById('sns-disconnect-modal').classList.remove('open');
   pendingDisconnectSns = null;
 }
 
-function confirmSnsDisconnect() {
-  if (pendingDisconnectSns) {
-    disconnectSns(pendingDisconnectSns);
-    updateSnsSummary();
+async function confirmSnsDisconnect() {
+  if (!pendingDisconnectSns) {
+    closeSnsDisconnectModal();
+    return;
   }
+
+  // Xのみ実際のバックエンド解除処理を呼ぶ（他のSNSは未実装のためデモ動作のまま）
+  if (pendingDisconnectSns === 'x') {
+    const ok = await disconnectXOnBackend();
+    if (!ok) {
+      closeSnsDisconnectModal();
+      return;
+    }
+  }
+
+  disconnectSns(pendingDisconnectSns);
+  updateSnsSummary();
   closeSnsDisconnectModal();
+}
+
+/**
+ * X連携をバックエンドで解除する（ユーザー管理シートのトークン削除・
+ * ステータス更新）。成功時はtrue、失敗時はfalseを返す。
+ */
+async function disconnectXOnBackend() {
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
+    return false;
+  }
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'disconnectSns', lineUid: LINE_UID, params: { sns: 'x' } })
+    });
+    const result = await response.json();
+    if (!result.success) {
+      alert('連携解除に失敗しました：' + (result.error || '不明なエラー'));
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('X連携解除エラー:', err);
+    alert('連携解除に失敗しました。しばらくしてからもう一度お試しください。');
+    return false;
+  }
 }
 
 function showCancelScreen() {
