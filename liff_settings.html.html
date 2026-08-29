@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録24 - AiPost</title>
+<title>設定・登録25 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録24</span>
+  <span class="header-logo">設定・登録25</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -451,7 +451,7 @@
         <button class="sns-btn btn-disconnect" id="sns-btn-x" onclick="toggleSnsConnection('x')">解除</button>
       </div>
       <div style="font-size:11px;color:var(--text-sub);margin:-2px 0 8px;line-height:1.6;padding:0 4px;">
-        ※初回はXへのログインが必要な場合があります。うまく進まない場合は、もう一度「連携」ボタンを押し直してください。
+        ※連携する前に、お使いのブラウザ（Safari／Chrome等）で先にXへログインしておくと、スムーズに進みます。うまく進まない場合は、ブラウザでXへのログインを済ませてから、もう一度「連携」ボタンを押し直してください。
       </div>
       <div class="sns-item" id="sns-item-th" style="margin-bottom:0;">
         <div class="sns-icon sns-th">@</div>
@@ -825,7 +825,7 @@ async function startXConnection() {
       alert('X連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
       return;
     }
-    liff.openWindow({ url: result.data.authUrl, external: false });
+    liff.openWindow({ url: result.data.authUrl, external: true });
     showToast('ブラウザでXの連携を完了したら、この画面を開き直してください');
   } catch (err) {
     console.error('X連携開始エラー:', err);
