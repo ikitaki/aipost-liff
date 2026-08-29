@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録26 - AiPost</title>
+<title>設定・登録27 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録26</span>
+  <span class="header-logo">設定・登録27</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -825,7 +825,6 @@ async function startXConnection() {
       alert('X連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
       return;
     }
-    alert('診断用・生成URL:\n\n' + result.data.authUrl);
     liff.openWindow({ url: result.data.authUrl, external: true });
     showToast('ブラウザでXの連携を完了したら、この画面を開き直してください');
   } catch (err) {
@@ -1189,6 +1188,14 @@ async function saveEmail() {
 
 // LIFF初期化は他の初期化処理より先に実行する
 initLiff();
+
+// 外部ブラウザ（Xの認証画面等）からLINEアプリの画面に戻ってきた際、
+// SNS連携状態を自動的に再取得する
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'visible' && LINE_UID) {
+    loadSnsConnectionStatus();
+  }
+});
 
 // 初期表示（IG・FB・Xが連携済みの状態）を整える
 updateSnsSummary();
