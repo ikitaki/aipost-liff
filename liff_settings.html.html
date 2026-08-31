@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録27 - AiPost</title>
+<title>設定・登録29 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録27</span>
+  <span class="header-logo">設定・登録29</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -450,16 +450,16 @@
         </div>
         <button class="sns-btn btn-disconnect" id="sns-btn-x" onclick="toggleSnsConnection('x')">解除</button>
       </div>
-      <div style="font-size:11px;color:var(--text-sub);margin:-2px 0 8px;line-height:1.6;padding:0 4px;">
-        ※連携する前に、お使いのブラウザ（Safari／Chrome等）で先にXへログインしておくと、スムーズに進みます。うまく進まない場合は、ブラウザでXへのログインを済ませてから、もう一度「連携」ボタンを押し直してください。
-      </div>
-      <div class="sns-item" id="sns-item-th" style="margin-bottom:0;">
+      <div class="sns-item" id="sns-item-th">
         <div class="sns-icon sns-th">@</div>
         <div class="sns-info">
           <div class="sns-name">Threads</div>
           <div class="sns-status" id="sns-status-th">未連携</div>
         </div>
         <button class="sns-btn btn-connect" id="sns-btn-th" onclick="toggleSnsConnection('th')">連携</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-sub);margin:4px 0 0;line-height:1.6;padding:0 4px;">
+        ※連携がうまく進まない場合は、もう一度「連携」ボタンを押し直してください。
       </div>
     </div>
   </div>
@@ -851,6 +851,12 @@ function updateSnsSummary() {
  * （デモ表示のまま）。
  */
 async function loadSnsConnectionStatus() {
+  const btnX = document.getElementById('sns-btn-x');
+  const originalText = btnX ? btnX.textContent : null;
+  if (btnX) {
+    btnX.disabled = true;
+    btnX.textContent = '確認中...';
+  }
   try {
     const response = await fetch(WEBAPP_URL, {
       method: 'POST',
@@ -858,7 +864,10 @@ async function loadSnsConnectionStatus() {
       body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID, params: {} })
     });
     const result = await response.json();
-    if (!result.success || !result.data) return;
+    if (!result.success || !result.data) {
+      if (btnX) btnX.textContent = originalText;
+      return;
+    }
     if (result.data.x === '連携中') {
       connectSns('x');
     } else {
@@ -867,6 +876,9 @@ async function loadSnsConnectionStatus() {
     updateSnsSummary();
   } catch (err) {
     console.error('SNS連携状態の取得エラー:', err);
+    if (btnX) btnX.textContent = originalText;
+  } finally {
+    if (btnX) btnX.disabled = false;
   }
 }
 
