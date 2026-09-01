@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成75 - AiPost</title>
+<title>投稿文作成76 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -605,7 +605,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成75</span>
+  <span class="header-logo">投稿文作成76</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1985,6 +1985,77 @@ function showConfirm() {
   document.getElementById('confirm-modal').classList.add('open');
 }
 
+// Base64データURL（"data:image/xxx;base64,....."形式）を
+// mimeTypeとbase64本体に分解する
+function _dataUrlToBase64(dataUrl) {
+  const match = dataUrl.match(/^data:(.+?);base64,(.+)$/);
+  if (!match) return { mimeType: 'image/jpeg', base64: dataUrl };
+  return { mimeType: match[1], base64: match[2] };
+}
+
+// 確定済みの画像（元画像・SNSごとのトリミング結果）をバックエンドへ
+// アップロードする。画像が選択されていない場合は何もアップロードせず
+// 空の結果を返す。
+// 「トリミングせずに使う」を選んだ場合（imageState === 'raw'）は、
+// SNSごとに個別アップロードせず、元画像のファイルIDを使い回す。
+async function uploadImagesIfNeeded(snsTargets) {
+  if (!originalImageDataUrl) {
+    return { imageId: null, originalImageFileId: '', trimmedImageFileIds: {} };
+  }
+
+  const original = _dataUrlToBase64(originalImageDataUrl);
+  const originalRes = await fetch(WEBAPP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action: 'saveOriginalImage',
+      lineUid: LINE_UID,
+      params: { base64ImageData: original.base64, mimeType: original.mimeType }
+    })
+  }).then(r => r.json());
+
+  if (!originalRes.success || !originalRes.data || originalRes.data.error) {
+    throw new Error((originalRes.data && originalRes.data.error) || '元画像のアップロードに失敗しました');
+  }
+
+  const imageId = originalRes.data.imageId;
+  const originalFileId = originalRes.data.fileId;
+
+  const snsKeyMap = { x: 'X', instagram: 'IG', facebook: 'FB', threads: 'TH' };
+  const trimmedImageFileIds = {};
+
+  for (const snsKey of Object.keys(snsKeyMap)) {
+    if (!snsTargets[snsKey]) continue;
+
+    if (imageState === 'raw') {
+      trimmedImageFileIds[snsKey] = originalFileId;
+      continue;
+    }
+
+    const trimDataUrl = trimResults[snsKeyMap[snsKey]];
+    if (!trimDataUrl) continue;
+
+    const trimmed = _dataUrlToBase64(trimDataUrl);
+    const trimRes = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'saveTrimmedImage',
+        lineUid: LINE_UID,
+        params: { sns: snsKey, base64ImageData: trimmed.base64, mimeType: trimmed.mimeType }
+      })
+    }).then(r => r.json());
+
+    if (!trimRes.success || !trimRes.data || trimRes.data.error) {
+      throw new Error((trimRes.data && trimRes.data.error) || (snsKeyMap[snsKey] + '用画像のアップロードに失敗しました'));
+    }
+
+    trimmedImageFileIds[snsKey] = trimRes.data.fileId;
+  }
+
+  return { imageId: imageId, originalImageFileId: originalFileId, trimmedImageFileIds: trimmedImageFileIds };
+}
+
 async function executeReserve() {
   const btn = document.querySelector('.modal-btn-success');
   if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
@@ -2006,6 +2077,15 @@ async function executeReserve() {
   const time = document.getElementById('post-time').value;
   const scheduledAt = new Date(selectedYear, selectedMonth - 1, selectedDay, parseInt(time, 10), 0, 0).toISOString();
 
+  let imageUploadResult;
+  try {
+    imageUploadResult = await uploadImagesIfNeeded(snsTargets);
+  } catch (imgErr) {
+    alert('画像のアップロードに失敗しました：' + imgErr.message);
+    if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
+    return;
+  }
+
   const requestPayload = {
     action: 'createReservation',
     lineUid: LINE_UID,
@@ -2024,7 +2104,9 @@ async function executeReserve() {
         threads: getHashtagsForSns('TH')
       },
       scheduledAt: scheduledAt,
-      snsTargets: snsTargets
+      snsTargets: snsTargets,
+      originalImageFileId: imageUploadResult.originalImageFileId,
+      trimmedImageFileIds: imageUploadResult.trimmedImageFileIds
     }
   };
 
@@ -2040,6 +2122,22 @@ async function executeReserve() {
       alert('予約の確定に失敗しました：' + result.error);
       if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
       return;
+    }
+
+    if (imageUploadResult.imageId) {
+      try {
+        await fetch(WEBAPP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'linkImage',
+            lineUid: LINE_UID,
+            params: { imageId: imageUploadResult.imageId, reservationId: result.data }
+          })
+        });
+      } catch (linkErr) {
+        console.error('画像と予約の紐づけに失敗しました:', linkErr);
+      }
     }
 
     const snsNames = document.getElementById('confirm-sns').textContent;
@@ -2327,6 +2425,7 @@ const SNS_TRIM_CONFIG = {
 };
 
 let originalImage = null;       // アップロードされた元画像
+let originalImageDataUrl = null;    // 元画像のBase64データURL（アップロード用）
 let trimQueue = [];              // トリミング対象のSNSキュー
 let currentTrimIndex = 0;       // 現在処理中のキューインデックス
 let currentRatio = null;        // 現在の比率 { w, h }
@@ -2350,6 +2449,7 @@ function handleImageUpload(event) {
     const img = new Image();
     img.onload = () => {
       originalImage = img;
+      originalImageDataUrl = e.target.result;
       imageState = null; // まだ確定していない
       document.getElementById('my-img-preview').src = e.target.result;
       document.getElementById('my-img-preview-wrap').style.display = 'block';
