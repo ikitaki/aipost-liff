@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成76 - AiPost</title>
+<title>投稿文作成77 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -605,7 +605,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成76</span>
+  <span class="header-logo">投稿文作成77</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -2056,17 +2056,57 @@ async function uploadImagesIfNeeded(snsTargets) {
   return { imageId: imageId, originalImageFileId: originalFileId, trimmedImageFileIds: trimmedImageFileIds };
 }
 
+// スピナー用のCSSアニメーションを1回だけ<head>に追加する
+function _ensureReserveSpinnerStyle() {
+  if (document.getElementById('reserve-loading-style')) return;
+  const style = document.createElement('style');
+  style.id = 'reserve-loading-style';
+  style.textContent = '@keyframes reserve-loading-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+  document.head.appendChild(style);
+}
+
+// 予約確定処理中のローディングオーバーレイを表示する。
+// hasImageがtrueの場合は画像処理向けの案内文にする。
+function showReserveLoadingOverlay(hasImage) {
+  _ensureReserveSpinnerStyle();
+  hideReserveLoadingOverlay();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'reserve-loading-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:5000;display:flex;align-items:center;justify-content:center;';
+
+  const message = hasImage
+    ? '画像を処理しています。1分程度かかる場合があります。'
+    : '予約を処理しています。数十秒ほどかかる場合があります。';
+
+  overlay.innerHTML =
+    '<div style="background:#fff;border-radius:16px;padding:28px 32px;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:280px;text-align:center;">' +
+    '<div style="width:36px;height:36px;border:3px solid #e0e0e0;border-top-color:#1a237e;border-radius:50%;animation:reserve-loading-spin 0.8s linear infinite;"></div>' +
+    '<div style="font-size:14px;font-weight:700;color:#333;">' + message + '</div>' +
+    '</div>';
+
+  document.body.appendChild(overlay);
+}
+
+// ローディングオーバーレイを閉じる
+function hideReserveLoadingOverlay() {
+  const overlay = document.getElementById('reserve-loading-overlay');
+  if (overlay) overlay.remove();
+}
+
 async function executeReserve() {
   const btn = document.querySelector('.modal-btn-success');
   if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
 
   if (!LINE_UID) {
     alert('LINEアプリ内でこの画面を開いてください。');
+    hideReserveLoadingOverlay();
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
     return;
   }
   if (!selectedYear || !selectedMonth || !selectedDay) {
     alert('投稿日を選んでください。');
+    hideReserveLoadingOverlay();
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
     return;
   }
@@ -2077,11 +2117,14 @@ async function executeReserve() {
   const time = document.getElementById('post-time').value;
   const scheduledAt = new Date(selectedYear, selectedMonth - 1, selectedDay, parseInt(time, 10), 0, 0).toISOString();
 
+  showReserveLoadingOverlay(!!originalImageDataUrl);
+
   let imageUploadResult;
   try {
     imageUploadResult = await uploadImagesIfNeeded(snsTargets);
   } catch (imgErr) {
     alert('画像のアップロードに失敗しました：' + imgErr.message);
+    hideReserveLoadingOverlay();
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
     return;
   }
@@ -2120,6 +2163,7 @@ async function executeReserve() {
 
     if (!result.success) {
       alert('予約の確定に失敗しました：' + result.error);
+      hideReserveLoadingOverlay();
       if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
       return;
     }
@@ -2140,6 +2184,8 @@ async function executeReserve() {
       }
     }
 
+    hideReserveLoadingOverlay();
+
     const snsNames = document.getElementById('confirm-sns').textContent;
     const dateText = document.getElementById('confirm-date').textContent;
     document.getElementById('complete-msg').innerHTML = dateText + 'に<br>' + snsNames + 'へ自動投稿されます。';
@@ -2152,6 +2198,7 @@ async function executeReserve() {
   } catch (err) {
     console.error('予約確定リクエストエラー:', err);
     alert('通信エラーが発生しました。もう一度お試しください。');
+    hideReserveLoadingOverlay();
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
   }
