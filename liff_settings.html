@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録30 - AiPost</title>
+<title>設定・登録32 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -166,7 +166,6 @@
     font-weight: 700; font-size: 13px;
   }
   .sns-ig { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
-  .sns-fb { background: #1877f2; }
   .sns-th { background: #000; }
   .sns-x  { background: #000; }
   .sns-info { flex: 1; min-width: 0; }
@@ -384,7 +383,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録30</span>
+  <span class="header-logo">設定・登録32</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -433,14 +432,6 @@
           <div class="sns-status ok" id="sns-status-ig">✓ 連携済み</div>
         </div>
         <button class="sns-btn btn-disconnect" id="sns-btn-ig" onclick="toggleSnsConnection('ig')">解除</button>
-      </div>
-      <div class="sns-item connected" id="sns-item-fb">
-        <div class="sns-icon sns-fb">f</div>
-        <div class="sns-info">
-          <div class="sns-name">Facebook</div>
-          <div class="sns-status ok" id="sns-status-fb">✓ 連携済み</div>
-        </div>
-        <button class="sns-btn btn-disconnect" id="sns-btn-fb" onclick="toggleSnsConnection('fb')">解除</button>
       </div>
       <div class="sns-item connected" id="sns-item-x">
         <div class="sns-icon sns-x">X</div>
@@ -716,9 +707,9 @@ function switchTab(id) {
 }
 
 // ===== デモ用プラン切替（SNS連携数の上限確認用） =====
-const SNS_ORDER = ['ig', 'fb', 'x', 'th'];
-const SNS_LABEL = { ig: 'Instagram', fb: 'Facebook', x: 'X', th: 'Threads' };
-const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 4 };
+const SNS_ORDER = ['ig', 'x', 'th'];
+const SNS_LABEL = { ig: 'Instagram', x: 'X', th: 'Threads' };
+const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
 let currentDemoPlan = 'STANDARD';
 
@@ -794,13 +785,17 @@ function toggleSnsConnection(sns) {
     return;
   }
 
-  // X・Instagramは実際のOAuth連携フローを開始する（Facebook・Threadsは未実装のためデモ動作のまま）
+  // X・Instagram・Threadsは実際のOAuth連携フローを開始する
   if (sns === 'x') {
     startXConnection();
     return;
   }
   if (sns === 'ig') {
     startInstagramConnection();
+    return;
+  }
+  if (sns === 'th') {
+    startThreadsConnection();
     return;
   }
 
@@ -866,6 +861,35 @@ async function startInstagramConnection() {
   }
 }
 
+/**
+ * Threadsの認証URLをバックエンドから取得し、外部ブラウザで開く。
+ * 実際の連携完了は、Threadsの認証画面での許可操作後に行われる
+ * （このタイミングではUIを直接connectedにしない）。
+ */
+async function startThreadsConnection() {
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
+    return;
+  }
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'startThreadsAuth', lineUid: LINE_UID, params: {} })
+    });
+    const result = await response.json();
+    if (!result.success || !result.data || !result.data.authUrl) {
+      alert('Threads連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+      return;
+    }
+    liff.openWindow({ url: result.data.authUrl, external: true });
+    showToast('ブラウザでThreadsの連携を完了したら、この画面を開き直してください');
+  } catch (err) {
+    console.error('Threads連携開始エラー:', err);
+    alert('Threads連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+  }
+}
+
 // サブバー「連携中：」表示・カード見出しの件数表示を更新
 function updateSnsSummary() {
   const connectedList = SNS_ORDER.filter(isConnected);
@@ -879,17 +903,19 @@ function updateSnsSummary() {
 }
 
 /**
- * バックエンドから実際のX・Instagram連携状態を取得し、画面表示に
- * 反映する。Facebook・Threadsはバックエンド未実装のため対象外
- * （デモ表示のまま）。
+ * バックエンドから実際のX・Instagram・Threads連携状態を取得し、
+ * 画面表示に反映する。
  */
 async function loadSnsConnectionStatus() {
   const btnX = document.getElementById('sns-btn-x');
   const btnIg = document.getElementById('sns-btn-ig');
+  const btnTh = document.getElementById('sns-btn-th');
   const originalXText = btnX ? btnX.textContent : null;
   const originalIgText = btnIg ? btnIg.textContent : null;
+  const originalThText = btnTh ? btnTh.textContent : null;
   if (btnX) { btnX.disabled = true; btnX.textContent = '確認中...'; }
   if (btnIg) { btnIg.disabled = true; btnIg.textContent = '確認中...'; }
+  if (btnTh) { btnTh.disabled = true; btnTh.textContent = '確認中...'; }
 
   try {
     const response = await fetch(WEBAPP_URL, {
@@ -901,18 +927,22 @@ async function loadSnsConnectionStatus() {
     if (!result.success || !result.data) {
       if (btnX) btnX.textContent = originalXText;
       if (btnIg) btnIg.textContent = originalIgText;
+      if (btnTh) btnTh.textContent = originalThText;
       return;
     }
     if (result.data.x === '連携中') { connectSns('x'); } else { disconnectSns('x'); }
     if (result.data.instagram === '連携中') { connectSns('ig'); } else { disconnectSns('ig'); }
+    if (result.data.threads === '連携中') { connectSns('th'); } else { disconnectSns('th'); }
     updateSnsSummary();
   } catch (err) {
     console.error('SNS連携状態の取得エラー:', err);
     if (btnX) btnX.textContent = originalXText;
     if (btnIg) btnIg.textContent = originalIgText;
+    if (btnTh) btnTh.textContent = originalThText;
   } finally {
     if (btnX) btnX.disabled = false;
     if (btnIg) btnIg.disabled = false;
+    if (btnTh) btnTh.disabled = false;
   }
 }
 
@@ -927,7 +957,7 @@ async function confirmSnsDisconnect() {
     return;
   }
 
-  // X・Instagramは実際のバックエンド解除処理を呼ぶ（Facebook・Threadsは未実装のためデモ動作のまま）
+  // X・Instagram・Threadsは実際のバックエンド解除処理を呼ぶ
   if (pendingDisconnectSns === 'x') {
     const ok = await disconnectXOnBackend();
     if (!ok) {
@@ -936,6 +966,12 @@ async function confirmSnsDisconnect() {
     }
   } else if (pendingDisconnectSns === 'ig') {
     const ok = await disconnectInstagramOnBackend();
+    if (!ok) {
+      closeSnsDisconnectModal();
+      return;
+    }
+  } else if (pendingDisconnectSns === 'th') {
+    const ok = await disconnectThreadsOnBackend();
     if (!ok) {
       closeSnsDisconnectModal();
       return;
@@ -1000,6 +1036,36 @@ async function disconnectInstagramOnBackend() {
     return true;
   } catch (err) {
     console.error('Instagram連携解除エラー:', err);
+    alert('連携解除に失敗しました。しばらくしてからもう一度お試しください。');
+    return false;
+  }
+}
+
+/**
+ * Threads連携をバックエンドで解除する（ユーザー管理シートのトークン
+ * 削除・ステータス更新）。成功時はtrue、失敗時はfalseを返す。
+ * ★バックエンドAPIのsnsパラメータは'threads'（フロントエンド内部
+ * キー'th'とは異なるため、ここでは明示的に'threads'を送信する）。
+ */
+async function disconnectThreadsOnBackend() {
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
+    return false;
+  }
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'disconnectSns', lineUid: LINE_UID, params: { sns: 'threads' } })
+    });
+    const result = await response.json();
+    if (!result.success) {
+      alert('連携解除に失敗しました：' + (result.error || '不明なエラー'));
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('Threads連携解除エラー:', err);
     alert('連携解除に失敗しました。しばらくしてからもう一度お試しください。');
     return false;
   }
