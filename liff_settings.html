@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録32 - AiPost</title>
+<title>設定・登録33 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -383,7 +383,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録32</span>
+  <span class="header-logo">設定・登録33</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -712,6 +712,11 @@ const SNS_LABEL = { ig: 'Instagram', x: 'X', th: 'Threads' };
 const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
 let currentDemoPlan = 'STANDARD';
+// ★liff_settings.html33：外部ブラウザから戻ってきた直後、複数の
+// 　loadSnsConnectionStatus()呼び出しが重なった際、古いリクエスト
+// 　の結果が新しいリクエストの結果を上書きしてしまう競合状態を
+// 　防止するための連番カウンター
+let snsStatusRequestSeq = 0;
 
 function setDemoPlan(plan) {
   currentDemoPlan = plan;
@@ -905,8 +910,15 @@ function updateSnsSummary() {
 /**
  * バックエンドから実際のX・Instagram・Threads連携状態を取得し、
  * 画面表示に反映する。
+ * ★liff_settings.html33：外部ブラウザ（Threads等の認証画面）から
+ * 　戻ってきた直後、「画面表示時の取得」と「復帰時の取得」がほぼ
+ * 　同時に走ることがあり、通信の順番次第で古い結果が新しい結果を
+ * 　上書きしてしまう競合状態が確認されたため、連番（requestId）で
+ * 　最新のリクエストの結果のみを画面に反映するよう修正した。
  */
 async function loadSnsConnectionStatus() {
+  const requestId = ++snsStatusRequestSeq;
+
   const btnX = document.getElementById('sns-btn-x');
   const btnIg = document.getElementById('sns-btn-ig');
   const btnTh = document.getElementById('sns-btn-th');
@@ -924,6 +936,13 @@ async function loadSnsConnectionStatus() {
       body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID, params: {} })
     });
     const result = await response.json();
+
+    // ★このレスポンスを待っている間に、より新しいリクエストが
+    // 　発行されていた場合、この（古い）結果は画面に反映しない
+    if (requestId !== snsStatusRequestSeq) {
+      return;
+    }
+
     if (!result.success || !result.data) {
       if (btnX) btnX.textContent = originalXText;
       if (btnIg) btnIg.textContent = originalIgText;
@@ -936,13 +955,21 @@ async function loadSnsConnectionStatus() {
     updateSnsSummary();
   } catch (err) {
     console.error('SNS連携状態の取得エラー:', err);
+    if (requestId !== snsStatusRequestSeq) {
+      return;
+    }
     if (btnX) btnX.textContent = originalXText;
     if (btnIg) btnIg.textContent = originalIgText;
     if (btnTh) btnTh.textContent = originalThText;
   } finally {
-    if (btnX) btnX.disabled = false;
-    if (btnIg) btnIg.disabled = false;
-    if (btnTh) btnTh.disabled = false;
+    // ★このリクエストより新しいリクエストが既に走っている場合、
+    // 　ボタンの有効化は新しい方の呼び出しに任せる（ここで触ると
+    // 　新しい方の「確認中...」表示を壊してしまうため）
+    if (requestId === snsStatusRequestSeq) {
+      if (btnX) btnX.disabled = false;
+      if (btnIg) btnIg.disabled = false;
+      if (btnTh) btnTh.disabled = false;
+    }
   }
 }
 
