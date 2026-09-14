@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録33 - AiPost</title>
+<title>設定・登録34 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -383,7 +383,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録33</span>
+  <span class="header-logo">設定・登録34</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -425,14 +425,6 @@
     </div>
     <div class="card">
       <div class="card-title" id="sns-connected-title">連携状況（3/3）</div>
-      <div class="sns-item connected" id="sns-item-ig">
-        <div class="sns-icon sns-ig">📷</div>
-        <div class="sns-info">
-          <div class="sns-name">Instagram</div>
-          <div class="sns-status ok" id="sns-status-ig">✓ 連携済み</div>
-        </div>
-        <button class="sns-btn btn-disconnect" id="sns-btn-ig" onclick="toggleSnsConnection('ig')">解除</button>
-      </div>
       <div class="sns-item connected" id="sns-item-x">
         <div class="sns-icon sns-x">X</div>
         <div class="sns-info">
@@ -440,6 +432,14 @@
           <div class="sns-status ok" id="sns-status-x">✓ 連携済み</div>
         </div>
         <button class="sns-btn btn-disconnect" id="sns-btn-x" onclick="toggleSnsConnection('x')">解除</button>
+      </div>
+      <div class="sns-item connected" id="sns-item-ig">
+        <div class="sns-icon sns-ig">IG</div>
+        <div class="sns-info">
+          <div class="sns-name">Instagram</div>
+          <div class="sns-status ok" id="sns-status-ig">✓ 連携済み</div>
+        </div>
+        <button class="sns-btn btn-disconnect" id="sns-btn-ig" onclick="toggleSnsConnection('ig')">解除</button>
       </div>
       <div class="sns-item" id="sns-item-th">
         <div class="sns-icon sns-th">@</div>
@@ -707,7 +707,7 @@ function switchTab(id) {
 }
 
 // ===== デモ用プラン切替（SNS連携数の上限確認用） =====
-const SNS_ORDER = ['ig', 'x', 'th'];
+const SNS_ORDER = ['x', 'ig', 'th'];
 const SNS_LABEL = { ig: 'Instagram', x: 'X', th: 'Threads' };
 const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
