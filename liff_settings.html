@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録34 - AiPost</title>
+<title>設定・登録35 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -172,6 +172,7 @@
   .sns-name { font-size: 13px; font-weight: 600; }
   .sns-status { font-size: 11px; color: var(--text-light); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sns-status.ok { color: var(--success); }
+  .sns-account { font-size: 10px; color: var(--text-sub); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .plan-demo-btn {
     font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
@@ -430,6 +431,7 @@
         <div class="sns-info">
           <div class="sns-name">X（Twitter）</div>
           <div class="sns-status ok" id="sns-status-x">✓ 連携済み</div>
+          <div class="sns-account" id="sns-account-x"></div>
         </div>
         <button class="sns-btn btn-disconnect" id="sns-btn-x" onclick="toggleSnsConnection('x')">解除</button>
       </div>
@@ -438,6 +440,7 @@
         <div class="sns-info">
           <div class="sns-name">Instagram</div>
           <div class="sns-status ok" id="sns-status-ig">✓ 連携済み</div>
+          <div class="sns-account" id="sns-account-ig"></div>
         </div>
         <button class="sns-btn btn-disconnect" id="sns-btn-ig" onclick="toggleSnsConnection('ig')">解除</button>
       </div>
@@ -446,6 +449,7 @@
         <div class="sns-info">
           <div class="sns-name">Threads</div>
           <div class="sns-status" id="sns-status-th">未連携</div>
+          <div class="sns-account" id="sns-account-th"></div>
         </div>
         <button class="sns-btn btn-connect" id="sns-btn-th" onclick="toggleSnsConnection('th')">連携</button>
       </div>
@@ -745,10 +749,18 @@ function isConnected(sns) {
   return el && el.classList.contains('connected');
 }
 
-function connectSns(sns) {
+// ★liff_settings.html35：連携済みアカウント名を表示するため、
+// 　connectSns()に第2引数accountNameを追加。未指定・空文字の場合は
+// 　アカウント名欄を空のままにする（呼び出し元を増やさないための
+// 　後方互換：第2引数を渡さない既存の呼び出しもそのまま動作する）。
+function connectSns(sns, accountName) {
   document.getElementById('sns-item-' + sns).classList.add('connected');
   document.getElementById('sns-status-' + sns).textContent = '✓ 連携済み';
   document.getElementById('sns-status-' + sns).classList.add('ok');
+  const accountEl = document.getElementById('sns-account-' + sns);
+  if (accountEl) {
+    accountEl.textContent = accountName ? '@' + accountName : '';
+  }
   const btn = document.getElementById('sns-btn-' + sns);
   btn.textContent = '解除';
   btn.classList.remove('btn-connect');
@@ -759,6 +771,10 @@ function disconnectSns(sns) {
   document.getElementById('sns-item-' + sns).classList.remove('connected');
   document.getElementById('sns-status-' + sns).textContent = '未連携';
   document.getElementById('sns-status-' + sns).classList.remove('ok');
+  const accountEl = document.getElementById('sns-account-' + sns);
+  if (accountEl) {
+    accountEl.textContent = '';
+  }
   const btn = document.getElementById('sns-btn-' + sns);
   btn.textContent = '連携';
   btn.classList.remove('btn-disconnect');
@@ -915,6 +931,11 @@ function updateSnsSummary() {
  * 　同時に走ることがあり、通信の順番次第で古い結果が新しい結果を
  * 　上書きしてしまう競合状態が確認されたため、連番（requestId）で
  * 　最新のリクエストの結果のみを画面に反映するよう修正した。
+ * ★liff_settings.html35：バックエンド（XAuthgs_10）がgetSnsStatus
+ * 　のレスポンスにxAccount／instagramAccount／threadsAccount
+ * 　（連携中のSNSアカウント名）を含めるようになったため、これを
+ * 　connectSns()の第2引数として渡し、「✓ 連携済み」の下に
+ * 　アカウント名を表示するよう対応した。
  */
 async function loadSnsConnectionStatus() {
   const requestId = ++snsStatusRequestSeq;
@@ -949,9 +970,9 @@ async function loadSnsConnectionStatus() {
       if (btnTh) btnTh.textContent = originalThText;
       return;
     }
-    if (result.data.x === '連携中') { connectSns('x'); } else { disconnectSns('x'); }
-    if (result.data.instagram === '連携中') { connectSns('ig'); } else { disconnectSns('ig'); }
-    if (result.data.threads === '連携中') { connectSns('th'); } else { disconnectSns('th'); }
+    if (result.data.x === '連携中') { connectSns('x', result.data.xAccount); } else { disconnectSns('x'); }
+    if (result.data.instagram === '連携中') { connectSns('ig', result.data.instagramAccount); } else { disconnectSns('ig'); }
+    if (result.data.threads === '連携中') { connectSns('th', result.data.threadsAccount); } else { disconnectSns('th'); }
     updateSnsSummary();
   } catch (err) {
     console.error('SNS連携状態の取得エラー:', err);
