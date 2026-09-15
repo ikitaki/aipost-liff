@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成83 - AiPost</title>
+<title>投稿文作成84 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成83</span>
+  <span class="header-logo">投稿文作成84</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1889,7 +1889,11 @@ function showConfirm() {
 
   // 画像状態確認
   if (imageState === null) {
-    if (!confirm('画像が選択されていません。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。')) return;
+    const igCheckedForImageWarning = checkedItems.some(el => el.querySelector('.sns-icon-sm.sns-ig'));
+    const noImageConfirmMsg = igCheckedForImageWarning
+      ? '画像が選択されていません。\nInstagramは画像が無いと投稿できないため、この予約はInstagramには反映されません（X・Threadsのみ投稿されます）。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。'
+      : '画像が選択されていません。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。';
+    if (!confirm(noImageConfirmMsg)) return;
     imageState = 'none';
   }
 
@@ -3000,9 +3004,18 @@ function resetImagePreview() {
 }
 
 // 画像なし選択（確認ダイアログ付き）
+// ★liff_textgen.html84：Instagramが投稿先に選択されている場合、
+// 　「画像なし」を選ぶとInstagramには反映されない（Instagram側APIの
+// 　仕様で画像なし投稿ができないため）ことを確認ダイアログで案内する。
 function selectNoImage() {
+  const igCheckedForNoImage = !!document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-ig');
   if (originalImage) {
-    if (!confirm('アップロードした画像を削除して「画像なし」で投稿しますか？')) return;
+    const msg = igCheckedForNoImage
+      ? 'アップロードした画像を削除して「画像なし」で投稿しますか？\nInstagramは画像が無いと投稿できないため、この予約はInstagramには反映されません（X・Threadsのみ投稿されます）。'
+      : 'アップロードした画像を削除して「画像なし」で投稿しますか？';
+    if (!confirm(msg)) return;
+  } else if (igCheckedForNoImage) {
+    if (!confirm('画像なしで投稿しますか？\nInstagramは画像が無いと投稿できないため、この予約はInstagramには反映されません（X・Threadsのみ投稿されます）。')) return;
   }
   originalImage = null;
   originalImageDataUrl = null;
