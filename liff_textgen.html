@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成84 - AiPost</title>
+<title>投稿文作成85 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成84</span>
+  <span class="header-logo">投稿文作成85</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -2067,6 +2067,14 @@ function hideReserveLoadingOverlay() {
   if (overlay) overlay.remove();
 }
 
+// ★liff_textgen.html85：通信エラーで「予約を確定する」の応答が
+// 　届かなかった場合、利用者が再度ボタンを押すと同じ内容の予約が
+// 　重複作成されてしまう不具合への対応。1回の確定操作（リトライを
+// 　含む）に対して同じIDを使い回し、サーバー側で重複作成を防ぐ。
+// 　成功した場合のみresetAllForm()でnullに戻し、次回の新しい予約では
+// 　新しいIDを発行する。
+let pendingReservationRequestId = null;
+
 async function executeReserve() {
   const btn = document.querySelector('.modal-btn-success');
   if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
@@ -2102,10 +2110,19 @@ async function executeReserve() {
     return;
   }
 
+  // 通信エラー時の再試行で同じ予約が重複作成されないよう、1回の
+  // 確定操作（リトライ含む）につき同じリクエストIDを使い回す
+  if (!pendingReservationRequestId) {
+    pendingReservationRequestId = (window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : (Date.now() + '-' + Math.random().toString(36).slice(2));
+  }
+
   const requestPayload = {
     action: 'createReservation',
     lineUid: LINE_UID,
     params: {
+      clientRequestId: pendingReservationRequestId,
       keyword1: keywords[0] || '',
       keyword2: keywords[1] || '',
       keyword3: keywords[2] || '',
@@ -2177,6 +2194,10 @@ async function executeReserve() {
 }
 
 function resetAllForm() {
+  // 予約が成功した場合のみ呼ばれるため、次回は新しいリクエストIDを
+  // 発行する（同じ画面で続けて別の予約を作る場合の重複防止に影響しない）
+  pendingReservationRequestId = null;
+
   // 文章
   const ta = document.getElementById('post-textarea');
   if (ta) ta.value = '';
