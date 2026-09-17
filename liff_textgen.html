@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成85 - AiPost</title>
+<title>投稿文作成86 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成85</span>
+  <span class="header-logo">投稿文作成86</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -614,6 +614,7 @@
     <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
     <span id="plan-price">¥1,280/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
+    <span id="reservation-quota" style="margin-left:auto;font-weight:700;"></span>
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
@@ -1156,9 +1157,31 @@ async function initLiff() {
     }
     const idToken = liff.getDecodedIDToken();
     LINE_UID = idToken.sub;
+    fetchReservationQuota();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
+  }
+}
+
+// ★liff_textgen.html86：残り予約可能件数を取得して画面上部に表示する。
+// 　取得失敗時は表示欄を空のままにし、画面の他の動作には影響させない。
+async function fetchReservationQuota() {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID })
+    });
+    const result = await response.json();
+    const el = document.getElementById('reservation-quota');
+    if (!el) return;
+    if (result.success && result.data && result.data.found !== false &&
+        typeof result.data.remainingReservable === 'number') {
+      el.textContent = 'あと' + result.data.remainingReservable + '件予約できます';
+    }
+  } catch (err) {
+    console.error('残り予約可能件数の取得エラー:', err);
+    // 取得に失敗しても投稿文作成自体はそのまま続行できるようにする
   }
 }
 
