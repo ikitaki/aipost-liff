@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>予約確認・変更8 - AiPost</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #1a237e;
+    --primary-light: #3949ab;
+    --accent: #00acc1;
+    --success: #43a047;
+    --warning: #fb8c00;
+    --danger: #e53935;
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --border: #e0e4ed;
+    --text: #1a1a2e;
+    --text-sub: #6b7280;
+    --text-light: #9ca3af;
+  }
+  .plan-demo-btn {
+    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
+    cursor: pointer;
+  }
+  .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
+  body {
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    padding-bottom: 70px;
+  }
+
+  .header {
+    background: var(--primary);
+    color: white;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-logo { font-size: 15px; font-weight: 700; }
+  .subbar {
+    background: #13195f;
+    padding: 6px 14px;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 40px;
+    z-index: 99;
+  }
+  .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
+
+  /* タブ */
+  .tab-nav {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 70px;
+    z-index: 98;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 4px;
+    border: none;
+    background: none;
+    font-size: 11px;
+    color: var(--text-sub);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+  .tab-icon { font-size: 16px; }
+
+  .content { padding: 14px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* 使用状況バー */
+  .usage-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .usage-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 4px solid var(--warning);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .usage-num { font-size: 14px; font-weight: 700; line-height: 1; }
+  .usage-denom { font-size: 9px; color: var(--text-sub); }
+  .usage-info { flex: 1; }
+  .usage-title { font-size: 13px; font-weight: 600; }
+  .usage-sub { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+  .usage-bar-bg { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .usage-bar-fill { height: 100%; border-radius: 3px; background: var(--warning); }
+
+  /* 予約カード */
+  .reservation-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+  }
+  .reservation-card:active { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .card-header {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-date { font-size: 13px; font-weight: 600; }
+  .card-time { font-size: 12px; color: var(--text-sub); }
+  .sns-tags { display: flex; gap: 4px; margin-left: auto; }
+  .sns-tag {
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .tag-ig { background: #fce4ec; color: #c2185b; }
+  .tag-fb { background: #e3f2fd; color: #1565c0; }
+  .tag-x  { background: #f3f4f6; color: #374151; }
+  .tag-th { background: #f3f4f6; color: #374151; }
+  .card-body { padding: 10px 14px; }
+  .card-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-hashtag { font-size: 11px; color: var(--accent); }
+  .card-footer {
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+  }
+  .card-img-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .card-chars { font-size: 11px; color: var(--text-sub); }
+  .card-ai-badge {
+    margin-left: auto;
+    font-size: 10px;
+    background: #e8eaf6;
+    color: var(--primary);
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-pending { background: var(--warning); }
+  .dot-done { background: var(--success); }
+  .dot-fail { background: var(--danger); }
+
+  /* カレンダー */
+  .calendar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .cal-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .cal-title { font-size: 15px; font-weight: 700; }
+  .cal-nav {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  .cal-grid { padding: 8px; }
+  .cal-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .cal-day-label { font-size: 11px; color: var(--text-sub); padding: 4px 0; }
+  .cal-day-label:first-child { color: var(--danger); }
+  .cal-day-label:last-child { color: var(--accent); }
+  .cal-dates { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-date {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    position: relative;
+    padding: 2px;
+  }
+  .cal-date:hover { background: var(--bg); }
+  .cal-date.today {
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+  }
+  .cal-date.selected {
+    background: var(--primary-light);
+    color: white;
+  }
+  .cal-date.has-post { padding-top: 2px; justify-content: flex-start; gap: 1px; }
+  .cal-post-count {
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+    background: var(--accent);
+    border-radius: 8px;
+    padding: 0px 4px;
+    line-height: 1.6;
+    min-width: 14px;
+    text-align: center;
+  }
+  .cal-date.today .cal-post-count { background: rgba(255,255,255,0.9); color: var(--primary); }
+  .cal-date.other-month { color: var(--text-light); }
+  .cal-date.sunday { color: var(--danger); }
+  .cal-date.saturday { color: var(--accent); }
+  .cal-date.today.sunday, .cal-date.today.saturday { color: white; }
+
+  /* 選択日の予約 */
+  .selected-date-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-sub);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* 新規予約ボタン */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(26,35,126,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 98;
+    transition: transform 0.2s;
+  }
+  .fab:active { transform: scale(0.92); }
+
+  /* 予約詳細モーダル */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1010; /* ★下部固定ナビバー(z-index:1000)より必ず上に表示するための設定 */
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 20px 20px 0 0;
+    padding: 16px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 14px;
+  }
+  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    gap: 12px;
+  }
+  .detail-row:last-of-type { border-bottom: none; }
+  .detail-key { color: var(--text-sub); flex-shrink: 0; }
+  .detail-val { text-align: right; font-weight: 500; line-height: 1.6; }
+
+  .post-text-box {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 10px 0;
+  }
+  .hashtag-box { color: var(--accent); font-size: 12px; margin-top: 6px; }
+
+  .modal-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .btn-row { display: flex; gap: 8px; margin-top: 14px; }
+  .btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-danger { background: #fee2e2; color: var(--danger); }
+
+  /* 空状態 */
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .empty-sub { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  /* ============================================ */
+  /* ボトムナビゲーションバー（全画面共通） */
+  /* ============================================ */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 1000;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    text-decoration: none;
+    color: #9e9e9e;
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+  }
+  .nav-item.active { color: #1a237e; }
+  .nav-item:active { opacity: 0.7; }
+  .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
+  .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
+
+</style>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:20px;">📅</span>
+  <span class="header-logo">予約確認・変更8</span>
+  <span class="header-sub">AiPost</span>
+</div>
+
+<!-- プラン・SNSサブバー -->
+<div class="subbar">
+  <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+    <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
+    <span id="plan-price">¥1,280/月</span>
+    <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
+    <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
+  </div>
+  <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
+    <span>連携中：</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
+    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+  </div>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('list')">
+    <span class="tab-icon">📋</span>予約一覧
+  </button>
+  <button class="tab-btn" onclick="switchTab('calendar')">
+    <span class="tab-icon">📆</span>予約カレンダー
+  </button>
+  <button class="tab-btn" onclick="switchTab('history')">
+    <span class="tab-icon">✅</span>投稿履歴
+  </button>
+</div>
+
+<div class="content">
+
+  <!-- 予約一覧タブ -->
+  <div id="tab-list" class="tab-panel active">
+
+    <div class="section-label">予約中（8件）</div>
+
+    <!-- 予約カード1 -->
+    <div class="reservation-card" onclick="openDetail(1)">
+      <div class="card-header">
+        <div class="status-dot dot-pending"></div>
+        <div class="card-date">6月15日（日）</div>
+        <div class="card-time">13時ごろ</div>
+        <div class="sns-tags">
+          <span class="sns-tag tag-ig">IG</span>
+          <span class="sns-tag tag-fb">FB</span>
+          <span class="sns-tag tag-x">X</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-text">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。</div>
+        <div class="card-hashtag">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
+      </div>
+      <div class="card-footer">
+        <div class="card-img-thumb">🍵</div>
+        <div class="card-chars">32文字</div>
+        <span class="card-ai-badge">✨ AI生成</span>
+      </div>
+    </div>
+
+    <!-- 予約カード2 -->
+    <div class="reservation-card" onclick="openDetail(2)">
+      <div class="card-header">
+        <div class="status-dot dot-pending"></div>
+        <div class="card-date">6月17日（火）</div>
+        <div class="card-time">19時ごろ</div>
+        <div class="sns-tags">
+          <span class="sns-tag tag-ig">IG</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-text">本日のスペシャルティコーヒーはエチオピア産。フルーティな香りが特徴です。</div>
+        <div class="card-hashtag">#スペシャルティコーヒー #エチオピア #渋谷カフェ</div>
+      </div>
+      <div class="card-footer">
+        <div class="card-img-thumb">☕</div>
+        <div class="card-chars">31文字</div>
+        <span class="card-ai-badge">✨ AI生成</span>
+      </div>
+    </div>
+
+    <!-- 予約カード3 -->
+    <div class="reservation-card" onclick="openDetail(3)">
+      <div class="card-header">
+        <div class="status-dot dot-pending"></div>
+        <div class="card-date">6月20日（金）</div>
+        <div class="card-time">12時ごろ</div>
+        <div class="sns-tags">
+          <span class="sns-tag tag-ig">IG</span>
+          <span class="sns-tag tag-x">X</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-text">夏季限定メニューが始まります。冷たいフルーツティーとサマーパフェをぜひ。</div>
+        <div class="card-hashtag">#夏限定 #フルーツティー #渋谷グルメ</div>
+      </div>
+      <div class="card-footer">
+        <div class="card-img-thumb">🍓</div>
+        <div class="card-chars">34文字</div>
+        <span class="card-ai-badge">✨ AI生成</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- カレンダータブ -->
+  <div id="tab-calendar" class="tab-panel">
+
+    <div class="calendar-wrap">
+      <div class="cal-header">
+        <button class="cal-nav">‹</button>
+        <div class="cal-title">2026年6月</div>
+        <button class="cal-nav">›</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-days">
+          <div class="cal-day-label">日</div>
+          <div class="cal-day-label">月</div>
+          <div class="cal-day-label">火</div>
+          <div class="cal-day-label">水</div>
+          <div class="cal-day-label">木</div>
+          <div class="cal-day-label">金</div>
+          <div class="cal-day-label">土</div>
+        </div>
+        <div class="cal-dates" id="cal-dates"></div>
+      </div>
+    </div>
+
+    <div id="selected-day-section" style="display:none;">
+      <div class="selected-date-label">
+        <span>📌</span>
+        <span id="selected-day-label">6月13日の予約</span>
+      </div>
+      <div id="selected-day-cards"></div>
+    </div>
+
+    <div id="no-selected" class="empty-state" style="padding:24px 20px;">
+      <div class="empty-icon">📆</div>
+      <div class="empty-title">日付をタップしてください</div>
+      <div class="empty-sub">投稿予約がある日には件数が表示されます</div>
+    </div>
+
+  </div>
+
+  <!-- 投稿履歴タブ -->
+  <div id="tab-history" class="tab-panel">
+
+    <!-- 投稿件数表示 -->
+    <div style="background:var(--surface);border-radius:12px;padding:12px 14px;margin-bottom:12px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;">
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="font-size:24px;font-weight:700;color:var(--primary);">22</div>
+        <div style="font-size:10px;color:var(--text-sub);">件投稿済み</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">今月の投稿済み件数</div>
+        <div style="height:6px;background:#e0e4ed;border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:73%;background:var(--primary);border-radius:3px;"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">30件中22件（月末まで13日）</div>
+      </div>
+    </div>
+
+    <div class="calendar-wrap">
+      <div class="cal-header">
+        <button class="cal-nav">‹</button>
+        <div class="cal-title">2026年6月</div>
+        <button class="cal-nav">›</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-days">
+          <div class="cal-day-label">日</div>
+          <div class="cal-day-label">月</div>
+          <div class="cal-day-label">火</div>
+          <div class="cal-day-label">水</div>
+          <div class="cal-day-label">木</div>
+          <div class="cal-day-label">金</div>
+          <div class="cal-day-label">土</div>
+        </div>
+        <div class="cal-dates" id="history-cal-dates"></div>
+      </div>
+    </div>
+
+    <div id="history-selected-section" style="display:none;">
+      <div class="selected-date-label">
+        <span>✅</span>
+        <span id="history-day-label">6月1日の投稿</span>
+      </div>
+      <div id="history-day-cards"></div>
+    </div>
+
+    <div id="history-no-selected" class="empty-state" style="padding:24px 20px;">
+      <div class="empty-icon">📋</div>
+      <div class="empty-title">日付をタップしてください</div>
+      <div class="empty-sub">投稿済みの日には件数が表示されます</div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 新規予約ボタン -->
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:12px 16px;background:white;border-top:1px solid var(--border);z-index:98;">
+  <button onclick="alert('文章生成画面へ移動します')" style="width:100%;padding:14px;border-radius:12px;border:none;background:var(--primary);color:white;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+    <span style="font-size:20px;">✏️</span>
+    <span>投稿文を作って予約する</span>
+  </button>
+</div>
+
+<!-- 予約詳細モーダル -->
+<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeDetail()">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">予約の詳細</div>
+
+    <div class="modal-img">🍵</div>
+
+    <div class="detail-row">
+      <span class="detail-key">投稿予定</span>
+      <span class="detail-val">6月15日（日）13時ごろ</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">投稿先SNS</span>
+      <span class="detail-val">Instagram・Facebook・X</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">文字数</span>
+      <span class="detail-val">32文字</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-key">AI生成</span>
+      <span class="detail-val">✨ AI生成文章</span>
+    </div>
+
+    <div class="post-text-box">
+      週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。
+      <div class="hashtag-box">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
+      <button class="btn btn-primary" onclick="editReservation()">編集する</button>
+      <button class="btn btn-danger" onclick="confirmCancel()">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<!-- キャンセル確認モーダル -->
+<div class="modal-overlay" id="cancel-modal" style="z-index:1020;" onclick="if(event.target===this)closeCancelModal()">
+  <div class="modal" style="padding:24px 16px;text-align:center;">
+    <div class="modal-handle"></div>
+    <div style="font-size:36px;margin-bottom:12px;">🗑️</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px;">予約をキャンセルしますか？</div>
+    <p style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:20px;">
+      6月15日（日）13時ごろの予約をキャンセルします。<br>予約枠が1件解放されます。
+    </p>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="closeCancelModal()">戻る</button>
+      <button class="btn btn-danger" onclick="executeCancel()">キャンセルする</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// 投稿履歴データ
+const historyPostCounts = {1:3, 3:2, 5:1, 7:2, 9:3, 11:1, 13:2, 15:1};
+const historyPostData = {
+  1:  [{sns:'Instagram',text:'週末限定の抹茶テリーヌが登場しました。',likes:142,comments:18},
+       {sns:'Facebook', text:'週末限定の抹茶テリーヌが登場しました。',likes:98, comments:12},
+       {sns:'X',        text:'週末限定の抹茶テリーヌが登場しました。',likes:87, comments:9}],
+  3:  [{sns:'Instagram',text:'本日のスペシャルティコーヒーはエチオピア産。',likes:76,comments:8},
+       {sns:'Facebook', text:'本日のスペシャルティコーヒーはエチオピア産。',likes:54,comments:6}],
+  5:  [{sns:'X',text:'夏季限定メニュー開始のお知らせ。',likes:65,comments:7}],
+  7:  [{sns:'Instagram',text:'新しいランチセットが始まりました。',likes:112,comments:15},
+       {sns:'X',        text:'新しいランチセットが始まりました。',likes:88, comments:11}],
+  9:  [{sns:'Instagram',text:'今週のおすすめスイーツをご紹介。',likes:134,comments:18},
+       {sns:'Facebook', text:'今週のおすすめスイーツをご紹介。',likes:92, comments:13},
+       {sns:'X',        text:'今週のおすすめスイーツをご紹介。',likes:76, comments:9}],
+  11: [{sns:'Instagram',text:'スタッフのおすすめメニューです。',likes:88,comments:11}],
+  13: [{sns:'Instagram',text:'週末限定ドリンクが登場しました。',likes:169,comments:24},
+       {sns:'Facebook', text:'週末限定ドリンクが登場しました。',likes:121,comments:18}],
+  15: [{sns:'X',text:'本日のランチ情報をお届けします。',likes:76,comments:8}],
+};
+
+let historySelectedDay = null;
+
+// ===== プラン表示の適用 =====
+// ★liff_reservation_html8：デモ用切替ボタンを廃止し、実際の契約プランを
+// 　applyPlan()へ渡す形に変更した（liff_textgen.htmlと同じ対応）。
+let currentDemoPlan = 'STANDARD';
+const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
+
+function applyPlan(plan) {
+  currentDemoPlan = plan;
+  document.getElementById('plan-badge').textContent = plan;
+  document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
+  // 表示中の履歴があれば、プラン変更を即座に反映
+  if (historySelectedDay) selectHistoryDay(historySelectedDay);
+}
+
+function buildHistoryCalendar() {
+  const grid = document.getElementById('history-cal-dates');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const firstDay = 1; // 6月1日=月曜
+  const days = 30;
+  const todayNum = 17;
+
+  for (let i = 0; i < firstDay; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'cal-date other-month';
+    blank.textContent = 31;
+    grid.appendChild(blank);
+  }
+  for (let d = 1; d <= days; d++) {
+    const el = document.createElement('div');
+    const dayOfWeek = (firstDay + d - 1) % 7;
+    let cls = 'cal-date';
+    if (dayOfWeek === 0) cls += ' sunday';
+    if (dayOfWeek === 6) cls += ' saturday';
+    if (d === todayNum) cls += ' today';
+    if (historyPostCounts[d]) cls += ' has-post';
+    if (d === historySelectedDay) cls += ' selected';
+    el.className = cls;
+    const count = historyPostCounts[d];
+    if (count) {
+      el.innerHTML = `<span>${d}</span><span class="cal-post-count">${count}件</span>`;
+    } else {
+      el.textContent = d;
+    }
+    el.onclick = () => selectHistoryDay(d);
+    grid.appendChild(el);
+  }
+}
+
+function selectHistoryDay(d) {
+  historySelectedDay = d;
+  buildHistoryCalendar();
+  const posts = historyPostData[d];
+  document.getElementById('history-no-selected').style.display = posts ? 'none' : 'block';
+  document.getElementById('history-selected-section').style.display = posts ? 'block' : 'none';
+  if (posts) {
+    // FREE・PERSONALは分析サービスがないため、いいね・コメント数は表示しない
+    const hasAnalytics = !['FREE', 'PERSONAL'].includes(currentDemoPlan);
+    document.getElementById('history-day-label').textContent = `6月${d}日の投稿（${posts.length}件）`;
+    document.getElementById('history-day-cards').innerHTML = posts.map(p => `
+      <div style="background:var(--surface);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:3px;">${p.sns}</div>
+        <div style="font-size:12px;color:var(--text);line-height:1.6;margin-bottom:6px;">${p.text}</div>
+        ${hasAnalytics ? `<div style="display:flex;gap:12px;font-size:11px;color:var(--text-sub);">
+          <span>❤️ ${p.likes}</span><span>💬 ${p.comments}</span>
+        </div>` : ''}
+      </div>`).join('');
+  }
+}
+
+function switchTab(id) {
+  const tabs = ['list','calendar','history'];
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===id));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// カレンダー生成
+const postCounts = {15: 3, 17: 1, 20: 2, 25: 5, 28: 1}; // 日付:件数のマップ
+const postDataByDay = {
+  15: [
+    { time:'11時ごろ', sns:['IG','FB'],     text:'週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。', hashtag:'#渋谷カフェ #週末限定 #抹茶スイーツ', img:'🍵', chars:32 },
+    { time:'15時ごろ', sns:['IG','X'],      text:'本日のスペシャルティコーヒーはエチオピア産。フルーティな酸味が特徴です。', hashtag:'#スペシャルティコーヒー #渋谷カフェ', img:'☕', chars:29 },
+    { time:'18時ごろ', sns:['FB'],          text:'夜カフェタイムにぴったりのデカフェメニューを増やしました。', hashtag:'#デカフェ #夜カフェ', img:'🌙', chars:24 },
+  ],
+  17: [
+    { time:'13時ごろ', sns:['IG','FB','X'], text:'週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。', hashtag:'#渋谷カフェ #週末限定 #抹茶スイーツ', img:'🍵', chars:32 },
+  ],
+  20: [
+    { time:'9時ごろ',  sns:['IG'],          text:'モーニングセット始めました。トーストとスープのお得な組み合わせです。', hashtag:'#モーニング #渋谷カフェ', img:'🍞', chars:27 },
+    { time:'19時ごろ', sns:['IG','FB','X'], text:'新しいランチセットが始まりました。数量限定なのでお早めに。', hashtag:'#ランチセット #新メニュー', img:'🍽️', chars:25 },
+  ],
+  25: [
+    { time:'8時ごろ',  sns:['IG'],          text:'今週のおすすめスイーツをご紹介。季節のフルーツを使った特製タルトです。', hashtag:'#季節のスイーツ #タルト', img:'🍰', chars:28 },
+    { time:'11時ごろ', sns:['FB'],          text:'店内リニューアルのお知らせ。より快適な空間になりました。', hashtag:'#リニューアル #渋谷カフェ', img:'🛋️', chars:22 },
+    { time:'13時ごろ', sns:['IG','X'],      text:'ランチタイム限定、日替わりパスタセットが人気です。', hashtag:'#ランチ #パスタ', img:'🍝', chars:20 },
+    { time:'16時ごろ', sns:['IG','FB'],     text:'カフェタイムのお供に、焼き菓子の新作が仲間入りしました。', hashtag:'#焼き菓子 #新作', img:'🍪', chars:23 },
+    { time:'20時ごろ', sns:['IG','FB','X'], text:'今週のおすすめスイーツをご紹介。季節のフルーツを使った特製タルトです。', hashtag:'#季節のスイーツ #タルト', img:'🍰', chars:28 },
+  ],
+  28: [
+    { time:'12時ごろ', sns:['X'],           text:'本日のランチ情報をお届けします。数量限定のためお早めにどうぞ。', hashtag:'#ランチ情報 #数量限定', img:'🍱', chars:26 },
+  ],
+};
+const today = 13;
+let selectedDay = null;
+
+function buildCalendar() {
+  const grid = document.getElementById('cal-dates');
+  grid.innerHTML = '';
+  // 2026年6月は月曜日始まり→日曜日=0から
+  // 6月1日は月曜日
+  const firstDay = 1; // 月曜=1、日曜スタートなので1マス空ける
+  const days = 30;
+
+  // 空白
+  for (let i = 0; i < firstDay; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'cal-date other-month';
+    blank.textContent = 31 - firstDay + i + 1;
+    grid.appendChild(blank);
+  }
+
+  for (let d = 1; d <= days; d++) {
+    const el = document.createElement('div');
+    const dayOfWeek = (firstDay + d - 1) % 7;
+    let cls = 'cal-date';
+    if (dayOfWeek === 0) cls += ' sunday';
+    if (dayOfWeek === 6) cls += ' saturday';
+    if (d === today) cls += ' today';
+    if (postCounts[d]) cls += ' has-post';
+    if (d === selectedDay) cls += ' selected';
+    el.className = cls;
+    // 件数バッジを含むHTML
+    const count = postCounts[d];
+    if (count) {
+      el.innerHTML = `<span>${d}</span><span class="cal-post-count">${count}件</span>`;
+    } else {
+      el.textContent = d;
+    }
+    el.onclick = () => selectDay(d);
+    grid.appendChild(el);
+  }
+}
+
+function selectDay(d) {
+  selectedDay = d;
+  buildCalendar();
+  const posts = postDataByDay[d];
+  document.getElementById('no-selected').style.display = posts ? 'none' : 'block';
+  document.getElementById('selected-day-section').style.display = posts ? 'block' : 'none';
+  if (posts) {
+    document.getElementById('selected-day-label').textContent = `6月${d}日の予約（${posts.length}件）`;
+    document.getElementById('selected-day-cards').innerHTML = posts.map((p, i) => {
+      const snsTags = p.sns.map(s => `<span class="sns-tag tag-${s.toLowerCase()}">${s}</span>`).join('');
+      return `
+      <div class="reservation-card" onclick="openDetail(${i + 1})">
+        <div class="card-header">
+          <div class="status-dot dot-pending"></div>
+          <div class="card-date">6月${d}日</div>
+          <div class="card-time">${p.time}</div>
+          <div class="sns-tags">${snsTags}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-text">${p.text}</div>
+          <div class="card-hashtag">${p.hashtag}</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-img-thumb">${p.img}</div>
+          <div class="card-chars">${p.chars}文字</div>
+          <span class="card-ai-badge">✨ AI生成</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function openDetail(id) {
+  document.getElementById('detail-modal').classList.add('open');
+}
+function closeDetail() {
+  document.getElementById('detail-modal').classList.remove('open');
+}
+// 予約内容を投稿文作成画面へ引き継ぎ、編集モードで開く
+function editReservation() {
+  const params = new URLSearchParams({
+    edit: '1',
+    day: '15',
+    time: '13時ごろ',
+    sns: 'IG,FB,X',
+    text: '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。',
+    tags: '渋谷カフェ,週末限定,抹茶スイーツ',
+    img: '🍵',
+  });
+  window.location.href = LIFF_URLS.textgen + '?' + params.toString();
+}
+function confirmCancel() {
+  document.getElementById('cancel-modal').classList.add('open');
+}
+function closeCancelModal() {
+  document.getElementById('cancel-modal').classList.remove('open');
+}
+function executeCancel() {
+  closeCancelModal();
+  closeDetail();
+  alert('予約をキャンセルしました。予約枠が1件解放されました。');
+}
+
+buildCalendar();
+buildHistoryCalendar();
+</script>
+
+<!-- ボトムナビゲーションバー -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="nav-item" onclick="navigateTo('textgen')">
+    <span class="nav-icon">📝</span><span class="nav-label">投稿文作成</span>
+  </button>
+  <button class="nav-item active" onclick="navigateTo('reservation')">
+    <span class="nav-icon">📅</span><span class="nav-label">予約確認</span>
+  </button>
+  <button class="nav-item" onclick="navigateTo('analytics')">
+    <span class="nav-icon">📊</span><span class="nav-label">分析</span>
+  </button>
+  <button class="nav-item" onclick="navigateTo('settings')">
+    <span class="nav-icon">⚙️</span><span class="nav-label">設定</span>
+  </button>
+  <button class="nav-item" onclick="navigateTo('support')">
+    <span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span>
+  </button>
+  <button class="nav-item" onclick="navigateTo('plan')">
+    <span class="nav-icon">💎</span><span class="nav-label">プラン</span>
+  </button>
+</nav>
+
+<script>
+  // ============================================
+  // ボトムナビゲーション共通処理
+  // ============================================
+
+  // 各LIFF画面のURL
+  const LIFF_URLS = {
+    textgen:     'https://liff.line.me/2010401177-OpvemMmh',
+    reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
+    analytics:   'https://liff.line.me/2010401177-qKtfKWP0',
+    image:       'https://liff.line.me/2010401177-3pV56kDU',
+    settings:    'https://liff.line.me/2010401177-XJw2kDQV',
+    about:       'https://liff.line.me/2010401177-PtX79ibV',
+    plan:        'https://liff.line.me/2010401177-IstPDnls',
+    support:     'https://liff.line.me/2010401177-vwzTH30h',
+  };
+
+  // 他のLIFF画面に移動する
+  function navigateTo(page) {
+    if (LIFF_URLS[page]) {
+      window.location.href = LIFF_URLS[page];
+    }
+  }
+
+  // LINEトークルームに戻る
+  function closeToLine() {
+    liff.init({ liffId: '2010401177-dM8eNjUM' }).then(function() {
+      liff.closeWindow();
+    }).catch(function() {
+      window.history.back();
+    });
+  }
+
+  // ★liff_reservation_html8：画面表示時に実際の契約プラン・残り予約
+  // 　可能件数を取得して反映する（デモ用切替ボタンの廃止に伴う対応。
+  // 　liff_textgen.htmlと同じ構成）。予約一覧・カレンダー・投稿履歴
+  // 　タブ自体の実データ化は今回のスコープ外で、サブバー表示のみ対応。
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
+  let LINE_UID = null;
+
+  function daysUntilMonthEnd() {
+    const now = new Date();
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    return lastDay.getDate() - now.getDate();
+  }
+
+  async function fetchReservationQuota() {
+    const el = document.getElementById('reservation-quota');
+    if (el) el.textContent = '確認中…';
+    try {
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID })
+      });
+      const result = await response.json();
+      if (!result.success || !result.data || result.data.found === false) return;
+
+      const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
+      if (validPlans.includes(result.data.plan)) {
+        applyPlan(result.data.plan);
+      }
+
+      if (el && typeof result.data.remainingReservable === 'number') {
+        el.textContent = 'あと' + result.data.remainingReservable + '件・月末まで' + daysUntilMonthEnd() + '日';
+      }
+    } catch (err) {
+      console.error('プラン・残り予約可能件数の取得エラー:', err);
+    }
+  }
+
+  async function initLiff() {
+    try {
+      await liff.init({ liffId: '2010401177-dM8eNjUM' });
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
+      const idToken = liff.getDecodedIDToken();
+      LINE_UID = idToken.sub;
+      fetchReservationQuota();
+    } catch (err) {
+      console.error('LIFF初期化エラー:', err);
+      alert('LINEアプリ内でこの画面を開いてください。');
+    }
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && LINE_UID) {
+      fetchReservationQuota();
+    }
+  });
+
+  initLiff();
+</script>
+</body>
+</html>
