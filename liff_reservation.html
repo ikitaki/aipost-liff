@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更11 - AiPost</title>
+<title>予約確認・変更12 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -200,6 +200,11 @@
     border: 1px solid var(--danger);
     border-radius: 8px;
     padding: 4px 10px;
+  }
+  .cancel-btn:disabled {
+    color: var(--text-sub);
+    border-color: var(--border);
+    background: var(--bg);
   }
   .empty-list-note {
     text-align: center;
@@ -467,7 +472,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更11</span>
+  <span class="header-logo">予約確認・変更12</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1098,7 +1103,7 @@ buildHistoryCalendar();
         '</div>' +
         '<div class="card-footer">' +
           '<div class="card-img-thumb">' + (r.hasImage ? '🖼️' : '') + '</div>' +
-          '<button class="cancel-btn" onclick="cancelReservationConfirm(\'' + r.reservationId + '\')">キャンセル</button>' +
+          '<button class="cancel-btn" onclick="cancelReservationConfirm(\'' + r.reservationId + '\', this)">キャンセル</button>' +
         '</div>' +
       '</div>';
   }
@@ -1125,8 +1130,12 @@ buildHistoryCalendar();
     }
   }
 
-  async function cancelReservationConfirm(reservationId) {
+  async function cancelReservationConfirm(reservationId, btn) {
     if (!confirm('この予約をキャンセルしますか？\nこの操作は取り消せません。')) return;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '処理中…';
+    }
     try {
       const response = await fetch(WEBAPP_URL, {
         method: 'POST',
@@ -1142,10 +1151,18 @@ buildHistoryCalendar();
         fetchReservationQuota();
       } else {
         alert((result.data && result.data.error) || 'キャンセルに失敗しました。もう一度お試しください。');
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'キャンセル';
+        }
       }
     } catch (err) {
       console.error('キャンセル処理エラー:', err);
       alert('通信エラーが発生しました。もう一度お試しください。');
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'キャンセル';
+      }
     }
   }
 
