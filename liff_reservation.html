@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更10 - AiPost</title>
+<title>予約確認・変更11 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -149,7 +149,6 @@
     font-weight: 600;
   }
   .tag-ig { background: #fce4ec; color: #c2185b; }
-  .tag-fb { background: #e3f2fd; color: #1565c0; }
   .tag-x  { background: #f3f4f6; color: #374151; }
   .tag-th { background: #f3f4f6; color: #374151; }
   .card-body { padding: 10px 14px; }
@@ -191,6 +190,22 @@
     padding: 2px 7px;
     border-radius: 10px;
     font-weight: 600;
+  }
+  .cancel-btn {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--danger);
+    background: white;
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    padding: 4px 10px;
+  }
+  .empty-list-note {
+    text-align: center;
+    color: var(--text-sub);
+    font-size: 12px;
+    padding: 32px 0;
   }
   .status-dot {
     width: 8px; height: 8px; border-radius: 50%;
@@ -452,7 +467,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更10</span>
+  <span class="header-logo">予約確認・変更11</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -489,73 +504,9 @@
   <!-- 予約一覧タブ -->
   <div id="tab-list" class="tab-panel active">
 
-    <div class="section-label">予約中（8件）</div>
+    <div class="section-label" id="reservation-list-label">予約中</div>
 
-    <!-- 予約カード1 -->
-    <div class="reservation-card" onclick="openDetail(1)">
-      <div class="card-header">
-        <div class="status-dot dot-pending"></div>
-        <div class="card-date">6月15日（日）</div>
-        <div class="card-time">13時ごろ</div>
-        <div class="sns-tags">
-          <span class="sns-tag tag-ig">IG</span>
-          <span class="sns-tag tag-fb">FB</span>
-          <span class="sns-tag tag-x">X</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="card-text">週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。</div>
-        <div class="card-hashtag">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
-      </div>
-      <div class="card-footer">
-        <div class="card-img-thumb">🍵</div>
-        <div class="card-chars">32文字</div>
-        <span class="card-ai-badge">✨ AI生成</span>
-      </div>
-    </div>
-
-    <!-- 予約カード2 -->
-    <div class="reservation-card" onclick="openDetail(2)">
-      <div class="card-header">
-        <div class="status-dot dot-pending"></div>
-        <div class="card-date">6月17日（火）</div>
-        <div class="card-time">19時ごろ</div>
-        <div class="sns-tags">
-          <span class="sns-tag tag-ig">IG</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="card-text">本日のスペシャルティコーヒーはエチオピア産。フルーティな香りが特徴です。</div>
-        <div class="card-hashtag">#スペシャルティコーヒー #エチオピア #渋谷カフェ</div>
-      </div>
-      <div class="card-footer">
-        <div class="card-img-thumb">☕</div>
-        <div class="card-chars">31文字</div>
-        <span class="card-ai-badge">✨ AI生成</span>
-      </div>
-    </div>
-
-    <!-- 予約カード3 -->
-    <div class="reservation-card" onclick="openDetail(3)">
-      <div class="card-header">
-        <div class="status-dot dot-pending"></div>
-        <div class="card-date">6月20日（金）</div>
-        <div class="card-time">12時ごろ</div>
-        <div class="sns-tags">
-          <span class="sns-tag tag-ig">IG</span>
-          <span class="sns-tag tag-x">X</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="card-text">夏季限定メニューが始まります。冷たいフルーツティーとサマーパフェをぜひ。</div>
-        <div class="card-hashtag">#夏限定 #フルーツティー #渋谷グルメ</div>
-      </div>
-      <div class="card-footer">
-        <div class="card-img-thumb">🍓</div>
-        <div class="card-chars">34文字</div>
-        <span class="card-ai-badge">✨ AI生成</span>
-      </div>
-    </div>
+    <div id="reservation-list-container"></div>
 
   </div>
 
@@ -1101,9 +1052,100 @@ buildHistoryCalendar();
       const idToken = liff.getDecodedIDToken();
       LINE_UID = idToken.sub;
       applyQuotaFromCacheOrFetch();
+      fetchAndRenderReservationList();
     } catch (err) {
       console.error('LIFF初期化エラー:', err);
       alert('LINEアプリ内でこの画面を開いてください。');
+    }
+  }
+
+  // ★liff_reservation_html11：予約一覧タブを実データ表示に切り替え。
+  // 　予約カレンダー・投稿履歴タブ、予約の「修正」機能は今回のスコープ
+  // 　外（別途対応予定）。
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text == null ? '' : text;
+    return div.innerHTML;
+  }
+
+  function snsTagHtml(sns) {
+    if (sns === 'Instagram') return '<span class="sns-tag tag-ig">IG</span>';
+    if (sns === 'Threads') return '<span class="sns-tag tag-th">TH</span>';
+    return '<span class="sns-tag tag-x">X</span>';
+  }
+
+  function formatScheduledAt(isoString) {
+    const dt = new Date(isoString);
+    const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+    const dateLabel = (dt.getMonth() + 1) + '月' + dt.getDate() + '日（' + dayNames[dt.getDay()] + '）';
+    const timeLabel = dt.getHours() + '時ごろ';
+    return { dateLabel: dateLabel, timeLabel: timeLabel };
+  }
+
+  function renderReservationCard(r) {
+    const time = formatScheduledAt(r.scheduledAt);
+    const tags = r.targetSns.map(snsTagHtml).join('');
+    return '' +
+      '<div class="reservation-card">' +
+        '<div class="card-header">' +
+          '<div class="status-dot dot-pending"></div>' +
+          '<div class="card-date">' + time.dateLabel + '</div>' +
+          '<div class="card-time">' + time.timeLabel + '</div>' +
+          '<div class="sns-tags">' + tags + '</div>' +
+        '</div>' +
+        '<div class="card-body">' +
+          '<div class="card-text">' + escapeHtml(r.honbunPreview) + '</div>' +
+        '</div>' +
+        '<div class="card-footer">' +
+          '<div class="card-img-thumb">' + (r.hasImage ? '🖼️' : '') + '</div>' +
+          '<button class="cancel-btn" onclick="cancelReservationConfirm(\'' + r.reservationId + '\')">キャンセル</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  async function fetchAndRenderReservationList() {
+    const container = document.getElementById('reservation-list-container');
+    const label = document.getElementById('reservation-list-label');
+    if (!container) return;
+    try {
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'getMyReservations', lineUid: LINE_UID })
+      });
+      const result = await response.json();
+      const list = (result.success && Array.isArray(result.data)) ? result.data : [];
+
+      if (label) label.textContent = '予約中（' + list.length + '件）';
+      container.innerHTML = list.length
+        ? list.map(renderReservationCard).join('')
+        : '<div class="empty-list-note">現在、予約中の投稿はありません</div>';
+    } catch (err) {
+      console.error('予約一覧の取得エラー:', err);
+      container.innerHTML = '<div class="empty-list-note">予約一覧を取得できませんでした</div>';
+    }
+  }
+
+  async function cancelReservationConfirm(reservationId) {
+    if (!confirm('この予約をキャンセルしますか？\nこの操作は取り消せません。')) return;
+    try {
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'cancelReservation',
+          lineUid: LINE_UID,
+          params: { reservationId: reservationId }
+        })
+      });
+      const result = await response.json();
+      if (result.success && result.data && result.data.success) {
+        fetchAndRenderReservationList();
+        fetchReservationQuota();
+      } else {
+        alert((result.data && result.data.error) || 'キャンセルに失敗しました。もう一度お試しください。');
+      }
+    } catch (err) {
+      console.error('キャンセル処理エラー:', err);
+      alert('通信エラーが発生しました。もう一度お試しください。');
     }
   }
 
