@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成89 - AiPost</title>
+<title>投稿文作成90 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成89</span>
+  <span class="header-logo">投稿文作成90</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1156,17 +1156,33 @@ async function initLiff() {
   }
 }
 
-// ★liff_textgen.html89：GASへの問い合わせ頻度を減らすため、プラン・
+// ★liff_textgen.html90：GASへの問い合わせ頻度を減らすため、プラン・
 // 　残り予約可能件数はlocalStorageにキャッシュし、画面表示ごとの
 // 　再取得（バックグラウンド復帰時の再取得を含む）は廃止した。
-// 　キャッシュが無い場合（初回訪問時）のみ取得する。予約確定後は
-// 　refreshReservationQuota()で明示的に再取得・キャッシュ更新する。
+// 　キャッシュが無い場合・キャッシュが古い場合（QUOTA_CACHE_TTL_MS
+// 　経過後。アプリを閉じて時間を置いて再開したようなケースに対応）
+// 　のみ取得する。予約確定後はrefreshReservationQuota()で明示的に
+// 　再取得・キャッシュ更新する。予約の修正・設定変更等、他の値が
+// 　変わる操作についても、その機能の実装時に同様の明示的な更新呼び
+// 　出しを追加する想定（それまではTTLでカバーする）。
+// 　表示文言はliff_reservation.htmlと統一（あと◯件予約できます・
+// 　月末まで◯日）。
 const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
+const QUOTA_CACHE_TTL_MS = 5 * 60 * 1000; // 5分
+
+function daysUntilMonthEnd() {
+  const now = new Date();
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return lastDay.getDate() - now.getDate();
+}
 
 function readQuotaCache() {
   try {
     const raw = localStorage.getItem(QUOTA_CACHE_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const cache = JSON.parse(raw);
+    if (!cache.fetchedAt || Date.now() - cache.fetchedAt > QUOTA_CACHE_TTL_MS) return null;
+    return cache;
   } catch (err) {
     return null;
   }
@@ -1174,7 +1190,11 @@ function readQuotaCache() {
 
 function writeQuotaCache(plan, remainingReservable) {
   try {
-    localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify({ plan: plan, remainingReservable: remainingReservable }));
+    localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify({
+      plan: plan,
+      remainingReservable: remainingReservable,
+      fetchedAt: Date.now()
+    }));
   } catch (err) {
     // localStorageが使えない環境でも動作は継続する
   }
@@ -1187,7 +1207,7 @@ function applyQuotaFromCache(cache) {
   }
   const el = document.getElementById('reservation-quota');
   if (el && typeof cache.remainingReservable === 'number') {
-    el.textContent = 'あと' + cache.remainingReservable + '件予約できます';
+    el.textContent = 'あと' + cache.remainingReservable + '件予約できます・月末まで' + daysUntilMonthEnd() + '日';
   }
 }
 

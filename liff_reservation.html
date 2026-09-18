@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更9 - AiPost</title>
+<title>予約確認・変更10 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -452,7 +452,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更9</span>
+  <span class="header-logo">予約確認・変更10</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1016,7 +1016,11 @@ buildHistoryCalendar();
   // 　追加する）。
   const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
   let LINE_UID = null;
+  // ★liff_reservation_html10：liff_textgen.htmlと同様、キャッシュに
+  // 　5分のTTLを設けた（アプリを閉じて時間を置いて再開したような
+  // 　ケースに対応するため）。
   const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
+  const QUOTA_CACHE_TTL_MS = 5 * 60 * 1000; // 5分
 
   function daysUntilMonthEnd() {
     const now = new Date();
@@ -1027,7 +1031,10 @@ buildHistoryCalendar();
   function readQuotaCache() {
     try {
       const raw = localStorage.getItem(QUOTA_CACHE_KEY);
-      return raw ? JSON.parse(raw) : null;
+      if (!raw) return null;
+      const cache = JSON.parse(raw);
+      if (!cache.fetchedAt || Date.now() - cache.fetchedAt > QUOTA_CACHE_TTL_MS) return null;
+      return cache;
     } catch (err) {
       return null;
     }
@@ -1035,7 +1042,11 @@ buildHistoryCalendar();
 
   function writeQuotaCache(plan, remainingReservable) {
     try {
-      localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify({ plan: plan, remainingReservable: remainingReservable }));
+      localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify({
+        plan: plan,
+        remainingReservable: remainingReservable,
+        fetchedAt: Date.now()
+      }));
     } catch (err) {
       // localStorageが使えない環境でも動作は継続する
     }
@@ -1048,7 +1059,7 @@ buildHistoryCalendar();
     }
     const el = document.getElementById('reservation-quota');
     if (el && typeof remainingReservable === 'number') {
-      el.textContent = 'あと' + remainingReservable + '件・月末まで' + daysUntilMonthEnd() + '日';
+      el.textContent = 'あと' + remainingReservable + '件予約できます・月末まで' + daysUntilMonthEnd() + '日';
     }
   }
 
