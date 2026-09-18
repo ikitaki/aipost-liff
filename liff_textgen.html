@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成86 - AiPost</title>
+<title>投稿文作成87 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成86</span>
+  <span class="header-logo">投稿文作成87</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -621,14 +621,6 @@
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
-  </div>
-  <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
-    <span style="font-size:9px;color:rgba(255,255,255,0.6);align-self:center;margin-right:2px;">🔧デモ用プラン切替：</span>
-    <button class="plan-demo-btn" id="plan-demo-FREE" onclick="setDemoPlan('FREE')">FREE</button>
-    <button class="plan-demo-btn" id="plan-demo-PERSONAL" onclick="setDemoPlan('PERSONAL')">PERSONAL</button>
-    <button class="plan-demo-btn" id="plan-demo-LITE" onclick="setDemoPlan('LITE')">LITE</button>
-    <button class="plan-demo-btn active" id="plan-demo-STANDARD" onclick="setDemoPlan('STANDARD')">STANDARD</button>
-    <button class="plan-demo-btn" id="plan-demo-PRO" onclick="setDemoPlan('PRO')">PRO</button>
   </div>
 </div>
 
@@ -1164,8 +1156,9 @@ async function initLiff() {
   }
 }
 
-// ★liff_textgen.html86：残り予約可能件数を取得して画面上部に表示する。
-// 　取得失敗時は表示欄を空のままにし、画面の他の動作には影響させない。
+// ★liff_textgen.html87：残り予約可能件数に加えて、実際の契約プランも
+// 　取得し、applyPlan()へ渡すようにした（デモ切替ボタンの廃止に伴う対応）。
+// 　取得失敗時は、画面初期状態（STANDARD）のまま何もしない。
 async function fetchReservationQuota() {
   try {
     const response = await fetch(WEBAPP_URL, {
@@ -1173,14 +1166,19 @@ async function fetchReservationQuota() {
       body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID })
     });
     const result = await response.json();
+    if (!result.success || !result.data || result.data.found === false) return;
+
+    const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
+    if (validPlans.includes(result.data.plan)) {
+      applyPlan(result.data.plan);
+    }
+
     const el = document.getElementById('reservation-quota');
-    if (!el) return;
-    if (result.success && result.data && result.data.found !== false &&
-        typeof result.data.remainingReservable === 'number') {
+    if (el && typeof result.data.remainingReservable === 'number') {
       el.textContent = 'あと' + result.data.remainingReservable + '件予約できます';
     }
   } catch (err) {
-    console.error('残り予約可能件数の取得エラー:', err);
+    console.error('プラン・残り予約可能件数の取得エラー:', err);
     // 取得に失敗しても投稿文作成自体はそのまま続行できるようにする
   }
 }
@@ -1657,13 +1655,15 @@ function updateCharCount() {
 }
 
 // ===== SNS =====
-// ===== デモ用プラン切替（プラン別のSNS制限確認用） =====
+// ===== プラン別のSNS制限・文字数上限の適用 =====
+// ★liff_textgen.html87：実機のユーザー管理シート「契約プラン」に
+// 　連動させるため、デモ用切替ボタン（setDemoPlan）を廃止し、
+// 　getUserProfile()から取得した実際のプランをapplyPlan()へそのまま
+// 　渡す形に変更した。関数の中身（プラン別のSNS制限・文字数上限の
+// 　適用ロジック）自体は変更していない。
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
 
-function setDemoPlan(plan) {
-  ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'].forEach(p => {
-    document.getElementById('plan-demo-' + p).classList.toggle('active', p === plan);
-  });
+function applyPlan(plan) {
   document.getElementById('plan-badge').textContent = plan;
   document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
 
