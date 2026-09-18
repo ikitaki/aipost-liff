@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成88 - AiPost</title>
+<title>投稿文作成89 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成88</span>
+  <span class="header-logo">投稿文作成89</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1149,21 +1149,62 @@ async function initLiff() {
     }
     const idToken = liff.getDecodedIDToken();
     LINE_UID = idToken.sub;
-    fetchReservationQuota();
+    applyQuotaFromCacheOrFetch();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
   }
 }
 
-// ★liff_textgen.html87：残り予約可能件数に加えて、実際の契約プランも
-// 　取得し、applyPlan()へ渡すようにした（デモ切替ボタンの廃止に伴う対応）。
-// 　取得失敗時は、画面初期状態（STANDARD）のまま何もしない。
-// ★liff_textgen.html88：LINEアプリの機種・OSによっては、画面を閉じた
-// 　つもりでもWebViewが破棄されず再取得が走らないことがあるため、
-// 　画面がフォアグラウンドに復帰した際（visibilitychange）にも
-// 　毎回呼び出すようにした（下部のイベント登録を参照）。
-async function fetchReservationQuota() {
+// ★liff_textgen.html89：GASへの問い合わせ頻度を減らすため、プラン・
+// 　残り予約可能件数はlocalStorageにキャッシュし、画面表示ごとの
+// 　再取得（バックグラウンド復帰時の再取得を含む）は廃止した。
+// 　キャッシュが無い場合（初回訪問時）のみ取得する。予約確定後は
+// 　refreshReservationQuota()で明示的に再取得・キャッシュ更新する。
+const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
+
+function readQuotaCache() {
+  try {
+    const raw = localStorage.getItem(QUOTA_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function writeQuotaCache(plan, remainingReservable) {
+  try {
+    localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify({ plan: plan, remainingReservable: remainingReservable }));
+  } catch (err) {
+    // localStorageが使えない環境でも動作は継続する
+  }
+}
+
+function applyQuotaFromCache(cache) {
+  const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
+  if (validPlans.includes(cache.plan)) {
+    applyPlan(cache.plan);
+  }
+  const el = document.getElementById('reservation-quota');
+  if (el && typeof cache.remainingReservable === 'number') {
+    el.textContent = 'あと' + cache.remainingReservable + '件予約できます';
+  }
+}
+
+// キャッシュがあればそれを使い（通信しない）、無ければ取得する
+function applyQuotaFromCacheOrFetch() {
+  const cached = readQuotaCache();
+  if (cached) {
+    applyQuotaFromCache(cached);
+  } else {
+    refreshReservationQuota();
+  }
+}
+
+// 実際にGASへ問い合わせて最新のプラン・残り件数を取得し、画面表示と
+// キャッシュを更新する。予約確定直後など、値が変わったタイミングで
+// 呼び出す（画面表示のたびに毎回呼ぶものではない）。
+async function refreshReservationQuota() {
   const el = document.getElementById('reservation-quota');
   if (el) el.textContent = '確認中…';
   try {
@@ -1174,27 +1215,13 @@ async function fetchReservationQuota() {
     const result = await response.json();
     if (!result.success || !result.data || result.data.found === false) return;
 
-    const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
-    if (validPlans.includes(result.data.plan)) {
-      applyPlan(result.data.plan);
-    }
-
-    if (el && typeof result.data.remainingReservable === 'number') {
-      el.textContent = 'あと' + result.data.remainingReservable + '件予約できます';
-    }
+    applyQuotaFromCache({ plan: result.data.plan, remainingReservable: result.data.remainingReservable });
+    writeQuotaCache(result.data.plan, result.data.remainingReservable);
   } catch (err) {
     console.error('プラン・残り予約可能件数の取得エラー:', err);
     // 取得に失敗しても投稿文作成自体はそのまま続行できるようにする
   }
 }
-
-// 画面がバックグラウンドから復帰した際に再取得する（LINE_UID取得前に
-// 発火した場合は何もしない）
-document.addEventListener('visibilitychange', function () {
-  if (!document.hidden && LINE_UID) {
-    fetchReservationQuota();
-  }
-});
 
 // ===== キーワード =====
 // 入力済みキーワード（空欄を除く）を配列で取得
@@ -2219,6 +2246,9 @@ async function executeReserve() {
     document.getElementById('complete-modal').classList.add('open');
 
     resetAllForm();
+
+    // 予約が確定し、残り予約可能件数が変わったのでキャッシュを更新する
+    refreshReservationQuota();
 
   } catch (err) {
     console.error('予約確定リクエストエラー:', err);

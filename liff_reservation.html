@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更8 - AiPost</title>
+<title>予約確認・変更9 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -452,7 +452,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更8</span>
+  <span class="header-logo">予約確認・変更9</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1006,17 +1006,50 @@ buildHistoryCalendar();
     });
   }
 
-  // ★liff_reservation_html8：画面表示時に実際の契約プラン・残り予約
-  // 　可能件数を取得して反映する（デモ用切替ボタンの廃止に伴う対応。
-  // 　liff_textgen.htmlと同じ構成）。予約一覧・カレンダー・投稿履歴
-  // 　タブ自体の実データ化は今回のスコープ外で、サブバー表示のみ対応。
+  // ★liff_reservation_html9：GASへの問い合わせ頻度を減らすため、
+  // 　プラン・残り予約可能件数はlocalStorageにキャッシュし
+  // 　（liff_textgen.htmlと同じキーを共有）、画面表示ごとの再取得
+  // 　（バックグラウンド復帰時の再取得を含む）は廃止した。キャッシュが
+  // 　無い場合（初回訪問時）のみ取得する。本画面はまだ予約の作成・
+  // 　変更機能自体が実装されていないため、取得後の明示的な再取得
+  // 　トリガーは今回は追加しない（その機能を実装する際にあわせて
+  // 　追加する）。
   const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
   let LINE_UID = null;
+  const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
 
   function daysUntilMonthEnd() {
     const now = new Date();
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     return lastDay.getDate() - now.getDate();
+  }
+
+  function readQuotaCache() {
+    try {
+      const raw = localStorage.getItem(QUOTA_CACHE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function writeQuotaCache(plan, remainingReservable) {
+    try {
+      localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify({ plan: plan, remainingReservable: remainingReservable }));
+    } catch (err) {
+      // localStorageが使えない環境でも動作は継続する
+    }
+  }
+
+  function applyQuotaValues(plan, remainingReservable) {
+    const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
+    if (validPlans.includes(plan)) {
+      applyPlan(plan);
+    }
+    const el = document.getElementById('reservation-quota');
+    if (el && typeof remainingReservable === 'number') {
+      el.textContent = 'あと' + remainingReservable + '件・月末まで' + daysUntilMonthEnd() + '日';
+    }
   }
 
   async function fetchReservationQuota() {
@@ -1030,16 +1063,20 @@ buildHistoryCalendar();
       const result = await response.json();
       if (!result.success || !result.data || result.data.found === false) return;
 
-      const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
-      if (validPlans.includes(result.data.plan)) {
-        applyPlan(result.data.plan);
-      }
-
-      if (el && typeof result.data.remainingReservable === 'number') {
-        el.textContent = 'あと' + result.data.remainingReservable + '件・月末まで' + daysUntilMonthEnd() + '日';
-      }
+      applyQuotaValues(result.data.plan, result.data.remainingReservable);
+      writeQuotaCache(result.data.plan, result.data.remainingReservable);
     } catch (err) {
       console.error('プラン・残り予約可能件数の取得エラー:', err);
+    }
+  }
+
+  // キャッシュがあればそれを使い（通信しない）、無ければ取得する
+  function applyQuotaFromCacheOrFetch() {
+    const cached = readQuotaCache();
+    if (cached) {
+      applyQuotaValues(cached.plan, cached.remainingReservable);
+    } else {
+      fetchReservationQuota();
     }
   }
 
@@ -1052,18 +1089,12 @@ buildHistoryCalendar();
       }
       const idToken = liff.getDecodedIDToken();
       LINE_UID = idToken.sub;
-      fetchReservationQuota();
+      applyQuotaFromCacheOrFetch();
     } catch (err) {
       console.error('LIFF初期化エラー:', err);
       alert('LINEアプリ内でこの画面を開いてください。');
     }
   }
-
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && LINE_UID) {
-      fetchReservationQuota();
-    }
-  });
 
   initLiff();
 </script>
