@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成87 - AiPost</title>
+<title>投稿文作成88 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成87</span>
+  <span class="header-logo">投稿文作成88</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -614,7 +614,7 @@
     <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
     <span id="plan-price">¥1,280/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
-    <span id="reservation-quota" style="margin-left:auto;font-weight:700;"></span>
+    <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
@@ -1159,7 +1159,13 @@ async function initLiff() {
 // ★liff_textgen.html87：残り予約可能件数に加えて、実際の契約プランも
 // 　取得し、applyPlan()へ渡すようにした（デモ切替ボタンの廃止に伴う対応）。
 // 　取得失敗時は、画面初期状態（STANDARD）のまま何もしない。
+// ★liff_textgen.html88：LINEアプリの機種・OSによっては、画面を閉じた
+// 　つもりでもWebViewが破棄されず再取得が走らないことがあるため、
+// 　画面がフォアグラウンドに復帰した際（visibilitychange）にも
+// 　毎回呼び出すようにした（下部のイベント登録を参照）。
 async function fetchReservationQuota() {
+  const el = document.getElementById('reservation-quota');
+  if (el) el.textContent = '確認中…';
   try {
     const response = await fetch(WEBAPP_URL, {
       method: 'POST',
@@ -1173,7 +1179,6 @@ async function fetchReservationQuota() {
       applyPlan(result.data.plan);
     }
 
-    const el = document.getElementById('reservation-quota');
     if (el && typeof result.data.remainingReservable === 'number') {
       el.textContent = 'あと' + result.data.remainingReservable + '件予約できます';
     }
@@ -1182,6 +1187,14 @@ async function fetchReservationQuota() {
     // 取得に失敗しても投稿文作成自体はそのまま続行できるようにする
   }
 }
+
+// 画面がバックグラウンドから復帰した際に再取得する（LINE_UID取得前に
+// 発火した場合は何もしない）
+document.addEventListener('visibilitychange', function () {
+  if (!document.hidden && LINE_UID) {
+    fetchReservationQuota();
+  }
+});
 
 // ===== キーワード =====
 // 入力済みキーワード（空欄を除く）を配列で取得
