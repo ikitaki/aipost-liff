@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成99 - AiPost</title>
+<title>投稿文作成100 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成99</span>
+  <span class="header-logo">投稿文作成100</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -617,13 +617,13 @@
     <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
     <span id="plan-price">¥1,280/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
-    <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+    <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
 </div>
 
@@ -1175,11 +1175,10 @@ async function initLiff() {
 // 　消えるため、TTL（有効期限）による管理も不要になり撤廃した。
 const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
 
-function daysUntilMonthEnd() {
-  const now = new Date();
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  return lastDay.getDate() - now.getDate();
-}
+// ★liff_textgen.html100：残り件数の表示を短縮（「あと◯件予約できます・
+// 　月末まで◯日」→「残り◯件」）し、サブバー下段（連携中の右側）に
+// 　移動した。上段（プラン・料金・次回更新日）に置いていたことで、
+// 　文言が折り返され見づらくなっていたための対応。
 
 function readQuotaCache() {
   try {
@@ -1249,7 +1248,7 @@ function applyQuotaFromCache(cache) {
   }
   const el = document.getElementById('reservation-quota');
   if (el && typeof cache.remainingReservable === 'number') {
-    el.textContent = 'あと' + cache.remainingReservable + '件予約できます・月末まで' + daysUntilMonthEnd() + '日';
+    el.textContent = '残り' + cache.remainingReservable + '件';
   }
   applySnsConnectionStatus(cache.sns);
 }

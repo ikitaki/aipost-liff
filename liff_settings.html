@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録46 - AiPost</title>
+<title>設定・登録47 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録46</span>
+  <span class="header-logo">設定・登録47</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -855,6 +855,7 @@ const SNS_LABEL = { ig: 'Instagram', x: 'X', th: 'Threads' };
 const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
 let currentDemoPlan = 'STANDARD';
+let currentRemainingReservable = null;
 // ★liff_settings.html33：外部ブラウザから戻ってきた直後、複数の
 // 　loadSnsConnectionStatus()呼び出しが重なった際、古いリクエスト
 // 　の結果が新しいリクエストの結果を上書きしてしまう競合状態を
@@ -1047,10 +1048,13 @@ function updateSnsSummary() {
   const limit = PLAN_SNS_LIMIT[currentDemoPlan];
   document.getElementById('sns-connected-title').textContent = `連携状況（${connectedList.length}/${limit}）`;
 
+  const quotaHtml = (typeof currentRemainingReservable === 'number')
+    ? `<span style="margin-left:auto;font-weight:700;">残り${currentRemainingReservable}件</span>`
+    : '';
   const planSns = document.getElementById('plan-sns');
   planSns.innerHTML = '<span>連携中：</span>' + connectedList.map(s =>
     `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${SNS_LABEL[s]}</span>`
-  ).join('');
+  ).join('') + quotaHtml;
 }
 
 /**
@@ -1361,6 +1365,12 @@ function populateMinorOptions(selectedMajor) {
 }
 
 function applyProfileToForm(profile) {
+  // ★liff_settings.html47：残り掲載数をサブバー下段（連携中の右側）
+  // 　に短く表示するため、applyPlan()（内部でupdateSnsSummary()を
+  // 　呼ぶ）より前に値をセットしておく。
+  if (typeof profile.remainingReservable === 'number') {
+    currentRemainingReservable = profile.remainingReservable;
+  }
   if (profile.plan) {
     applyPlan(profile.plan);
   }
