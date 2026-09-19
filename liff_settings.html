@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録44 - AiPost</title>
+<title>設定・登録45 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録44</span>
+  <span class="header-logo">設定・登録45</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -394,7 +394,6 @@
     <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
     <span id="plan-price">¥1,280/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
-    <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
   <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
     <span>連携中：</span>
@@ -1358,10 +1357,6 @@ function populateMinorOptions(selectedMajor) {
 function applyProfileToForm(profile) {
   if (profile.plan) {
     applyPlan(profile.plan);
-  }
-  const quotaEl = document.getElementById('reservation-quota');
-  if (quotaEl && typeof profile.remainingReservable === 'number') {
-    quotaEl.textContent = 'あと' + profile.remainingReservable + '件予約できます';
   }
   if (profile.shopName) {
     document.getElementById('shop-name-input').value = profile.shopName;
