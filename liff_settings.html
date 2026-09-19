@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録43 - AiPost</title>
+<title>設定・登録44 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録43</span>
+  <span class="header-logo">設定・登録44</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -394,17 +394,10 @@
     <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
     <span id="plan-price">¥1,280/月</span>
     <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
+    <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
   <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
     <span>連携中：</span>
-  </div>
-  <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
-    <span style="font-size:9px;color:rgba(255,255,255,0.6);align-self:center;margin-right:2px;">🔧デモ用プラン切替：</span>
-    <button class="plan-demo-btn" id="plan-demo-FREE" onclick="setDemoPlan('FREE')">FREE</button>
-    <button class="plan-demo-btn" id="plan-demo-PERSONAL" onclick="setDemoPlan('PERSONAL')">PERSONAL</button>
-    <button class="plan-demo-btn" id="plan-demo-LITE" onclick="setDemoPlan('LITE')">LITE</button>
-    <button class="plan-demo-btn active" id="plan-demo-STANDARD" onclick="setDemoPlan('STANDARD')">STANDARD</button>
-    <button class="plan-demo-btn" id="plan-demo-PRO" onclick="setDemoPlan('PRO')">PRO</button>
   </div>
 </div>
 <div class="tab-nav">
@@ -654,24 +647,8 @@ function readSharedCache() {
   }
 }
 
-// ★一時的な確認用表示（原因切り分け後に削除予定）。
-function showDebugCacheBadge() {
-  try {
-    const raw = sessionStorage.getItem(QUOTA_CACHE_KEY);
-    const badge = document.createElement('div');
-    badge.style.cssText = 'position:fixed;bottom:60px;right:8px;z-index:9999;background:rgba(0,0,0,0.75);color:#0f0;font-size:10px;padding:4px 8px;border-radius:6px;font-family:monospace;max-width:70vw;word-break:break-all;';
-    if (!raw) {
-      badge.textContent = 'キャッシュ: なし';
-    } else {
-      const cache = JSON.parse(raw);
-      const ageSec = cache.fetchedAt ? Math.round((Date.now() - cache.fetchedAt) / 1000) : '?';
-      badge.textContent = 'キャッシュ: あり（' + ageSec + '秒前・plan=' + cache.plan + '）';
-    }
-    document.body.appendChild(badge);
-  } catch (err) {
-    // 確認用表示自体のエラーは無視する
-  }
-}
+// ★liff_settings.html44：動作確認が取れたため、一時的な確認用
+// 　表示（showDebugCacheBadge）を削除した。
 
 // 既存の共有キャッシュに、渡したフィールドだけ上書きマージして保存する
 // （他画面が使う項目を消さないようにするため、常にマージで扱う）
@@ -736,7 +713,6 @@ async function loadProfileAndSnsFresh() {
 
 async function initLiff() {
   try {
-    showDebugCacheBadge();
     await liff.init({ liffId: '2010401177-XJw2kDQV' });
     if (!liff.isLoggedIn()) {
       liff.login();
@@ -868,7 +844,7 @@ function switchTab(id) {
   document.getElementById('tab-'+id).classList.add('active');
 }
 
-// ===== デモ用プラン切替（SNS連携数の上限確認用） =====
+// ===== プラン別のSNS連携数上限表示 =====
 const SNS_ORDER = ['x', 'ig', 'th'];
 const SNS_LABEL = { ig: 'Instagram', x: 'X', th: 'Threads' };
 const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
@@ -880,25 +856,16 @@ let currentDemoPlan = 'STANDARD';
 // 　防止するための連番カウンター
 let snsStatusRequestSeq = 0;
 
-function setDemoPlan(plan) {
+// ★liff_settings.html44：デモ用プラン切替ボタンを廃止し、実際の
+// 　契約プランを表示するだけの関数に変更（setDemoPlan→applyPlan）。
+// 　デモ用に入っていた「上限超過分のSNSを自動解除する」処理は削除
+// 　した（実際の連携解除を伴う操作をクライアント側の表示更新から
+// 　自動的に行うのは危険なため。必要であれば別途サーバー側の仕様
+// 　として検討する）。
+function applyPlan(plan) {
   currentDemoPlan = plan;
-  ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'].forEach(p => {
-    document.getElementById('plan-demo-' + p).classList.toggle('active', p === plan);
-  });
   document.getElementById('plan-badge').textContent = plan;
   document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
-
-  // FREEプランはXと連携できないため、Xが連携済みなら自動的に解除
-  if (plan === 'FREE' && isConnected('x')) disconnectSns('x');
-
-  // 新しい上限を超えている分は、連携が古い順（ig→fb→x→th）に自動解除
-  const limit = PLAN_SNS_LIMIT[plan];
-  let connectedList = SNS_ORDER.filter(isConnected);
-  while (connectedList.length > limit) {
-    disconnectSns(connectedList[connectedList.length - 1]);
-    connectedList = SNS_ORDER.filter(isConnected);
-  }
-
   updateSnsSummary();
 }
 
@@ -1389,6 +1356,13 @@ function populateMinorOptions(selectedMajor) {
 }
 
 function applyProfileToForm(profile) {
+  if (profile.plan) {
+    applyPlan(profile.plan);
+  }
+  const quotaEl = document.getElementById('reservation-quota');
+  if (quotaEl && typeof profile.remainingReservable === 'number') {
+    quotaEl.textContent = 'あと' + profile.remainingReservable + '件予約できます';
+  }
   if (profile.shopName) {
     document.getElementById('shop-name-input').value = profile.shopName;
   }
