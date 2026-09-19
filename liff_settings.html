@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録41 - AiPost</title>
+<title>設定・登録42 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録41</span>
+  <span class="header-logo">設定・登録42</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -639,23 +639,16 @@ let MASTER_DATA = null;
 
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
 
-// ★liff_settings.html36：投稿文作成・予約確認画面と共有している
-// 　保存済み情報キャッシュ（localStorage）を、本画面でも使うように
-// 　した。キャッシュに店舗情報・SNS連携状況が揃っていれば、この
-// 　画面を開いた時に再取得せず即表示する（「読み込んでいます」の
-// 　表示が画面ごとに毎回出ていた問題への対応）。キャッシュが無い・
-// 　古い場合のみ取得し、取得結果をキャッシュへ書き込む（他画面が
-// 　開かれた時にも使えるようにするため）。
+// ★liff_settings.html42：保存先をlocalStorageからsessionStorageに
+// 　変更した。localStorageはアプリを完全に閉じても消えないため、
+// 　「アプリを閉じて開き直したら再取得する」という要望に合わなかった。
+// 　TTL管理は不要になったため撤廃した。
 const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
-const QUOTA_CACHE_TTL_MS = 60 * 60 * 1000; // 60分（他画面と統一）
 
 function readSharedCache() {
   try {
-    const raw = localStorage.getItem(QUOTA_CACHE_KEY);
-    if (!raw) return null;
-    const cache = JSON.parse(raw);
-    if (!cache.fetchedAt || Date.now() - cache.fetchedAt > QUOTA_CACHE_TTL_MS) return null;
-    return cache;
+    const raw = sessionStorage.getItem(QUOTA_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
   } catch (err) {
     return null;
   }
@@ -664,7 +657,7 @@ function readSharedCache() {
 // ★一時的な確認用表示（原因切り分け後に削除予定）。
 function showDebugCacheBadge() {
   try {
-    const raw = localStorage.getItem(QUOTA_CACHE_KEY);
+    const raw = sessionStorage.getItem(QUOTA_CACHE_KEY);
     const badge = document.createElement('div');
     badge.style.cssText = 'position:fixed;bottom:60px;right:8px;z-index:9999;background:rgba(0,0,0,0.75);color:#0f0;font-size:10px;padding:4px 8px;border-radius:6px;font-family:monospace;max-width:70vw;word-break:break-all;';
     if (!raw) {
@@ -684,12 +677,12 @@ function showDebugCacheBadge() {
 // （他画面が使う項目を消さないようにするため、常にマージで扱う）
 function writeSharedCache(fields) {
   try {
-    const raw = localStorage.getItem(QUOTA_CACHE_KEY);
+    const raw = sessionStorage.getItem(QUOTA_CACHE_KEY);
     const current = raw ? JSON.parse(raw) : {};
     const merged = Object.assign({}, current, fields, { fetchedAt: Date.now() });
-    localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(merged));
+    sessionStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(merged));
   } catch (err) {
-    // localStorageが使えない環境でも動作は継続する
+    // sessionStorageが使えない環境でも動作は継続する
   }
 }
 

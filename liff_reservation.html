@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更18 - AiPost</title>
+<title>予約確認・変更19 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -462,7 +462,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更18</span>
+  <span class="header-logo">予約確認・変更19</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -937,21 +937,13 @@ buildHistoryCalendar();
     });
   }
 
-  // ★liff_reservation_html9：GASへの問い合わせ頻度を減らすため、
-  // 　プラン・残り予約可能件数はlocalStorageにキャッシュし
-  // 　（liff_textgen.htmlと同じキーを共有）、画面表示ごとの再取得
-  // 　（バックグラウンド復帰時の再取得を含む）は廃止した。キャッシュが
-  // 　無い場合（初回訪問時）のみ取得する。本画面はまだ予約の作成・
-  // 　変更機能自体が実装されていないため、取得後の明示的な再取得
-  // 　トリガーは今回は追加しない（その機能を実装する際にあわせて
-  // 　追加する）。
+  // ★liff_reservation_html19：保存先をlocalStorageからsessionStorage
+  // 　に変更（アプリを完全に閉じたらキャッシュも消える必要があるため。
+  // 　localStorageはアプリ再起動後も残ってしまい、要望に合わなかった）。
+  // 　TTL管理は不要になったため撤廃した。
   const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
   let LINE_UID = null;
-  // ★liff_reservation_html10：liff_textgen.htmlと同様、キャッシュに
-  // 　5分のTTLを設けた（アプリを閉じて時間を置いて再開したような
-  // 　ケースに対応するため）。
   const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
-  const QUOTA_CACHE_TTL_MS = 60 * 60 * 1000; // 60分（他画面と統一）
 
   function daysUntilMonthEnd() {
     const now = new Date();
@@ -961,25 +953,19 @@ buildHistoryCalendar();
 
   function readQuotaCache() {
     try {
-      const raw = localStorage.getItem(QUOTA_CACHE_KEY);
-      if (!raw) return null;
-      const cache = JSON.parse(raw);
-      if (!cache.fetchedAt || Date.now() - cache.fetchedAt > QUOTA_CACHE_TTL_MS) return null;
-      return cache;
+      const raw = sessionStorage.getItem(QUOTA_CACHE_KEY);
+      return raw ? JSON.parse(raw) : null;
     } catch (err) {
       return null;
     }
   }
 
-  // ★liff_reservation_html15：liff_settings.htmlの店舗情報読み込みも
-  // 　同じ共有キャッシュを使うよう対応したため、getUserProfile()の
-  // 　戻り値をまるごとキャッシュに保存するようにした。
   function writeQuotaCache(profileData, sns) {
     try {
       const cache = Object.assign({}, profileData, { sns: sns || null, fetchedAt: Date.now() });
-      localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(cache));
+      sessionStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(cache));
     } catch (err) {
-      // localStorageが使えない環境でも動作は継続する
+      // sessionStorageが使えない環境でも動作は継続する
     }
   }
 
@@ -1103,11 +1089,39 @@ buildHistoryCalendar();
   // 渡すためのキャッシュ。再取得のたびに更新する）
   let currentReservationList = [];
   let currentDetailReservationId = null;
+  const RESERVATION_LIST_CACHE_KEY = 'aipost_reservation_list';
 
-  async function fetchAndRenderReservationList() {
+  // ★liff_reservation_html19：予約一覧も、プラン・残り件数等と同じく
+  // 　sessionStorageにキャッシュし、画面を再度開いた時に毎回取得し
+  // 　直さないようにした。キャッシュを無効化（再取得）するタイミングは
+  // 　「新規予約を作成した時」（liff_textgen.html側でこのキーを削除）
+  // 　「この画面でキャンセルした時」（下のexecuteCancel内）のみ。
+  function renderReservationList(list) {
     const container = document.getElementById('reservation-list-container');
     const label = document.getElementById('reservation-list-label');
     if (!container) return;
+    currentReservationList = list;
+    if (label) label.textContent = '予約中（' + list.length + '件）';
+    container.innerHTML = list.length
+      ? list.map(renderReservationCard).join('')
+      : '<div class="empty-list-note">現在、予約中の投稿はありません</div>';
+  }
+
+  async function fetchAndRenderReservationList(forceRefresh) {
+    if (!forceRefresh) {
+      try {
+        const cachedRaw = sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
+        if (cachedRaw) {
+          renderReservationList(JSON.parse(cachedRaw));
+          return;
+        }
+      } catch (err) {
+        // キャッシュの読み込みに失敗した場合は通常通り取得する
+      }
+    }
+
+    const container = document.getElementById('reservation-list-container');
+    if (container) container.innerHTML = '<div class="empty-list-note">読み込み中…</div>';
     try {
       const response = await fetch(WEBAPP_URL, {
         method: 'POST',
@@ -1115,15 +1129,11 @@ buildHistoryCalendar();
       });
       const result = await response.json();
       const list = (result.success && Array.isArray(result.data)) ? result.data : [];
-      currentReservationList = list;
-
-      if (label) label.textContent = '予約中（' + list.length + '件）';
-      container.innerHTML = list.length
-        ? list.map(renderReservationCard).join('')
-        : '<div class="empty-list-note">現在、予約中の投稿はありません</div>';
+      renderReservationList(list);
+      try { sessionStorage.setItem(RESERVATION_LIST_CACHE_KEY, JSON.stringify(list)); } catch (err) {}
     } catch (err) {
       console.error('予約一覧の取得エラー:', err);
-      container.innerHTML = '<div class="empty-list-note">予約一覧を取得できませんでした</div>';
+      if (container) container.innerHTML = '<div class="empty-list-note">予約一覧を取得できませんでした</div>';
     }
   }
 
@@ -1175,7 +1185,7 @@ buildHistoryCalendar();
       if (result.success && result.data && result.data.success) {
         closeCancelModal();
         closeDetail();
-        fetchAndRenderReservationList();
+        fetchAndRenderReservationList(true);
         fetchReservationQuota();
       } else {
         alert((result.data && result.data.error) || 'キャンセルに失敗しました。もう一度お試しください。');
