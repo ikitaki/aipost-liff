@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録37 - AiPost</title>
+<title>設定・登録38 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録37</span>
+  <span class="header-logo">設定・登録38</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1505,15 +1505,18 @@ updateSnsSummary();
   // ============================================
 
   // 各LIFF画面のURL
+  // ★liff_settings.html38：画面遷移をliff.line.me経由からGitHub
+  // 　Pagesの実URLへの直接遷移に変更（理由はliff_textgen.htmlと同じ。
+  // 　imageの遷移先は未確認のためliff.line.meのまま）。
   const LIFF_URLS = {
-    textgen:     'https://liff.line.me/2010401177-OpvemMmh',
-    reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
-    analytics:   'https://liff.line.me/2010401177-qKtfKWP0',
+    textgen:     'https://ikitaki.github.io/aipost-liff/liff_textgen.html',
+    reservation: 'https://ikitaki.github.io/aipost-liff/liff_reservation.html',
+    analytics:   'https://ikitaki.github.io/aipost-liff/liff_analytics.html',
     image:       'https://liff.line.me/2010401177-3pV56kDU',
-    settings:    'https://liff.line.me/2010401177-XJw2kDQV',
-    about:       'https://liff.line.me/2010401177-PtX79ibV',
-    plan:        'https://liff.line.me/2010401177-IstPDnls',
-    support:     'https://liff.line.me/2010401177-vwzTH30h',
+    settings:    'https://ikitaki.github.io/aipost-liff/liff_settings.html',
+    about:       'https://ikitaki.github.io/aipost-liff/liff_about.html',
+    plan:        'https://ikitaki.github.io/aipost-liff/liff_plan.html',
+    support:     'https://ikitaki.github.io/aipost-liff/liff_support.html',
   };
 
   // 他のLIFF画面に移動する
