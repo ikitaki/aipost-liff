@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成92 - AiPost</title>
+<title>投稿文作成93 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -596,6 +596,9 @@
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
+  }  @keyframes profile-loading-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -604,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成92</span>
+  <span class="header-logo">投稿文作成93</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1073,6 +1076,13 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="profile-loading-overlay" style="z-index:2000;align-items:center;">
+  <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
+    <div style="font-size:14px;font-weight:700;color:#333;">保存済みの情報を読み込んでいます…</div>
+  </div>
+</div>
+
 <!-- 上書き確認モーダル -->
 <div class="modal-overlay" id="overwrite-modal">
   <div class="modal">
@@ -1163,7 +1173,7 @@ async function initLiff() {
 // 　同じキャッシュにまとめて保存し、liff_reservation.htmlと共有する
 // 　（Kenさんの「アプリ起動時に画面を問わず一括取得」の要望に対応）。
 const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
-const QUOTA_CACHE_TTL_MS = 5 * 60 * 1000; // 5分
+const QUOTA_CACHE_TTL_MS = 60 * 60 * 1000; // 60分
 
 function daysUntilMonthEnd() {
   const now = new Date();
@@ -1253,16 +1263,23 @@ function applyQuotaFromCacheOrFetch() {
   if (cached) {
     applyQuotaFromCache(cached);
   } else {
-    refreshReservationQuota();
+    refreshReservationQuota(true);
   }
 }
 
 // 実際にGASへ問い合わせて最新のプラン・残り件数・SNS連携状況を取得し、
 // 画面表示とキャッシュを更新する。予約確定直後など、値が変わった
 // タイミングで呼び出す（画面表示のたびに毎回呼ぶものではない）。
-async function refreshReservationQuota() {
+// ★liff_textgen.html93：起動時にキャッシュが無く、実際に取得する
+// 　場合のみ（showOverlay=true）、設定画面と同じ見た目のスピナーを
+// 　表示する（画面ごとに読み込み表現がバラバラだった点への対応）。
+// 　予約確定直後の再取得（showOverlay省略）では、従来通り右上の
+// 　文言のみを更新し、画面全体は塞がない。
+async function refreshReservationQuota(showOverlay) {
   const el = document.getElementById('reservation-quota');
   if (el) el.textContent = '確認中…';
+  const overlay = document.getElementById('profile-loading-overlay');
+  if (showOverlay && overlay) overlay.classList.add('open');
   try {
     const [profileRes, snsRes] = await Promise.all([
       fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID }) }),
@@ -1287,6 +1304,8 @@ async function refreshReservationQuota() {
   } catch (err) {
     console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
     // 取得に失敗しても投稿文作成自体はそのまま続行できるようにする
+  } finally {
+    if (showOverlay && overlay) overlay.classList.remove('open');
   }
 }
 

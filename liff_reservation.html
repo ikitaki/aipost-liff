@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更15 - AiPost</title>
+<title>予約確認・変更16 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -450,6 +450,11 @@
   .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
   .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
 
+  @keyframes profile-loading-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -457,7 +462,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更15</span>
+  <span class="header-logo">予約確認・変更16</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -604,6 +609,13 @@
 </div>
 
 <!-- 予約詳細モーダル -->
+<div class="modal-overlay" id="profile-loading-overlay" style="z-index:2000;align-items:center;">
+  <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
+    <div style="font-size:14px;font-weight:700;color:#333;">保存済みの情報を読み込んでいます…</div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeDetail()">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -933,7 +945,7 @@ buildHistoryCalendar();
   // 　5分のTTLを設けた（アプリを閉じて時間を置いて再開したような
   // 　ケースに対応するため）。
   const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
-  const QUOTA_CACHE_TTL_MS = 5 * 60 * 1000; // 5分
+  const QUOTA_CACHE_TTL_MS = 60 * 60 * 1000; // 60分（他画面と統一）
 
   function daysUntilMonthEnd() {
     const now = new Date();
@@ -976,14 +988,14 @@ buildHistoryCalendar();
     }
   }
 
-  // ★liff_reservation_html14：本画面はSNS連携状況を表示しないが、
-  // 　liff_textgen.htmlと同じキャッシュ（アプリ起動時の一括取得）を
-  // 　共有しているため、この画面での取得時にもgetSnsStatusを一緒に
-  // 　取得してキャッシュへ保存する（そうしないと、この画面での
-  // 　書き込みでliff_textgen.html側のSNS連携情報が消えてしまうため）。
-  async function fetchReservationQuota() {
+  // ★liff_reservation_html16：起動時にキャッシュが無く実際に取得する
+  // 　場合のみ（showOverlay=true）、設定画面と同じ見た目のスピナーを
+  // 　表示する（画面ごとに読み込み表現がバラバラだった点への対応）。
+  async function fetchReservationQuota(showOverlay) {
     const el = document.getElementById('reservation-quota');
     if (el) el.textContent = '確認中…';
+    const overlay = document.getElementById('profile-loading-overlay');
+    if (showOverlay && overlay) overlay.classList.add('open');
     try {
       const [profileRes, snsRes] = await Promise.all([
         fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID }) }),
@@ -1006,6 +1018,8 @@ buildHistoryCalendar();
       writeQuotaCache(profileResult.data, sns);
     } catch (err) {
       console.error('プラン・残り予約可能件数の取得エラー:', err);
+    } finally {
+      if (showOverlay && overlay) overlay.classList.remove('open');
     }
   }
 
@@ -1015,7 +1029,7 @@ buildHistoryCalendar();
     if (cached) {
       applyQuotaValues(cached.plan, cached.remainingReservable);
     } else {
-      fetchReservationQuota();
+      fetchReservationQuota(true);
     }
   }
 
