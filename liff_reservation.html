@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更17 - AiPost</title>
+<title>予約確認・変更18 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -462,7 +462,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更17</span>
+  <span class="header-logo">予約確認・変更18</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -905,17 +905,20 @@ buildHistoryCalendar();
 
   // 各LIFF画面のURL
   // ★liff_reservation_html17：画面遷移をliff.line.me経由からGitHub
-  // 　Pagesの実URLへの直接遷移に変更（理由はliff_textgen.htmlと同じ。
-  // 　imageの遷移先は未確認のためliff.line.meのまま）。
+  // 　Pagesの実URLへの直接遷移に一時変更したが、LIFFの再認証
+  // 　リダイレクトを誘発する副作用が疑われたため、html18で元の
+  // 　liff.line.me方式に撤回した。
+  // ★liff_reservation_html18：liff.line.me経由を直接リンクに変更した
+  // 　対応（html17）を撤回し、元のliff.line.me方式に戻す。
   const LIFF_URLS = {
-    textgen:     'https://ikitaki.github.io/aipost-liff/liff_textgen.html',
-    reservation: 'https://ikitaki.github.io/aipost-liff/liff_reservation.html',
-    analytics:   'https://ikitaki.github.io/aipost-liff/liff_analytics.html',
+    textgen:     'https://liff.line.me/2010401177-OpvemMmh',
+    reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
+    analytics:   'https://liff.line.me/2010401177-qKtfKWP0',
     image:       'https://liff.line.me/2010401177-3pV56kDU',
-    settings:    'https://ikitaki.github.io/aipost-liff/liff_settings.html',
-    about:       'https://ikitaki.github.io/aipost-liff/liff_about.html',
-    plan:        'https://ikitaki.github.io/aipost-liff/liff_plan.html',
-    support:     'https://ikitaki.github.io/aipost-liff/liff_support.html',
+    settings:    'https://liff.line.me/2010401177-XJw2kDQV',
+    about:       'https://liff.line.me/2010401177-PtX79ibV',
+    plan:        'https://liff.line.me/2010401177-IstPDnls',
+    support:     'https://liff.line.me/2010401177-vwzTH30h',
   };
 
   // 他のLIFF画面に移動する

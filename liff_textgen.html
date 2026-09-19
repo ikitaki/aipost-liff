@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成95 - AiPost</title>
+<title>投稿文作成96 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成95</span>
+  <span class="header-logo">投稿文作成96</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -2441,19 +2441,21 @@ function setStep(n) {
 
 // ===== ナビゲーション =====
 // ★liff_textgen.html94：画面遷移をliff.line.me経由からGitHub Pagesの
-// 　実URLへの直接遷移に変更した。liff.line.me経由だとLINEアプリが
-// 　新しいミニアプリとして扱いWebViewを作り直す可能性があり、その
-// 　場合localStorageの共有キャッシュが引き継がれない（設定画面等で
-// 　毎回読み込み直しになる不具合）ため、これを避ける目的。
-// 　★imageの遷移先は未確認のため、liff.line.meのままにしている。
+// 　実URLへの直接遷移に一時変更したが、LIFFの再認証リダイレクトを
+// 　誘発する副作用が疑われたため、html96で元のliff.line.me方式に
+// 　撤回した（下記参照）。
+// ★liff_textgen.html96：liff.line.me経由を直接リンクに変更した対応
+// 　（html94）を撤回。直接リンクだとLIFFの再認証リダイレクトが発生し、
+// 　かえって新たな不具合の原因になっていた可能性が高いため、元の
+// 　liff.line.me方式に戻す。
 const LIFF_URLS = {
-  textgen: 'https://ikitaki.github.io/aipost-liff/liff_textgen.html',
-  reservation: 'https://ikitaki.github.io/aipost-liff/liff_reservation.html',
-  analytics: 'https://ikitaki.github.io/aipost-liff/liff_analytics.html',
-  settings: 'https://ikitaki.github.io/aipost-liff/liff_settings.html',
-  plan: 'https://ikitaki.github.io/aipost-liff/liff_plan.html',
-  about: 'https://ikitaki.github.io/aipost-liff/liff_about.html',
-  support: 'https://ikitaki.github.io/aipost-liff/liff_support.html',
+  textgen: 'https://liff.line.me/2010401177-OpvemMmh',
+  reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
+  analytics: 'https://liff.line.me/2010401177-qKtfKWP0',
+  settings: 'https://liff.line.me/2010401177-XJw2kDQV',
+  plan: 'https://liff.line.me/2010401177-IstPDnls',
+  about: 'https://liff.line.me/2010401177-PtX79ibV',
+  support: 'https://liff.line.me/2010401177-vwzTH30h',
 };
 
 // ===== GAS Webアプリ接続先 =====
