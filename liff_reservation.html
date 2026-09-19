@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更12 - AiPost</title>
+<title>予約確認・変更13 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -190,21 +190,6 @@
     padding: 2px 7px;
     border-radius: 10px;
     font-weight: 600;
-  }
-  .cancel-btn {
-    margin-left: auto;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--danger);
-    background: white;
-    border: 1px solid var(--danger);
-    border-radius: 8px;
-    padding: 4px 10px;
-  }
-  .cancel-btn:disabled {
-    color: var(--text-sub);
-    border-color: var(--border);
-    background: var(--bg);
   }
   .empty-list-note {
     text-align: center;
@@ -472,7 +457,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更12</span>
+  <span class="header-logo">予約確認・変更13</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -624,33 +609,23 @@
     <div class="modal-handle"></div>
     <div class="modal-title">予約の詳細</div>
 
-    <div class="modal-img">🍵</div>
-
     <div class="detail-row">
       <span class="detail-key">投稿予定</span>
-      <span class="detail-val">6月15日（日）13時ごろ</span>
+      <span class="detail-val" id="detail-schedule"></span>
     </div>
     <div class="detail-row">
       <span class="detail-key">投稿先SNS</span>
-      <span class="detail-val">Instagram・Facebook・X</span>
+      <span class="detail-val" id="detail-sns"></span>
     </div>
     <div class="detail-row">
       <span class="detail-key">文字数</span>
-      <span class="detail-val">32文字</span>
-    </div>
-    <div class="detail-row">
-      <span class="detail-key">AI生成</span>
-      <span class="detail-val">✨ AI生成文章</span>
+      <span class="detail-val" id="detail-charcount"></span>
     </div>
 
-    <div class="post-text-box">
-      週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。
-      <div class="hashtag-box">#渋谷カフェ #週末限定 #抹茶スイーツ</div>
-    </div>
+    <div class="post-text-box" id="detail-posttext"></div>
 
     <div class="btn-row">
       <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
-      <button class="btn btn-primary" onclick="editReservation()">編集する</button>
       <button class="btn btn-danger" onclick="confirmCancel()">キャンセル</button>
     </div>
   </div>
@@ -662,12 +637,10 @@
     <div class="modal-handle"></div>
     <div style="font-size:36px;margin-bottom:12px;">🗑️</div>
     <div style="font-size:16px;font-weight:700;margin-bottom:8px;">予約をキャンセルしますか？</div>
-    <p style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:20px;">
-      6月15日（日）13時ごろの予約をキャンセルします。<br>予約枠が1件解放されます。
-    </p>
+    <p style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:20px;" id="cancel-modal-text"></p>
     <div class="btn-row">
       <button class="btn btn-outline" onclick="closeCancelModal()">戻る</button>
-      <button class="btn btn-danger" onclick="executeCancel()">キャンセルする</button>
+      <button class="btn btn-danger" id="cancel-modal-btn" onclick="executeCancel()">キャンセルする</button>
     </div>
   </div>
 </div>
@@ -872,13 +845,8 @@ function selectDay(d) {
   }
 }
 
-function openDetail(id) {
-  document.getElementById('detail-modal').classList.add('open');
-}
-function closeDetail() {
-  document.getElementById('detail-modal').classList.remove('open');
-}
-// 予約内容を投稿文作成画面へ引き継ぎ、編集モードで開く
+// 修正機能は未実装のため、editReservation()は一時的に未使用
+// （「修正する」ボタン非表示に伴い、呼び出し元が無い状態）。
 function editReservation() {
   const params = new URLSearchParams({
     edit: '1',
@@ -890,17 +858,6 @@ function editReservation() {
     img: '🍵',
   });
   window.location.href = LIFF_URLS.textgen + '?' + params.toString();
-}
-function confirmCancel() {
-  document.getElementById('cancel-modal').classList.add('open');
-}
-function closeCancelModal() {
-  document.getElementById('cancel-modal').classList.remove('open');
-}
-function executeCancel() {
-  closeCancelModal();
-  closeDetail();
-  alert('予約をキャンセルしました。予約枠が1件解放されました。');
 }
 
 buildCalendar();
@@ -1091,7 +1048,7 @@ buildHistoryCalendar();
     const time = formatScheduledAt(r.scheduledAt);
     const tags = r.targetSns.map(snsTagHtml).join('');
     return '' +
-      '<div class="reservation-card">' +
+      '<div class="reservation-card" onclick="openDetail(\'' + r.reservationId + '\')">' +
         '<div class="card-header">' +
           '<div class="status-dot dot-pending"></div>' +
           '<div class="card-date">' + time.dateLabel + '</div>' +
@@ -1099,14 +1056,18 @@ buildHistoryCalendar();
           '<div class="sns-tags">' + tags + '</div>' +
         '</div>' +
         '<div class="card-body">' +
-          '<div class="card-text">' + escapeHtml(r.honbunPreview) + '</div>' +
+          '<div class="card-text">' + escapeHtml(r.honbun) + '</div>' +
         '</div>' +
         '<div class="card-footer">' +
           '<div class="card-img-thumb">' + (r.hasImage ? '🖼️' : '') + '</div>' +
-          '<button class="cancel-btn" onclick="cancelReservationConfirm(\'' + r.reservationId + '\', this)">キャンセル</button>' +
         '</div>' +
       '</div>';
   }
+
+  // 一覧タブで最後に取得した予約データ（タップ時に詳細モーダルへ
+  // 渡すためのキャッシュ。再取得のたびに更新する）
+  let currentReservationList = [];
+  let currentDetailReservationId = null;
 
   async function fetchAndRenderReservationList() {
     const container = document.getElementById('reservation-list-container');
@@ -1119,6 +1080,7 @@ buildHistoryCalendar();
       });
       const result = await response.json();
       const list = (result.success && Array.isArray(result.data)) ? result.data : [];
+      currentReservationList = list;
 
       if (label) label.textContent = '予約中（' + list.length + '件）';
       container.innerHTML = list.length
@@ -1130,12 +1092,41 @@ buildHistoryCalendar();
     }
   }
 
-  async function cancelReservationConfirm(reservationId, btn) {
-    if (!confirm('この予約をキャンセルしますか？\nこの操作は取り消せません。')) return;
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = '処理中…';
+  // ★liff_reservation_html13：詳細モーダル・キャンセル確認モーダルを
+  // 　実データで動作するようにした。「修正する」ボタンは、修正機能
+  // 　自体がまだ実装されていないため非表示にしている（実装時に表示
+  // 　に戻す）。
+  function openDetail(reservationId) {
+    const r = currentReservationList.find(function (item) { return item.reservationId === reservationId; });
+    if (!r) return;
+    currentDetailReservationId = reservationId;
+
+    const time = formatScheduledAt(r.scheduledAt);
+    document.getElementById('detail-schedule').textContent = time.dateLabel + time.timeLabel;
+    document.getElementById('detail-sns').textContent = r.targetSns.join('・');
+    document.getElementById('detail-charcount').textContent = r.honbun.length + '文字';
+    document.getElementById('detail-posttext').textContent = r.honbun;
+    document.getElementById('detail-modal').classList.add('open');
+  }
+  function closeDetail() {
+    document.getElementById('detail-modal').classList.remove('open');
+  }
+  function confirmCancel() {
+    const r = currentReservationList.find(function (item) { return item.reservationId === currentDetailReservationId; });
+    if (r) {
+      const time = formatScheduledAt(r.scheduledAt);
+      document.getElementById('cancel-modal-text').textContent =
+        time.dateLabel + time.timeLabel + 'の予約をキャンセルします。予約枠が1件解放されます。';
     }
+    document.getElementById('cancel-modal').classList.add('open');
+  }
+  function closeCancelModal() {
+    document.getElementById('cancel-modal').classList.remove('open');
+  }
+  async function executeCancel() {
+    const reservationId = currentDetailReservationId;
+    const btn = document.getElementById('cancel-modal-btn');
+    if (btn) { btn.disabled = true; btn.textContent = '処理中…'; }
     try {
       const response = await fetch(WEBAPP_URL, {
         method: 'POST',
@@ -1147,22 +1138,18 @@ buildHistoryCalendar();
       });
       const result = await response.json();
       if (result.success && result.data && result.data.success) {
+        closeCancelModal();
+        closeDetail();
         fetchAndRenderReservationList();
         fetchReservationQuota();
       } else {
         alert((result.data && result.data.error) || 'キャンセルに失敗しました。もう一度お試しください。');
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = 'キャンセル';
-        }
       }
     } catch (err) {
       console.error('キャンセル処理エラー:', err);
       alert('通信エラーが発生しました。もう一度お試しください。');
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = 'キャンセル';
-      }
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'キャンセルする'; }
     }
   }
 
