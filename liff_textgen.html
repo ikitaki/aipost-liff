@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成97 - AiPost</title>
+<title>投稿文作成98 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成97</span>
+  <span class="header-logo">投稿文作成98</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1270,13 +1270,37 @@ function applyQuotaFromCache(cache) {
   applySnsConnectionStatus(cache.sns);
 }
 
-// キャッシュがあればそれを使い（通信しない）、無ければ取得する
+const RESERVATION_LIST_CACHE_KEY = 'aipost_reservation_list';
+
+// 予約一覧をバックグラウンドで取得しキャッシュに保存するだけの関数
+// （本画面では表示しないが、次に予約確認画面を開いた時に即表示できる
+// よう、他画面を最初に開いた場合でもここで一緒に取得しておく）
+async function warmupReservationListCache() {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'getMyReservations', lineUid: LINE_UID })
+    });
+    const result = await response.json();
+    const list = (result.success && Array.isArray(result.data)) ? result.data : [];
+    sessionStorage.setItem(RESERVATION_LIST_CACHE_KEY, JSON.stringify(list));
+  } catch (err) {
+    console.error('予約一覧の先読み取得エラー:', err);
+  }
+}
+
+// ★liff_textgen.html98：「最初に開いた画面で全データを一括取得する」
+// 　対象に予約一覧が入っていなかった不具合を修正。プラン・SNS連携
+// 　状況の取得が必要な時は、予約一覧のキャッシュが無ければ同時に
+// 　（同じスピナー表示の間に）取得するようにした。
 function applyQuotaFromCacheOrFetch() {
   const cached = readQuotaCache();
+  const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
   if (cached) {
     applyQuotaFromCache(cached);
+    if (needsReservationList) warmupReservationListCache();
   } else {
-    refreshReservationQuota(true);
+    refreshReservationQuota(true, needsReservationList);
   }
 }
 
@@ -1288,16 +1312,20 @@ function applyQuotaFromCacheOrFetch() {
 // 　表示する（画面ごとに読み込み表現がバラバラだった点への対応）。
 // 　予約確定直後の再取得（showOverlay省略）では、従来通り右上の
 // 　文言のみを更新し、画面全体は塞がない。
-async function refreshReservationQuota(showOverlay) {
+// ★liff_textgen.html98：alsoWarmReservationListがtrueの場合、予約
+// 　一覧も同時に取得してキャッシュする（同じスピナー表示の間に）。
+async function refreshReservationQuota(showOverlay, alsoWarmReservationList) {
   const el = document.getElementById('reservation-quota');
   if (el) el.textContent = '確認中…';
   const overlay = document.getElementById('profile-loading-overlay');
   if (showOverlay && overlay) overlay.classList.add('open');
   try {
-    const [profileRes, snsRes] = await Promise.all([
+    const tasks = [
       fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID }) }),
       fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID }) })
-    ]);
+    ];
+    if (alsoWarmReservationList) tasks.push(warmupReservationListCache());
+    const [profileRes, snsRes] = await Promise.all(tasks);
     const profileResult = await profileRes.json();
     const snsResult = await snsRes.json();
 

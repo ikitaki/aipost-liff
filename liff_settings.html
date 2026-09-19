@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録42 - AiPost</title>
+<title>設定・登録43 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録42</span>
+  <span class="header-logo">設定・登録43</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -759,7 +759,12 @@ async function initLiff() {
     const shared = readSharedCache();
     const needsMasterFetch = !cachedMaster;
     const needsProfileFetch = !(shared && shared.found !== false);
-    const needsAnyFetch = needsMasterFetch || needsProfileFetch;
+
+    // ★liff_settings.html43：予約一覧も「最初に開いた画面での一括
+    // 　取得」の対象に加えた（設定画面自体は表示しないが、次に予約
+    // 　確認画面を開いた時に即表示できるようキャッシュだけしておく）。
+    const needsReservationList = !sessionStorage.getItem('aipost_reservation_list');
+    const needsAnyFetch = needsMasterFetch || needsProfileFetch || needsReservationList;
 
     if (needsAnyFetch) setFormLoadingState(true);
 
@@ -777,11 +782,30 @@ async function initLiff() {
       await loadProfileAndSnsFresh();
     }
 
+    if (needsReservationList) await warmupReservationListCache();
+
     if (needsAnyFetch) setFormLoadingState(false);
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
     setFormLoadingState(false);
+  }
+}
+
+// 予約一覧をバックグラウンドで取得しキャッシュに保存するだけの関数
+// （本画面では表示しないが、次に予約確認画面を開いた時に即表示できる
+// よう、他画面を最初に開いた場合でもここで一緒に取得しておく）
+async function warmupReservationListCache() {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'getMyReservations', lineUid: LINE_UID })
+    });
+    const result = await response.json();
+    const list = (result.success && Array.isArray(result.data)) ? result.data : [];
+    sessionStorage.setItem('aipost_reservation_list', JSON.stringify(list));
+  } catch (err) {
+    console.error('予約一覧の先読み取得エラー:', err);
   }
 }
 
