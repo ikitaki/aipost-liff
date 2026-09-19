@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成100 - AiPost</title>
+<title>投稿文作成101 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成100</span>
+  <span class="header-logo">投稿文作成101</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1248,7 +1248,7 @@ function applyQuotaFromCache(cache) {
   }
   const el = document.getElementById('reservation-quota');
   if (el && typeof cache.remainingReservable === 'number') {
-    el.textContent = '残り' + cache.remainingReservable + '件';
+    el.textContent = '残り投稿可能数' + cache.remainingReservable + '件';
   }
   applySnsConnectionStatus(cache.sns);
 }

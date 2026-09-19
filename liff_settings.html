@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録47 - AiPost</title>
+<title>設定・登録48 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録47</span>
+  <span class="header-logo">設定・登録48</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1049,7 +1049,7 @@ function updateSnsSummary() {
   document.getElementById('sns-connected-title').textContent = `連携状況（${connectedList.length}/${limit}）`;
 
   const quotaHtml = (typeof currentRemainingReservable === 'number')
-    ? `<span style="margin-left:auto;font-weight:700;">残り${currentRemainingReservable}件</span>`
+    ? `<span style="margin-left:auto;font-weight:700;">残り投稿可能数${currentRemainingReservable}件</span>`
     : '';
   const planSns = document.getElementById('plan-sns');
   planSns.innerHTML = '<span>連携中：</span>' + connectedList.map(s =>
@@ -1174,6 +1174,20 @@ async function confirmSnsDisconnect() {
 
   disconnectSns(pendingDisconnectSns);
   updateSnsSummary();
+
+  // ★liff_settings.html48：連携解除時にキャッシュへ反映していな
+  // 　かった重大な不具合を修正。これを怠ると、他画面や次回この画面を
+  // 　開いた時に古い（連携中のままの）キャッシュを読み込んでしまい、
+  // 　解除したはずのSNSが連携中に見えてしまう（実際のユーザー管理
+  // 　シート上は正しく解除されているにもかかわらず）。
+  const backendKeyMap = { x: 'x', ig: 'instagram', th: 'threads' };
+  const backendKey = backendKeyMap[pendingDisconnectSns];
+  const cachedRaw = sessionStorage.getItem(QUOTA_CACHE_KEY);
+  const cachedSns = Object.assign({}, (cachedRaw ? JSON.parse(cachedRaw) : {}).sns);
+  cachedSns[backendKey] = false;
+  cachedSns[backendKey + 'Account'] = '';
+  writeSharedCache({ sns: cachedSns });
+
   closeSnsDisconnectModal();
 }
 
