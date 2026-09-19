@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成94 - AiPost</title>
+<title>投稿文作成95 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成94</span>
+  <span class="header-logo">投稿文作成95</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1153,6 +1153,7 @@ let LAST_APPEAL_PATTERN = null; // executeGenerate()で確定した訴求パタ�
 
 async function initLiff() {
   try {
+    showDebugCacheBadge();
     await liff.init({ liffId: '2010401177-OpvemMmh' });
     if (!liff.isLoggedIn()) {
       liff.login();
@@ -1190,6 +1191,27 @@ function readQuotaCache() {
     return cache;
   } catch (err) {
     return null;
+  }
+}
+
+// ★一時的な確認用表示（原因切り分け後に削除予定）。localStorageの
+// 生データを画面右下に小さく表示する。TTL判定より前の「そもそも
+// 保存されているか」を見るためのもの。
+function showDebugCacheBadge() {
+  try {
+    const raw = localStorage.getItem(QUOTA_CACHE_KEY);
+    const badge = document.createElement('div');
+    badge.style.cssText = 'position:fixed;bottom:60px;right:8px;z-index:9999;background:rgba(0,0,0,0.75);color:#0f0;font-size:10px;padding:4px 8px;border-radius:6px;font-family:monospace;max-width:70vw;word-break:break-all;';
+    if (!raw) {
+      badge.textContent = 'キャッシュ: なし';
+    } else {
+      const cache = JSON.parse(raw);
+      const ageSec = cache.fetchedAt ? Math.round((Date.now() - cache.fetchedAt) / 1000) : '?';
+      badge.textContent = 'キャッシュ: あり（' + ageSec + '秒前・plan=' + cache.plan + '）';
+    }
+    document.body.appendChild(badge);
+  } catch (err) {
+    // 確認用表示自体のエラーは無視する
   }
 }
 
