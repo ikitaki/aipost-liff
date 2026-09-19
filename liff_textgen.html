@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成101 - AiPost</title>
+<title>投稿文作成102 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成101</span>
+  <span class="header-logo">投稿文作成102</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -620,9 +620,9 @@
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
     <span>連携中：</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
-    <span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+    <span id="subbar-sns-ig" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
+    <span id="subbar-sns-x" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
+    <span id="subbar-sns-th" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
     <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
 </div>
@@ -1239,6 +1239,16 @@ function applySnsConnectionStatus(sns) {
     }
   }
   updateHashtagColumns();
+
+  // ★liff_textgen.html102：サブバー上部の「連携中：」表示が実データと
+  // 　連動しておらず、常に3SNSとも表示されたままになっていた不具合を
+  // 　修正。①のSNS選択チェックボックス（上のループ）とは別のDOM要素
+  // 　なので、こちらも同じsnsデータで明示的に更新する。
+  const subbarIds = { x: 'subbar-sns-x', instagram: 'subbar-sns-ig', threads: 'subbar-sns-th' };
+  Object.keys(subbarIds).forEach(function (key) {
+    const el = document.getElementById(subbarIds[key]);
+    if (el) el.style.display = sns[key] ? '' : 'none';
+  });
 }
 
 function applyQuotaFromCache(cache) {
