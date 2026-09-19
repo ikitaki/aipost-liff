@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録35 - AiPost</title>
+<title>設定・登録36 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録34</span>
+  <span class="header-logo">設定・登録36</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -639,6 +639,89 @@ let MASTER_DATA = null;
 
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
 
+// ★liff_settings.html36：投稿文作成・予約確認画面と共有している
+// 　保存済み情報キャッシュ（localStorage）を、本画面でも使うように
+// 　した。キャッシュに店舗情報・SNS連携状況が揃っていれば、この
+// 　画面を開いた時に再取得せず即表示する（「読み込んでいます」の
+// 　表示が画面ごとに毎回出ていた問題への対応）。キャッシュが無い・
+// 　古い場合のみ取得し、取得結果をキャッシュへ書き込む（他画面が
+// 　開かれた時にも使えるようにするため）。
+const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
+const QUOTA_CACHE_TTL_MS = 5 * 60 * 1000; // 5分（他画面と統一）
+
+function readSharedCache() {
+  try {
+    const raw = localStorage.getItem(QUOTA_CACHE_KEY);
+    if (!raw) return null;
+    const cache = JSON.parse(raw);
+    if (!cache.fetchedAt || Date.now() - cache.fetchedAt > QUOTA_CACHE_TTL_MS) return null;
+    return cache;
+  } catch (err) {
+    return null;
+  }
+}
+
+// 既存の共有キャッシュに、渡したフィールドだけ上書きマージして保存する
+// （他画面が使う項目を消さないようにするため、常にマージで扱う）
+function writeSharedCache(fields) {
+  try {
+    const raw = localStorage.getItem(QUOTA_CACHE_KEY);
+    const current = raw ? JSON.parse(raw) : {};
+    const merged = Object.assign({}, current, fields, { fetchedAt: Date.now() });
+    localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(merged));
+  } catch (err) {
+    // localStorageが使えない環境でも動作は継続する
+  }
+}
+
+function applySnsFromCache(sns) {
+  if (!sns) return;
+  if (sns.x) { connectSns('x', sns.xAccount); } else { disconnectSns('x'); }
+  if (sns.instagram) { connectSns('ig', sns.instagramAccount); } else { disconnectSns('ig'); }
+  if (sns.threads) { connectSns('th', sns.threadsAccount); } else { disconnectSns('th'); }
+}
+
+// 店舗情報・SNS連携状況をまとめて取得し、画面表示と共有キャッシュを
+// 更新する（キャッシュが無い・古い場合のみ呼ばれる）。
+async function loadProfileAndSnsFresh() {
+  try {
+    const [profileRes, snsRes] = await Promise.all([
+      fetch(WEBAPP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID, params: {} })
+      }),
+      fetch(WEBAPP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID, params: {} })
+      })
+    ]);
+    const profileResult = await profileRes.json();
+    const snsResult = await snsRes.json();
+
+    if (profileResult.success && profileResult.data && profileResult.data.found) {
+      applyProfileToForm(profileResult.data);
+    }
+
+    const sns = (snsResult.success && snsResult.data) ? {
+      x: snsResult.data.x === '連携中',
+      instagram: snsResult.data.instagram === '連携中',
+      threads: snsResult.data.threads === '連携中',
+      xAccount: snsResult.data.xAccount || '',
+      instagramAccount: snsResult.data.instagramAccount || '',
+      threadsAccount: snsResult.data.threadsAccount || ''
+    } : null;
+    applySnsFromCache(sns);
+
+    const cacheFields = (profileResult.success && profileResult.data) ? Object.assign({}, profileResult.data) : {};
+    cacheFields.sns = sns;
+    writeSharedCache(cacheFields);
+  } catch (err) {
+    console.error('店舗情報・SNS連携状況の取得エラー:', err);
+  }
+}
+
 async function initLiff() {
   try {
     setFormLoadingState(true);
@@ -657,20 +740,23 @@ async function initLiff() {
     }
 
     const cachedMaster = sessionStorage.getItem('aipost_master_data');
-    const cachedProfile = sessionStorage.getItem('aipost_profile_' + LINE_UID);
-
-    if (cachedMaster && cachedProfile) {
+    if (cachedMaster) {
       MASTER_DATA = JSON.parse(cachedMaster);
       populateSelectsFromMasterData();
-      applyProfileToForm(JSON.parse(cachedProfile));
+    } else {
+      await loadMasterDataAndPopulateForm();
+    }
+
+    const shared = readSharedCache();
+    if (shared && shared.found !== false) {
+      applyProfileToForm(shared);
+      applySnsFromCache(shared.sns);
       setFormLoadingState(false);
     } else {
       setFormLoadingState(true);
-      await loadMasterDataAndPopulateForm();
-      await loadSavedProfile();
+      await loadProfileAndSnsFresh();
       setFormLoadingState(false);
     }
-    await loadSnsConnectionStatus();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -974,6 +1060,18 @@ async function loadSnsConnectionStatus() {
     if (result.data.instagram === '連携中') { connectSns('ig', result.data.instagramAccount); } else { disconnectSns('ig'); }
     if (result.data.threads === '連携中') { connectSns('th', result.data.threadsAccount); } else { disconnectSns('th'); }
     updateSnsSummary();
+    // ★liff_settings.html36：連携状況が変わった可能性があるタイミング
+    // 　（接続・解除操作後）なので、共有キャッシュのsns部分も更新する
+    writeSharedCache({
+      sns: {
+        x: result.data.x === '連携中',
+        instagram: result.data.instagram === '連携中',
+        threads: result.data.threads === '連携中',
+        xAccount: result.data.xAccount || '',
+        instagramAccount: result.data.instagramAccount || '',
+        threadsAccount: result.data.threadsAccount || ''
+      }
+    });
   } catch (err) {
     console.error('SNS連携状態の取得エラー:', err);
     if (requestId !== snsStatusRequestSeq) {
@@ -1246,24 +1344,8 @@ function applyProfileToForm(profile) {
   }
 }
 
-async function loadSavedProfile() {
-  try {
-    const response = await fetch(WEBAPP_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID, params: {} })
-    });
-    const result = await response.json();
-    if (!result.success || !result.data || !result.data.found) {
-      return; // 未登録・取得失敗時は何もしない（空欄のままでよい）
-    }
-    applyProfileToForm(result.data);
-    sessionStorage.setItem('aipost_profile_' + LINE_UID, JSON.stringify(result.data));
-  } catch (err) {
-    console.error('プロフィール取得エラー:', err);
-    // 読み込み失敗時はエラー表示せず空欄のままにする（保存自体には影響しないため）
-  }
-}
+// loadSavedProfile()はloadProfileAndSnsFresh()に統合されたため削除
+// （initLiff()からはそちらを呼ぶ。他に呼び出し箇所は無い）
 
 async function saveShopInfo() {
   if (!LINE_UID) {
@@ -1308,13 +1390,13 @@ async function saveShopInfo() {
       return;
     }
     showToast('店舗情報を保存しました');
-    const currentCached = sessionStorage.getItem('aipost_profile_' + LINE_UID);
-    const updatedProfile = currentCached ? JSON.parse(currentCached) : { found: true };
-    updatedProfile.shopName = shopName;
-    updatedProfile.businessMajor = businessMajor;
-    updatedProfile.businessMinor = businessMinor;
-    updatedProfile.prefecture = prefecture;
-    sessionStorage.setItem('aipost_profile_' + LINE_UID, JSON.stringify(updatedProfile));
+    writeSharedCache({
+      found: true,
+      shopName: shopName,
+      businessMajor: businessMajor,
+      businessMinor: businessMinor,
+      prefecture: prefecture
+    });
     if (btn) btn.textContent = '店舗情報を変更する';
     originalText = '店舗情報を変更する';
   } catch (err) {
@@ -1365,10 +1447,7 @@ async function saveEmail() {
       return;
     }
     showToast('メールアドレスを保存しました');
-    const currentCached = sessionStorage.getItem('aipost_profile_' + LINE_UID);
-    const updatedProfile = currentCached ? JSON.parse(currentCached) : { found: true };
-    updatedProfile.email = email;
-    sessionStorage.setItem('aipost_profile_' + LINE_UID, JSON.stringify(updatedProfile));
+    writeSharedCache({ found: true, email: email });
     if (btn) btn.textContent = '変更する';
     originalText = '変更する';
   } catch (err) {

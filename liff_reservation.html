@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更14 - AiPost</title>
+<title>予約確認・変更15 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -457,7 +457,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更14</span>
+  <span class="header-logo">予約確認・変更15</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -953,14 +953,13 @@ buildHistoryCalendar();
     }
   }
 
-  function writeQuotaCache(plan, remainingReservable, sns) {
+  // ★liff_reservation_html15：liff_settings.htmlの店舗情報読み込みも
+  // 　同じ共有キャッシュを使うよう対応したため、getUserProfile()の
+  // 　戻り値をまるごとキャッシュに保存するようにした。
+  function writeQuotaCache(profileData, sns) {
     try {
-      localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify({
-        plan: plan,
-        remainingReservable: remainingReservable,
-        sns: sns || null,
-        fetchedAt: Date.now()
-      }));
+      const cache = Object.assign({}, profileData, { sns: sns || null, fetchedAt: Date.now() });
+      localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(cache));
     } catch (err) {
       // localStorageが使えない環境でも動作は継続する
     }
@@ -997,11 +996,14 @@ buildHistoryCalendar();
       const sns = (snsResult.success && snsResult.data) ? {
         x: snsResult.data.x === '連携中',
         instagram: snsResult.data.instagram === '連携中',
-        threads: snsResult.data.threads === '連携中'
+        threads: snsResult.data.threads === '連携中',
+        xAccount: snsResult.data.xAccount || '',
+        instagramAccount: snsResult.data.instagramAccount || '',
+        threadsAccount: snsResult.data.threadsAccount || ''
       } : null;
 
       applyQuotaValues(profileResult.data.plan, profileResult.data.remainingReservable);
-      writeQuotaCache(profileResult.data.plan, profileResult.data.remainingReservable, sns);
+      writeQuotaCache(profileResult.data, sns);
     } catch (err) {
       console.error('プラン・残り予約可能件数の取得エラー:', err);
     }

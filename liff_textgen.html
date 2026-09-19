@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成91 - AiPost</title>
+<title>投稿文作成92 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成91</span>
+  <span class="header-logo">投稿文作成92</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1183,14 +1183,15 @@ function readQuotaCache() {
   }
 }
 
-function writeQuotaCache(plan, remainingReservable, sns) {
+// ★liff_textgen.html92：liff_settings.htmlの店舗情報読み込みも同じ
+// 　共有キャッシュを使うよう対応したため、getUserProfile()の戻り値を
+// 　まるごと（店舗名・業種・都道府県・メールアドレス等を含めて）
+// 　キャッシュに保存するようにした（以前はplan・remainingReservable
+// 　のみ保存しており、他画面が使う項目が欠けていた）。
+function writeQuotaCache(profileData, sns) {
   try {
-    localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify({
-      plan: plan,
-      remainingReservable: remainingReservable,
-      sns: sns || null,
-      fetchedAt: Date.now()
-    }));
+    const cache = Object.assign({}, profileData, { sns: sns || null, fetchedAt: Date.now() });
+    localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(cache));
   } catch (err) {
     // localStorageが使えない環境でも動作は継続する
   }
@@ -1275,11 +1276,14 @@ async function refreshReservationQuota() {
     const sns = (snsResult.success && snsResult.data) ? {
       x: snsResult.data.x === '連携中',
       instagram: snsResult.data.instagram === '連携中',
-      threads: snsResult.data.threads === '連携中'
+      threads: snsResult.data.threads === '連携中',
+      xAccount: snsResult.data.xAccount || '',
+      instagramAccount: snsResult.data.instagramAccount || '',
+      threadsAccount: snsResult.data.threadsAccount || ''
     } : null;
 
     applyQuotaFromCache({ plan: profileResult.data.plan, remainingReservable: profileResult.data.remainingReservable, sns: sns });
-    writeQuotaCache(profileResult.data.plan, profileResult.data.remainingReservable, sns);
+    writeQuotaCache(profileResult.data, sns);
   } catch (err) {
     console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
     // 取得に失敗しても投稿文作成自体はそのまま続行できるようにする
