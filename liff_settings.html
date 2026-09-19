@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録45 - AiPost</title>
+<title>設定・登録46 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録45</span>
+  <span class="header-logo">設定・登録46</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -667,6 +667,12 @@ function applySnsFromCache(sns) {
   if (sns.x) { connectSns('x', sns.xAccount); } else { disconnectSns('x'); }
   if (sns.instagram) { connectSns('ig', sns.instagramAccount); } else { disconnectSns('ig'); }
   if (sns.threads) { connectSns('th', sns.threadsAccount); } else { disconnectSns('th'); }
+  // ★liff_settings.html46：ここでconnectSns/disconnectSnsを呼んだ
+  // 　だけでは「連携中：」の要約表示（サブバー）が更新されない
+  // 　（要約はapplyProfileToForm→applyPlan内で1回だけ計算されており、
+  // 　その時点ではまだ実際の連携状況が反映されていなかった）。
+  // 　実データを反映した直後に必ず再計算する。
+  updateSnsSummary();
 }
 
 // 店舗情報・SNS連携状況をまとめて取得し、画面表示と共有キャッシュを
