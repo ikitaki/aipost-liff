@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成103 - AiPost</title>
+<title>投稿文作成104 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成103</span>
+  <span class="header-logo">投稿文作成104</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -674,6 +674,9 @@
     </div>
     <div class="keyword-hint">💡 キーワードは最大3個・1個15文字までです。商品名・特徴・季節など</div>
     <div class="keyword-hint" style="margin-top:6px;">✏️ 自分で文章を書く場合は④の入力欄に直接入力してください</div>
+    <div class="keyword-hint" style="margin-top:10px;font-weight:600;">✍️ 文章でご要望を伝えることもできます（任意）</div>
+    <textarea id="free-text-input" maxlength="150" placeholder="例：新装開店する予定なので、特別サービスの告知をしたい" style="width:100%;margin-top:6px;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
+    <div class="keyword-hint" style="margin-top:4px;">キーワードと両方入力すれば、両方を考慮して生成します</div>
   </div>
 
   <!-- ③ 訴求パターン -->
@@ -1261,6 +1264,7 @@ function applyQuotaFromCache(cache) {
     el.textContent = '残り投稿可能数' + cache.remainingReservable + '件';
   }
   applySnsConnectionStatus(cache.sns);
+  updateUserGenreFromProfile(cache);
 }
 
 const RESERVATION_LIST_CACHE_KEY = 'aipost_reservation_list';
@@ -1353,6 +1357,12 @@ function getKeywords() {
     if (val) result.push(val);
   }
   return result;
+}
+
+// ご要望（自由記述）欄の値を取得
+function getFreeText() {
+  const el = document.getElementById('free-text-input');
+  return el ? el.value.trim() : '';
 }
 
 // ② キーワード入力欄の案内文（業種登録の有無で出し分け）
@@ -1559,18 +1569,28 @@ function selectPattern(btn) {
 }
 
 // ===== AI生成 =====
-// ===== デモ用業種データ（実装時はGASから取得） =====
-// null = 業種未登録・値あり = 登録済み
-const USER_GENRE = { main: 'カフェ・喫茶店', sub: '和スイーツ' }; // デモ：登録済み状態
-// const USER_GENRE = null; // デモ：未登録状態
+// ★liff_textgen.html104：USER_GENREをデモ用の固定値から、実際の
+// 　業種登録状況（共有キャッシュのbusinessMajor/businessMinor）に
+// 　連動するよう修正。ご要望欄（自由記述）の追加に伴うバリデーション
+// 　（業種未登録時はご要望かキーワードのいずれかが必須）を正しく
+// 　動かすために必要な対応。
+let USER_GENRE = null;
+
+function updateUserGenreFromProfile(profile) {
+  USER_GENRE = (profile && profile.businessMajor && profile.businessMinor)
+    ? { main: profile.businessMajor, sub: profile.businessMinor }
+    : null;
+  renderKeywordGuide();
+}
 
 function confirmAndGenerate() {
-  // キーワード取得
+  // キーワード・ご要望取得
   const hasKeyword = getKeywords().length > 0;
+  const hasFreeText = getFreeText().length > 0;
 
-  // 業種未登録・キーワード未入力の場合はアラート
-  if (!USER_GENRE && !hasKeyword) {
-    alert('キーワードを入力してください。\n業種が未登録の場合、キーワードの入力が必要です。');
+  // 業種未登録・キーワード未入力・ご要望未入力の場合はアラート
+  if (!USER_GENRE && !hasKeyword && !hasFreeText) {
+    alert('キーワードまたはご要望のいずれかを入力してください。\n業種が未登録の場合、どちらか一方の入力が必要です。');
     document.getElementById('keyword-input-1').focus();
     return;
   }
@@ -1601,6 +1621,7 @@ async function executeGenerate() {
   }
 
   const keywords = getKeywords(); // 既存関数。配列（0〜3件）を返す想定
+  const freeText = getFreeText();
   const includeFlags = getIncludeFlags(); // liff_textgen_UI追加_01で追加済み
   const appealPatternOverride = getSelectedAppealPattern();
 
@@ -1611,6 +1632,7 @@ async function executeGenerate() {
       keyword1: keywords[0] || '',
       keyword2: keywords[1] || '',
       keyword3: keywords[2] || '',
+      freeText: freeText,
       includeShopName: includeFlags.includeShopName,
       includeArea: includeFlags.includeArea,
       appealPatternOverride: appealPatternOverride
@@ -1658,9 +1680,9 @@ async function executeGenerate() {
       setGeneratedHashtags(hashtagResult.data.map(h => h.replace(/^#/, '')));
     }
 
-    // 業種ベース生成（キーワード未入力）の場合は既存の通知を表示
+    // 業種ベース生成（キーワード・ご要望とも未入力）の場合は既存の通知を表示
     const hasKeyword = keywords.length > 0;
-    if (USER_GENRE && !hasKeyword) {
+    if (USER_GENRE && !hasKeyword && !freeText) {
       document.getElementById('genre-label').textContent = `${result.data.businessMajor}・${result.data.businessMinor}`;
       document.getElementById('genre-notice').style.display = 'block';
     }
