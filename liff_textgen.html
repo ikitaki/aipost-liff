@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成96 - AiPost</title>
+<title>投稿文作成97 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成96</span>
+  <span class="header-logo">投稿文作成97</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1168,13 +1168,13 @@ async function initLiff() {
   }
 }
 
-// ★liff_textgen.html91：SNS選択チェックボックスが、実際の連携状況を
-// 　確認せず常に3つともチェック済みで表示されていた不具合を修正。
-// 　プラン・残り予約可能件数に加えて、SNS連携状況（getSnsStatus）も
-// 　同じキャッシュにまとめて保存し、liff_reservation.htmlと共有する
-// 　（Kenさんの「アプリ起動時に画面を問わず一括取得」の要望に対応）。
+// ★liff_textgen.html97：保存先をlocalStorageからsessionStorageに
+// 　変更した。localStorageはアプリを完全に閉じても消えないため、
+// 　「アプリを閉じて開き直したら再取得する」という要望に合わなかった
+// 　（アプリ再起動後もキャッシュが残り続けてしまっていた）。
+// 　sessionStorageはブラウザ・アプリのセッションが終わると自動的に
+// 　消えるため、TTL（有効期限）による管理も不要になり撤廃した。
 const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
-const QUOTA_CACHE_TTL_MS = 60 * 60 * 1000; // 60分
 
 function daysUntilMonthEnd() {
   const now = new Date();
@@ -1184,22 +1184,18 @@ function daysUntilMonthEnd() {
 
 function readQuotaCache() {
   try {
-    const raw = localStorage.getItem(QUOTA_CACHE_KEY);
-    if (!raw) return null;
-    const cache = JSON.parse(raw);
-    if (!cache.fetchedAt || Date.now() - cache.fetchedAt > QUOTA_CACHE_TTL_MS) return null;
-    return cache;
+    const raw = sessionStorage.getItem(QUOTA_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
   } catch (err) {
     return null;
   }
 }
 
-// ★一時的な確認用表示（原因切り分け後に削除予定）。localStorageの
-// 生データを画面右下に小さく表示する。TTL判定より前の「そもそも
-// 保存されているか」を見るためのもの。
+// ★一時的な確認用表示（原因切り分け後に削除予定）。sessionStorageの
+// 生データを画面右下に小さく表示する。
 function showDebugCacheBadge() {
   try {
-    const raw = localStorage.getItem(QUOTA_CACHE_KEY);
+    const raw = sessionStorage.getItem(QUOTA_CACHE_KEY);
     const badge = document.createElement('div');
     badge.style.cssText = 'position:fixed;bottom:60px;right:8px;z-index:9999;background:rgba(0,0,0,0.75);color:#0f0;font-size:10px;padding:4px 8px;border-radius:6px;font-family:monospace;max-width:70vw;word-break:break-all;';
     if (!raw) {
@@ -1215,17 +1211,12 @@ function showDebugCacheBadge() {
   }
 }
 
-// ★liff_textgen.html92：liff_settings.htmlの店舗情報読み込みも同じ
-// 　共有キャッシュを使うよう対応したため、getUserProfile()の戻り値を
-// 　まるごと（店舗名・業種・都道府県・メールアドレス等を含めて）
-// 　キャッシュに保存するようにした（以前はplan・remainingReservable
-// 　のみ保存しており、他画面が使う項目が欠けていた）。
 function writeQuotaCache(profileData, sns) {
   try {
     const cache = Object.assign({}, profileData, { sns: sns || null, fetchedAt: Date.now() });
-    localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(cache));
+    sessionStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(cache));
   } catch (err) {
-    // localStorageが使えない環境でも動作は継続する
+    // sessionStorageが使えない環境でも動作は継続する
   }
 }
 
@@ -2357,6 +2348,10 @@ async function executeReserve() {
 
     // 予約が確定し、残り予約可能件数が変わったのでキャッシュを更新する
     refreshReservationQuota();
+    // 新規予約が作成されたので、予約確認画面側のキャッシュも
+    // 無効化する（同じsessionStorageを見ているため、ここから消して
+    // おけば、予約確認画面を開いた時に最新の一覧を取得し直す）
+    try { sessionStorage.removeItem('aipost_reservation_list'); } catch (err) {}
 
   } catch (err) {
     console.error('予約確定リクエストエラー:', err);
