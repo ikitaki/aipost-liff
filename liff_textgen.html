@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成90 - AiPost</title>
+<title>投稿文作成91 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -604,7 +604,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成90</span>
+  <span class="header-logo">投稿文作成91</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -645,18 +645,19 @@
         <div class="sns-check-name">X</div>
         <div class="sns-checkbox">✓</div>
       </div>
-      <div class="sns-check-item checked" onclick="toggleSns(this)">
+      <div class="sns-check-item checked" id="sns-item-ig" onclick="toggleSns(this)">
         <div class="sns-icon-sm sns-ig">IG</div>
         <div class="sns-check-name">Instagram</div>
         <div class="sns-checkbox">✓</div>
       </div>
-      <div class="sns-check-item checked" onclick="toggleSns(this)">
+      <div class="sns-check-item checked" id="sns-item-th" onclick="toggleSns(this)">
         <div class="sns-icon-sm sns-th">@</div>
         <div class="sns-check-name">Threads</div>
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
     <p class="sns-plan-note" id="sns-plan-note" style="display:none;">💎 FREEプランではXは選択できません</p>
+    <p class="sns-plan-note" id="sns-unconnected-note" style="display:none;"></p>
   </div>
 
   <!-- ② キーワード入力 -->
@@ -1156,17 +1157,11 @@ async function initLiff() {
   }
 }
 
-// ★liff_textgen.html90：GASへの問い合わせ頻度を減らすため、プラン・
-// 　残り予約可能件数はlocalStorageにキャッシュし、画面表示ごとの
-// 　再取得（バックグラウンド復帰時の再取得を含む）は廃止した。
-// 　キャッシュが無い場合・キャッシュが古い場合（QUOTA_CACHE_TTL_MS
-// 　経過後。アプリを閉じて時間を置いて再開したようなケースに対応）
-// 　のみ取得する。予約確定後はrefreshReservationQuota()で明示的に
-// 　再取得・キャッシュ更新する。予約の修正・設定変更等、他の値が
-// 　変わる操作についても、その機能の実装時に同様の明示的な更新呼び
-// 　出しを追加する想定（それまではTTLでカバーする）。
-// 　表示文言はliff_reservation.htmlと統一（あと◯件予約できます・
-// 　月末まで◯日）。
+// ★liff_textgen.html91：SNS選択チェックボックスが、実際の連携状況を
+// 　確認せず常に3つともチェック済みで表示されていた不具合を修正。
+// 　プラン・残り予約可能件数に加えて、SNS連携状況（getSnsStatus）も
+// 　同じキャッシュにまとめて保存し、liff_reservation.htmlと共有する
+// 　（Kenさんの「アプリ起動時に画面を問わず一括取得」の要望に対応）。
 const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
 const QUOTA_CACHE_TTL_MS = 5 * 60 * 1000; // 5分
 
@@ -1188,16 +1183,55 @@ function readQuotaCache() {
   }
 }
 
-function writeQuotaCache(plan, remainingReservable) {
+function writeQuotaCache(plan, remainingReservable, sns) {
   try {
     localStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify({
       plan: plan,
       remainingReservable: remainingReservable,
+      sns: sns || null,
       fetchedAt: Date.now()
     }));
   } catch (err) {
     // localStorageが使えない環境でも動作は継続する
   }
+}
+
+// 連携されていないSNSのチェックを外し、選択できないようにする
+function applySnsConnectionStatus(sns) {
+  if (!sns) return;
+  const itemIds = { x: 'sns-item-x', instagram: 'sns-item-ig', threads: 'sns-item-th' };
+  const names = { x: 'X', instagram: 'Instagram', threads: 'Threads' };
+  const unconnected = [];
+
+  Object.keys(itemIds).forEach(function (key) {
+    const el = document.getElementById(itemIds[key]);
+    if (!el) return;
+    if (!sns[key]) {
+      unconnected.push(names[key]);
+      if (el.classList.contains('checked')) {
+        el.classList.remove('checked');
+        el.querySelector('.sns-checkbox').textContent = '';
+      }
+      el.classList.add('disabled');
+      el.onclick = null;
+    } else {
+      // FREEプランによるXの無効化（applyPlan()側の制御）は上書きしない
+      if (key === 'x' && document.getElementById('plan-badge').textContent === 'FREE') return;
+      el.classList.remove('disabled');
+      el.onclick = () => toggleSns(el);
+    }
+  });
+
+  const note = document.getElementById('sns-unconnected-note');
+  if (note) {
+    if (unconnected.length > 0) {
+      note.textContent = '⚠️ ' + unconnected.join('・') + 'は連携されていません（設定画面から連携できます）';
+      note.style.display = 'block';
+    } else {
+      note.style.display = 'none';
+    }
+  }
+  updateHashtagColumns();
 }
 
 function applyQuotaFromCache(cache) {
@@ -1209,6 +1243,7 @@ function applyQuotaFromCache(cache) {
   if (el && typeof cache.remainingReservable === 'number') {
     el.textContent = 'あと' + cache.remainingReservable + '件予約できます・月末まで' + daysUntilMonthEnd() + '日';
   }
+  applySnsConnectionStatus(cache.sns);
 }
 
 // キャッシュがあればそれを使い（通信しない）、無ければ取得する
@@ -1221,24 +1256,32 @@ function applyQuotaFromCacheOrFetch() {
   }
 }
 
-// 実際にGASへ問い合わせて最新のプラン・残り件数を取得し、画面表示と
-// キャッシュを更新する。予約確定直後など、値が変わったタイミングで
-// 呼び出す（画面表示のたびに毎回呼ぶものではない）。
+// 実際にGASへ問い合わせて最新のプラン・残り件数・SNS連携状況を取得し、
+// 画面表示とキャッシュを更新する。予約確定直後など、値が変わった
+// タイミングで呼び出す（画面表示のたびに毎回呼ぶものではない）。
 async function refreshReservationQuota() {
   const el = document.getElementById('reservation-quota');
   if (el) el.textContent = '確認中…';
   try {
-    const response = await fetch(WEBAPP_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID })
-    });
-    const result = await response.json();
-    if (!result.success || !result.data || result.data.found === false) return;
+    const [profileRes, snsRes] = await Promise.all([
+      fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID }) }),
+      fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID }) })
+    ]);
+    const profileResult = await profileRes.json();
+    const snsResult = await snsRes.json();
 
-    applyQuotaFromCache({ plan: result.data.plan, remainingReservable: result.data.remainingReservable });
-    writeQuotaCache(result.data.plan, result.data.remainingReservable);
+    if (!profileResult.success || !profileResult.data || profileResult.data.found === false) return;
+
+    const sns = (snsResult.success && snsResult.data) ? {
+      x: snsResult.data.x === '連携中',
+      instagram: snsResult.data.instagram === '連携中',
+      threads: snsResult.data.threads === '連携中'
+    } : null;
+
+    applyQuotaFromCache({ plan: profileResult.data.plan, remainingReservable: profileResult.data.remainingReservable, sns: sns });
+    writeQuotaCache(profileResult.data.plan, profileResult.data.remainingReservable, sns);
   } catch (err) {
-    console.error('プラン・残り予約可能件数の取得エラー:', err);
+    console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
     // 取得に失敗しても投稿文作成自体はそのまま続行できるようにする
   }
 }
