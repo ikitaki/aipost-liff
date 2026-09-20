@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析13 - AiPost</title>
+<title>分析14 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -162,7 +162,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析13</span>
+  <span class="header-logo">分析14</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -2016,8 +2016,13 @@ function applyPlan(plan) {
   renderSubbarSnsTags();
 
   // FREE・PERSONALでもLITE/STANDARD/PROタブは開ける（各タブでアップグレード案内を表示するため）
+  // ★liff_analytics_html14：初期表示タブを、実際の契約プランに
+  // 　合わせるようにした（PROなら最初からPROタブ、STANDARDなら
+  // 　STANDARDタブ、FREE・PERSONAL・LITEはLITEタブ＝一番下の
+  // 　プレビュータブを表示）。
+  const initialTab = (plan === 'PRO') ? 'pro' : (plan === 'STANDARD') ? 'standard' : 'lite';
   document.getElementById('analytics-tab-nav').style.display = 'flex';
-  switchTab('lite');
+  switchTab(initialTab);
 }
 
 // 契約プランと、各タブ（LITE/STANDARD/PRO）の関係を表すバナー・表示切替
