@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析17 - AiPost</title>
+<title>分析18 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -162,7 +162,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析17</span>
+  <span class="header-logo">分析18</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -233,18 +233,18 @@
     <div class="today-card" style="margin-bottom:10px;">
       <div class="today-item">
         <div class="today-label">今日の投稿数</div>
-        <div class="today-val">1<span style="font-size:10px;">件</span></div>
+        <div class="today-val" id="lite-today-post">-<span style="font-size:10px;">件</span></div>
         <div class="today-sub">本日投稿済み</div>
       </div>
       <div class="today-item">
         <div class="today-label">今月の投稿数</div>
-        <div class="today-val" style="color:var(--primary);">8<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">/10件</div>
+        <div class="today-val" style="color:var(--primary);" id="lite-month-post">-<span style="font-size:10px;">件</span></div>
+        <div class="today-sub" id="lite-month-total">/-件</div>
       </div>
       <div class="today-item">
         <div class="today-label">総合EG率</div>
-        <div class="today-val" style="color:#2e7d32;">9.8%</div>
-        <div class="today-sub" style="color:var(--success);">前回比 +1.2%</div>
+        <div class="today-val" style="color:#2e7d32;" id="lite-eg-rate">-%</div>
+        <div class="today-sub" style="color:var(--success);">今月の平均</div>
       </div>
     </div>
 
@@ -261,14 +261,15 @@
           <span style="font-size:10px;color:var(--text);">842人　<span style="color:var(--success);font-weight:700;">+1人</span></span>
         </div>
       </div>
+      <div style="font-size:9px;color:var(--text-light);margin-top:6px;">💎 フォロワー推移は準備中です</div>
     </div>
 
     <!-- 📆 今月の投稿枠（テキスト） -->
     <div style="display:grid;grid-template-columns:1fr;gap:6px;">
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
         <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
-        <div style="font-size:14px;font-weight:700;color:var(--success);">残り2件</div>
-        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">8 / 10件使用　連携SNS：IG・FB</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success);" id="lite-quota-remaining">残り-件</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="lite-quota-used">- / -件使用</div>
       </div>
     </div>
   </div>
@@ -280,27 +281,13 @@
     <div class="card-title">📊 直近投稿と24時間後の状況</div>
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
       <div style="padding:10px 10px 0 10px;">
-        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">6月25日（水）08:00投稿　138文字　📱IG・💻FB</div>
-        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。</p>
+        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;" id="lite-latest-meta">投稿データがありません</div>
+        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;" id="lite-latest-text"></p>
         <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('lite-p1-detail','lite-p1-btn')" id="lite-p1-btn">24時間後のデータを見る ▼</button>
       </div>
       <div id="lite-p1-detail" style="display:none;padding:10px;">
-        <div style="margin-bottom:10px;">
-          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram（24時間後　翌08:01取得）</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 8px;align-items:center;">
-            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
-            <span class="val-up">178 ↑</span><span class="val-up">34 ↑</span><span class="val-up">17.8% ↑</span>
-          </div>
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
-        <div>
-          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook（24時間後　翌08:01取得）</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📤</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
-            <span class="val-up">72 ↑</span><span class="val-up">14 ↑</span><span class="val-up">11 ↑</span><span class="val-up">1.6K ↑</span><span class="val-up">7.2% ↑</span>
-          </div>
-        </div>
-        <p style="font-size:9px;color:var(--text-light);margin-top:8px;">↑上昇　→横ばい　↓下降　※ K=1,000</p>
+        <div id="lite-latest-detail"></div>
+        <p style="font-size:9px;color:var(--text-light);margin-top:8px;">↑上昇　※ K=1,000</p>
       </div>
     </div>
   </div>
@@ -571,18 +558,18 @@
     <div class="today-card" style="margin-bottom:10px;">
       <div class="today-item">
         <div class="today-label">今日の投稿数</div>
-        <div class="today-val">2<span style="font-size:10px;">件</span></div>
+        <div class="today-val" id="standard-today-post">-<span style="font-size:10px;">件</span></div>
         <div class="today-sub">本日投稿済み</div>
       </div>
       <div class="today-item">
         <div class="today-label">今月の投稿数</div>
-        <div class="today-val" style="color:var(--primary);">12<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">/20件</div>
+        <div class="today-val" style="color:var(--primary);" id="standard-month-post">-<span style="font-size:10px;">件</span></div>
+        <div class="today-sub" id="standard-month-total">/-件</div>
       </div>
       <div class="today-item">
         <div class="today-label">総合EG率</div>
-        <div class="today-val" style="color:#2e7d32;">8.4%</div>
-        <div class="today-sub" style="color:var(--success);">前回比 +0.8%</div>
+        <div class="today-val" style="color:#2e7d32;" id="standard-eg-rate">-%</div>
+        <div class="today-sub" style="color:var(--success);">今月の平均</div>
       </div>
     </div>
 
@@ -603,14 +590,15 @@
           <span style="font-size:10px;color:var(--text);">842人　<span style="color:var(--success);font-weight:700;">+1人</span></span>
         </div>
       </div>
+      <div style="font-size:9px;color:var(--text-light);margin-top:6px;">💎 フォロワー推移は準備中です</div>
     </div>
 
     <!-- 📆 今月の投稿枠（テキスト） -->
     <div style="display:grid;grid-template-columns:1fr;gap:6px;">
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
         <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
-        <div style="font-size:14px;font-weight:700;color:var(--success);">残り8件</div>
-        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">12 / 20件使用　連携SNS：X・IG・FB</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success);" id="standard-quota-remaining">残り-件</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="standard-quota-used">- / -件使用</div>
       </div>
     </div>
   </div>
@@ -622,36 +610,14 @@
     <div class="card-title">📊 直近投稿と24時間後の状況</div>
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
       <div style="padding:10px 10px 0 10px;">
-        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">6月25日（水）08:00投稿　138文字　🐦X・📱IG・💻FB</div>
-        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。</p>
+        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;" id="standard-latest-meta">投稿データがありません</div>
+        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;" id="standard-latest-text"></p>
         <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('std-p1-detail','std-p1-btn')" id="std-p1-btn">24時間後のデータを見る ▼</button>
       </div>
       <div id="std-p1-detail" style="display:none;padding:10px;">
-        <div style="margin-bottom:10px;">
-          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:6px;">🐦 X（24時間後　翌08:01取得）</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">🔁</div><div style="font-size:11px;font-weight:700;text-align:center;">↩️</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
-            <span class="val-up">124 ↑</span><span class="val-up">28 ↑</span><span class="val-up">18 ↑</span><span class="val-up">3.6K ↑</span><span class="val-up">14.8% ↑</span>
-          </div>
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
-        <div style="margin-bottom:10px;">
-          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram（24時間後　翌08:01取得）</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 8px;align-items:center;">
-            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
-            <span class="val-up">178 ↑</span><span class="val-up">34 ↑</span><span class="val-up">17.8% ↑</span>
-          </div>
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
-        <div>
-          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook（24時間後　翌08:01取得）</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📤</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
-            <span class="val-up">72 ↑</span><span class="val-up">14 ↑</span><span class="val-up">11 ↑</span><span class="val-up">1.6K ↑</span><span class="val-up">7.2% ↑</span>
-          </div>
-        </div>
+        <div id="standard-latest-detail"></div>
         <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
-        <p style="font-size:9px;color:var(--text-light);margin-top:4px;">↑上昇　→横ばい　↓下降　※ K=1,000</p>
+        <p style="font-size:9px;color:var(--text-light);margin-top:4px;">↑上昇　※ K=1,000</p>
       </div>
     </div>
   </div>
@@ -948,18 +914,18 @@
     <div class="today-card" style="margin-bottom:10px;">
       <div class="today-item">
         <div class="today-label">今日の投稿数</div>
-        <div class="today-val">2<span style="font-size:10px;">件</span></div>
+        <div class="today-val" id="pro-today-post">-<span style="font-size:10px;">件</span></div>
         <div class="today-sub">本日投稿済み</div>
       </div>
       <div class="today-item">
         <div class="today-label">初速スコア順位</div>
         <div class="today-val" style="color:var(--primary);">4<span style="font-size:10px;">位</span></div>
-        <div class="today-sub">過去30投稿中・上位13%</div>
+        <div class="today-sub">💎 準備中</div>
       </div>
       <div class="today-item">
         <div class="today-label">総合初速スコア</div>
         <div class="today-val" style="color:#2e7d32;">87<span style="font-size:10px;">点</span></div>
-        <div class="today-sub" style="color:var(--success);">前回比 +9点</div>
+        <div class="today-sub" style="color:var(--success);">💎 準備中</div>
       </div>
     </div>
     <!-- 内訳 -->
@@ -1055,8 +1021,8 @@
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
         <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
-        <div style="font-size:14px;font-weight:700;color:var(--success);">残り18件</div>
-        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">22 / 40件使用</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success);" id="pro-quota-remaining">残り-件</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="pro-quota-used">- / -件使用</div>
       </div>
     </div>
   </div>
@@ -1065,74 +1031,16 @@
   <div class="card">
     <div class="card-title">⚡ 直近投稿の初速状況</div>
 
-    <!-- 投稿① X・IG・FB・TH 同時投稿 -->
+    <!-- 投稿① -->
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
       <div style="padding:10px 10px 0 10px;">
-        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">6月25日（水）08:00投稿　138文字　🐦X・📱IG・💻FB・🧵TH</div>
-        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。ご予約は不要ですのでお気軽にお越しください😊 #渋谷モーニング #朝活カフェ #特別イベント</p>
+        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;" id="pro-latest-meta">投稿データがありません</div>
+        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;" id="pro-latest-text"></p>
         <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('p1-detail','p1-btn')" id="p1-btn">詳細を見る ▼</button>
       </div>
       <div id="p1-detail" style="display:none;padding:10px;">
-
-        <!-- X -->
-        <div style="margin-bottom:10px;">
-          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:6px;">🐦 X</div>
-          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">🔁</div><div style="font-size:11px;font-weight:700;text-align:center;">↩️</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
-            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
-            <span style="font-size:11px;font-weight:700;text-align:center;">42</span><span style="font-size:11px;font-weight:700;text-align:center;">8</span><span style="font-size:11px;font-weight:700;text-align:center;">5</span><span style="font-size:11px;font-weight:700;text-align:center;">1.1K</span><span style="font-size:11px;font-weight:700;text-align:center;">5.2%</span>
-            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
-            <span style="font-size:11px;font-weight:700;text-align:center;">88</span><span style="font-size:11px;font-weight:700;text-align:center;">18</span><span style="font-size:11px;font-weight:700;text-align:center;">12</span><span style="font-size:11px;font-weight:700;text-align:center;">2.4K</span><span style="font-size:11px;font-weight:700;text-align:center;">10.8%</span>
-            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
-            <span class="val-up">124 ↑</span><span class="val-up">28 ↑</span><span class="val-up">18 ↑</span><span class="val-up">3.6K ↑</span><span class="val-up">14.8% ↑</span>
-          </div>
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
-
-        <!-- Instagram -->
-        <div style="margin-bottom:10px;">
-          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram</div>
-          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:4px 8px;align-items:center;">
-            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
-            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
-            <span style="font-size:11px;font-weight:700;text-align:center;">58</span><span style="font-size:11px;font-weight:700;text-align:center;">9</span><span style="font-size:11px;font-weight:700;text-align:center;">5.8%</span>
-            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
-            <span style="font-size:11px;font-weight:700;text-align:center;">124</span><span style="font-size:11px;font-weight:700;text-align:center;">22</span><span style="font-size:11px;font-weight:700;text-align:center;">12.4%</span>
-            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
-            <span class="val-up">178 ↑</span><span class="val-up">34 ↑</span><span class="val-up">17.8% ↑</span>
-          </div>
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
-
-        <!-- Facebook -->
-        <div style="margin-bottom:10px;">
-          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook</div>
-          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📤</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
-            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
-            <span style="font-size:11px;font-weight:700;text-align:center;">22</span><span style="font-size:11px;font-weight:700;text-align:center;">4</span><span style="font-size:11px;font-weight:700;text-align:center;">3</span><span style="font-size:11px;font-weight:700;text-align:center;">512</span><span style="font-size:11px;font-weight:700;text-align:center;">2.2%</span>
-            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
-            <span style="font-size:11px;font-weight:700;text-align:center;">48</span><span style="font-size:11px;font-weight:700;text-align:center;">9</span><span style="font-size:11px;font-weight:700;text-align:center;">7</span><span style="font-size:11px;font-weight:700;text-align:center;">1.1K</span><span style="font-size:11px;font-weight:700;text-align:center;">4.8%</span>
-            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
-            <span class="val-up">72 ↑</span><span class="val-up">14 ↑</span><span class="val-up">11 ↑</span><span class="val-up">1.6K ↑</span><span class="val-up">7.2% ↑</span>
-          </div>
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
-
-        <!-- Threads -->
-        <div>
-          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:6px;">🧵 Threads</div>
-          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">🔁</div><div style="font-size:11px;font-weight:700;text-align:center;">↩️</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
-            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
-            <span style="font-size:11px;font-weight:700;text-align:center;">18</span><span style="font-size:11px;font-weight:700;text-align:center;">3</span><span style="font-size:11px;font-weight:700;text-align:center;">4</span><span style="font-size:11px;font-weight:700;text-align:center;">284</span><span style="font-size:11px;font-weight:700;text-align:center;">3.8%</span>
-            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
-            <span style="font-size:11px;font-weight:700;text-align:center;">42</span><span style="font-size:11px;font-weight:700;text-align:center;">8</span><span style="font-size:11px;font-weight:700;text-align:center;">10</span><span style="font-size:11px;font-weight:700;text-align:center;">612</span><span style="font-size:11px;font-weight:700;text-align:center;">8.2%</span>
-            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
-            <span class="val-up">64 ↑</span><span class="val-up">14 ↑</span><span class="val-up">16 ↑</span><span class="val-up">924 ↑</span><span class="val-up">12.4% ↑</span>
-          </div>
-        </div>
-        <div class="action-box" style="margin-top:8px;"><div class="action-text">🔵 24時間が経過しました。次の投稿準備を始めましょう</div></div>
+        <div id="pro-latest-detail"></div>
+        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:6px;">💎 1時間後・3時間後のデータ表示は準備中です</p>
         <p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ K = 1,000（例：1.2K = 1,200回）</p>
       </div>
     </div>
@@ -2711,9 +2619,130 @@ async function initLiff() {
     const idToken = liff.getDecodedIDToken();
     LINE_UID = idToken.sub;
     applyQuotaFromCacheOrFetch();
+    fetchAndApplyAnalyticsSummary();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
+  }
+}
+
+// ===== 分析データ（今日の状況・直近投稿と24時間後の状況）の実データ表示 =====
+// ★liff_analytics_html18：getAnalyticsSummary()を呼び出し、3タブ共通の
+// 　「今日の状況」（今日の投稿数・今月の投稿数・総合EG率・今月の投稿枠）
+// 　と「直近投稿と24時間後の状況」（PRO限定「直近投稿の初速状況」を
+// 　含む）に実データを反映する。フォロワー前日比・初速スコア順位・
+// 　投稿日別データ・人気投稿ランキング・先週先月のまとめ等は、まだ
+// 　GAS側で対応していないため、今回は対象外（準備中表示のまま）。
+const SNS_META = {
+  X: { label: '🐦 X', color: '#000' },
+  Instagram: { label: '📱 Instagram', color: '#e1306c' },
+  Threads: { label: '🧵 Threads', color: '#555' }
+};
+
+function formatPostedAt(dateStr) {
+  const d = new Date(dateStr);
+  const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+  const mm = String(d.getMonth() + 1);
+  const dd = String(d.getDate());
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mi = String(d.getMinutes()).padStart(2, '0');
+  return mm + '月' + dd + '日（' + dayNames[d.getDay()] + '）' + hh + ':' + mi + '投稿';
+}
+
+// 1件のSNS結果（timing24h）を、そのSNSの指標に応じたHTML行に変換する
+function renderSnsResultRow(result) {
+  const meta = SNS_META[result.sns] || { label: result.sns, color: '#555' };
+  const t = result.timing24h;
+  if (!t) {
+    return '<div style="margin-bottom:10px;">' +
+      '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;">' + meta.label + '（24時間後）</div>' +
+      '<div style="font-size:10px;color:var(--text-light);">まだ24時間経過していないため未取得です</div>' +
+      '</div>';
+  }
+  if (t.deleted) {
+    return '<div style="margin-bottom:10px;">' +
+      '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;">' + meta.label + '（24時間後）</div>' +
+      '<div style="font-size:10px;color:var(--text-light);">投稿が見つかりません（削除された可能性があります）</div>' +
+      '</div>';
+  }
+  const egText = (t.egRate === '' || t.egRate === null) ? '-' : t.egRate + '%';
+  let cols, header, values;
+  if (result.sns === 'X') {
+    header = '❤️　🔁　↩️　👁️　📊';
+    values = (t.likeCount || 0) + '　' + (t.retweetCount || 0) + '　' + (t.replyCount || 0) + '　' + (t.impressionCount || 0) + '　' + egText;
+  } else if (result.sns === 'Instagram') {
+    header = '❤️　💬　📊';
+    values = (t.likeCount || 0) + '　' + (t.commentCount || 0) + '　' + egText;
+  } else {
+    header = '❤️　↩️　🔁　💬　📊';
+    values = (t.likeCount || 0) + '　' + (t.repliesCount || 0) + '　' + (t.retweetCount || 0) + '　' + (t.quotesCount || 0) + '　' + egText;
+  }
+  return '<div style="margin-bottom:10px;">' +
+    '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;">' + meta.label + '（24時間後）</div>' +
+    '<div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">' + header + '</div>' +
+    '<div style="font-size:12px;font-weight:700;">' + values + '</div>' +
+    '</div><hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">';
+}
+
+function applyLatestPostSection(prefix, data) {
+  const metaEl = document.getElementById(prefix + '-latest-meta');
+  const textEl = document.getElementById(prefix + '-latest-text');
+  const detailEl = document.getElementById(prefix + '-latest-detail');
+  const btnEl = document.getElementById(
+    prefix === 'lite' ? 'lite-p1-btn' : (prefix === 'standard' ? 'std-p1-btn' : 'p1-btn')
+  );
+
+  if (!data.latestPost) {
+    if (metaEl) metaEl.textContent = 'まだ投稿がありません';
+    if (textEl) textEl.textContent = '';
+    if (btnEl) btnEl.style.display = 'none';
+    return;
+  }
+
+  const p = data.latestPost;
+  const snsLabels = p.results.map(function (r) { return (SNS_META[r.sns] || {}).label || r.sns; }).join('・');
+  if (metaEl) metaEl.textContent = formatPostedAt(p.postedAt) + '　' + p.honbun.length + '文字　' + snsLabels;
+  if (textEl) textEl.textContent = '📝 ' + p.honbun;
+  if (btnEl) btnEl.style.display = '';
+  if (detailEl) detailEl.innerHTML = p.results.map(renderSnsResultRow).join('');
+}
+
+function applyTodayStatus(prefix, data) {
+  const postEl = document.getElementById(prefix + '-today-post');
+  if (postEl) postEl.innerHTML = data.todayPostCount + '<span style="font-size:10px;">件</span>';
+
+  const monthEl = document.getElementById(prefix + '-month-post');
+  const monthTotalEl = document.getElementById(prefix + '-month-total');
+  if (monthEl) monthEl.innerHTML = data.consumedThisMonth + '<span style="font-size:10px;">件</span>';
+  if (monthTotalEl) monthTotalEl.textContent = '/' + data.totalReservable + '件';
+
+  const egEl = document.getElementById(prefix + '-eg-rate');
+  if (egEl) egEl.textContent = (data.overallEgRate === null ? 'データなし' : data.overallEgRate + '%');
+
+  const quotaRemainEl = document.getElementById(prefix + '-quota-remaining');
+  const quotaUsedEl = document.getElementById(prefix + '-quota-used');
+  if (quotaRemainEl) quotaRemainEl.textContent = '残り' + data.remainingReservable + '件';
+  if (quotaUsedEl) quotaUsedEl.textContent = data.consumedThisMonth + ' / ' + data.totalReservable + '件使用';
+}
+
+async function fetchAndApplyAnalyticsSummary() {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'getAnalyticsSummary', lineUid: LINE_UID, params: { plan: currentActualPlan } })
+    });
+    const result = await response.json();
+    if (!result.success || !result.data || result.data.error) {
+      console.error('分析データの取得エラー:', result.data && result.data.error);
+      return;
+    }
+    const data = result.data;
+    ['lite', 'standard', 'pro'].forEach(function (prefix) {
+      applyTodayStatus(prefix, data);
+      applyLatestPostSection(prefix, data);
+    });
+  } catch (err) {
+    console.error('分析データの取得エラー:', err);
   }
 }
 
