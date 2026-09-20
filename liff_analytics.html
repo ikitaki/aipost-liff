@@ -1,0 +1,2699 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>分析13 - AiPost</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --primary:#1a237e; --accent:#00acc1;
+    --success:#43a047; --warning:#fb8c00; --danger:#e53935;
+    --bg:#f5f7fa; --surface:#ffffff; --border:#e0e4ed;
+    --text:#1a1a2e; --text-sub:#6b7280; --text-light:#9ca3af;
+  }
+  body { font-family:'Hiragino Sans','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); max-width:480px; margin:0 auto; padding-bottom:70px; }
+  .header { background:var(--primary); color:white; padding:8px 14px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; }
+  .header-logo { font-size:15px; font-weight:700; }
+  .subbar { background:#13195f; padding:6px 14px; display:flex; flex-direction:column; position:sticky; top:40px; z-index:99; }
+  .tab-nav { display:flex; background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:74px; z-index:98; }
+  .tab-btn { flex:1; padding:10px 4px; border:none; background:none; font-size:11px; font-weight:600; color:var(--text-sub); cursor:pointer; border-bottom:2px solid transparent; font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
+  .tab-icon { font-size:16px; }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+  .content { padding:14px; }
+  .card { background:var(--surface); border-radius:12px; padding:14px; margin-bottom:12px; border:1px solid var(--border); }
+  .card-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .metric-row { display:flex; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); }
+  .metric-row:last-child { border-bottom:none; }
+  .metric-icon { font-size:18px; width:32px; text-align:center; flex-shrink:0; }
+  .metric-info { flex:1; padding:0 8px; }
+  .metric-name { font-size:12px; font-weight:600; color:var(--text-sub); }
+  .metric-desc { font-size:10px; color:var(--text-sub); margin-top:1px; }
+  .metric-val { text-align:right; flex-shrink:0; }
+  .metric-num { font-size:12px; font-weight:700; color:var(--text); }
+  .metric-change { font-size:10px; color:var(--success); }
+  .info-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border); font-size:12px; }
+  .info-row:last-child { border-bottom:none; }
+  .info-key { color:var(--text-sub); font-size:12px; font-weight:600; }
+  .info-val { font-size:12px; font-weight:700; color:var(--text); }
+  .follower-num { font-size:24px; font-weight:700; color:var(--primary); }
+  .follower-change { font-size:11px; color:var(--success); margin-top:2px; margin-bottom:8px; }
+  .ranking-item { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+  .ranking-item:last-child { border-bottom:none; }
+  .rank-num { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:white; flex-shrink:0; margin-top:2px; }
+  .rank-num.gold { background:#f9a825; } .rank-num.silver { background:#90a4ae; } .rank-num.bronze { background:#a1887f; }
+  .rank-text { font-size:12px; line-height:1.6; margin-bottom:4px; }
+  .rank-stats { display:flex; gap:8px; font-size:11px; color:var(--text-sub); }
+  .sentiment-bar { display:flex; height:10px; border-radius:5px; overflow:hidden; margin:8px 0; }
+  /* アコーディオン */
+  .accordion-title { cursor:pointer; display:flex; justify-content:space-between; align-items:center; user-select:none; }
+  .accordion-arrow { font-size:10px; color:var(--text-sub); transition:transform 0.2s; margin-left:8px; }
+  .accordion-body { display:none; margin-top:8px; }
+  .accordion-body.open { display:block; }
+  .sent-pos { background:var(--success); } .sent-neu { background:#e0e0e0; } .sent-neg { background:var(--danger); }
+  .sentiment-legend { display:flex; gap:10px; flex-wrap:wrap; }
+  .sent-label { font-size:11px; color:var(--text-sub); display:flex; align-items:center; gap:4px; }
+  .sent-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .compare-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; text-align:center; }
+  .compare-header { font-size:11px; font-weight:700; padding:6px 0; border-bottom:1px solid var(--border); }
+  .compare-label { font-size:11px; color:var(--text-sub); font-weight:600; padding:6px 0; border-top:1px solid var(--border); }
+  .compare-val { font-size:12px; font-weight:700; padding:6px 0; border-top:1px solid var(--border); color:var(--text); }
+  /* カレンダー（予約カレンダーと同一CSS） */
+  .cal-grid { padding:4px 0; }
+  .cal-days { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; margin-bottom:4px; }
+  .cal-day-label { font-size:11px; color:var(--text-sub); padding:4px 0; }
+  .cal-day-label:first-child { color:var(--danger); }
+  .cal-day-label:last-child { color:var(--accent); }
+  .cal-dates { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-date { aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:8px; font-size:12px; cursor:pointer; position:relative; padding:2px; }
+  .cal-date:hover { background:var(--bg); }
+  .cal-date.today { background:var(--primary); color:white; font-weight:700; }
+  .cal-date.has-post { padding-top:2px; justify-content:flex-start; gap:1px; }
+  .cal-date.selected { background:var(--primary-light) !important; color:white !important; border-radius:6px; }
+  .cal-date.selected .cal-post-count { background:white !important; color:var(--primary) !important; }
+  .cal-post-count { font-size:9px; font-weight:700; color:white; border-radius:8px; padding:0px 4px; line-height:1.6; min-width:14px; text-align:center; }
+  .cal-date.today .cal-post-count { background:rgba(255,255,255,0.9) !important; color:var(--primary); }
+  .cal-date.other-month { color:var(--text-light); }
+  .cal-date.sunday { color:var(--danger); }
+  .cal-date.saturday { color:var(--accent); }
+  .cal-date.today.sunday, .cal-date.today.saturday { color:white; }
+  /* 詳細表示 */
+  .metric-detail { display:none; margin-top:10px; background:#f0f7f0; border-radius:8px; padding:10px; border:1px solid #a5d6a7; }
+  .metric-detail.show { display:block; }
+  .metric-detail-title { font-size:12px; font-weight:700; color:#2e7d32; margin-bottom:6px; }
+  .neg-detail { display:none; margin-top:10px; background:#fce4ec; border-radius:8px; padding:10px; }
+  .neg-detail.show { display:block; }
+  .neg-detail-title { font-size:12px; font-weight:700; color:#880e4f; margin-bottom:6px; }
+  .neg-comment { font-size:12px; color:#880e4f; line-height:1.8; white-space:pre-line; }
+  .hint { font-size:11px; color:var(--text-sub); margin-bottom:6px; }
+  /* 案内 */
+  .plan-feature-list { text-align:left; background:var(--surface); border-radius:10px; border:1px solid var(--border); padding:12px; margin-bottom:16px; }
+  .plan-feature-label { font-size:11px; font-weight:700; color:var(--text-sub); margin-bottom:8px; }
+  .plan-feature-item { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text); padding:4px 0; }
+  .plan-feature-item span:first-child { font-size:16px; }
+  .plan-guide-btn { width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .plan-guide-price { font-size:11px; color:var(--text-sub); margin-top:6px; text-align:center; }
+  .already-use-title { font-size:14px; font-weight:700; color:var(--success); margin-bottom:14px; text-align:center; }
+  /* 初速UI */
+  .sns-section { border-radius:10px; padding:12px; margin-bottom:10px; }
+  .sns-ig { background:#fff0f5; border:1px solid #a5d6a7; }
+  .sns-fb { background:#e3f2fd; border:1px solid #fff176; }
+  .sns-x  { background:#fffde7; border:1px solid #90caf9; }
+  .sns-th { background:#e8f5e9; border:1px solid #f48fb1; }
+  .sns-label { font-size:12px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+  .gauge-wrap { margin-bottom:10px; }
+  .gauge-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .gauge-title { font-size:11px; font-weight:700; }
+  .gauge-status { font-size:11px; font-weight:700; }
+  .gauge-bar { height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden; }
+  .gauge-fill { height:100%; border-radius:5px; transition:width 0.3s; }
+  .gauge-good { background:linear-gradient(90deg,#43a047,#66bb6a); }
+  .gauge-best { background:linear-gradient(90deg,#1b5e20,#43a047); }
+  .gauge-avg  { background:linear-gradient(90deg,#fb8c00,#ffa726); }
+  .gauge-low  { background:linear-gradient(90deg,#e53935,#ef5350); }
+  /* 今日の状況カード */
+  .today-card { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
+  .today-item { background:var(--bg); border-radius:8px; padding:8px; text-align:center; }
+  .today-label { font-size:9px; color:var(--text-sub); margin-bottom:3px; }
+  .today-val { font-size:14px; font-weight:700; color:var(--text); }
+  .today-sub { font-size:10px; color:var(--text-sub); margin-top:2px; }
+  /* データ蓄積ゲージ */
+  .accum-bar { height:11px; background:#e0e0e0; border-radius:5px; overflow:hidden; margin:5px 0; }
+  .accum-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--primary),#5c6bc0); }
+  .val-up   { font-size:11px; font-weight:700; color:#1565c0;        text-align:center; white-space:nowrap; }
+  .val-stay { font-size:11px; font-weight:700; color:#9e9e9e;        text-align:center; white-space:nowrap; }
+  .val-down { font-size:11px; font-weight:700; color:var(--danger);  text-align:center; white-space:nowrap; }
+  .post-text { font-size:11px; color:var(--text); line-height:1.6; }
+  /* 次回おすすめ */
+  .next-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .acc-btn { float:right; font-size:10px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:2px 8px; color:var(--primary); cursor:pointer; font-family:inherit; font-weight:600; }
+  .next-item { background:var(--bg); border-radius:8px; padding:8px; }
+  .next-item-label { font-size:9px; color:var(--text-sub); margin-bottom:2px; }
+  .next-item-val { font-size:12px; font-weight:700; color:var(--primary); }
+  .growth-row { display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px solid rgba(0,0,0,0.06); }
+  .growth-row:last-child { border-bottom:none; }
+  .growth-time { font-size:11px; font-weight:700; color:var(--text-sub); width:52px; flex-shrink:0; }
+  .growth-vals { flex:1; font-size:11px; font-weight:700; display:flex; gap:8px; }
+  .growth-diff { font-size:11px; font-weight:700; color:var(--success); }
+  .action-box { background:#e8f5e9; border:1px solid #a5d6a7; border-radius:8px; padding:10px; margin-top:8px; }
+  .action-box.warn { background:#fff8e1; border-color:#ffe082; }
+  .action-box.done { background:#e3f2fd; border-color:#90caf9; }
+  .action-text { font-size:11px; color:#1b5e20; font-weight:600; }
+  .action-text.warn { color:#e65100; }
+  .action-text.done { color:#0d47a1; }
+  /* ナビ */
+  .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#fff; border-top:1px solid #e0e0e0; display:flex; align-items:center; justify-content:space-around; z-index:1000; box-shadow:0 -2px 8px rgba(0,0,0,0.08); }
+  .nav-item { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; height:100%; cursor:pointer; color:#9e9e9e; background:none; border:none; padding:0; font-family:inherit; }
+  .nav-item.active { color:#1a237e; }
+  .nav-icon { font-size:18px; line-height:1; margin-bottom:2px; }
+  .nav-label { font-size:9px; font-weight:600; letter-spacing:-0.3px; }
+
+  @keyframes profile-loading-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); display:flex; justify-content:center; z-index:2000; }
+</style>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+
+<div class="header">
+  <span style="font-size:20px;">📊</span>
+  <span class="header-logo">分析13</span>
+  <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
+</div>
+
+<div class="subbar">
+  <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+    <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">LITE</span>
+    <span id="plan-price">¥680/月</span>
+    <span style="color:rgba(255,255,255,0.6);">次回更新：2026年7月1日</span>
+  </div>
+  <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+    <span>連携中：</span>
+    <span id="subbar-sns-x" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
+    <span id="subbar-sns-ig" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
+    <span id="subbar-sns-th" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+    <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
+  </div>
+</div>
+
+<div class="modal-overlay" id="profile-loading-overlay" style="z-index:2000;align-items:center;display:none;">
+  <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
+    <div style="font-size:14px;font-weight:700;color:#333;">保存済みの情報を読み込んでいます…</div>
+  </div>
+</div>
+
+<div class="tab-nav" id="analytics-tab-nav">
+  <button class="tab-btn active" onclick="switchTab('lite')" style="font-size:10px;"><span class="tab-icon">🔍</span>LITE</button>
+  <button class="tab-btn" onclick="switchTab('standard')" style="font-size:10px;"><span class="tab-icon">📊</span>STANDARD</button>
+  <button class="tab-btn" onclick="switchTab('pro')" style="font-size:10px;"><span class="tab-icon">📈</span>PRO</button>
+  <button class="tab-btn" onclick="switchTab('guide')" style="font-size:10px;"><span class="tab-icon">📖</span>ガイド</button>
+</div>
+
+<div class="content">
+
+<!-- ===== LITE分析タブ ===== -->
+<!-- ===== LITE分析タブ ===== -->
+<div id="tab-lite" class="tab-panel active">
+
+  <div id="plan-relation-lite" style="display:none;"></div>
+
+  <!-- LITE未満（FREE・PERSONAL）向け案内 -->
+  <div id="lite-upgrade-guide" style="display:none;">
+    <div style="text-align:center;padding:20px 16px 12px;">
+      <div style="font-size:28px;margin-bottom:8px;">🔍</div>
+      <div class="already-use-title" style="color:var(--primary);">LITEプランで利用できます</div>
+      <div class="plan-feature-list">
+        <div class="plan-feature-label">LITE分析に含まれる機能</div>
+        <div class="plan-feature-item"><span>📊</span><span>今日の状況（投稿数・反応の概況）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>直近投稿と24時間後の状況</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>投稿日別データ</span></div>
+        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移（SNS別）</span></div>
+        <div class="plan-feature-item"><span>🏆</span><span>今月の人気投稿ランキング</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>先週・先月のまとめ</span></div>
+        <div class="plan-feature-item"><span>🎯</span><span>次回の投稿おすすめ</span></div>
+      </div>
+      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
+      <p class="plan-guide-price">LITEプラン ¥680/月</p>
+    </div>
+  </div>
+
+  <div id="lite-content">
+
+  <!-- ① 今日の状況 -->
+  <div class="card" style="border:2px solid var(--primary);">
+    <div class="card-title">📊 今日の状況</div>
+
+    <!-- 3項目グリッド -->
+    <div class="today-card" style="margin-bottom:10px;">
+      <div class="today-item">
+        <div class="today-label">今日の投稿数</div>
+        <div class="today-val">1<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">本日投稿済み</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">今月の投稿数</div>
+        <div class="today-val" style="color:var(--primary);">8<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">/10件</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">総合EG率</div>
+        <div class="today-val" style="color:#2e7d32;">9.8%</div>
+        <div class="today-sub" style="color:var(--success);">前回比 +1.2%</div>
+      </div>
+    </div>
+
+    <!-- 👥 フォロワー前日比（IG・FB） -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:8px;">👥 フォロワー前日比</div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#e1306c;">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">1,284人　<span style="color:var(--success);font-weight:700;">+5人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#1877f2;">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">842人　<span style="color:var(--success);font-weight:700;">+1人</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📆 今月の投稿枠（テキスト） -->
+    <div style="display:grid;grid-template-columns:1fr;gap:6px;">
+      <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success);">残り2件</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">8 / 10件使用　連携SNS：IG・FB</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- ③ 直近投稿と24時間後の状況 -->
+  <div class="card">
+    <div class="card-title">📊 直近投稿と24時間後の状況</div>
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
+      <div style="padding:10px 10px 0 10px;">
+        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">6月25日（水）08:00投稿　138文字　📱IG・💻FB</div>
+        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。</p>
+        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('lite-p1-detail','lite-p1-btn')" id="lite-p1-btn">24時間後のデータを見る ▼</button>
+      </div>
+      <div id="lite-p1-detail" style="display:none;padding:10px;">
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram（24時間後　翌08:01取得）</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 8px;align-items:center;">
+            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="val-up">178 ↑</span><span class="val-up">34 ↑</span><span class="val-up">17.8% ↑</span>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook（24時間後　翌08:01取得）</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📤</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="val-up">72 ↑</span><span class="val-up">14 ↑</span><span class="val-up">11 ↑</span><span class="val-up">1.6K ↑</span><span class="val-up">7.2% ↑</span>
+          </div>
+        </div>
+        <p style="font-size:9px;color:var(--text-light);margin-top:8px;">↑上昇　→横ばい　↓下降　※ K=1,000</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 投稿カレンダー（24時間後データ） -->
+  <div class="card">
+    <div class="card-title">📅 投稿日別データ</div>
+    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます</p>
+    <div class="cal-grid">
+      <div class="cal-days">
+        <div class="cal-day-label">日</div><div class="cal-day-label">月</div><div class="cal-day-label">火</div>
+        <div class="cal-day-label">水</div><div class="cal-day-label">木</div><div class="cal-day-label">金</div><div class="cal-day-label">土</div>
+      </div>
+      <div class="cal-dates" id="cal-lite-unified"></div>
+    </div>
+    <div id="cal-lite-detail" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+      <div id="cal-lite-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
+      <div id="cal-lite-sns"></div>
+    </div>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+  </div>
+
+  <!-- ④ フォロワー推移（IG・FB） -->
+  <div class="card">
+    <div class="card-title">👥 フォロワー数の推移（SNS別）</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:#fff0f5;border-radius:8px;padding:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:700;color:#e1306c;">📱 Instagram</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text);">1,284人</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">前日比</div><div style="font-size:12px;font-weight:700;color:var(--success);">+5人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今週</div><div style="font-size:12px;font-weight:700;color:var(--success);">+14人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今月</div><div style="font-size:12px;font-weight:700;color:var(--success);">+48人</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:50%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:65%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:85%;"></div>
+          <div style="flex:1;background:#2e7d32;border-radius:2px 2px 0 0;height:100%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);"><span>6/19</span><span>6/20</span><span>6/21</span><span>6/22</span><span>6/23</span><span>6/24</span><span>6/25</span></div>
+      </div>
+      <div style="background:#e3f2fd;border-radius:8px;padding:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:700;color:#1877f2;">💻 Facebook</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text);">842人</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">前日比</div><div style="font-size:12px;font-weight:700;color:var(--success);">+1人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今週</div><div style="font-size:12px;font-weight:700;color:var(--success);">+8人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今月</div><div style="font-size:12px;font-weight:700;color:var(--success);">+32人</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:55%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:50%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:65%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#e65100;border-radius:2px 2px 0 0;height:100%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);"><span>6/19</span><span>6/20</span><span>6/21</span><span>6/22</span><span>6/23</span><span>6/24</span><span>6/25</span></div>
+      </div>
+    </div>
+    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜0時に更新されます</p>
+  </div>
+
+  <!-- ⑤ 人気投稿ランキング -->
+  <div class="card">
+    <div class="card-title">🏆 今月の人気投稿ランキング</div>
+    <div class="ranking-item">
+      <div class="rank-num gold">1</div>
+      <div style="flex:1;">
+        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月21日（水）19:02投稿</div>
+        <div class="rank-text">週末限定✨抹茶テリーヌが本日より登場です🍵濃厚な宇治抹茶の香りとなめらかな口当たりが絶品。</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️184　💬26　📊18.4%
+        </div>
+      </div>
+    </div>
+    <div class="ranking-item">
+      <div class="rank-num silver">2</div>
+      <div style="flex:1;">
+        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月19日（月）10:01投稿</div>
+        <div class="rank-text">本日のスペシャルティコーヒーはエチオピア・イルガチェフェ産☕️希少豆をハンドドリップでご提供。</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️158　💬24　📊15.8%<br>
+          <span style="color:#1877f2;font-weight:700;">FB</span> ❤️78　💬15　📤10　👁️1.2K　📊7.2%
+        </div>
+      </div>
+    </div>
+    <div class="ranking-item">
+      <div class="rank-num bronze">3</div>
+      <div style="flex:1;">
+        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月13日（土）12:01投稿</div>
+        <div class="rank-text">🌴週末限定ドリンク登場！南国フルーツたっぷりのトロピカルスムージー🥤3種からお選びいただけます。</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
+          <span style="color:#1877f2;font-weight:700;">FB</span> ❤️72　💬14　📤9　👁️982　📊6.2%
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 先週・先月のまとめ -->
+  <div class="card">
+    <div class="card-title">📅 先週・先月のまとめ</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button onclick="switchSummary('weekly',this)" style="flex:1;padding:6px;border:1px solid var(--primary);border-radius:8px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">先週</button>
+      <button onclick="switchSummary('monthly',this)" style="flex:1;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;">先月</button>
+    </div>
+
+    <!-- 先週のまとめ -->
+    <div id="summary-weekly">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div>
+          <div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 78　平均EG率 4.2%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">🧵 TH</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span>
+        </div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">
+        <div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div>
+      </div>
+    </div>
+
+    <!-- 先月のまとめ -->
+    <div id="summary-monthly" style="display:none;">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div>
+          <div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 482　平均EG率 5.2%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
+          <span style="font-size:10px;color:var(--text);">🧵 TH</span>
+          <span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span>
+        </div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">
+        <div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 次回おすすめカード（アドバイス統合） -->
+  <div class="card" style="border:2px solid var(--primary);">
+    <div class="card-title">🎯 次回の投稿おすすめ</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">✅</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Instagramのいいね・コメントが平均比+18%と好調です。引き続き同じ時間帯での投稿を続けましょう。</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">⚠️</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Facebookの反応が平均を下回っています。投稿時間帯の見直しを検討してみてください。</span>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥇</span>
+          <div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥈</span>
+          <div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥉</span>
+          <div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
+  </div>
+
+  </div><!-- /lite-content -->
+
+</div><!-- /tab-lite -->
+
+<!-- ===== STANDARD分析タブ ===== -->
+<div id="tab-standard" class="tab-panel">
+
+  <div id="plan-relation-standard" style="display:none;"></div>
+  <div id="standard-upgrade-guide" style="display:none;">
+    <div style="text-align:center;padding:20px 16px 12px;">
+      <div style="font-size:28px;margin-bottom:8px;">📊</div>
+      <div class="already-use-title" style="color:var(--primary);">STANDARDプランで利用できます</div>
+      <div class="plan-feature-list">
+        <div class="plan-feature-label">STANDARD分析に含まれる機能</div>
+        <div class="plan-feature-item"><span>📊</span><span>今日の状況（投稿数・反応の概況）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>直近投稿と24時間後の状況</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>投稿日別データ</span></div>
+        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移（SNS別）</span></div>
+        <div class="plan-feature-item"><span>🏆</span><span>今月の人気投稿ランキング</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>あなたの投稿平均との比較</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>先週・先月のまとめ</span></div>
+        <div class="plan-feature-item"><span>🎯</span><span>次回の投稿おすすめ</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>データ更新：投稿後24時間（毎日）</span></div>
+      </div>
+      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
+      <p class="plan-guide-price">STANDARDプラン ¥1,280/月</p>
+    </div>
+  </div>
+  <div id="standard-content">
+
+  <!-- ① 今日の状況 -->
+  <div class="card" style="border:2px solid var(--primary);">
+    <div class="card-title">📊 今日の状況</div>
+
+    <!-- 3項目グリッド -->
+    <div class="today-card" style="margin-bottom:10px;">
+      <div class="today-item">
+        <div class="today-label">今日の投稿数</div>
+        <div class="today-val">2<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">本日投稿済み</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">今月の投稿数</div>
+        <div class="today-val" style="color:var(--primary);">12<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">/20件</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">総合EG率</div>
+        <div class="today-val" style="color:#2e7d32;">8.4%</div>
+        <div class="today-sub" style="color:var(--success);">前回比 +0.8%</div>
+      </div>
+    </div>
+
+    <!-- 👥 フォロワー前日比（X・IG・FB） -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:8px;">👥 フォロワー前日比</div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#000;">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);">1,721人　<span style="color:var(--success);font-weight:700;">+3人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#e1306c;">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">1,284人　<span style="color:var(--success);font-weight:700;">+5人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#1877f2;">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">842人　<span style="color:var(--success);font-weight:700;">+1人</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📆 今月の投稿枠（テキスト） -->
+    <div style="display:grid;grid-template-columns:1fr;gap:6px;">
+      <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success);">残り8件</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">12 / 20件使用　連携SNS：X・IG・FB</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- ③ 直近投稿と24時間後の状況 -->
+  <div class="card">
+    <div class="card-title">📊 直近投稿と24時間後の状況</div>
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
+      <div style="padding:10px 10px 0 10px;">
+        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">6月25日（水）08:00投稿　138文字　🐦X・📱IG・💻FB</div>
+        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。</p>
+        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('std-p1-detail','std-p1-btn')" id="std-p1-btn">24時間後のデータを見る ▼</button>
+      </div>
+      <div id="std-p1-detail" style="display:none;padding:10px;">
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:6px;">🐦 X（24時間後　翌08:01取得）</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">🔁</div><div style="font-size:11px;font-weight:700;text-align:center;">↩️</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="val-up">124 ↑</span><span class="val-up">28 ↑</span><span class="val-up">18 ↑</span><span class="val-up">3.6K ↑</span><span class="val-up">14.8% ↑</span>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram（24時間後　翌08:01取得）</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 8px;align-items:center;">
+            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="val-up">178 ↑</span><span class="val-up">34 ↑</span><span class="val-up">17.8% ↑</span>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook（24時間後　翌08:01取得）</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+            <div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📤</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="val-up">72 ↑</span><span class="val-up">14 ↑</span><span class="val-up">11 ↑</span><span class="val-up">1.6K ↑</span><span class="val-up">7.2% ↑</span>
+          </div>
+        </div>
+        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+        <p style="font-size:9px;color:var(--text-light);margin-top:4px;">↑上昇　→横ばい　↓下降　※ K=1,000</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 投稿カレンダー（24時間後データ） -->
+  <div class="card">
+    <div class="card-title">📅 投稿日別データ</div>
+    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます</p>
+    <div class="cal-grid">
+      <div class="cal-days">
+        <div class="cal-day-label">日</div><div class="cal-day-label">月</div><div class="cal-day-label">火</div>
+        <div class="cal-day-label">水</div><div class="cal-day-label">木</div><div class="cal-day-label">金</div><div class="cal-day-label">土</div>
+      </div>
+      <div class="cal-dates" id="cal-std-unified"></div>
+    </div>
+    <div id="cal-std-detail" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+      <div id="cal-std-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
+      <div id="cal-std-sns"></div>
+    </div>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+  </div>
+
+  <!-- ④ フォロワー推移（X・IG・FB） -->
+  <div class="card">
+    <div class="card-title">👥 フォロワー数の推移（SNS別）</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:#fffde7;border-radius:8px;padding:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:700;color:#555555;">🐦 X</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text);">1,721人</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">前日比</div><div style="font-size:12px;font-weight:700;color:var(--success);">+3人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今週</div><div style="font-size:12px;font-weight:700;color:var(--success);">+12人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今月</div><div style="font-size:12px;font-weight:700;color:var(--success);">+44人</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:55%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:75%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:90%;"></div>
+          <div style="flex:1;background:#1565c0;border-radius:2px 2px 0 0;height:100%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);"><span>6/19</span><span>6/20</span><span>6/21</span><span>6/22</span><span>6/23</span><span>6/24</span><span>6/25</span></div>
+      </div>
+      <div style="background:#fff0f5;border-radius:8px;padding:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:700;color:#e1306c;">📱 Instagram</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text);">1,284人</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">前日比</div><div style="font-size:12px;font-weight:700;color:var(--success);">+5人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今週</div><div style="font-size:12px;font-weight:700;color:var(--success);">+14人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今月</div><div style="font-size:12px;font-weight:700;color:var(--success);">+48人</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:50%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:65%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:85%;"></div>
+          <div style="flex:1;background:#2e7d32;border-radius:2px 2px 0 0;height:100%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);"><span>6/19</span><span>6/20</span><span>6/21</span><span>6/22</span><span>6/23</span><span>6/24</span><span>6/25</span></div>
+      </div>
+      <div style="background:#e3f2fd;border-radius:8px;padding:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:700;color:#1877f2;">💻 Facebook</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text);">842人</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">前日比</div><div style="font-size:12px;font-weight:700;color:var(--success);">+1人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今週</div><div style="font-size:12px;font-weight:700;color:var(--success);">+8人</div></div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;"><div style="font-size:9px;color:var(--text-sub);">今月</div><div style="font-size:12px;font-weight:700;color:var(--success);">+32人</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:55%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:50%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:65%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#e65100;border-radius:2px 2px 0 0;height:100%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);"><span>6/19</span><span>6/20</span><span>6/21</span><span>6/22</span><span>6/23</span><span>6/24</span><span>6/25</span></div>
+      </div>
+    </div>
+    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜0時に更新されます</p>
+  </div>
+
+  <!-- ⑤ 人気投稿ランキング -->
+  <div class="card">
+    <div class="card-title">🏆 今月の人気投稿ランキング</div>
+    <div class="ranking-item">
+      <div class="rank-num gold">1</div>
+      <div style="flex:1;">
+        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月21日（水）19:02投稿</div>
+        <div class="rank-text">週末限定✨抹茶テリーヌが本日より登場です🍵濃厚な宇治抹茶の香りとなめらかな口当たりが絶品。</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️184　💬26　📊18.4%<br>
+          <span style="color:#555555;font-weight:700;">X</span> ❤️148　🔁42　📊22.4%
+        </div>
+      </div>
+    </div>
+    <div class="ranking-item">
+      <div class="rank-num silver">2</div>
+      <div style="flex:1;">
+        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月19日（月）10:01投稿</div>
+        <div class="rank-text">本日のスペシャルティコーヒーはエチオピア・イルガチェフェ産☕️希少豆をハンドドリップでご提供。</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️158　💬24　📊15.8%<br>
+          <span style="color:#1877f2;font-weight:700;">FB</span> ❤️78　💬15　📤10　👁️1.2K　📊7.2%
+        </div>
+      </div>
+    </div>
+    <div class="ranking-item">
+      <div class="rank-num bronze">3</div>
+      <div style="flex:1;">
+        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月13日（土）12:01投稿</div>
+        <div class="rank-text">🌴週末限定ドリンク登場！南国フルーツたっぷりのトロピカルスムージー🥤3種からお選びいただけます。</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️97　💬18　📊11.4%<br>
+          <span style="color:#1877f2;font-weight:700;">FB</span> ❤️72　💬14　📤9　👁️982　📊6.2%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ あなたの投稿平均との比較（24時間後のみ・STANDARD固有） -->
+  <div class="card">
+    <div class="card-title">📊 あなたの投稿平均との比較
+      <button class="acc-btn" onclick="toggleCompare('std-compare-detail','std-compare-btn')" id="std-compare-btn">詳細を見る ▼</button>
+    </div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">直近投稿（6月25日）の24時間後データと過去平均を比較しています</p>
+    <div id="std-compare-detail" style="display:none;margin-top:10px;">
+      <div style="margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:6px;">🐦 X（24時間後）</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div><div style="font-size:12px;font-weight:700;text-align:center;">🔁</div><div style="font-size:12px;font-weight:700;text-align:center;">↩️</div><div style="font-size:12px;font-weight:700;text-align:center;">👁️</div><div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">124 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 88</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">28 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 19</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 12</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">3.6K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 2.7K</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">14.8% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 11.2%</div></div>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
+      <div style="margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram（24時間後）</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 8px;align-items:center;">
+          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div><div style="font-size:12px;font-weight:700;text-align:center;">💬</div><div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">178 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 124</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">34 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 22</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">17.8% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 12.4%</div></div>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook（24時間後）</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div><div style="font-size:12px;font-weight:700;text-align:center;">💬</div><div style="font-size:12px;font-weight:700;text-align:center;">📤</div><div style="font-size:12px;font-weight:700;text-align:center;">👁️</div><div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">72 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 58</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">14 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 11</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">11 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 8</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">1.6K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 1.3K</div></div>
+          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">7.2% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 5.8%</div></div>
+        </div>
+      </div>
+      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 最大過去30投稿の24時間後データをもとに算出しています</p>
+      <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+    </div>
+  </div>
+
+
+  <!-- 先週・先月のまとめ -->
+  <div class="card">
+    <div class="card-title">📅 先週・先月のまとめ</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button onclick="switchSummary('weekly',this)" style="flex:1;padding:6px;border:1px solid var(--primary);border-radius:8px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">先週</button>
+      <button onclick="switchSummary('monthly',this)" style="flex:1;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;">先月</button>
+    </div>
+    <div id="summary-weekly-2">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🐦 X</span><span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">📱 IG</span><span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">💻 FB</span><span style="font-size:10px;color:var(--text);">いいね計 78　平均EG率 4.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🧵 TH</span><span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span></div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
+    </div>
+    <div id="summary-monthly-2" style="display:none;">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🐦 X</span><span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">📱 IG</span><span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">💻 FB</span><span style="font-size:10px;color:var(--text);">いいね計 482　平均EG率 5.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🧵 TH</span><span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span></div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
+    </div>
+  </div>
+
+
+  <!-- 次回おすすめカード（アドバイス統合） -->
+  <div class="card" style="border:2px solid var(--primary);">
+    <div class="card-title">🎯 次回の投稿おすすめ</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">✅</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xのいいね・リポストが平均比+24%と好調です。引き続き同じ時間帯での投稿を続けましょう。</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">⚠️</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Facebookの反応が平均を下回っています。投稿時間帯の見直しを検討してみてください。</span>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥇</span>
+          <div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥈</span>
+          <div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥉</span>
+          <div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
+  </div>
+
+  </div><!-- /standard-content -->
+
+</div><!-- /tab-standard -->
+
+<!-- ===== PRO分析タブ ===== -->
+<div id="tab-pro" class="tab-panel">
+
+  <div id="plan-relation-pro" style="display:none;"></div>
+
+  <!-- 未利用ユーザー向け案内 -->
+  <div id="pro-upgrade-guide" style="display:none;">
+    <div style="text-align:center;padding:20px 16px 12px;">
+      <div style="font-size:28px;margin-bottom:8px;">📈</div>
+      <div class="already-use-title" style="color:var(--primary);">PROプランで利用できます</div>
+      <div class="plan-feature-list">
+        <div class="plan-feature-label">PRO分析に含まれる機能</div>
+        <div class="plan-feature-item"><span>📊</span><span>今日の状況（投稿数・反応の概況）</span></div>
+        <div class="plan-feature-item"><span>⚡</span><span>投稿後の初速状況をリアルタイムで確認</span></div>
+        <div class="plan-feature-item"><span>📈</span><span>1時間・3時間・24時間の成長率表示</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>投稿日別データ</span></div>
+        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移・SNS別（毎日更新）</span></div>
+        <div class="plan-feature-item"><span>🏆</span><span>今月の人気投稿ランキング</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>あなたの投稿平均との比較</span></div>
+        <div class="plan-feature-item"><span>🏙️</span><span>同業種・同エリア平均との比較</span></div>
+        <div class="plan-feature-item"><span>❤️</span><span>いいね数・コメント数・インプレッション・EG率</span></div>
+        <div class="plan-feature-item"><span>😊</span><span>コメントの感情分析</span></div>
+        <div class="plan-feature-item"><span>⚠️</span><span>ネガティブコメント検知</span></div>
+        <div class="plan-feature-item"><span>⏰</span><span>おすすめの投稿時間帯</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>先週・先月のまとめ</span></div>
+        <div class="plan-feature-item"><span>🎯</span><span>次回の投稿おすすめ</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>データ更新：投稿後1時間・3時間・24時間（毎日）</span></div>
+      </div>
+      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
+      <p class="plan-guide-price">PROプラン ¥1,980/月</p>
+    </div>
+  </div>
+
+  <div id="pro-content">
+
+  <!-- ===== 上部：今どうなっているか ===== -->
+
+  <!-- ① 今日の状況 -->
+  <div class="card" style="border:2px solid var(--primary);">
+    <div class="card-title">📊 今日の状況</div>
+
+    <!-- グループ①：今日のパフォーマンス -->
+    <div class="today-card" style="margin-bottom:10px;">
+      <div class="today-item">
+        <div class="today-label">今日の投稿数</div>
+        <div class="today-val">2<span style="font-size:10px;">件</span></div>
+        <div class="today-sub">本日投稿済み</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">初速スコア順位</div>
+        <div class="today-val" style="color:var(--primary);">4<span style="font-size:10px;">位</span></div>
+        <div class="today-sub">過去30投稿中・上位13%</div>
+      </div>
+      <div class="today-item">
+        <div class="today-label">総合初速スコア</div>
+        <div class="today-val" style="color:#2e7d32;">87<span style="font-size:10px;">点</span></div>
+        <div class="today-sub" style="color:var(--success);">前回比 +9点</div>
+      </div>
+    </div>
+    <!-- 内訳 -->
+    <div style="background:var(--bg);border-radius:8px;padding:6px 10px;margin-bottom:10px;">
+      <div style="font-size:9px;color:var(--text-sub);margin-bottom:6px;">SNS別初速スコア（投稿割合による重み付け）</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;">
+        <div style="text-align:center;padding:5px 4px;background:var(--surface);border-radius:6px;">
+          <div style="font-size:9px;color:var(--text-sub);">X　33%</div>
+          <div style="font-size:13px;font-weight:700;color:#1565c0;">94点</div>
+        </div>
+        <div style="text-align:center;padding:5px 4px;background:var(--surface);border-radius:6px;">
+          <div style="font-size:9px;color:var(--text-sub);">IG　50%</div>
+          <div style="font-size:13px;font-weight:700;color:#2e7d32;">88点</div>
+        </div>
+        <div style="text-align:center;padding:5px 4px;background:var(--surface);border-radius:6px;">
+          <div style="font-size:9px;color:var(--text-sub);">FB　10%</div>
+          <div style="font-size:13px;font-weight:700;color:#fb8c00;">62点</div>
+        </div>
+        <div style="text-align:center;padding:5px 4px;background:var(--surface);border-radius:6px;">
+          <div style="font-size:9px;color:var(--text-sub);">TH　7%</div>
+          <div style="font-size:13px;font-weight:700;color:#2e7d32;">78点</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⚡ 直近投稿の1時間後の反応 -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;">⚡ 直近投稿の1時間後の反応</div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;padding:4px 6px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#000;width:40px;flex-shrink:0;">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);flex:1;white-space:nowrap;">❤️42　🔁8　↩️5　👁️1.1K　📊5.2%</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:4px 6px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#e1306c;width:40px;flex-shrink:0;">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);flex:1;white-space:nowrap;">❤️58　💬9　📊5.8%</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:4px 6px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#1877f2;width:40px;flex-shrink:0;">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);flex:1;white-space:nowrap;">❤️22　💬4　📤3　👁️512　📊2.2%</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:4px 6px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#555;width:40px;flex-shrink:0;">🧵 TH</span>
+          <span style="font-size:10px;color:var(--text);flex:1;white-space:nowrap;">❤️18　🔁3　↩️4　👁️284　📊3.8%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 👥 フォロワー前日比（簡易テキスト） -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:8px;">👥 フォロワー前日比</div>
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#000;">🐦 X</span>
+          <span style="font-size:10px;color:var(--text);">1,721人　<span style="color:var(--success);font-weight:700;">+3人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#e1306c;">📱 IG</span>
+          <span style="font-size:10px;color:var(--text);">1,284人　<span style="color:var(--success);font-weight:700;">+5人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#1877f2;">💻 FB</span>
+          <span style="font-size:10px;color:var(--text);">842人　<span style="color:var(--success);font-weight:700;">+1人</span></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface);border-radius:6px;">
+          <span style="font-size:10px;font-weight:700;color:#555;">🧵 TH</span>
+          <span style="font-size:10px;color:var(--text);">201人　<span style="color:var(--success);font-weight:700;">+2人</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 😊 コメント感情分析（グラフ） -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;">😊 コメント感情分析（今月 128件）</div>
+      <div class="sentiment-bar" style="height:11px;margin:5px 0;">
+        <div class="sent-pos" style="width:72%;"></div>
+        <div class="sent-neu" style="width:21%;"></div>
+        <div class="sent-neg" style="width:7%;"></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:5px;">
+        <div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--success);display:inline-block;"></span>ポジティブ 72%（92件）</div>
+        <div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#e0e0e0;border:1px solid #ccc;display:inline-block;"></span>中立 21%（27件）</div>
+        <div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--danger);display:inline-block;"></span>ネガティブ 7%（9件）</div>
+      </div>
+    </div>
+
+    <!-- 📈データ蓄積率・📆今月の投稿枠（簡易テキスト2列） -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📈 データ蓄積率</div>
+        <div style="font-size:14px;font-weight:700;color:#2e7d32;">73%</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">22 / 30投稿</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
+        <div style="font-size:14px;font-weight:700;color:var(--success);">残り18件</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">22 / 40件使用</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 直近投稿の初速状況（最新1投稿のみ） -->
+  <div class="card">
+    <div class="card-title">⚡ 直近投稿の初速状況</div>
+
+    <!-- 投稿① X・IG・FB・TH 同時投稿 -->
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+      <div style="padding:10px 10px 0 10px;">
+        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;">6月25日（水）08:00投稿　138文字　🐦X・📱IG・💻FB・🧵TH</div>
+        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;">📝 本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。ご予約は不要ですのでお気軽にお越しください😊 #渋谷モーニング #朝活カフェ #特別イベント</p>
+        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('p1-detail','p1-btn')" id="p1-btn">詳細を見る ▼</button>
+      </div>
+      <div id="p1-detail" style="display:none;padding:10px;">
+
+        <!-- X -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:6px;">🐦 X</div>
+          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">🔁</div><div style="font-size:11px;font-weight:700;text-align:center;">↩️</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">42</span><span style="font-size:11px;font-weight:700;text-align:center;">8</span><span style="font-size:11px;font-weight:700;text-align:center;">5</span><span style="font-size:11px;font-weight:700;text-align:center;">1.1K</span><span style="font-size:11px;font-weight:700;text-align:center;">5.2%</span>
+            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">88</span><span style="font-size:11px;font-weight:700;text-align:center;">18</span><span style="font-size:11px;font-weight:700;text-align:center;">12</span><span style="font-size:11px;font-weight:700;text-align:center;">2.4K</span><span style="font-size:11px;font-weight:700;text-align:center;">10.8%</span>
+            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
+            <span class="val-up">124 ↑</span><span class="val-up">28 ↑</span><span class="val-up">18 ↑</span><span class="val-up">3.6K ↑</span><span class="val-up">14.8% ↑</span>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
+
+        <!-- Instagram -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram</div>
+          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:4px 8px;align-items:center;">
+            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">58</span><span style="font-size:11px;font-weight:700;text-align:center;">9</span><span style="font-size:11px;font-weight:700;text-align:center;">5.8%</span>
+            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">124</span><span style="font-size:11px;font-weight:700;text-align:center;">22</span><span style="font-size:11px;font-weight:700;text-align:center;">12.4%</span>
+            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
+            <span class="val-up">178 ↑</span><span class="val-up">34 ↑</span><span class="val-up">17.8% ↑</span>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
+
+        <!-- Facebook -->
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook</div>
+          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">💬</div><div style="font-size:11px;font-weight:700;text-align:center;">📤</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">22</span><span style="font-size:11px;font-weight:700;text-align:center;">4</span><span style="font-size:11px;font-weight:700;text-align:center;">3</span><span style="font-size:11px;font-weight:700;text-align:center;">512</span><span style="font-size:11px;font-weight:700;text-align:center;">2.2%</span>
+            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">48</span><span style="font-size:11px;font-weight:700;text-align:center;">9</span><span style="font-size:11px;font-weight:700;text-align:center;">7</span><span style="font-size:11px;font-weight:700;text-align:center;">1.1K</span><span style="font-size:11px;font-weight:700;text-align:center;">4.8%</span>
+            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
+            <span class="val-up">72 ↑</span><span class="val-up">14 ↑</span><span class="val-up">11 ↑</span><span class="val-up">1.6K ↑</span><span class="val-up">7.2% ↑</span>
+          </div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">
+
+        <!-- Threads -->
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:6px;">🧵 Threads</div>
+          <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+            <div></div><div style="font-size:11px;font-weight:700;text-align:center;">❤️</div><div style="font-size:11px;font-weight:700;text-align:center;">🔁</div><div style="font-size:11px;font-weight:700;text-align:center;">↩️</div><div style="font-size:11px;font-weight:700;text-align:center;">👁️</div><div style="font-size:11px;font-weight:700;text-align:center;">📊</div>
+            <span class="growth-time">1時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">09:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">18</span><span style="font-size:11px;font-weight:700;text-align:center;">3</span><span style="font-size:11px;font-weight:700;text-align:center;">4</span><span style="font-size:11px;font-weight:700;text-align:center;">284</span><span style="font-size:11px;font-weight:700;text-align:center;">3.8%</span>
+            <span class="growth-time">3時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">11:01取得</span></span>
+            <span style="font-size:11px;font-weight:700;text-align:center;">42</span><span style="font-size:11px;font-weight:700;text-align:center;">8</span><span style="font-size:11px;font-weight:700;text-align:center;">10</span><span style="font-size:11px;font-weight:700;text-align:center;">612</span><span style="font-size:11px;font-weight:700;text-align:center;">8.2%</span>
+            <span class="growth-time">24時間後<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">翌08:01取得</span></span>
+            <span class="val-up">64 ↑</span><span class="val-up">14 ↑</span><span class="val-up">16 ↑</span><span class="val-up">924 ↑</span><span class="val-up">12.4% ↑</span>
+          </div>
+        </div>
+        <div class="action-box" style="margin-top:8px;"><div class="action-text">🔵 24時間が経過しました。次の投稿準備を始めましょう</div></div>
+        <p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ K = 1,000（例：1.2K = 1,200回）</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- あなたの投稿平均との比較 -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="card-title" style="margin-bottom:0;">📊 あなたの投稿平均との比較</div>
+      <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;" onclick="toggleSNSDetail('compare-detail')">▶ 詳細を見る</span>
+    </div>
+    <div id="compare-detail" style="display:none;margin-top:10px;">
+    <!-- X -->
+    <div style="margin-bottom:4px;">
+      <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:6px;">🐦 X</div>
+      <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+        <div></div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">🔁</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">↩️</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">👁️</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">1時間後</div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">1.8K</div><div style="font-size:10px;color:var(--text-sub);">平均 1.2K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">1.2K</div><div style="font-size:10px;color:var(--text-sub);">平均 1.0K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">1.0K</div><div style="font-size:10px;color:var(--text-sub);">平均 856</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">1.2K</div><div style="font-size:10px;color:var(--text-sub);">平均 1.0K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8%</div><div style="font-size:10px;color:var(--text-sub);">平均 8.4%</div></div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">3時間後</div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">3.5K</div><div style="font-size:10px;color:var(--text-sub);">平均 2.8K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">2.8K</div><div style="font-size:10px;color:var(--text-sub);">平均 2.2K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">2.4K</div><div style="font-size:10px;color:var(--text-sub);">平均 1.9K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">3.6K</div><div style="font-size:10px;color:var(--text-sub);">平均 2.9K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18.2%</div><div style="font-size:10px;color:var(--text-sub);">平均 15.6%</div></div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;">24時間後</div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">8.4K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 7.5K</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">6.4K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 5.6K</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">5.6K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 4.8K</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.2K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 8.1K</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">24.6% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 21.3%</div></div>
+      </div>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
+
+    <!-- Instagram -->
+    <div style="margin-bottom:4px;">
+      <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">📱 Instagram</div>
+      <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:4px 8px;align-items:center;">
+        <div></div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">💬</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">1時間後</div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">142</div><div style="font-size:10px;color:var(--text-sub);">平均 128</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">124</div><div style="font-size:10px;color:var(--text-sub);">平均 108</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8%</div><div style="font-size:10px;color:var(--text-sub);">平均 8.4%</div></div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">3時間後</div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">356</div><div style="font-size:10px;color:var(--text-sub);">平均 312</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">287</div><div style="font-size:10px;color:var(--text-sub);">平均 243</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18.2%</div><div style="font-size:10px;color:var(--text-sub);">平均 15.6%</div></div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;">24時間後</div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">847 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 756</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">512 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 468</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">24.6% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 21.3%</div></div>
+      </div>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
+
+    <!-- Facebook -->
+    <div style="margin-bottom:4px;">
+      <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:6px;">💻 Facebook</div>
+      <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+        <div></div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">💬</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">📤</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">👁️</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">1時間後</div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">142</div><div style="font-size:10px;color:var(--text-sub);">平均 128</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">124</div><div style="font-size:10px;color:var(--text-sub);">平均 108</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">113</div><div style="font-size:10px;color:var(--text-sub);">平均 98</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">3.2K</div><div style="font-size:10px;color:var(--text-sub);">平均 2.8K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8%</div><div style="font-size:10px;color:var(--text-sub);">平均 8.4%</div></div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">3時間後</div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">356</div><div style="font-size:10px;color:var(--text-sub);">平均 312</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">287</div><div style="font-size:10px;color:var(--text-sub);">平均 243</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">245</div><div style="font-size:10px;color:var(--text-sub);">平均 218</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">6.4K</div><div style="font-size:10px;color:var(--text-sub);">平均 5.8K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18.2%</div><div style="font-size:10px;color:var(--text-sub);">平均 15.6%</div></div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;">24時間後</div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">847 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 756</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">512 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 468</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">432 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 387</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 8.6K</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">24.6% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 21.3%</div></div>
+      </div>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
+
+    <!-- Threads -->
+    <div style="margin-bottom:4px;">
+      <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:6px;">🧵 Threads</div>
+      <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
+        <div></div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">🔁</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">↩️</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">👁️</div>
+        <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">1時間後</div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">142</div><div style="font-size:10px;color:var(--text-sub);">平均 128</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">124</div><div style="font-size:10px;color:var(--text-sub);">平均 108</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">113</div><div style="font-size:10px;color:var(--text-sub);">平均 98</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">3.2K</div><div style="font-size:10px;color:var(--text-sub);">平均 2.8K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8%</div><div style="font-size:10px;color:var(--text-sub);">平均 8.4%</div></div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">3時間後</div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">356</div><div style="font-size:10px;color:var(--text-sub);">平均 312</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">287</div><div style="font-size:10px;color:var(--text-sub);">平均 243</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">245</div><div style="font-size:10px;color:var(--text-sub);">平均 218</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">6.4K</div><div style="font-size:10px;color:var(--text-sub);">平均 5.8K</div></div>
+        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18.2%</div><div style="font-size:10px;color:var(--text-sub);">平均 15.6%</div></div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;">24時間後</div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">847 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 756</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">512 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 468</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">432 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 387</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 8.6K</div></div>
+        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">24.6% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 21.3%</div></div>
+      </div>
+    </div>
+
+    <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 平均は過去30投稿の同時間帯データをもとに算出しています</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ データが30投稿以上蓄積された時点から表示されます</p>
+    </div>
+  </div>
+
+  <!-- 投稿日別データ -->
+  <div class="card">
+    <div class="card-title">📅 投稿日別データ</div>
+    <p class="hint">💡 投稿のある日付をタップすると詳細を確認できます</p>
+    <div class="cal-grid">
+      <div class="cal-days">
+        <div class="cal-day-label">日</div><div class="cal-day-label">月</div><div class="cal-day-label">火</div>
+        <div class="cal-day-label">水</div><div class="cal-day-label">木</div><div class="cal-day-label">金</div><div class="cal-day-label">土</div>
+      </div>
+      <div class="cal-dates" id="cal-unified"></div>
+    </div>
+
+    <!-- 日付タップ後の詳細表示 -->
+    <div id="cal-unified-detail" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">
+      <div id="cal-unified-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
+      <div id="cal-unified-sns"></div>
+    </div>
+  </div>
+
+  <!-- フォロワー推移 -->
+  <div class="card">
+    <div class="card-title">👥 フォロワー数の推移（SNS別）</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <!-- X -->
+      <div style="background:#fffde7;border-radius:8px;padding:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:700;color:#555555;">🐦 X</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text);">1,721人</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">前日比</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+3人</div>
+          </div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">今週</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+12人</div>
+          </div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">今月</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+44人</div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">週間推移（直近7日）</div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:55%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:75%;"></div>
+          <div style="flex:1;background:#bbdefb;border-radius:2px 2px 0 0;height:90%;"></div>
+          <div style="flex:1;background:#1565c0;border-radius:2px 2px 0 0;height:100%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);">
+          <span>6/11</span><span>6/12</span><span>6/13</span><span>6/14</span><span>6/15</span><span>6/16</span><span>6/17</span>
+        </div>
+      </div>
+
+      <!-- Instagram -->
+      <div style="background:#fff0f5;border-radius:8px;padding:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:700;color:#e1306c;">📱 Instagram</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text);">1,284人</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">前日比</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+5人</div>
+          </div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">今週</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+14人</div>
+          </div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">今月</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+48人</div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">週間推移（直近7日）</div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:50%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:65%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#a5d6a7;border-radius:2px 2px 0 0;height:85%;"></div>
+          <div style="flex:1;background:#2e7d32;border-radius:2px 2px 0 0;height:100%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);">
+          <span>6/11</span><span>6/12</span><span>6/13</span><span>6/14</span><span>6/15</span><span>6/16</span><span>6/17</span>
+        </div>
+      </div>
+
+      <!-- Facebook -->
+      <div style="background:#e3f2fd;border-radius:8px;padding:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:700;color:#1877f2;">💻 Facebook</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text);">842人</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">前日比</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+1人</div>
+          </div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">今週</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+8人</div>
+          </div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">今月</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+32人</div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">週間推移（直近7日）</div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:55%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:50%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:65%;"></div>
+          <div style="flex:1;background:#fb8c00;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#e65100;border-radius:2px 2px 0 0;height:100%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);">
+          <span>6/11</span><span>6/12</span><span>6/13</span><span>6/14</span><span>6/15</span><span>6/16</span><span>6/17</span>
+        </div>
+      </div>
+
+      <!-- Threads -->
+      <div style="background:#e8f5e9;border-radius:8px;padding:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:700;color:#555555;">🧵 Threads</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text);">201人</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:8px;">
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">前日比</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+2人</div>
+          </div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">今週</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+5人</div>
+          </div>
+          <div style="background:var(--bg);border-radius:6px;padding:4px 8px;flex:1;text-align:center;">
+            <div style="font-size:9px;color:var(--text-sub);">今月</div>
+            <div style="font-size:12px;font-weight:700;color:var(--success);">+12人</div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">週間推移（直近7日）</div>
+        <div style="display:flex;align-items:flex-end;gap:2px;height:32px;margin-bottom:2px;">
+          <div style="flex:1;background:#f48fb1;border-radius:2px 2px 0 0;height:45%;"></div>
+          <div style="flex:1;background:#f48fb1;border-radius:2px 2px 0 0;height:55%;"></div>
+          <div style="flex:1;background:#f48fb1;border-radius:2px 2px 0 0;height:60%;"></div>
+          <div style="flex:1;background:#f48fb1;border-radius:2px 2px 0 0;height:65%;"></div>
+          <div style="flex:1;background:#f48fb1;border-radius:2px 2px 0 0;height:70%;"></div>
+          <div style="flex:1;background:#f48fb1;border-radius:2px 2px 0 0;height:80%;"></div>
+          <div style="flex:1;background:#c62828;border-radius:2px 2px 0 0;height:100%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-light);">
+          <span>6/11</span><span>6/12</span><span>6/13</span><span>6/14</span><span>6/15</span><span>6/16</span><span>6/17</span>
+        </div>
+      </div>
+
+    </div>
+    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜0時に更新されます</p>
+  </div>
+
+  <!-- 人気投稿ランキング -->
+  <div class="card">
+    <div class="card-title">🏆 今月の人気投稿ランキング</div>
+    <div class="ranking-item">
+      <div class="rank-num gold">1</div>
+      <div style="flex:1;">
+        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月21日（水）19:02投稿</div>
+        <div class="rank-text">週末限定✨抹茶テリーヌが本日より登場です🍵濃厚な宇治抹茶の香りとなめらかな口当たりが絶品。</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️184　💬26　📊18.4%<br><span style="color:#555555;font-weight:700;">X</span> ❤️148　🔁42　📊22.4%
+        </div>
+      </div>
+    </div>
+    <div class="ranking-item">
+      <div class="rank-num silver">2</div>
+      <div style="flex:1;">
+        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月19日（月）10:01投稿</div>
+        <div class="rank-text">本日のスペシャルティコーヒーはエチオピア・イルガチェフェ産☕️希少豆をハンドドリップでご提供。</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️158　💬24　📊15.8%<br><span style="color:#1877f2;font-weight:700;">FB</span> ❤️78　💬15　📤10　👁️1.2K
+        </div>
+      </div>
+    </div>
+    <div class="ranking-item">
+      <div class="rank-num bronze">3</div>
+      <div style="flex:1;">
+        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月13日（土）12:01投稿</div>
+        <div class="rank-text">🌴週末限定ドリンク登場！南国フルーツたっぷりのトロピカルスムージー🥤3種からお選びいただけます。</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
+          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️97　💬18　📊11.4%<br><span style="color:#1877f2;font-weight:700;">FB</span> ❤️72　💬14　📤9　👁️982
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 同業種・同エリア比較 -->
+  <div class="card">
+    <div class="card-title">🏙️ 同業種・同エリア平均との比較</div>
+    <p style="font-size:10px;color:var(--text-sub);margin-bottom:10px;">同業種・同エリアの店舗平均値との比較です（匿名集計）</p>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <!-- EG率 -->
+      <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:700;color:var(--text);">📊 EG率</span>
+          <span style="font-size:10px;color:var(--success);font-weight:700;">上位 12%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">
+            <div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>
+            <div style="font-size:13px;font-weight:700;color:#1b5e20;">7.2%</div>
+          </div>
+          <div style="background:white;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
+            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">業界平均</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-sub);">5.8%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- フォロワー総数 -->
+      <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:700;color:var(--text);">👥 フォロワー総数</span>
+          <span style="font-size:10px;color:var(--success);font-weight:700;">上位 18%</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">
+            <div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>
+            <div style="font-size:13px;font-weight:700;color:#1b5e20;">3,847人</div>
+          </div>
+          <div style="background:white;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
+            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">業界平均</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-sub);">2,340人</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 月間投稿数 -->
+      <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:700;color:var(--text);">📅 月間投稿数</span>
+          <span style="font-size:10px;color:var(--success);font-weight:700;">平均より多い</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">
+            <div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>
+            <div style="font-size:13px;font-weight:700;color:#1b5e20;">22件</div>
+          </div>
+          <div style="background:white;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
+            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">業界平均</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-sub);">18件</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 同業種・同エリアの利用ユーザー5件以上のデータを匿名で集計しています</p>
+  </div>
+
+  <!-- ネガティブコメント検知 -->
+  <div class="card">
+    <div class="card-title">⚠️ ネガティブコメント検知</div>
+    <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の大切なヒントです。早めに気づいて対応することで、お客様との信頼関係を深めるチャンスに変えましょう。</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);margin-bottom:8px;">
+      <span style="font-size:22px;">⚠️</span>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#b71c1c;">今月 15件 検知</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:2px;">直近：6月25日に10件・6月13日に3件・6月11日に2件</div>
+      </div>
+    </div>
+    <button style="width:100%;text-align:center;padding:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--primary);font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;" onclick="toggleCompare('neg-detail','neg-btn')" id="neg-btn">詳細を見る ▼</button>
+    <div id="neg-detail" style="display:none;margin-top:10px;">
+      <div style="font-size:11px;font-weight:700;color:#b71c1c;margin-bottom:8px;">■ 6月25日（10件）</div>
+      <div id="neg-comment-25"></div>
+      <div style="font-size:11px;font-weight:700;color:#b71c1c;margin:10px 0 8px;">■ 6月13日（3件）</div>
+      <div id="neg-comment-13"></div>
+      <div style="font-size:11px;font-weight:700;color:#b71c1c;margin:10px 0 8px;">■ 6月11日（2件）</div>
+      <div id="neg-comment-11"></div>
+    </div>
+  </div>
+
+
+
+  <!-- 先週・先月のまとめ -->
+  <div class="card">
+    <div class="card-title">📅 先週・先月のまとめ</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button onclick="switchSummary('weekly',this)" style="flex:1;padding:6px;border:1px solid var(--primary);border-radius:8px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;cursor:pointer;">先週</button>
+      <button onclick="switchSummary('monthly',this)" style="flex:1;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;">先月</button>
+    </div>
+    <div id="summary-weekly-3">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🐦 X</span><span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">📱 IG</span><span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">💻 FB</span><span style="font-size:10px;color:var(--text);">いいね計 78　平均EG率 4.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🧵 TH</span><span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span></div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
+    </div>
+    <div id="summary-monthly-3" style="display:none;">
+      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🐦 X</span><span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">📱 IG</span><span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">💻 FB</span><span style="font-size:10px;color:var(--text);">いいね計 482　平均EG率 5.2%</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">🧵 TH</span><span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span></div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
+    </div>
+  </div>
+
+
+  <!-- 次回おすすめカード（アドバイス統合） -->
+  <div class="card" style="border:2px solid var(--primary);">
+    <div class="card-title">🎯 次回の投稿おすすめ</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">✅</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xのいいね・リポストが平均比+32%と好調です。08:00の投稿時間帯が効果的だった可能性があります。</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
+        <span style="font-size:13px;flex-shrink:0;">⚠️</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.6;">Threadsの反応が平均を下回っています。投稿時間帯の見直しを検討してみてください。</span>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥇</span>
+          <div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥈</span>
+          <div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:18px;">🥉</span>
+          <div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
+  </div>
+
+  </div><!-- /pro-content -->
+
+</div><!-- /tab-pro -->
+
+<!-- ===== ガイドタブ ===== -->
+<div id="tab-guide" class="tab-panel">
+
+  <!-- 導入 -->
+  <div class="card">
+    <div class="card-title" style="font-size:14px;">📖 分析ガイド</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">分析機能は「結果を見るため」だけにあるのではありません。<strong>次の投稿をより良くするための機能</strong>です。「どんな投稿が反応されるのか」「どの時間帯が最適なのか」「何を改善すればよいのか」を知ることで、継続的に成果を高めていくことを目的としています。</div>
+  </div>
+
+  <!-- ① SNS投稿後の反応時間について -->
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-1')">① SNS投稿後の反応時間について<span class="accordion-arrow" id="arr-acc-1">▶</span></div>
+    <div class="accordion-body" id="acc-1">
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">多くのSNSでは、投稿直後のユーザーの反応がその後の表示機会に影響すると考えられています。投稿後の短い時間帯に反応が集まるほど、フォロワー以外のより多くのユーザーに投稿が表示されやすくなる傾向があります。</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="background:#fffde7;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:3px;">🐦 X</div>
+        <div style="font-size:11px;color:#555555;line-height:1.7;">投稿後30分〜1時間以内（リポスト・リプライが広がりに影響すると考えられています）</div>
+      </div>
+      <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
+        <div style="font-size:11px;color:#e1306c;line-height:1.7;">投稿後1〜2時間以内（保存・シェアが拡散に影響すると考えられています）</div>
+      </div>
+      <div style="background:#e3f2fd;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#1877f2;margin-bottom:3px;">💻 Facebook</div>
+        <div style="font-size:11px;color:#1877f2;line-height:1.7;">投稿後2〜6時間以内（シェアが拡散に影響すると考えられています）</div>
+      </div>
+      <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:3px;">🧵 Threads</div>
+        <div style="font-size:11px;color:#555555;line-height:1.7;">投稿後1〜3時間以内（返信・リポストが露出に影響すると考えられています）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 段階的なデータ取得について -->
+    </div>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-2')">② 段階的なデータ取得について<span class="accordion-arrow" id="arr-acc-2">▶</span></div>
+    <div class="accordion-body" id="acc-2">
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿直後・数時間後・24時間後の反応を比較することで、あなたの投稿が「今どのくらい伸びているか」を把握できます。</div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px;">
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">💎 PROプラン</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;">投稿後<strong>1時間・3時間・24時間</strong>の3つのタイミングでデータを自動取得します。この3段階のデータが揃うことで投稿の成長の流れを数値で確認できます。</div>
+    </div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔍 LITE・📊 STANDARDプラン</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;">投稿後<strong>24時間後</strong>に1回取得します。</div>
+    </div>
+  </div>
+
+  <!-- ③ 初速スコアについて -->
+    </div>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-3')">③ 初速スコアについて<span class="accordion-arrow" id="arr-acc-3">▶</span></div>
+    <div class="accordion-body" id="acc-3">
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">AiPostでは投稿直後の反応の強さを「初速スコア」として表示します。初速スコアはあなた自身の過去投稿との比較結果を100点満点で表したAiPost独自の指標です。<strong>数値が高いほど、過去の投稿よりも順調な反応が得られていることを示します。</strong></div>
+
+    <!-- 4段階判定 -->
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">スコアの判定基準</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#1565c0;">🔵 90〜100点</span><span style="font-size:11px;color:var(--text);">最高！</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#2e7d32;">🟢 70〜89点</span><span style="font-size:11px;color:var(--text);">好調</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#fb8c00;">🟡 50〜69点</span><span style="font-size:11px;color:var(--text);">平均的</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#e53935;">🔴 49点以下</span><span style="font-size:11px;color:var(--text);">伸び悩み</span></div>
+      </div>
+    </div>
+
+    <!-- 計算式 -->
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">📐 スコアの算出方法</div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">① 各指標を正規化（0〜100点）</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">今回の数値 ÷ 過去30投稿のトリム平均 × 100<br>※100点を超えた場合はすべて100点に丸める</div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">② トリム平均（バズ投稿対策）</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">過去30投稿のうち上位2件・下位2件を除いた26件の平均を使用。一度だけ極端に伸びた投稿や極端に低い投稿の影響を排除し、安定したスコアを算出します。</div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">③ SNSごとの重要指標と重み</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:6px;font-size:10px;color:var(--text);line-height:1.8;">
+        <div>🐦 X：いいね30% ／ リポスト30% ／ リプライ15% ／ インプレッション10% ／ EG率15%</div>
+        <div>📱 Instagram：いいね40% ／ コメント30% ／ EG率30%</div>
+        <div>💻 Facebook：いいね30% ／ コメント25% ／ シェア25% ／ リーチ10% ／ EG率10%</div>
+        <div>🧵 Threads：いいね30% ／ リポスト30% ／ 返信20% ／ インプレッション10% ／ EG率10%</div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">④ 時間重みによる最終スコア</div>
+      <div style="background:white;border-radius:6px;padding:8px;font-size:11px;color:var(--text);line-height:1.9;">
+        最終スコア ＝<br>
+        　（1時間スコア × <strong>50%</strong>）<br>
+        ＋（3時間スコア × <strong>30%</strong>）<br>
+        ＋（24時間スコア × <strong>20%</strong>）
+      </div>
+      <div style="font-size:10px;color:var(--text-sub);margin-top:4px;">「初速」を重視しつつ、その後の伸びも評価します。</div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-top:10px;margin-bottom:4px;">⑤ 総合初速スコアの算出方法</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">複数SNSを利用している場合、各SNSの初速スコアを投稿割合で重み付けして合算します。単純平均ではなく、よく使うSNSほど重みが大きくなります。</div>
+      <div style="background:white;border-radius:6px;padding:8px;font-size:10px;color:var(--text);line-height:1.9;margin-bottom:6px;">
+        総合初速スコア ＝<br>
+        　（IG初速 × IG投稿割合）<br>
+        ＋（X初速 × X投稿割合）<br>
+        ＋（FB初速 × FB投稿割合）<br>
+        ＋（TH初速 × TH投稿割合）
+      </div>
+      <div style="background:var(--bg);border-radius:6px;padding:8px;font-size:10px;color:var(--text);line-height:1.9;">
+        <div style="font-weight:700;margin-bottom:4px;">計算例</div>
+        過去30投稿：IG15件・X10件・FB3件・TH2件の場合<br>
+        重み → IG:50% / X:33% / FB:10% / TH:7%<br><br>
+        IG88点×0.50 ＋ X94点×0.33 ＋ FB62点×0.10 ＋ TH78点×0.07<br>
+        ＝ <strong style="color:var(--primary);">87点</strong>
+      </div>
+      <div style="font-size:10px;color:var(--text-sub);margin-top:4px;">※ 利用していないSNSは計算対象外。残りのSNSで割合を再計算します。</div>
+    </div>
+
+    <!-- 注記 -->
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;">
+      <div style="font-size:10px;color:#e65100;line-height:1.7;">※初速スコアは各SNSの公式評価を示すものではなく、AiPost独自の分析指標です。SNS各社のアルゴリズムを再現・保証するものではありません。分析結果は投稿づくりや運用改善の参考情報としてご利用ください。</div>
+    </div>
+  </div>
+
+  <!-- ④ データ蓄積と分析精度について -->
+    </div>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-4')">④ データ蓄積と分析精度について<span class="accordion-arrow" id="arr-acc-4">▶</span></div>
+    <div class="accordion-body" id="acc-4">
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">初速スコアはあなた自身の過去30投稿の平均データとの比較で算出されます。直近の投稿傾向を反映しやすくするため、比較対象は最新30投稿を基準としています。投稿数が増えるほど・継続期間が長いほど比較データが充実し、スコアの精度が高まります。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">AiPostはデータを蓄積するほど、あなた専用の分析に近づいていきます。投稿データが蓄積されることで、あなたが反応を得やすい曜日・時間帯などをより高い精度で分析できるようになります。</div>
+    <div style="background:linear-gradient(135deg,#1a237e,#283593);border-radius:10px;padding:12px;">
+      <div style="font-size:11px;color:rgba(255,255,255,0.9);line-height:1.8;">利用開始直後は比較データが少ないため、初速スコアは参考値として表示されます。<strong style="color:#fff9c4;">投稿数が増えるほど比較データが充実し、より精度の高い初速スコアと分析結果を提供できるようになります。</strong>PROプランを継続することが、より正確な分析への近道です。</div>
+    </div>
+  </div>
+
+  <!-- ⑤ 分析画面の見方 -->
+    </div>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-5')">⑤ 分析画面の見方<span class="accordion-arrow" id="arr-acc-5">▶</span></div>
+    <div class="accordion-body" id="acc-5">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔍 LITE分析</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">今日の状況・直近投稿の24時間後データ・投稿カレンダー・フォロワー推移（連携SNS）・人気投稿ランキング・先週・先月のまとめ・次回おすすめを確認できます。データは投稿後24時間後に1回取得されます。</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">📊 STANDARD分析</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">LITEの全機能に加え、あなたの投稿平均との比較（24時間後）を確認できます。データは投稿後24時間後に1回取得されます。</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">💎 PRO分析</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">STANDARDの全機能に加え、直近投稿の初速状況（1h・3h・24h）・あなたの投稿平均との比較（1h・3h・24h）・感情分析・同業種・同エリア平均との比較・ネガティブコメント検知が利用できます。データは投稿後1時間・3時間・24時間の3回取得されます。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ アイコンの意味 -->
+    </div>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-6')">⑥ アイコンの意味<span class="accordion-arrow" id="arr-acc-6">▶</span></div>
+    <div class="accordion-body" id="acc-6">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">❤️</span><span style="font-size:11px;color:var(--text);line-height:1.6;">いいね数　投稿に「いいね」した人の数</span></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">💬</span><span style="font-size:11px;color:var(--text);line-height:1.6;">コメント数　投稿についたコメントの数</span></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">🔁</span><span style="font-size:11px;color:var(--text);line-height:1.6;">リポスト数　投稿を拡散（リポスト）した数（X・TH）</span></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">📤</span><span style="font-size:11px;color:var(--text);line-height:1.6;">シェア数　投稿をシェアした数（FB）</span></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">↩️</span><span style="font-size:11px;color:var(--text);line-height:1.6;">リプライ数　投稿への返信数（X・TH）</span></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">🗨️</span><span style="font-size:11px;color:var(--text);line-height:1.6;">引用数　コメント付きでリポストした数（TH）</span></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">👁️</span><span style="font-size:11px;color:var(--text);line-height:1.6;">インプレッション　投稿が画面に表示された延べ回数（同じ人が複数回見た場合もカウント）</span></div>
+      <div style="display:flex;align-items:flex-start;gap:12px;"><span style="font-size:18px;flex-shrink:0;width:28px;text-align:center;">📊</span><span style="font-size:11px;color:var(--text);line-height:1.6;">EG率　SNSごとの主要な反応をもとに算出するAiPost独自のエンゲージメント率</span></div>
+    </div>
+  </div>
+
+  <!-- ⑦ SNSごとの取得データと重要指標 -->
+    </div>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-7')">⑦ SNSごとの取得データと重要指標<span class="accordion-arrow" id="arr-acc-7">▶</span></div>
+    <div class="accordion-body" id="acc-7">
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">各SNSはそれぞれ独自のAPI（データ取得の仕組み）を持っており、公開している指標の種類が異なります。また技術的な制約により取得できない指標もあります。さらにSNSによってユーザーの行動特性が異なるため、投稿の拡散に影響する重要な指標も変わります。</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="background:#fffde7;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#555555;margin-bottom:4px;">🐦 X</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　🔁リポスト　↩️リプライ　👁️インプレッション　📊EG率</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：リポスト数（拡散力の核心。投稿後30分〜1時間のリポストの勢いがアルゴリズムの評価を左右すると考えられています）</div>
+      </div>
+      <div style="background:#fff0f5;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#e1306c;margin-bottom:4px;">📱 Instagram</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　💬コメント　📊EG率</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;"><strong>特に重要：</strong>コメント数（エンゲージメントの深さを示す）</div>
+        <div style="font-size:10px;color:var(--text-sub);line-height:1.7;">※ インプレッションはAPIの仕様上48時間の遅延があるため初速画面では非表示。保存数・シェア数はAPIで取得できません。</div>
+      </div>
+      <div style="background:#e3f2fd;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#1877f2;margin-bottom:4px;">💻 Facebook</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　💬コメント　📤シェア　👍リアクション　👁️インプレッション　📊EG率</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：シェア数（友人への拡散が集客に直結するFacebookの特性上、最も重要な指標）</div>
+      </div>
+      <div style="background:#e8f5e9;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#555555;margin-bottom:4px;">🧵 Threads</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　🔁リポスト　↩️返信　🗨️引用　👁️インプレッション　📊EG率</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：返信数・引用数（会話を重視するThreadsの特性上、返信や引用が露出増加に影響すると考えられています）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑧ 用語の説明 -->
+    </div>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-8')">⑧ 用語の説明<span class="accordion-arrow" id="arr-acc-8">▶</span></div>
+    <div class="accordion-body" id="acc-8">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="border-bottom:1px solid var(--border);padding-bottom:8px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px;">EG率（エンゲージメント率）</div>
+        <div style="font-size:11px;color:var(--text-sub);line-height:1.7;">SNSごとの主要な反応をもとに算出するAiPost独自のエンゲージメント率です。AiPostでは、あなた自身の過去投稿との比較も参考にしながら、投稿への反応の強さを確認できます。</div>
+      </div>
+      <div style="border-bottom:1px solid var(--border);padding-bottom:8px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px;">インプレッション</div>
+        <div style="font-size:11px;color:var(--text-sub);line-height:1.7;">投稿が画面に表示された延べ回数です。同じ人が複数回見た場合もその回数分カウントされます。リーチ（到達した人数）とは異なります。</div>
+      </div>
+      <div style="border-bottom:1px solid var(--border);padding-bottom:8px;">
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px;">初速（しょそく）</div>
+        <div style="font-size:11px;color:var(--text-sub);line-height:1.7;">投稿直後（1〜3時間以内）の反応の勢いのことです。多くのSNSでは、投稿直後の反応は表示機会に影響する要素の一つと考えられています。</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px;">成長率</div>
+        <div style="font-size:11px;color:var(--text-sub);line-height:1.7;">1時間後・3時間後・24時間後のデータの増加数を示します。例えば1時間後に28件→3時間後に75件であれば+47件の成長です。増加が大きいほど投稿が拡散されていることを意味します。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑨ データの活用方法 -->
+    </div>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-9')">⑨ データの活用方法<span class="accordion-arrow" id="arr-acc-9">▶</span></div>
+    <div class="accordion-body" id="acc-9">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#43a047;margin-bottom:4px;">🟢 初速が好調だった場合</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">投稿時間帯・内容・ハッシュタグなどが効果的だった可能性があります。同じパターンを次の投稿でも活用しましょう。「おすすめの投稿時間帯」と組み合わせると効果的です。</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#e53935;margin-bottom:4px;">🔴 初速が伸び悩んだ場合</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">投稿時間帯・内容・ハッシュタグの見直しを検討してください。「おすすめの投稿時間帯」を参考にフォロワーが最もアクティブな時間帯に投稿することで改善につながる可能性があります。</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">📊 EG率の活用</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">EG率が高い投稿は「あなたの投稿平均との比較」画面で確認できます。何が好まれているかを分析し、人気投稿ランキングと合わせてコンテンツの方向性を決める参考にしましょう。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AiPost分析の特徴 -->
+    </div>
+  <!-- ⑩ 同業種・同エリア平均との比較（PROプラン限定） -->
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-competitor')">⑩ 同業種・同エリア平均との比較<span class="accordion-arrow" id="arr-acc-competitor">▶</span></div>
+    <div class="accordion-body" id="acc-competitor">
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">同業種・同エリアの他の店舗のEG率・フォロワー数・月間投稿数を匿名で集計し、あなたの数値と比較して表示します。</div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:6px;">📊 表示される比較内容</div>
+      <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--text);line-height:1.8;">
+        <div>・平均EG率：あなたのEG率 vs 同業種平均</div>
+        <div>・フォロワー総数：あなたのフォロワー vs 同業種平均</div>
+        <div>・月間投稿数：あなたの投稿数 vs 同業種平均</div>
+        <div>・上位○%表示：あなたが同業種の中で何%の位置にいるか</div>
+      </div>
+    </div>
+    <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔒 プライバシーについて</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">比較データは完全に匿名で集計されています。個人・店舗を特定できる情報は一切含まれません。PROプランに加入した時点で自動的にデータ提供に参加となります。</div>
+    </div>
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;">
+      <div style="font-size:10px;color:#e65100;line-height:1.7;">※ 同業種・同エリアのPROプラン利用者が5店舗以上集まると比較データが表示されます。5店舗未満の場合は「データ収集中」と表示されます。</div>
+    </div>
+    </div>
+  </div>
+
+  <!-- ⑪ ネガティブコメントは、お店を成長させる最も貴重なヒントです -->
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-neg')">⑪ ネガティブコメントへの向き合い方<span class="accordion-arrow" id="arr-acc-neg">▶</span></div>
+    <div class="accordion-body" id="acc-neg">
+    <div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.8;margin-bottom:10px;">ネガティブコメントは、お店を成長させる最も貴重なヒントです。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">ネガティブなコメントは、決して悪い評価ばかりではありません。それは、お客様が実際に感じた不満や改善点を教えてくれる、とても貴重な声です。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">しかし、忙しい毎日の中で、すべてのコメントを確認し続けるのは簡単ではありません。気付くのが遅れると、同じ不満を持つお客様が増えたり、お店の信頼に影響したりする可能性があります。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AiPostは、AIがネガティブなコメントを自動で検知し、できるだけ早くお知らせします。早期に気付き、誠実に対応することで、お客様との信頼関係を深め、サービス品質の向上にもつながります。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:12px;">高評価のコメントは励みになりますが、お店をさらに成長させてくれるのは、改善点を教えてくれるお客様の声です。その貴重な一件を見逃さず、お店の成長につなげることができるのが、AiPost PROプランの大きな特長です。</div>
+    <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:10px;">
+      <div style="font-size:11px;font-weight:700;color:#1b5e20;margin-bottom:4px;">⭐ PROプランなら</div>
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">AIが全SNSのネガティブコメントを自動検知し、LINEでいち早くお知らせします。忙しい店舗運営の中でも、お客様の声を見逃しません。小さな不満が大きなトラブルになる前に対応でき、サービス改善のヒントを経営に活かせます。</div>
+    </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-10')">AiPost分析の特徴<span class="accordion-arrow" id="arr-acc-10">▶</span></div>
+    <div class="accordion-body" id="acc-10">
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">多くのSNS分析では、投稿結果の確認が中心です。AiPostでは投稿の伸び方や次回の改善につながる分析まで行います。単なる結果ではなく、<strong>次の投稿を成功させるための分析</strong>を提供することがAiPost最大の特徴です。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">分析は「評価」ではなく「改善」のためにあります。数字の良し悪しだけを見るのではなく、「どんな投稿が反応されやすいか」を知り、次の投稿に活かすことがSNS運用成功への近道です。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">SNSのアルゴリズムやユーザーの行動は日々変化しています。AiPostは、継続的なデータの蓄積と分析を通じて、あなた専用のSNS運用パートナーとして、より効果的な投稿づくりをサポートします。</div>
+  </div>
+
+  <!-- このような方におすすめ -->
+    </div>
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-11')">このような方におすすめ<span class="accordion-arrow" id="arr-acc-11">▶</span></div>
+    <div class="accordion-body" id="acc-11">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>SNSを始めたばかりの方</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>何を改善すればいいか分からない方</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>投稿の反応をもっと増やしたい方</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;"><span style="color:var(--success);font-weight:700;">✓</span>数字だけでなく改善方法も知りたい方</div>
+    </div>
+    <button class="plan-guide-btn" onclick="navigateTo('plan')" style="margin-top:12px;">プラン・料金を見る</button>
+  </div>
+
+    </div>
+</div><!-- /tab-guide -->
+
+
+</div><!-- /content -->
+
+<nav class="bottom-nav">
+  <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">投稿文作成</span></button>
+  <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">予約確認</span></button>
+  <button class="nav-item active"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
+  <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
+  <button class="nav-item" onclick="navigateTo('support')"><span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span></button>
+  <button class="nav-item" onclick="navigateTo('plan')"><span class="nav-icon">💎</span><span class="nav-label">プラン</span></button>
+</nav>
+
+<script>
+const LIFF_URLS = {
+  textgen:'https://liff.line.me/2010401177-OpvemMmh',
+  reservation:'https://liff.line.me/2010401177-dM8eNjUM',
+  analytics:'https://liff.line.me/2010401177-qKtfKWP0',
+  settings:'https://liff.line.me/2010401177-XJw2kDQV',
+  about:'https://liff.line.me/2010401177-PtX79ibV',
+  plan:'https://liff.line.me/2010401177-IstPDnls',
+  support:'https://liff.line.me/2010401177-vwzTH30h',
+};
+function navigateTo(page) { if(LIFF_URLS[page]) window.location.replace(LIFF_URLS[page]); }
+
+// ===== プラン・SNS連携状況の表示 =====
+// ★liff_analytics_html12：デモ用プラン切替ボタンを廃止し、実際の
+// 　契約プラン・SNS連携状況を表示するよう変更（他画面と統一）。
+// 　連携中表示は、プランごとの固定リストではなく、実際に連携している
+// 　SNSのみを表示するようにした（Facebookの残存表示も削除）。
+const ANALYTICS_PLAN_INFO = {
+  FREE:     { price: '¥0/月' },
+  PERSONAL: { price: '¥300/月' },
+  LITE:     { price: '¥680/月' },
+  STANDARD: { price: '¥1,280/月' },
+  PRO:      { price: '¥1,980/月' },
+};
+let currentSnsCache = null;
+
+// 実際のSNS連携状況（X→Instagram→Threadsの順）でサブバーの
+// 「連携中：」表示を組み立てる。未連携のSNSは表示しない。
+function renderSubbarSnsTags() {
+  const sns = currentSnsCache;
+  ['x', 'ig', 'th'].forEach(function (key) {
+    const backendKey = key === 'x' ? 'x' : (key === 'ig' ? 'instagram' : 'threads');
+    const el = document.getElementById('subbar-sns-' + key);
+    if (el) el.style.display = (sns && sns[backendKey]) ? '' : 'none';
+  });
+}
+
+function applyPlan(plan) {
+  currentActualPlan = plan;
+  document.getElementById('plan-badge').textContent = plan;
+  document.getElementById('plan-price').textContent = ANALYTICS_PLAN_INFO[plan].price;
+  renderSubbarSnsTags();
+
+  // FREE・PERSONALでもLITE/STANDARD/PROタブは開ける（各タブでアップグレード案内を表示するため）
+  document.getElementById('analytics-tab-nav').style.display = 'flex';
+  switchTab('lite');
+}
+
+// 契約プランと、各タブ（LITE/STANDARD/PRO）の関係を表すバナー・表示切替
+let currentActualPlan = 'LITE';
+const ANALYTICS_TIER = { FREE: 0, PERSONAL: 0, LITE: 1, STANDARD: 2, PRO: 3 };
+
+// タブ1つ分の表示状態を切り替える共通処理
+// tabKey: 'lite'|'standard'|'pro'、requiredTier: そのタブが要求するプランのティア
+function applyTabLockState(tabKey, requiredTier, planLabel) {
+  const actualTier = ANALYTICS_TIER[currentActualPlan];
+  const banner = document.getElementById('plan-relation-' + tabKey);
+  const guide = document.getElementById(tabKey + '-upgrade-guide');
+  const content = document.getElementById(tabKey + '-content');
+
+  if (actualTier === requiredTier) {
+    // ちょうど契約中のプラン：実データを表示
+    banner.style.display = 'block';
+    banner.innerHTML = bannerHtml('ok', '✓ 現在ご利用中のプランです');
+    guide.style.display = 'none';
+    content.style.display = 'block';
+  } else if (actualTier > requiredTier) {
+    // 契約プランの方が上位：既に含まれているので実データは見せない（機能一覧は見せる）
+    banner.style.display = 'block';
+    banner.innerHTML = includedBlockHtml(tabKey);
+    guide.style.display = 'none';
+    content.style.display = 'none';
+  } else {
+    // 契約プランの方が下位：アップグレード案内（機能一覧）を表示
+    banner.style.display = 'none';
+    guide.style.display = 'block';
+    content.style.display = 'none';
+  }
+}
+
+function updatePlanRelationBanners() {
+  applyTabLockState('lite', ANALYTICS_TIER.LITE);
+  applyTabLockState('standard', ANALYTICS_TIER.STANDARD);
+  applyTabLockState('pro', ANALYTICS_TIER.PRO);
+}
+
+function bannerHtml(type, text) {
+  const style = type === 'ok'
+    ? 'background:#e8f5e9;color:#2e7d32;'
+    : 'background:#fff3e0;color:#e65100;';
+  return `<div style="${style}border-radius:8px;padding:8px 10px;font-size:11px;font-weight:700;margin-bottom:10px;">${text}</div>`;
+}
+
+// 「契約プランに既に含まれている」場合の、機能一覧ブロックと同じ見た目・大きさの表示
+// （該当タブのアップグレード案内が持つ機能一覧をそのまま再利用する）
+function includedBlockHtml(tabKey) {
+  const guide = document.getElementById(tabKey + '-upgrade-guide');
+  const featureList = guide ? guide.querySelector('.plan-feature-list') : null;
+  const listHtml = featureList ? featureList.outerHTML : '';
+  return `<div style="text-align:center;padding:20px 16px 12px;">
+    <div style="font-size:28px;margin-bottom:8px;">✅</div>
+    <div class="already-use-title" style="color:var(--success);">現在のプランに全て含まれています</div>
+    ${listHtml}
+  </div>`;
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  ['lite','standard','pro','guide'].forEach((t,i)=>{
+    document.querySelectorAll('.tab-btn')[i].classList.toggle('active', t===id);
+  });
+
+  // プランバッジ・価格・連携SNSは「契約プラン（currentActualPlan）」基準で表示する。
+  // タブはあくまで各プランの内容を見比べるプレビューのため、タブ切替では変更しない。
+  const planInfo = {
+    LITE:     { badge:'LITE',     price:'¥680/月' },
+    STANDARD: { badge:'STANDARD', price:'¥1,280/月' },
+    PRO:      { badge:'PRO',      price:'¥1,980/月' },
+  };
+  const info = planInfo[currentActualPlan];
+  if (info) {
+    const badge = document.getElementById('plan-badge');
+    const price = document.getElementById('plan-price');
+    if (badge) badge.textContent = info.badge;
+    if (price) price.textContent = info.price;
+    renderSubbarSnsTags();
+  }
+
+  // 見ているタブと契約プランの関係バナーを更新
+  updatePlanRelationBanners();
+
+  // カレンダー選択状態リセット
+  document.querySelectorAll('.cal-day.selected').forEach(el => el.classList.remove('selected'));
+  ['cal-lite-detail','cal-std-detail','cal-unified-detail'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function togglePostPreview(id) {
+  const el  = document.getElementById('post-' + id);
+  const btn = document.getElementById('btn-' + id + '-read');
+  if (!el) return;
+  const expanded = el.classList.toggle('expanded');
+  if (btn) btn.textContent = expanded ? '▲ 閉じる' : '…続きを読む';
+}
+
+function togglePost(id) {
+  const short = document.getElementById('post-' + id + '-short');
+  const full  = document.getElementById('post-' + id + '-full');
+  if (!short || !full) return;
+  const isShown = full.style.display !== 'none';
+  short.style.display = isShown ? 'block' : 'none';
+  full.style.display  = isShown ? 'none'  : 'block';
+}
+
+function toggleSNSDetail(id) {
+  const el  = document.getElementById(id);
+  const btn = el ? el.previousElementSibling.querySelector('span') : null;
+  if (!el) return;
+  const isOpen = el.style.display !== 'none';
+  el.style.display = isOpen ? 'none' : 'block';
+  if (btn) btn.textContent = isOpen ? '▶ 詳細を見る' : '▼ 閉じる';
+}
+
+function toggleAcc(id) {
+  const body = document.getElementById(id);
+  const arr = document.getElementById('arr-' + id);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  if (arr) arr.style.transform = isOpen ? '' : 'rotate(90deg)';
+}
+
+// ===== カレンダー共通関数 =====
+const FIRST_DAY = 1;
+const DAYS = 30;
+const TODAY = 17;
+
+function buildCal(gridId, data, badgeColor, onClickFn) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.innerHTML = '';
+  for (let i = 0; i < FIRST_DAY; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'cal-date other-month';
+    blank.textContent = 31;
+    grid.appendChild(blank);
+  }
+  for (let d = 1; d <= DAYS; d++) {
+    const el = document.createElement('div');
+    const dow = (FIRST_DAY + d - 1) % 7;
+    let cls = 'cal-date';
+    if (dow === 0) cls += ' sunday';
+    if (dow === 6) cls += ' saturday';
+    if (d === TODAY) cls += ' today';
+    const val = data[d];
+    if (val !== undefined) {
+      cls += ' has-post';
+      el.innerHTML = `<span>${d}</span><span class="cal-post-count" style="background:${badgeColor};">${val}</span>`;
+      el.onclick = () => {
+        // 同一カレンダー内の選択状態をリセット
+        grid.querySelectorAll('.cal-date.selected').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+        onClickFn(d, val);
+      };
+    } else {
+      el.textContent = d;
+    }
+    el.className = cls;
+    grid.appendChild(el);
+  }
+}
+
+// ===== 統合カレンダー用デモデータ =====
+const unifiedBadge = {1:1, 3:1, 5:1, 7:1, 9:2, 11:1, 13:1, 15:1, 17:1, 19:1, 21:1, 23:1, 25:10};
+
+const unifiedData = {
+  1:[{
+    time:'09:01',
+    text:'週末限定✨抹茶テリーヌが本日より登場です🍵濃厚な宇治抹茶の香りとなめらかな口当たりが絶品。地元農家から直送した厳選抹茶を使用した自慢の一品です。数量限定のため、お早めにどうぞ！ご来店お待ちしております😊 #渋谷カフェ #週末限定 #抹茶テリーヌ',
+    sns:{
+      Instagram:{t1:'10:01',t3:'12:01',t24:'翌09:01', h1:{likes:14,comments:2,eg:'1.8%'}, h3:{likes:38,comments:6,eg:'4.8%'}, h24:{likes:52,comments:9,eg:'7.6%'}},
+      Facebook: {t1:'10:01',t3:'12:01',t24:'翌09:01', h1:{likes:8,comments:1,shares:1,imprs:142,eg:'0.9%'}, h3:{likes:19,comments:3,shares:2,imprs:312,eg:'2.1%'}, h24:{likes:31,comments:5,shares:4,imprs:512,eg:'3.8%'}},
+      X:        {t1:'10:01',t3:'12:01',t24:'翌09:01', h1:{likes:18,reposts:4,replies:2,imprs:284,eg:'3.2%'}, h3:{likes:42,reposts:11,replies:6,imprs:612,eg:'7.4%'}, h24:{likes:59,reposts:18,replies:9,imprs:924,eg:'10.8%'}},
+    }
+  }],
+  3:[{
+    time:'12:02',
+    text:'本日のスペシャルティコーヒーはエチオピア・イルガチェフェ産☕️フルーティで華やかな香りが特徴の希少豆を丁寧にハンドドリップでご提供します。数量限定・売り切れ次第終了ですのでお早めに！ #スペシャルティコーヒー #渋谷 #ハンドドリップ',
+    sns:{
+      Instagram:{h1:{likes:22,comments:3,eg:'2.4%'}, h3:{likes:51,comments:8,eg:'5.8%'}, h24:{likes:76,comments:12,eg:'8.6%'}},
+      Facebook: {h1:{likes:12,comments:2,shares:1,imprs:198,eg:'1.1%'}, h3:{likes:28,comments:5,shares:3,imprs:412,eg:'2.6%'}, h24:{likes:42,comments:8,shares:6,imprs:624,eg:'4.2%'}},
+    }
+  }],
+  5:[{
+    time:'18:01',
+    text:'🌿夏季限定メニューがスタートしました！冷たくさわやかなフルーツティーと、見た目も華やかなサマーパフェが登場。暑い季節にぴったりの涼しいひとときをお届けします🍧お席のご予約はDMでどうぞ #渋谷カフェ #夏限定 #サマーパフェ',
+    sns:{
+      X:        {h1:{likes:28,reposts:6,replies:3,imprs:412,eg:'4.8%'}, h3:{likes:58,reposts:14,replies:8,imprs:824,eg:'9.2%'}, h24:{likes:84,reposts:22,replies:12,imprs:'1.2K',eg:'12.4%'}},
+      Threads:  {h1:{likes:14,reposts:2,replies:3,imprs:198,eg:'2.8%'}, h3:{likes:32,reposts:5,replies:7,imprs:412,eg:'6.4%'}, h24:{likes:48,reposts:9,replies:12,imprs:612,eg:'9.8%'}},
+    }
+  }],
+  7:[{
+    time:'12:03',
+    text:'🍽️新しいランチセットが始まりました！旬の野菜をたっぷり使ったプレートランチ、スープ・ドリンク付きで980円（税込）。月〜金曜日の11:30〜14:00限定です。近くにお越しの際はぜひお立ち寄りください😊 #渋谷ランチ #日替わりランチ #野菜たっぷり',
+    sns:{
+      Instagram:{h1:{likes:24,comments:3,eg:'2.6%'}, h3:{likes:54,comments:9,eg:'6.2%'}, h24:{likes:82,comments:14,eg:'9.8%'}},
+      X:        {h1:{likes:22,reposts:5,replies:2,imprs:328,eg:'3.8%'}, h3:{likes:48,reposts:12,replies:5,imprs:712,eg:'8.4%'}, h24:{likes:72,reposts:19,replies:8,imprs:'1.1K',eg:'12.2%'}},
+    }
+  }],
+  9:[
+    {time:'11:00',
+    text:'今週のおすすめスイーツをご紹介します🍵✨抹茶の濃厚な香りとなめらかな口当たりが絶品の「抹茶テリーヌ」が週末限定で登場！地元産の厳選抹茶を使用した特別な一品です。数量限定のため、お早めにどうぞ。ご来店お待ちしております😊 #渋谷カフェ #週末限定 #抹茶スイーツ',
+    sns:{
+      Instagram:{t1:'12:02',t3:'14:02',t24:'翌11:02', h1:{likes:28,comments:4,eg:'2.1%'}, h3:{likes:75,comments:11,eg:'5.7%'}, h24:{likes:126,comments:18,eg:'9.8%'}},
+      Facebook: {t1:'12:02',t3:'14:02',t24:'翌11:02', h1:{likes:12,comments:2,shares:1,imprs:320,eg:'1.0%'}, h3:{likes:31,comments:6,shares:3,imprs:712,eg:'2.8%'}, h24:{likes:58,comments:12,shares:8,imprs:'1.2K',eg:'5.4%'}},
+      X:        {t1:'12:02',t3:'14:02',t24:'翌11:02', h1:{likes:42,reposts:8,replies:3,imprs:'1.2K',eg:'4.4%'}, h3:{likes:98,reposts:22,replies:9,imprs:'2.8K',eg:'10.8%'}, h24:{likes:142,reposts:40,replies:18,imprs:'4.2K',eg:'14.2%'}},
+    }},
+    {time:'18:02',
+    text:'🌙本日のディナー情報をお届けします！シェフ特製のパスタ2種類が本日限りの特別価格で登場🍝トマトクリームと明太子クリームの2種。どちらも自家製麺を使った自慢の一品です。ぜひこの機会にお試しください #渋谷ディナー #パスタ #今夜のご飯',
+    sns:{
+      X:        {h1:{likes:18,reposts:3,replies:2,imprs:282,eg:'2.8%'}, h3:{likes:38,reposts:8,replies:4,imprs:584,eg:'6.2%'}, h24:{likes:58,reposts:14,replies:7,imprs:842,eg:'9.4%'}},
+      Threads:  {h1:{likes:8,reposts:1,replies:2,imprs:112,eg:'1.8%'}, h3:{likes:18,reposts:3,replies:5,imprs:248,eg:'4.2%'}, h24:{likes:28,reposts:6,replies:8,imprs:384,eg:'6.8%'}},
+    }},
+  ],
+  11:[{
+    time:'09:02',
+    text:'☀️おはようございます！本日のモーニングセットは、自家製パンとスープ・サラダ・ドリンクが付いた豪華プレートを680円でご提供します。朝8時から10時30分まで。テレワークにも最適な静かな空間でゆっくりとお過ごしください🥐 #渋谷モーニング #朝活 #テレワーク',
+    sns:{
+      Instagram:{h1:{likes:38,comments:6,eg:'3.8%'}, h3:{likes:68,comments:14,eg:'7.2%'}, h24:{likes:88,comments:18,eg:'9.8%'}},
+      Facebook: {h1:{likes:18,comments:3,shares:2,imprs:312,eg:'1.6%'}, h3:{likes:38,comments:8,shares:4,imprs:624,eg:'3.4%'}, h24:{likes:58,comments:12,shares:7,imprs:928,eg:'5.2%'}},
+    }
+  }],
+  13:[{
+    time:'12:01',
+    text:'🌴週末限定ドリンクが本日より登場しました！南国フルーツをたっぷり使ったトロピカルスムージーは飲んだ瞬間に夏の気分を満喫できる爽やかな一杯です🥤パイナップル・マンゴー・ライチの3種からお選びいただけます。数量限定です #渋谷カフェ #トロピカル #夏ドリンク',
+    sns:{
+      Instagram:{h1:{likes:32,comments:5,eg:'3.2%'}, h3:{likes:68,comments:12,eg:'7.2%'}, h24:{likes:97,comments:18,eg:'11.4%'}},
+      Facebook: {h1:{likes:22,comments:3,shares:2,imprs:412,eg:'1.8%'}, h3:{likes:48,comments:8,shares:5,imprs:'1.1K',eg:'3.8%'}, h24:{likes:72,comments:14,shares:9,imprs:'1.6K',eg:'6.2%'}},
+    }
+  }],
+  15:[{
+    time:'18:01',
+    text:'🍹今週末もたくさんのご来店ありがとうございました！週末限定のスペシャルカクテルは大変ご好評をいただきました。来週末も新しいフレーバーをご用意する予定です。楽しみにしていてください✨また来週もお待ちしております #渋谷バー #週末限定 #カクテル',
+    sns:{
+      X:        {h1:{likes:32,reposts:7,replies:4,imprs:484,eg:'5.2%'}, h3:{likes:68,reposts:16,replies:9,imprs:984,eg:'10.8%'}, h24:{likes:98,reposts:24,replies:14,imprs:'1.4K',eg:'14.2%'}},
+      Threads:  {h1:{likes:12,reposts:2,replies:3,imprs:168,eg:'2.4%'}, h3:{likes:28,reposts:5,replies:7,imprs:354,eg:'5.8%'}, h24:{likes:42,reposts:9,replies:11,imprs:524,eg:'8.6%'}},
+    }
+  }],
+  17:[{
+    time:'13:02',
+    text:'📸本日のおすすめランチプレートをご紹介！季節の野菜をふんだんに使ったカラフルなプレートは見た目も楽しく栄養満点。スープ・ドリンクつきで1,200円（税込）です。窓際の明るい席でゆっくりランチをお楽しみください😊 #渋谷ランチ #野菜ランチ #ヘルシー',
+    sns:{
+      Instagram:{h1:{likes:42,comments:6,eg:'4.2%'}, h3:{likes:88,comments:14,eg:'8.8%'}, h24:{likes:124,comments:22,eg:'12.4%'}},
+      Facebook: {h1:{likes:18,comments:2,shares:2,imprs:348,eg:'1.6%'}, h3:{likes:42,comments:7,shares:5,imprs:724,eg:'3.8%'}, h24:{likes:64,comments:12,shares:8,imprs:'1.1K',eg:'5.8%'}},
+      X:        {h1:{likes:38,reposts:8,replies:4,imprs:'1.1K',eg:'5.8%'}, h3:{likes:84,reposts:18,replies:9,imprs:'2.4K',eg:'12.4%'}, h24:{likes:118,reposts:28,replies:14,imprs:'3.6K',eg:'16.8%'}},
+    }
+  }],
+  19:[{
+    time:'10:01',
+    text:'🌸本日より新メニューが登場します！桃とマスカルポーネチーズのタルトは季節限定の特別スイーツ🍑なめらかなチーズクリームと甘い桃の組み合わせが絶品です。ご予約なしでお越しいただけますが数量に限りがございます。お早めにどうぞ #渋谷スイーツ #タルト #季節限定',
+    sns:{
+      Instagram:{h1:{likes:54,comments:8,eg:'5.4%'}, h3:{likes:112,comments:18,eg:'11.2%'}, h24:{likes:158,comments:26,eg:'15.8%'}},
+      Facebook: {h1:{likes:24,comments:4,shares:3,imprs:428,eg:'2.2%'}, h3:{likes:52,comments:9,shares:6,imprs:884,eg:'4.8%'}, h24:{likes:78,comments:15,shares:10,imprs:'1.3K',eg:'7.2%'}},
+    }
+  }],
+  21:[{
+    time:'19:02',
+    text:'🎸本日は月に一度のライブイベントを開催しました！地元アーティストの素敵な演奏とともに、特製カクテルを楽しんでいただける素晴らしい夜でした🍹ご来場いただいた皆さまありがとうございました。次回は来月第3水曜日を予定しています #渋谷ライブ #音楽カフェ #ジャズ',
+    sns:{
+      Instagram:{h1:{likes:62,comments:12,eg:'6.2%'}, h3:{likes:128,comments:24,eg:'12.8%'}, h24:{likes:184,comments:36,eg:'18.4%'}},
+      X:        {h1:{likes:48,reposts:12,replies:8,imprs:'1.4K',eg:'8.2%'}, h3:{likes:102,reposts:28,replies:18,imprs:'3.2K',eg:'16.8%'}, h24:{likes:148,reposts:42,replies:26,imprs:'4.8K',eg:'22.4%'}},
+      Threads:  {h1:{likes:22,reposts:4,replies:6,imprs:312,eg:'4.4%'}, h3:{likes:48,reposts:10,replies:14,imprs:684,eg:'9.8%'}, h24:{likes:72,reposts:16,replies:22,imprs:'1.0K',eg:'14.8%'}},
+    }
+  }],
+  23:[{
+    time:'11:30',
+    text:'☕️今月のコーヒー豆セレクションをご紹介します！今月はコロンビア・ナリーニョ産のウォッシュドプロセスをご用意しました。チョコレートのような甘みとほのかな酸味が特徴の飲みやすい一杯です。100gから購入可能・店頭のみの販売となります #スペシャルティコーヒー #コーヒー豆 #コロンビア',
+    sns:{
+      Instagram:{h1:{likes:28,comments:4,eg:'2.8%'}, h3:{likes:62,comments:10,eg:'6.2%'}, h24:{likes:88,comments:16,eg:'8.8%'}},
+      Facebook: {h1:{likes:14,comments:2,shares:1,imprs:248,eg:'1.2%'}, h3:{likes:32,comments:6,shares:3,imprs:524,eg:'2.8%'}, h24:{likes:48,comments:10,shares:5,imprs:782,eg:'4.2%'}},
+    }
+  }],
+  25:[
+    {time:'08:00', text:'☀️おはようございます！本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。ご予約は不要ですのでお気軽にお越しください😊 #渋谷モーニング #朝活カフェ #特別イベント',
+    sns:{
+      X:       {t1:'09:01',t3:'11:01',t24:'翌08:01', h1:{likes:42,reposts:8,replies:5,imprs:'1.1K',eg:'5.2%'}, h3:{likes:88,reposts:18,replies:12,imprs:'2.4K',eg:'10.8%'}, h24:{likes:124,reposts:28,replies:18,imprs:'3.6K',eg:'14.8%'}},
+      Instagram:{t1:'09:01',t3:'11:01',t24:'翌08:01', h1:{likes:58,comments:9,eg:'5.8%'}, h3:{likes:124,comments:22,eg:'12.4%'}, h24:{likes:178,comments:34,eg:'17.8%'}},
+      Facebook:{t1:'09:01',t3:'11:01',t24:'翌08:01', h1:{likes:22,comments:4,shares:3,imprs:512,eg:'2.2%'}, h3:{likes:48,comments:9,shares:7,imprs:'1.1K',eg:'4.8%'}, h24:{likes:72,comments:14,shares:11,imprs:'1.6K',eg:'7.2%'}},
+      Threads: {t1:'09:01',t3:'11:01',t24:'翌08:01', h1:{likes:18,reposts:3,replies:4,imprs:284,eg:'3.8%'}, h3:{likes:42,reposts:8,replies:10,imprs:612,eg:'8.2%'}, h24:{likes:64,reposts:14,replies:16,imprs:924,eg:'12.4%'}},
+    }},
+    {time:'09:30', text:'🍵本日限定！抹茶ラテと和スイーツのセットが特別価格980円でご提供中です。濃厚な宇治抹茶を使用した本格抹茶ラテと、季節の和菓子の組み合わせは絶品です✨数量限定のためお早めにどうぞ。店内でのゆったりとしたひとときをお楽しみください #抹茶ラテ #和スイーツ #渋谷カフェ',
+    sns:{
+      X:       {t1:'10:31',t3:'12:31',t24:'翌09:31', h1:{likes:38,reposts:6,replies:4,imprs:924,eg:'4.8%'}, h3:{likes:82,reposts:14,replies:10,imprs:'2.1K',eg:'9.8%'}, h24:{likes:118,reposts:22,replies:16,imprs:'3.2K',eg:'13.8%'}},
+      Instagram:{t1:'10:31',t3:'12:31',t24:'翌09:31', h1:{likes:52,comments:8,eg:'5.2%'}, h3:{likes:112,comments:18,eg:'11.2%'}, h24:{likes:162,comments:28,eg:'16.2%'}},
+    }},
+    {time:'11:00', text:'🌿本日のランチは旬の夏野菜をたっぷり使ったビーガンプレートが新登場！有機野菜を使った彩り豊かな一皿は見た目も美しく栄養満点です🥗スープ・ドリンク付きで1,100円（税込）。月〜土曜日のランチタイム限定メニューです。ぜひお試しください #ビーガン #オーガニック #渋谷ランチ',
+    sns:{
+      Instagram:{t1:'12:01',t3:'14:01',t24:'翌11:01', h1:{likes:44,comments:7,eg:'4.4%'}, h3:{likes:96,comments:16,eg:'9.6%'}, h24:{likes:142,comments:24,eg:'14.2%'}},
+      Facebook:{t1:'12:01',t3:'14:01',t24:'翌11:01', h1:{likes:18,comments:3,shares:2,imprs:384,eg:'1.8%'}, h3:{likes:42,comments:8,shares:5,imprs:824,eg:'4.2%'}, h24:{likes:62,comments:12,shares:8,imprs:'1.2K',eg:'6.2%'}},
+    }},
+    {time:'12:30', text:'☕️本日のスペシャルコーヒーはパナマ・ゲイシャ種！フローラルでジャスミンのような香りが広がる世界最高峰のコーヒー豆を本日限定でご提供します。一杯一杯丁寧にハンドドリップでお作りします。数量は残り僅かです🌸 #パナマゲイシャ #スペシャルティコーヒー #渋谷',
+    sns:{
+      X:       {t1:'13:31',t3:'15:31',t24:'翌12:31', h1:{likes:56,reposts:12,replies:8,imprs:'1.6K',eg:'7.2%'}, h3:{likes:118,reposts:26,replies:18,imprs:'3.8K',eg:'14.8%'}, h24:{likes:168,reposts:42,replies:28,imprs:'5.6K',eg:'19.8%'}},
+      Threads: {t1:'13:31',t3:'15:31',t24:'翌12:31', h1:{likes:28,reposts:5,replies:6,imprs:412,eg:'5.8%'}, h3:{likes:62,reposts:12,replies:14,imprs:924,eg:'11.2%'}, h24:{likes:92,reposts:20,replies:22,imprs:'1.4K',eg:'16.8%'}},
+    }},
+    {time:'14:00', text:'🎂本日はお客様からうれしいご報告をいただきました！当店の抹茶テリーヌを記念日に選んでいただいたとのこと、誠にありがとうございます💕大切な記念日に選んでいただけることはスタッフ一同の励みになります。これからも皆さまの特別な日に寄り添えるよう努めてまいります #渋谷カフェ #記念日 #ありがとうございます',
+    sns:{
+      Instagram:{t1:'15:01',t3:'17:01',t24:'翌14:01', h1:{likes:78,comments:14,eg:'7.8%'}, h3:{likes:164,comments:32,eg:'16.4%'}, h24:{likes:236,comments:48,eg:'23.6%'}},
+      Facebook:{t1:'15:01',t3:'17:01',t24:'翌14:01', h1:{likes:32,comments:6,shares:5,imprs:612,eg:'3.2%'}, h3:{likes:68,comments:14,shares:12,imprs:'1.3K',eg:'6.8%'}, h24:{likes:98,comments:22,shares:18,imprs:'2.1K',eg:'9.8%'}},
+      X:       {t1:'15:01',t3:'17:01',t24:'翌14:01', h1:{likes:64,reposts:14,replies:10,imprs:'1.8K',eg:'8.4%'}, h3:{likes:138,reposts:32,replies:22,imprs:'4.2K',eg:'16.8%'}, h24:{likes:198,reposts:52,replies:36,imprs:'6.4K',eg:'22.8%'}},
+    }},
+    {time:'15:30', text:'🍰本日のおやつタイムのおすすめはイチジクとクリームチーズのタルトです！秋の味覚イチジクのとろりとした甘みと濃厚なクリームチーズの組み合わせが絶品。季節限定のため今週末まで。コーヒーとの相性も抜群です☕️ぜひ一度お試しください #イチジク #タルト #秋スイーツ',
+    sns:{
+      Instagram:{t1:'16:31',t3:'18:31',t24:'翌15:31', h1:{likes:48,comments:8,eg:'4.8%'}, h3:{likes:102,comments:18,eg:'10.2%'}, h24:{likes:148,comments:28,eg:'14.8%'}},
+      Threads: {t1:'16:31',t3:'18:31',t24:'翌15:31', h1:{likes:22,reposts:4,replies:5,imprs:328,eg:'4.8%'}, h3:{likes:48,reposts:10,replies:12,imprs:712,eg:'9.8%'}, h24:{likes:72,reposts:16,replies:18,imprs:'1.1K',eg:'13.8%'}},
+    }},
+    {time:'17:00', text:'🌆本日のディナータイムは17時からのオープンです！本日のシェフおすすめコースは国産和牛を使ったローストビーフプレート。丁寧に低温調理した柔らかいお肉はまさに絶品です🥩スープ・サラダ・デザート付きで3,200円（税込）ご予約をおすすめします #渋谷ディナー #和牛 #ローストビーフ',
+    sns:{
+      X:       {t1:'18:01',t3:'20:01',t24:'翌17:01', h1:{likes:52,reposts:10,replies:7,imprs:'1.4K',eg:'6.8%'}, h3:{likes:112,reposts:24,replies:16,imprs:'3.2K',eg:'13.8%'}, h24:{likes:162,reposts:38,replies:24,imprs:'4.8K',eg:'18.8%'}},
+      Instagram:{t1:'18:01',t3:'20:01',t24:'翌17:01', h1:{likes:62,comments:11,eg:'6.2%'}, h3:{likes:132,comments:24,eg:'13.2%'}, h24:{likes:192,comments:38,eg:'19.2%'}},
+      Facebook:{t1:'18:01',t3:'20:01',t24:'翌17:01', h1:{likes:28,comments:5,shares:4,imprs:584,eg:'2.8%'}, h3:{likes:58,comments:11,shares:9,imprs:'1.2K',eg:'5.8%'}, h24:{likes:86,comments:18,shares:14,imprs:'1.8K',eg:'8.6%'}},
+    }},
+    {time:'18:30', text:'🍷本日限定のワインペアリングディナーがスタートしました！フランス産自然派ワイン3種と季節の食材を使ったコース料理のマリアージュをお楽しみいただけます。ソムリエが丁寧にご説明しながらご提供いたします🌿お席は残り2席となっております #ワインペアリング #自然派ワイン #渋谷ディナー',
+    sns:{
+      Instagram:{t1:'19:31',t3:'21:31',t24:'翌18:31', h1:{likes:72,comments:14,eg:'7.2%'}, h3:{likes:152,comments:28,eg:'15.2%'}, h24:{likes:218,comments:44,eg:'21.8%'}},
+      Threads: {t1:'19:31',t3:'21:31',t24:'翌18:31', h1:{likes:32,reposts:7,replies:9,imprs:512,eg:'7.2%'}, h3:{likes:68,reposts:16,replies:20,imprs:'1.1K',eg:'13.8%'}, h24:{likes:98,reposts:26,replies:32,imprs:'1.8K',eg:'19.8%'}},
+    }},
+    {time:'20:00', text:'🌙本日もたくさんのご来店ありがとうございました！特別モーニングイベントから始まり、スペシャルコーヒー・ビーガンランチ・ワインペアリングディナーと盛りだくさんの一日でした✨明日も皆さまのご来店を心よりお待ちしております。おやすみなさい🌟 #渋谷カフェ #本日もありがとう #明日もよろしく',
+    sns:{
+      X:       {t1:'21:01',t3:'23:01',t24:'翌20:01', h1:{likes:88,reposts:18,replies:14,imprs:'2.4K',eg:'11.2%'}, h3:{likes:182,reposts:42,replies:32,imprs:'5.6K',eg:'21.8%'}, h24:{likes:264,reposts:68,replies:52,imprs:'8.4K',eg:'28.4%'}},
+      Instagram:{t1:'21:01',t3:'23:01',t24:'翌20:01', h1:{likes:98,comments:18,eg:'9.8%'}, h3:{likes:208,comments:42,eg:'20.8%'}, h24:{likes:312,comments:64,eg:'31.2%'}},
+      Threads: {t1:'21:01',t3:'23:01',t24:'翌20:01', h1:{likes:44,reposts:10,replies:12,imprs:712,eg:'9.8%'}, h3:{likes:96,reposts:24,replies:28,imprs:'1.6K',eg:'19.8%'}, h24:{likes:142,reposts:38,replies:44,imprs:'2.4K',eg:'28.4%'}},
+    }},
+    {time:'21:30', text:'🎵本日のクロージングタイムはジャズピアノの生演奏でお送りしました！渋谷在住のピアニスト田中さんの素晴らしい演奏に店内は大変盛り上がりました🎹次回の生演奏イベントは来月第4水曜日を予定しています。ぜひお楽しみに✨ご来場いただいた皆さまに感謝 #渋谷ジャズ #生演奏 #ピアノ',
+    sns:{
+      Instagram:{t1:'22:31',t3:'翌00:31',t24:'翌21:31', h1:{likes:68,comments:12,eg:'6.8%'}, h3:{likes:144,comments:26,eg:'14.4%'}, h24:{likes:212,comments:42,eg:'21.2%'}},
+      Facebook:{t1:'22:31',t3:'翌00:31',t24:'翌21:31', h1:{likes:24,comments:4,shares:3,imprs:448,eg:'2.4%'}, h3:{likes:52,comments:10,shares:8,imprs:984,eg:'5.2%'}, h24:{likes:78,comments:16,shares:12,imprs:'1.5K',eg:'7.8%'}},
+      X:       {t1:'22:31',t3:'翌00:31',t24:'翌21:31', h1:{likes:58,reposts:12,replies:9,imprs:'1.6K',eg:'7.8%'}, h3:{likes:122,reposts:28,replies:22,imprs:'3.8K',eg:'15.8%'}, h24:{likes:178,reposts:46,replies:36,imprs:'5.8K',eg:'21.8%'}},
+    }},
+  ],
+};
+
+// SNSアイコン・カラー定義
+const snsStyle = {
+  Instagram:{icon:'📱',label:'Instagram',color:'#e1306c'},
+  Facebook: {icon:'💻',label:'Facebook', color:'#1877f2'},
+  X:        {icon:'🐦',label:'X',        color:'#555555'},
+  Threads:  {icon:'🧵',label:'Threads',  color:'#555555'},
+};
+
+// タイミングラベル
+const timingLabel = {h1:'1時間後', h3:'3時間後', h24:'24時間後'};
+
+function makeSNSBlock(snsKey, snsData) {
+  const s = snsStyle[snsKey] || {icon:'',label:snsKey,color:'#555'};
+  const h1 = snsData.h1 || {};
+  const h3 = snsData.h3 || {};
+  const h24 = snsData.h24 || {};
+  const fmt = v => v === undefined ? '--' : v;
+
+  // 使用するアイコンと値を収集
+  const metrics = [];
+  if (h1.likes!==undefined || h3.likes!==undefined || h24.likes!==undefined)
+    metrics.push({icon:'❤️', h1:h1.likes, h3:h3.likes, h24:h24.likes});
+  if (h1.comments!==undefined || h3.comments!==undefined || h24.comments!==undefined)
+    metrics.push({icon:'💬', h1:h1.comments, h3:h3.comments, h24:h24.comments});
+  if (h1.shares!==undefined || h3.shares!==undefined || h24.shares!==undefined)
+    metrics.push({icon:'📤', h1:h1.shares, h3:h3.shares, h24:h24.shares});
+  if (h1.reactions!==undefined || h3.reactions!==undefined || h24.reactions!==undefined)
+    metrics.push({icon:'👍', h1:h1.reactions, h3:h3.reactions, h24:h24.reactions});
+  if (h1.reposts!==undefined || h3.reposts!==undefined || h24.reposts!==undefined)
+    metrics.push({icon:'🔁', h1:h1.reposts, h3:h3.reposts, h24:h24.reposts});
+  if (h1.replies!==undefined || h3.replies!==undefined || h24.replies!==undefined)
+    metrics.push({icon:'↩️', h1:h1.replies, h3:h3.replies, h24:h24.replies});
+  if (h1.quotes!==undefined || h3.quotes!==undefined || h24.quotes!==undefined)
+    metrics.push({icon:'🗨️', h1:h1.quotes, h3:h3.quotes, h24:h24.quotes});
+  if (h1.imprs!==undefined || h3.imprs!==undefined || h24.imprs!==undefined)
+    metrics.push({icon:'👁️', h1:h1.imprs, h3:h3.imprs, h24:h24.imprs});
+  if (h1.eg!==undefined || h3.eg!==undefined || h24.eg!==undefined)
+    metrics.push({icon:'📊', h1:h1.eg, h3:h3.eg, h24:h24.eg});
+
+  const cols = metrics.length;
+  const gridCols = `52px repeat(${cols}, 1fr)`;
+
+  const t1  = snsData.t1  || '';
+  const t3  = snsData.t3  || '';
+  const t24 = snsData.t24 || '';
+
+  // 各タイミング行：ラベル＋アイコン横並び、取得時刻＋数値縦積み
+  function makeTimingRow(label, time, vals) {
+    const icons = metrics.map(m => `<span style="font-size:12px;font-weight:700;text-align:center;display:block;">${m.icon}</span>`).join('');
+    const nums  = metrics.map(m => `<span style="font-size:11px;font-weight:700;color:var(--primary);text-align:center;display:block;">${fmt(m[vals])}</span>`).join('');
+    const cells = metrics.map((m,i) => `<div style="text-align:center;">${icons.split('</span>')[i]}</span>${nums.split('</span>')[i]}</span></div>`).join('');
+    return `<span class="growth-time">${label}${time ? '<br><span style="font-size:9px;color:var(--text-light);font-weight:400;">'+time+'取得</span>' : ''}</span>` +
+      metrics.map(m => `<div style="text-align:center;"><div style="font-size:12px;">${m.icon}</div><div style="font-size:11px;font-weight:700;color:var(--primary);">${fmt(m[vals])}</div></div>`).join('');
+  }
+
+  const h1Row  = makeTimingRow('1時間後',  t1,  'h1');
+  const h3Row  = makeTimingRow('3時間後',  t3,  'h3');
+  const h24Row = makeTimingRow('24時間後', t24, 'h24');
+
+  return `<div style="margin-bottom:10px;">
+    <div style="font-size:11px;font-weight:700;color:${s.color};margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">${s.icon} ${s.label}</div>
+    <div style="display:grid;grid-template-columns:${gridCols};gap:6px;align-items:center;">
+      ${h1Row}
+      ${h3Row}
+      ${h24Row}
+    </div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:4px;">※ K = 1,000（例：1.2K = 1,200回）</p>
+  </div>`;
+}
+
+let lastUnifiedDay = null;
+function showUnified(d) {
+  const detailEl = document.getElementById('cal-unified-detail');
+  if (lastUnifiedDay === d && detailEl.style.display !== 'none') {
+    detailEl.style.display = 'none'; lastUnifiedDay = null; return;
+  }
+  lastUnifiedDay = d;
+  const posts = unifiedData[d] || [];
+  document.getElementById('cal-unified-date').textContent = '6月' + d + '日の投稿';
+  let html = '';
+  const SNS_ORDER = ['X', 'Instagram', 'Facebook', 'Threads'];
+  posts.forEach((post, i) => {
+    if (i > 0) html += '<hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">';
+    html += `<div style="font-size:11px;color:var(--text-sub);background:var(--bg);border-radius:8px;padding:8px;margin-bottom:10px;line-height:1.6;border-left:3px solid var(--border);">
+      <span style="font-size:9px;color:var(--text-light);display:block;margin-bottom:2px;">${post.time}投稿</span>
+      📝 ${post.text}
+    </div>`;
+    const snsKeys = SNS_ORDER.filter(k => post.sns && post.sns[k]);
+    snsKeys.forEach((snsKey, j) => {
+      if (j > 0) html += '<hr style="border:none;border-top:1px solid var(--border);margin:6px 0;">';
+      html += makeSNSBlock(snsKey, post.sns[snsKey]);
+    });
+  });
+  document.getElementById('cal-unified-sns').innerHTML = html;
+  detailEl.style.display = 'block';
+}
+
+// ===== ネガティブコメントデータ =====
+const negData = {11:2, 13:3, 25:10};
+const negDetails = {
+  11:[
+    {time:'10:55', sns:'Instagram', text:'先日注文したのですが、対応が少し冷たく感じました…'},
+    {time:'17:22', sns:'X',         text:'待ち時間が長かったです'},
+  ],
+  13:[
+    {time:'09:14', sns:'Facebook',  text:'思ったより量が少なかったです'},
+    {time:'13:08', sns:'Instagram', text:'値段が高い気がします'},
+    {time:'20:45', sns:'X',         text:'接客が雑でした'},
+  ],
+  25:[
+    {time:'09:42', sns:'X',         text:'モーニングイベントに行ったのですが、スタッフの案内が不親切で最初どこに並べばいいかわかりませんでした。せっかく楽しみにしていたのに出鼻をくじかれた感じがして残念でした。改善をお願いしたいです。'},
+    {time:'10:18', sns:'Instagram', text:'抹茶ラテセットを注文したのですが、ラテの温度がぬるくて少し残念でした。和菓子は美味しかったので、次回はもう少し熱めで提供していただけると嬉しいです。また来たいとは思っているので改善を期待しています。'},
+    {time:'11:55', sns:'Facebook',  text:'ビーガンランチを頼んだのですが、メニューに書いてあった食材が一部使われていなかったようです。スタッフに確認したところ本日は仕入れの都合で変更したとのことでした。事前にメニューや店頭に告知してほしかったです。'},
+    {time:'12:34', sns:'Threads',   text:'ランチタイムに訪問したのですが、テーブルが片付いておらず少し待たされました。混んでいるのはわかりますがもう少しスタッフを増やして対応していただけると助かります。料理自体は美味しかっただけに残念でした。'},
+    {time:'13:22', sns:'X',         text:'パナマゲイシャを注文したのですが、お値段の割には量が少なく感じました。希少豆だというのはわかるのですが、せめてもう少し丁寧な説明や紹介カードなどがあればまた違った印象だったと思います。次回に期待します。'},
+    {time:'15:48', sns:'Instagram', text:'おやつタイムに来店したのですが、イチジクのタルトは既に売り切れでした。SNSで宣伝しておいて売り切れというのは少し不満です。数量が少ないなら投稿に限定○個などと記載していただけると無駄足を防げると思います。'},
+    {time:'17:12', sns:'Facebook',  text:'ディナーを予約しようとしたのですが、電話が全然つながりませんでした。オンライン予約のシステムもないようで、結局予約できずに当日並んだのですが満席で入れませんでした。予約手段をもう少し充実させてほしいです。'},
+    {time:'18:44', sns:'X',         text:'ワインペアリングディナーのコースを楽しみにしていたのですが、説明がソムリエではなくアルバイトのスタッフで知識が浅く、ワインの特徴についての説明がほとんどありませんでした。料金が高めなので相応のサービスを期待していました。'},
+    {time:'20:22', sns:'Threads',   text:'本日夜に来店したのですがBGMがとても大きくて会話がしにくかったです。ジャズライブが終わった後もボリュームがそのままになっていたようで、落ち着いて食事を楽しみたいと思っていたので少し残念でした。雰囲気は好きなので次回に期待します。'},
+    {time:'22:08', sns:'Instagram', text:'ジャズピアノの生演奏イベントに行ったのですが、店内が想像以上に混雑していて演奏がほとんど聞こえませんでした。せっかくの生演奏なのに音楽よりも周りの声の方が大きくて残念でした。キャパシティを考えた人数制限をお願いしたいです。'},
+  ],
+};
+
+let lastNegDay = null;
+function showNeg(d, val) {
+  const el = document.getElementById('neg-detail');
+  if (lastNegDay === d && el.classList.contains('show')) {
+    el.classList.remove('show'); lastNegDay = null; return;
+  }
+  lastNegDay = d;
+  const comments = negDetails[d] || [];
+  const negSnsAbbr = {Instagram:'IG', Facebook:'FB', X:'X', Threads:'TH'};
+  let html = '';
+  html += comments.map(c => `<div style="padding:6px 0;border-bottom:1px solid rgba(180,0,0,0.1);"><div style="font-size:10px;color:var(--text-sub);margin-bottom:2px;">${c.time}　${negSnsAbbr[c.sns]||c.sns}</div><div style="font-size:11px;color:var(--text);line-height:1.6;">「${c.text}」</div></div>`).join('');
+  el.classList.add('show');
+  return html;
+}
+
+// ネガティブコメント詳細を展開時に描画
+function initNegComments() {
+  const negSnsAbbr = {Instagram:'IG', Facebook:'FB', X:'X', Threads:'TH'};
+  [25, 13, 11].forEach(d => {
+    const el = document.getElementById('neg-comment-' + d);
+    if (!el) return;
+    const comments = negDetails[d] || [];
+    el.innerHTML = comments.map(c =>
+      `<div style="padding:6px 0;border-bottom:1px solid rgba(180,0,0,0.1);">
+        <div style="font-size:10px;color:var(--text-sub);margin-bottom:2px;">${c.time}　${negSnsAbbr[c.sns]||c.sns}</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.6;">「${c.text}」</div>
+      </div>`
+    ).join('');
+  });
+}
+initNegComments();
+
+// ===== カレンダー初期化 =====
+buildCal('cal-unified', unifiedBadge, '#1a237e', (d) => showUnified(d));
+buildCal('cal-std-unified', unifiedBadge, '#1a237e', (d) => showStdUnified(d));
+buildCal('cal-lite-unified', unifiedBadge, '#1a237e', (d) => showLiteUnified(d));
+
+function showStdUnified(d) {
+  const detailEl = document.getElementById('cal-std-detail');
+  if (!detailEl) return;
+  const postData = unifiedData ? unifiedData[d] : null;
+  detailEl.style.display = 'block';
+  document.getElementById('cal-std-date').textContent = '6月' + d + '日の投稿';
+  let html = '';
+  if (postData) {
+    const posts = Array.isArray(postData) ? postData : [postData];
+    posts.forEach((post, i) => {
+      if (posts.length > 1) html += `<div style="font-size:11px;font-weight:700;color:var(--text);margin:6px 0 4px;">${post.time} 投稿</div>`;
+      for (const snsKey of Object.keys(post.sns)) {
+        const d24 = post.sns[snsKey].h24;
+        if (!d24) continue;
+        html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 });
+      }
+    });
+  } else {
+    html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません</p>';
+  }
+  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ STANDARDプランは24時間後のデータのみ取得されます</p>';
+  html += '<p style="font-size:9px;color:#e65100;font-weight:700;margin-top:2px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>';
+  document.getElementById('cal-std-sns').innerHTML = html;
+}
+
+function showLiteUnified(d) {
+  const detailEl = document.getElementById('cal-lite-detail');
+  if (!detailEl) return;
+  const postData = unifiedData ? unifiedData[d] : null;
+  detailEl.style.display = 'block';
+  document.getElementById('cal-lite-date').textContent = '6月' + d + '日の投稿';
+  let html = '';
+  if (postData) {
+    const posts = Array.isArray(postData) ? postData : [postData];
+    posts.forEach((post, i) => {
+      if (posts.length > 1) html += `<div style="font-size:11px;font-weight:700;color:var(--text);margin:6px 0 4px;">${post.time} 投稿</div>`;
+      for (const snsKey of Object.keys(post.sns)) {
+        const d24 = post.sns[snsKey].h24;
+        if (!d24) continue;
+        html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 });
+      }
+    });
+  } else {
+    html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません</p>';
+  }
+  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ LITEプランは24時間後のデータのみ取得されます</p>';
+  html += '<p style="font-size:9px;color:#e65100;font-weight:700;margin-top:2px;">💎 より詳しいデータはSTANDARD・PROプランで確認できます</p>';
+  document.getElementById('cal-lite-sns').innerHTML = html;
+}
+
+function switchSummary(type, btn) {
+  // 親カードを探してその中のweekly/monthlyを切り替え
+  const card = btn.closest('.card');
+  const btns = card.querySelectorAll('button');
+  btns.forEach(b => {
+    b.style.background = 'var(--surface)';
+    b.style.color = 'var(--text)';
+    b.style.border = '1px solid var(--border)';
+  });
+  btn.style.background = 'var(--primary)';
+  btn.style.color = '#fff';
+  btn.style.border = '1px solid var(--primary)';
+  const weeklyDivs = card.querySelectorAll('[id^="summary-weekly"]');
+  const monthlyDivs = card.querySelectorAll('[id^="summary-monthly"]');
+  weeklyDivs.forEach(d => d.style.display = type === 'weekly' ? 'block' : 'none');
+  monthlyDivs.forEach(d => d.style.display = type === 'monthly' ? 'block' : 'none');
+}
+
+function toggleCompare(detailId, btnId) {
+  const detail = document.getElementById(detailId);
+  const btn = document.getElementById(btnId);
+  if (detail.style.display === 'none') {
+    detail.style.display = 'block';
+    btn.textContent = '閉じる ▲';
+  } else {
+    detail.style.display = 'none';
+    btn.textContent = '詳細を見る ▼';
+  }
+}
+
+// ★liff_analytics_html12：他画面と同じ共有キャッシュ（sessionStorage）
+// 　からプラン・残り投稿可能数・SNS連携状況を読み込み、表示する。
+// 　カード自体（今日の状況・直近投稿の状況等）の実データ化は次の
+// 　段階で対応する（現時点ではサブバーのみ実データに対応）。
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz58D6nB8fhSmc18eNgeqDEgo1NsJ4fJXgoobtpQFuztKrqieK9Eyy19fi8BiydbQcQcQ/exec';
+let LINE_UID = null;
+const QUOTA_CACHE_KEY = 'aipost_reservation_quota';
+
+function readQuotaCache() {
+  try {
+    const raw = sessionStorage.getItem(QUOTA_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function writeQuotaCache(profileData, sns) {
+  try {
+    const cache = Object.assign({}, profileData, { sns: sns || null, fetchedAt: Date.now() });
+    sessionStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(cache));
+  } catch (err) {
+    // sessionStorageが使えない環境でも動作は継続する
+  }
+}
+
+function applyQuotaFromCache(cache) {
+  const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
+  currentSnsCache = cache.sns || null;
+  if (validPlans.includes(cache.plan)) {
+    applyPlan(cache.plan);
+  }
+  const el = document.getElementById('reservation-quota');
+  if (el && typeof cache.remainingReservable === 'number') {
+    el.textContent = '残り投稿可能数' + cache.remainingReservable + '件';
+  }
+}
+
+async function refreshReservationQuota(showOverlay) {
+  const el = document.getElementById('reservation-quota');
+  if (el) el.textContent = '確認中…';
+  const overlay = document.getElementById('profile-loading-overlay');
+  if (showOverlay && overlay) overlay.style.display = 'flex';
+  try {
+    const [profileRes, snsRes] = await Promise.all([
+      fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID }) }),
+      fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID }) })
+    ]);
+    const profileResult = await profileRes.json();
+    const snsResult = await snsRes.json();
+    if (!profileResult.success || !profileResult.data || profileResult.data.found === false) return;
+
+    const sns = (snsResult.success && snsResult.data) ? {
+      x: snsResult.data.x === '連携中',
+      instagram: snsResult.data.instagram === '連携中',
+      threads: snsResult.data.threads === '連携中',
+      xAccount: snsResult.data.xAccount || '',
+      instagramAccount: snsResult.data.instagramAccount || '',
+      threadsAccount: snsResult.data.threadsAccount || ''
+    } : null;
+
+    applyQuotaFromCache({ plan: profileResult.data.plan, remainingReservable: profileResult.data.remainingReservable, sns: sns });
+    writeQuotaCache(profileResult.data, sns);
+  } catch (err) {
+    console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
+  } finally {
+    if (showOverlay && overlay) overlay.style.display = 'none';
+  }
+}
+
+function applyQuotaFromCacheOrFetch() {
+  const cached = readQuotaCache();
+  if (cached) {
+    applyQuotaFromCache(cached);
+  } else {
+    refreshReservationQuota(true);
+  }
+}
+
+async function initLiff() {
+  try {
+    await liff.init({ liffId: '2010401177-qKtfKWP0' });
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+    const idToken = liff.getDecodedIDToken();
+    LINE_UID = idToken.sub;
+    applyQuotaFromCacheOrFetch();
+  } catch (err) {
+    console.error('LIFF初期化エラー:', err);
+    alert('LINEアプリ内でこの画面を開いてください。');
+  }
+}
+
+initLiff();
+</script>
+</body>
+</html>
