@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析14 - AiPost</title>
+<title>分析15 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -162,7 +162,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析14</span>
+  <span class="header-logo">分析15</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -2641,16 +2641,37 @@ function applyQuotaFromCache(cache) {
   }
 }
 
+// ★liff_analytics_html15：予約一覧も「最初に開いた画面での一括
+// 　取得」の対象に加えた（本画面自体は表示しないが、次に投稿文作成・
+// 　予約確認・設定を開いた時に即表示できるようキャッシュしておく）。
+const RESERVATION_LIST_CACHE_KEY = 'aipost_reservation_list';
+async function warmupReservationListCache() {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'getMyReservations', lineUid: LINE_UID })
+    });
+    const result = await response.json();
+    const list = (result.success && Array.isArray(result.data)) ? result.data : [];
+    sessionStorage.setItem(RESERVATION_LIST_CACHE_KEY, JSON.stringify(list));
+  } catch (err) {
+    console.error('予約一覧の先読み取得エラー:', err);
+  }
+}
+
 async function refreshReservationQuota(showOverlay) {
   const el = document.getElementById('reservation-quota');
   if (el) el.textContent = '確認中…';
   const overlay = document.getElementById('profile-loading-overlay');
   if (showOverlay && overlay) overlay.style.display = 'flex';
   try {
-    const [profileRes, snsRes] = await Promise.all([
+    const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
+    const tasks = [
       fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID }) }),
       fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID }) })
-    ]);
+    ];
+    if (needsReservationList) tasks.push(warmupReservationListCache());
+    const [profileRes, snsRes] = await Promise.all(tasks);
     const profileResult = await profileRes.json();
     const snsResult = await snsRes.json();
     if (!profileResult.success || !profileResult.data || profileResult.data.found === false) return;
@@ -2675,8 +2696,10 @@ async function refreshReservationQuota(showOverlay) {
 
 function applyQuotaFromCacheOrFetch() {
   const cached = readQuotaCache();
+  const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
   if (cached) {
     applyQuotaFromCache(cached);
+    if (needsReservationList) warmupReservationListCache();
   } else {
     refreshReservationQuota(true);
   }
