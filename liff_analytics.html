@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析21 - AiPost</title>
+<title>分析22 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -62,6 +62,8 @@
   .compare-val { font-size:12px; font-weight:700; padding:6px 0; border-top:1px solid var(--border); color:var(--text); }
   /* カレンダー（予約カレンダーと同一CSS） */
   .cal-grid { padding:4px 0; }
+  /* ★liff_analytics_html22：予約確認画面のカレンダーに合わせた年月表示 */
+  .cal-title { font-size:15px; font-weight:700; color:var(--text); text-align:center; margin-bottom:8px; }
   .cal-days { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; margin-bottom:4px; }
   .cal-day-label { font-size:11px; color:var(--text-sub); padding:4px 0; }
   .cal-day-label:first-child { color:var(--danger); }
@@ -162,7 +164,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析21</span>
+  <span class="header-logo">分析22</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -293,6 +295,7 @@
     <div class="card-title">📅 投稿日別データ</div>
     <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます</p>
     <div class="cal-grid">
+      <div class="cal-title" id="cal-lite-title"></div>
       <div class="cal-days">
         <div class="cal-day-label">日</div><div class="cal-day-label">月</div><div class="cal-day-label">火</div>
         <div class="cal-day-label">水</div><div class="cal-day-label">木</div><div class="cal-day-label">金</div><div class="cal-day-label">土</div>
@@ -586,6 +589,7 @@
     <div class="card-title">📅 投稿日別データ</div>
     <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます</p>
     <div class="cal-grid">
+      <div class="cal-title" id="cal-std-title"></div>
       <div class="cal-days">
         <div class="cal-day-label">日</div><div class="cal-day-label">月</div><div class="cal-day-label">火</div>
         <div class="cal-day-label">水</div><div class="cal-day-label">木</div><div class="cal-day-label">金</div><div class="cal-day-label">土</div>
@@ -1060,6 +1064,7 @@
     <div class="card-title">📅 投稿日別データ</div>
     <p class="hint">💡 投稿のある日付をタップすると詳細を確認できます</p>
     <div class="cal-grid">
+      <div class="cal-title" id="cal-pro-title"></div>
       <div class="cal-days">
         <div class="cal-day-label">日</div><div class="cal-day-label">月</div><div class="cal-day-label">火</div>
         <div class="cal-day-label">水</div><div class="cal-day-label">木</div><div class="cal-day-label">金</div><div class="cal-day-label">土</div>
@@ -1915,7 +1920,7 @@ function buildCal(gridId, data, badgeColor, onClickFn) {
     const val = data[d];
     if (val !== undefined) {
       cls += ' has-post';
-      el.innerHTML = `<span>${d}</span><span class="cal-post-count" style="background:${badgeColor};">${val}</span>`;
+      el.innerHTML = `<span>${d}</span><span class="cal-post-count" style="background:${badgeColor};">${val}件</span>`;
       el.onclick = () => {
         // 同一カレンダー内の選択状態をリセット
         grid.querySelectorAll('.cal-date.selected').forEach(e => e.classList.remove('selected'));
@@ -1980,6 +1985,14 @@ function convertCalendarPost(post) {
   return { time: post.time, text: escapeHtmlText(post.honbun), sns: sns };
 }
 
+// 3タブのカレンダー上部の年月表示（例：2026年9月）を更新する
+function updateCalendarTitles() {
+  ['cal-lite-title', 'cal-std-title', 'cal-pro-title'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = CAL_YEAR + '年' + CAL_MONTH + '月';
+  });
+}
+
 // getAnalyticsCalendarDataの応答を反映し、3タブ分のカレンダーを作り直す
 function applyCalendarData(cal) {
   CAL_YEAR = cal.year;
@@ -1987,6 +2000,7 @@ function applyCalendarData(cal) {
   FIRST_DAY = cal.firstDayOfWeek;
   DAYS = cal.daysInMonth;
   TODAY = cal.today;
+  updateCalendarTitles();
 
   unifiedBadge = {};
   unifiedData = {};
@@ -2002,9 +2016,9 @@ function applyCalendarData(cal) {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
-  buildCal('cal-unified', unifiedBadge, '#1a237e', (d) => showUnified(d));
-  buildCal('cal-std-unified', unifiedBadge, '#1a237e', (d) => showStdUnified(d));
-  buildCal('cal-lite-unified', unifiedBadge, '#1a237e', (d) => showLiteUnified(d));
+  buildCal('cal-unified', unifiedBadge, 'var(--accent)', (d) => showUnified(d));
+  buildCal('cal-std-unified', unifiedBadge, 'var(--accent)', (d) => showStdUnified(d));
+  buildCal('cal-lite-unified', unifiedBadge, 'var(--accent)', (d) => showLiteUnified(d));
 }
 
 // SNSアイコン・カラー定義
@@ -2181,9 +2195,10 @@ function initNegComments() {
 initNegComments();
 
 // ===== カレンダー初期化 =====
-buildCal('cal-unified', unifiedBadge, '#1a237e', (d) => showUnified(d));
-buildCal('cal-std-unified', unifiedBadge, '#1a237e', (d) => showStdUnified(d));
-buildCal('cal-lite-unified', unifiedBadge, '#1a237e', (d) => showLiteUnified(d));
+buildCal('cal-unified', unifiedBadge, 'var(--accent)', (d) => showUnified(d));
+buildCal('cal-std-unified', unifiedBadge, 'var(--accent)', (d) => showStdUnified(d));
+buildCal('cal-lite-unified', unifiedBadge, 'var(--accent)', (d) => showLiteUnified(d));
+updateCalendarTitles();
 
 function showStdUnified(d) {
   const detailEl = document.getElementById('cal-std-detail');
