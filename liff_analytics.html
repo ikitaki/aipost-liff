@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析23 - AiPost</title>
+<title>分析24 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -164,7 +164,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析23</span>
+  <span class="header-logo">分析24</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -2525,24 +2525,21 @@ function applyTodayStatus(prefix, data) {
 // 　データ）のセッション内キャッシュ。他画面の共有キャッシュと同じく
 // 　sessionStorage（アプリを終了するまで保持）に保存し、保存済みなら
 // 　再取得せず瞬時に表示する。
-// 　・キー`aipost_analytics`：{ date, summary, calendar }
-// 　・日付が変わった場合は無効とする（「今日」「今月」の数値が変わるため）
-// 　・予約確定・キャンセル等、分析の数値が変わる操作をした他画面は、
+// 　・キー`aipost_analytics`：{ summary, calendar }
+// 　・★liff_analytics_html24：閲覧しているだけの状態では一切取得し直さない
+// 　　方針に合わせ、html23で入れていた「日付が変わったら無効にする」処理を
+// 　　廃止した（アプリを終了するまで、または他画面が下記のキーを削除する
+// 　　まで、保存済みの内容を使い続ける）
+// 　・予約確定・キャンセル・修正等、分析の数値が変わる操作をした他画面は、
 // 　　このキーを削除すること（次に分析画面を開いた時だけ再取得される）
 const ANALYTICS_CACHE_KEY = 'aipost_analytics';
-
-function analyticsTodayKey() {
-  const d = new Date();
-  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-}
 
 function readAnalyticsCache() {
   try {
     const raw = sessionStorage.getItem(ANALYTICS_CACHE_KEY);
     if (!raw) return null;
     const cache = JSON.parse(raw);
-    if (!cache || cache.date !== analyticsTodayKey()) return null;
-    return cache;
+    return cache && typeof cache === 'object' ? cache : null;
   } catch (e) {
     return null;
   }
@@ -2552,11 +2549,51 @@ function readAnalyticsCache() {
 function writeAnalyticsCache(part, data) {
   try {
     const cache = readAnalyticsCache() || {};
-    cache.date = analyticsTodayKey();
     cache[part] = data;
     sessionStorage.setItem(ANALYTICS_CACHE_KEY, JSON.stringify(cache));
   } catch (e) {
     // sessionStorageが使えない環境でも動作は継続する
+  }
+}
+
+// ★liff_analytics_html24：マスタデータ（業種カテゴリ・都道府県）の先読み。
+// 　設定画面だけがこのデータを使い、設定画面が24時間のTTLでlocalStorageに
+// 　保存している（キー・形式は設定画面と同一）。分析画面が最初の画面だった
+// 　場合でも、その後に設定画面を開いた時にスピナーが出ないよう、ここで
+// 　先読みして同じ形式で保存する。
+const MASTER_DATA_CACHE_KEY = 'aipost_master_data_cache';
+const MASTER_DATA_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24時間
+
+function readMasterDataCache() {
+  try {
+    const raw = localStorage.getItem(MASTER_DATA_CACHE_KEY);
+    if (!raw) return null;
+    const cache = JSON.parse(raw);
+    if (!cache.fetchedAt || Date.now() - cache.fetchedAt > MASTER_DATA_CACHE_TTL_MS) return null;
+    return cache.data;
+  } catch (err) {
+    return null;
+  }
+}
+
+function writeMasterDataCache(data) {
+  try {
+    localStorage.setItem(MASTER_DATA_CACHE_KEY, JSON.stringify({ data: data, fetchedAt: Date.now() }));
+  } catch (err) {
+    // localStorageが使えない環境でも動作は継続する
+  }
+}
+
+async function warmupMasterDataCache() {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'getMasterData', lineUid: LINE_UID, params: {} })
+    });
+    const result = await response.json();
+    if (result.success && result.data) writeMasterDataCache(result.data);
+  } catch (err) {
+    console.error('マスタデータの先読み取得エラー:', err);
   }
 }
 
@@ -2615,21 +2652,30 @@ function applyCachedAnalyticsData() {
   if (cache.calendar) applyCalendarData(cache.calendar);
 }
 
-// 保存済みでない分析データだけをサーバーから取得する。
-// 取得中は画面中央のスピナーを表示する。すべて保存済みなら何もしない。
+// 保存済みでないデータだけをサーバーから取得する。
+// ・分析データ（この画面で表示する内容）が無い場合：画面中央のスピナーを
+// 　表示して取得する。
+// ・★liff_analytics_html24：マスタデータ（設定画面用）が無い・24時間を
+// 　過ぎている場合は、あわせて先読みする。アプリ起動後の最初の画面では
+// 　分析データも無いためスピナー表示中に取得され、その後の画面で待たされない。
+// 　マスタデータだけが無い場合は、この画面では使わないため、スピナーを
+// 　出さずに裏側で取得する。
 async function loadAnalyticsData() {
   const cache = readAnalyticsCache();
   const needSummary = !(cache && cache.summary);
   const needCalendar = !(cache && cache.calendar);
-  if (!needSummary && !needCalendar) return;
-  acquireLoadingOverlay();
+  const needMaster = !readMasterDataCache();
+  if (!needSummary && !needCalendar && !needMaster) return;
+  const showSpinner = needSummary || needCalendar;
+  if (showSpinner) acquireLoadingOverlay();
   try {
     await Promise.all([
       needSummary ? fetchAndApplyAnalyticsSummary() : Promise.resolve(),
-      needCalendar ? fetchAndApplyAnalyticsCalendar() : Promise.resolve()
+      needCalendar ? fetchAndApplyAnalyticsCalendar() : Promise.resolve(),
+      needMaster ? warmupMasterDataCache() : Promise.resolve()
     ]);
   } finally {
-    releaseLoadingOverlay();
+    if (showSpinner) releaseLoadingOverlay();
   }
 }
 

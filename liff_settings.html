@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録48 - AiPost</title>
+<title>設定・登録49 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録48</span>
+  <span class="header-logo">設定・登録49</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -745,9 +745,22 @@ async function initLiff() {
     // 　取得」の対象に加えた（設定画面自体は表示しないが、次に予約
     // 　確認画面を開いた時に即表示できるようキャッシュだけしておく）。
     const needsReservationList = !sessionStorage.getItem('aipost_reservation_list');
-    const needsAnyFetch = needsMasterFetch || needsProfileFetch || needsReservationList;
+
+    // ★liff_settings.html49：スピナーを出すのは、この画面で表示するデータ
+    // 　（マスタデータ・プロフィール）を新規取得する場合だけにした。
+    // 　予約一覧はこの画面では表示しないため、予約一覧が無いだけではスピナーを
+    // 　出さない（裏側で取得する）。
+    const needsAnyFetch = needsMasterFetch || needsProfileFetch;
 
     if (needsAnyFetch) setFormLoadingState(true);
+
+    // ★liff_settings.html49：この画面では使わないデータ（予約一覧・分析データ）
+    // 　の先読みを、マスタデータ・プロフィールの取得と同時に開始する。
+    // 　スピナー表示中（起動後の最初の画面など）は、すべての取得が終わるまで
+    // 　待ってから消す。スピナーを出していない場合は、待たずに裏側で続ける。
+    const warmTasks = [];
+    if (needsReservationList) warmTasks.push(warmupReservationListCache());
+    warmTasks.push(warmupAnalyticsCache());
 
     if (cachedMaster) {
       MASTER_DATA = cachedMaster;
@@ -763,9 +776,10 @@ async function initLiff() {
       await loadProfileAndSnsFresh();
     }
 
-    if (needsReservationList) await warmupReservationListCache();
-
-    if (needsAnyFetch) setFormLoadingState(false);
+    if (needsAnyFetch) {
+      await Promise.all(warmTasks);
+      setFormLoadingState(false);
+    }
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -788,6 +802,58 @@ async function warmupReservationListCache() {
   } catch (err) {
     console.error('予約一覧の先読み取得エラー:', err);
   }
+}
+
+// ★liff_settings.html49：分析データ（今日の状況・直近投稿・投稿日別データ）
+// 　の先読み。アプリ起動後の最初の画面が設定画面だった場合でも、その後に
+// 　分析画面を開いた時にスピナーが出ないよう、マスタデータ・プロフィール等と
+// 　同じ取得のタイミングで、保存済みでない分だけ取得して保存する。
+// 　キー・保存形式は liff_analytics.html と同一（sessionStorageの
+// 　`aipost_analytics`：{ summary, calendar }）。
+const ANALYTICS_CACHE_KEY = 'aipost_analytics';
+
+function readAnalyticsCache() {
+  try {
+    const raw = sessionStorage.getItem(ANALYTICS_CACHE_KEY);
+    if (!raw) return null;
+    const cache = JSON.parse(raw);
+    return cache && typeof cache === 'object' ? cache : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function writeAnalyticsCache(part, data) {
+  try {
+    const cache = readAnalyticsCache() || {};
+    cache[part] = data;
+    sessionStorage.setItem(ANALYTICS_CACHE_KEY, JSON.stringify(cache));
+  } catch (err) {
+    // sessionStorageが使えない環境でも動作は継続する
+  }
+}
+
+async function fetchAnalyticsPartToCache(action, part) {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: action, lineUid: LINE_UID, params: {} })
+    });
+    const result = await response.json();
+    if (!result.success || !result.data || result.data.error) return;
+    writeAnalyticsCache(part, result.data);
+  } catch (err) {
+    console.error('分析データの先読み取得エラー:', err);
+  }
+}
+
+// 保存済みでない分析データだけを取得して保存する（すべて保存済みなら何もしない）
+async function warmupAnalyticsCache() {
+  const cache = readAnalyticsCache();
+  const tasks = [];
+  if (!(cache && cache.summary)) tasks.push(fetchAnalyticsPartToCache('getAnalyticsSummary', 'summary'));
+  if (!(cache && cache.calendar)) tasks.push(fetchAnalyticsPartToCache('getAnalyticsCalendarData', 'calendar'));
+  await Promise.all(tasks);
 }
 
 // マスタデータ（業種カテゴリ等の選択肢）は頻繁に変わらないため、

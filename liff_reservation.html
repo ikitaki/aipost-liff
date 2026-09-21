@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更23 - AiPost</title>
+<title>予約確認・変更24 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -462,7 +462,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更23</span>
+  <span class="header-logo">予約確認・変更24</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -990,6 +990,109 @@ buildHistoryCalendar();
     applySubbarSnsTags(sns);
   }
 
+  // ★liff_reservation_html24：マスタデータ・分析データの先読み。
+  // 　アプリ起動後の最初の画面が予約確認画面だった場合でも、その後に設定画面・
+  // 　分析画面を開いた時にスピナーが出ないよう、プラン・SNS連携状況の取得と
+  // 　同じスピナー表示の間に、保存済みでないデータを一緒に取得して保存する。
+  // 　キー・保存形式は liff_settings.html／liff_analytics.html と同一。
+  // 　・マスタデータ（設定画面用）：localStorage・24時間TTL（設定画面の仕様）
+  // 　・分析データ：sessionStorageの`aipost_analytics`（{ summary, calendar }）
+  const MASTER_DATA_CACHE_KEY = 'aipost_master_data_cache';
+  const MASTER_DATA_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24時間
+  const ANALYTICS_CACHE_KEY = 'aipost_analytics';
+
+  function readMasterDataCache() {
+    try {
+      const raw = localStorage.getItem(MASTER_DATA_CACHE_KEY);
+      if (!raw) return null;
+      const cache = JSON.parse(raw);
+      if (!cache.fetchedAt || Date.now() - cache.fetchedAt > MASTER_DATA_CACHE_TTL_MS) return null;
+      return cache.data;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function writeMasterDataCache(data) {
+    try {
+      localStorage.setItem(MASTER_DATA_CACHE_KEY, JSON.stringify({ data: data, fetchedAt: Date.now() }));
+    } catch (err) {
+      // localStorageが使えない環境でも動作は継続する
+    }
+  }
+
+  // 保存済み（24時間以内）でなければマスタデータを取得して保存する
+  async function warmupMasterDataCache() {
+    if (readMasterDataCache()) return;
+    try {
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'getMasterData', lineUid: LINE_UID, params: {} })
+      });
+      const result = await response.json();
+      if (result.success && result.data) writeMasterDataCache(result.data);
+    } catch (err) {
+      console.error('マスタデータの先読み取得エラー:', err);
+    }
+  }
+
+  function readAnalyticsCache() {
+    try {
+      const raw = sessionStorage.getItem(ANALYTICS_CACHE_KEY);
+      if (!raw) return null;
+      const cache = JSON.parse(raw);
+      return cache && typeof cache === 'object' ? cache : null;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function writeAnalyticsCache(part, data) {
+    try {
+      const cache = readAnalyticsCache() || {};
+      cache[part] = data;
+      sessionStorage.setItem(ANALYTICS_CACHE_KEY, JSON.stringify(cache));
+    } catch (err) {
+      // sessionStorageが使えない環境でも動作は継続する
+    }
+  }
+
+  // 予約のキャンセル等で数値が変わる「今日の状況」（summary）だけを無効にする
+  // （投稿日別データ＝calendarは、投稿が実行されるまで変わらないため残す）
+  function invalidateAnalyticsSummaryCache() {
+    try {
+      const cache = readAnalyticsCache();
+      if (!cache) return;
+      delete cache.summary;
+      sessionStorage.setItem(ANALYTICS_CACHE_KEY, JSON.stringify(cache));
+    } catch (err) {
+      // 無効化に失敗しても画面の動作は継続する
+    }
+  }
+
+  async function fetchAnalyticsPartToCache(action, part) {
+    try {
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: action, lineUid: LINE_UID, params: {} })
+      });
+      const result = await response.json();
+      if (!result.success || !result.data || result.data.error) return;
+      writeAnalyticsCache(part, result.data);
+    } catch (err) {
+      console.error('分析データの先読み取得エラー:', err);
+    }
+  }
+
+  // 保存済みでない分析データだけを取得して保存する（すべて保存済みなら何もしない）
+  async function warmupAnalyticsCache() {
+    const cache = readAnalyticsCache();
+    const tasks = [];
+    if (!(cache && cache.summary)) tasks.push(fetchAnalyticsPartToCache('getAnalyticsSummary', 'summary'));
+    if (!(cache && cache.calendar)) tasks.push(fetchAnalyticsPartToCache('getAnalyticsCalendarData', 'calendar'));
+    await Promise.all(tasks);
+  }
+
   // ★liff_reservation_html16：起動時にキャッシュが無く実際に取得する
   // 　場合のみ（showOverlay=true）、設定画面と同じ見た目のスピナーを
   // 　表示する（画面ごとに読み込み表現がバラバラだった点への対応）。
@@ -999,10 +1102,14 @@ buildHistoryCalendar();
     const overlay = document.getElementById('profile-loading-overlay');
     if (showOverlay && overlay) overlay.classList.add('open');
     try {
-      const [profileRes, snsRes] = await Promise.all([
+      const tasks = [
         fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID }) }),
         fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID }) })
-      ]);
+      ];
+      // ★liff_reservation_html24：スピナーを出している間（起動後の最初の画面）に、
+      // 　他画面が使うマスタデータ・分析データも一緒に取得する（保存済みなら何もしない）
+      if (showOverlay) tasks.push(warmupMasterDataCache(), warmupAnalyticsCache());
+      const [profileRes, snsRes] = await Promise.all(tasks);
       const profileResult = await profileRes.json();
       const snsResult = await snsRes.json();
       if (!profileResult.success || !profileResult.data || profileResult.data.found === false) return;
@@ -1030,6 +1137,10 @@ buildHistoryCalendar();
     const cached = readQuotaCache();
     if (cached) {
       applyQuotaValues(cached.plan, cached.remainingReservable, cached.sns);
+      // ★liff_reservation_html24：この画面では使わないデータ（マスタデータ・分析データ）
+      // 　が保存されていなければ、スピナーを出さずに裏側で取得する
+      warmupMasterDataCache();
+      warmupAnalyticsCache();
     } else {
       fetchReservationQuota(true);
     }
@@ -1197,6 +1308,10 @@ buildHistoryCalendar();
         closeDetail();
         fetchAndRenderReservationList(true);
         fetchReservationQuota();
+        // ★liff_reservation_html24：キャンセルで今月の投稿枠が変わるため、分析の
+        // 　「今日の状況」の保存済みデータを無効にし、裏側（スピナーなし）で取得し直す
+        invalidateAnalyticsSummaryCache();
+        warmupAnalyticsCache();
       } else {
         alert((result.data && result.data.error) || 'キャンセルに失敗しました。もう一度お試しください。');
       }
