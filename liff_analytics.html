@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析19 - AiPost</title>
+<title>分析20 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -162,7 +162,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析19</span>
+  <span class="header-logo">分析20</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -1884,18 +1884,25 @@ function toggleAcc(id) {
 }
 
 // ===== カレンダー共通関数 =====
-const FIRST_DAY = 1;
-const DAYS = 30;
-const TODAY = 17;
+// ★liff_analytics_html20：カレンダーを実データ（getAnalyticsCalendarData）
+// 　に対応。表示月・1日の曜日・日数・今日の日は、初期表示時のみ端末の
+// 　日付から求め、GASからの応答を受け取った後はGAS側の値に置き換える。
+const _calNow = new Date();
+let CAL_YEAR = _calNow.getFullYear();
+let CAL_MONTH = _calNow.getMonth() + 1;
+let FIRST_DAY = new Date(CAL_YEAR, CAL_MONTH - 1, 1).getDay();
+let DAYS = new Date(CAL_YEAR, CAL_MONTH, 0).getDate();
+let TODAY = _calNow.getDate();
 
 function buildCal(gridId, data, badgeColor, onClickFn) {
   const grid = document.getElementById(gridId);
   if (!grid) return;
   grid.innerHTML = '';
+  const prevMonthDays = new Date(CAL_YEAR, CAL_MONTH - 1, 0).getDate();
   for (let i = 0; i < FIRST_DAY; i++) {
     const blank = document.createElement('div');
     blank.className = 'cal-date other-month';
-    blank.textContent = 31;
+    blank.textContent = prevMonthDays - FIRST_DAY + 1 + i;
     grid.appendChild(blank);
   }
   for (let d = 1; d <= DAYS; d++) {
@@ -1923,162 +1930,82 @@ function buildCal(gridId, data, badgeColor, onClickFn) {
   }
 }
 
-// ===== 統合カレンダー用デモデータ =====
-const unifiedBadge = {1:1, 3:1, 5:1, 7:1, 9:2, 11:1, 13:1, 15:1, 17:1, 19:1, 21:1, 23:1, 25:10};
+// ===== 統合カレンダー用データ（実データ） =====
+// ★liff_analytics_html20：デモ用の固定データを廃止。getAnalyticsCalendarData
+// 　の応答を applyCalendarData() で変換して格納する（初期状態は空）。
+let unifiedBadge = {};
+let unifiedData = {};
 
-const unifiedData = {
-  1:[{
-    time:'09:01',
-    text:'週末限定✨抹茶テリーヌが本日より登場です🍵濃厚な宇治抹茶の香りとなめらかな口当たりが絶品。地元農家から直送した厳選抹茶を使用した自慢の一品です。数量限定のため、お早めにどうぞ！ご来店お待ちしております😊 #渋谷カフェ #週末限定 #抹茶テリーヌ',
-    sns:{
-      Instagram:{t1:'10:01',t3:'12:01',t24:'翌09:01', h1:{likes:14,comments:2,eg:'1.8%'}, h3:{likes:38,comments:6,eg:'4.8%'}, h24:{likes:52,comments:9,eg:'7.6%'}},
-      X:        {t1:'10:01',t3:'12:01',t24:'翌09:01', h1:{likes:18,reposts:4,replies:2,imprs:284,eg:'3.2%'}, h3:{likes:42,reposts:11,replies:6,imprs:612,eg:'7.4%'}, h24:{likes:59,reposts:18,replies:9,imprs:924,eg:'10.8%'}},
-    }
-  }],
-  3:[{
-    time:'12:02',
-    text:'本日のスペシャルティコーヒーはエチオピア・イルガチェフェ産☕️フルーティで華やかな香りが特徴の希少豆を丁寧にハンドドリップでご提供します。数量限定・売り切れ次第終了ですのでお早めに！ #スペシャルティコーヒー #渋谷 #ハンドドリップ',
-    sns:{
-      Instagram:{h1:{likes:22,comments:3,eg:'2.4%'}, h3:{likes:51,comments:8,eg:'5.8%'}, h24:{likes:76,comments:12,eg:'8.6%'}},
-    }
-  }],
-  5:[{
-    time:'18:01',
-    text:'🌿夏季限定メニューがスタートしました！冷たくさわやかなフルーツティーと、見た目も華やかなサマーパフェが登場。暑い季節にぴったりの涼しいひとときをお届けします🍧お席のご予約はDMでどうぞ #渋谷カフェ #夏限定 #サマーパフェ',
-    sns:{
-      X:        {h1:{likes:28,reposts:6,replies:3,imprs:412,eg:'4.8%'}, h3:{likes:58,reposts:14,replies:8,imprs:824,eg:'9.2%'}, h24:{likes:84,reposts:22,replies:12,imprs:'1.2K',eg:'12.4%'}},
-      Threads:  {h1:{likes:14,reposts:2,replies:3,imprs:198,eg:'2.8%'}, h3:{likes:32,reposts:5,replies:7,imprs:412,eg:'6.4%'}, h24:{likes:48,reposts:9,replies:12,imprs:612,eg:'9.8%'}},
-    }
-  }],
-  7:[{
-    time:'12:03',
-    text:'🍽️新しいランチセットが始まりました！旬の野菜をたっぷり使ったプレートランチ、スープ・ドリンク付きで980円（税込）。月〜金曜日の11:30〜14:00限定です。近くにお越しの際はぜひお立ち寄りください😊 #渋谷ランチ #日替わりランチ #野菜たっぷり',
-    sns:{
-      Instagram:{h1:{likes:24,comments:3,eg:'2.6%'}, h3:{likes:54,comments:9,eg:'6.2%'}, h24:{likes:82,comments:14,eg:'9.8%'}},
-      X:        {h1:{likes:22,reposts:5,replies:2,imprs:328,eg:'3.8%'}, h3:{likes:48,reposts:12,replies:5,imprs:712,eg:'8.4%'}, h24:{likes:72,reposts:19,replies:8,imprs:'1.1K',eg:'12.2%'}},
-    }
-  }],
-  9:[
-    {time:'11:00',
-    text:'今週のおすすめスイーツをご紹介します🍵✨抹茶の濃厚な香りとなめらかな口当たりが絶品の「抹茶テリーヌ」が週末限定で登場！地元産の厳選抹茶を使用した特別な一品です。数量限定のため、お早めにどうぞ。ご来店お待ちしております😊 #渋谷カフェ #週末限定 #抹茶スイーツ',
-    sns:{
-      Instagram:{t1:'12:02',t3:'14:02',t24:'翌11:02', h1:{likes:28,comments:4,eg:'2.1%'}, h3:{likes:75,comments:11,eg:'5.7%'}, h24:{likes:126,comments:18,eg:'9.8%'}},
-      X:        {t1:'12:02',t3:'14:02',t24:'翌11:02', h1:{likes:42,reposts:8,replies:3,imprs:'1.2K',eg:'4.4%'}, h3:{likes:98,reposts:22,replies:9,imprs:'2.8K',eg:'10.8%'}, h24:{likes:142,reposts:40,replies:18,imprs:'4.2K',eg:'14.2%'}},
-    }},
-    {time:'18:02',
-    text:'🌙本日のディナー情報をお届けします！シェフ特製のパスタ2種類が本日限りの特別価格で登場🍝トマトクリームと明太子クリームの2種。どちらも自家製麺を使った自慢の一品です。ぜひこの機会にお試しください #渋谷ディナー #パスタ #今夜のご飯',
-    sns:{
-      X:        {h1:{likes:18,reposts:3,replies:2,imprs:282,eg:'2.8%'}, h3:{likes:38,reposts:8,replies:4,imprs:584,eg:'6.2%'}, h24:{likes:58,reposts:14,replies:7,imprs:842,eg:'9.4%'}},
-      Threads:  {h1:{likes:8,reposts:1,replies:2,imprs:112,eg:'1.8%'}, h3:{likes:18,reposts:3,replies:5,imprs:248,eg:'4.2%'}, h24:{likes:28,reposts:6,replies:8,imprs:384,eg:'6.8%'}},
-    }},
-  ],
-  11:[{
-    time:'09:02',
-    text:'☀️おはようございます！本日のモーニングセットは、自家製パンとスープ・サラダ・ドリンクが付いた豪華プレートを680円でご提供します。朝8時から10時30分まで。テレワークにも最適な静かな空間でゆっくりとお過ごしください🥐 #渋谷モーニング #朝活 #テレワーク',
-    sns:{
-      Instagram:{h1:{likes:38,comments:6,eg:'3.8%'}, h3:{likes:68,comments:14,eg:'7.2%'}, h24:{likes:88,comments:18,eg:'9.8%'}},
-    }
-  }],
-  13:[{
-    time:'12:01',
-    text:'🌴週末限定ドリンクが本日より登場しました！南国フルーツをたっぷり使ったトロピカルスムージーは飲んだ瞬間に夏の気分を満喫できる爽やかな一杯です🥤パイナップル・マンゴー・ライチの3種からお選びいただけます。数量限定です #渋谷カフェ #トロピカル #夏ドリンク',
-    sns:{
-      Instagram:{h1:{likes:32,comments:5,eg:'3.2%'}, h3:{likes:68,comments:12,eg:'7.2%'}, h24:{likes:97,comments:18,eg:'11.4%'}},
-    }
-  }],
-  15:[{
-    time:'18:01',
-    text:'🍹今週末もたくさんのご来店ありがとうございました！週末限定のスペシャルカクテルは大変ご好評をいただきました。来週末も新しいフレーバーをご用意する予定です。楽しみにしていてください✨また来週もお待ちしております #渋谷バー #週末限定 #カクテル',
-    sns:{
-      X:        {h1:{likes:32,reposts:7,replies:4,imprs:484,eg:'5.2%'}, h3:{likes:68,reposts:16,replies:9,imprs:984,eg:'10.8%'}, h24:{likes:98,reposts:24,replies:14,imprs:'1.4K',eg:'14.2%'}},
-      Threads:  {h1:{likes:12,reposts:2,replies:3,imprs:168,eg:'2.4%'}, h3:{likes:28,reposts:5,replies:7,imprs:354,eg:'5.8%'}, h24:{likes:42,reposts:9,replies:11,imprs:524,eg:'8.6%'}},
-    }
-  }],
-  17:[{
-    time:'13:02',
-    text:'📸本日のおすすめランチプレートをご紹介！季節の野菜をふんだんに使ったカラフルなプレートは見た目も楽しく栄養満点。スープ・ドリンクつきで1,200円（税込）です。窓際の明るい席でゆっくりランチをお楽しみください😊 #渋谷ランチ #野菜ランチ #ヘルシー',
-    sns:{
-      Instagram:{h1:{likes:42,comments:6,eg:'4.2%'}, h3:{likes:88,comments:14,eg:'8.8%'}, h24:{likes:124,comments:22,eg:'12.4%'}},
-      X:        {h1:{likes:38,reposts:8,replies:4,imprs:'1.1K',eg:'5.8%'}, h3:{likes:84,reposts:18,replies:9,imprs:'2.4K',eg:'12.4%'}, h24:{likes:118,reposts:28,replies:14,imprs:'3.6K',eg:'16.8%'}},
-    }
-  }],
-  19:[{
-    time:'10:01',
-    text:'🌸本日より新メニューが登場します！桃とマスカルポーネチーズのタルトは季節限定の特別スイーツ🍑なめらかなチーズクリームと甘い桃の組み合わせが絶品です。ご予約なしでお越しいただけますが数量に限りがございます。お早めにどうぞ #渋谷スイーツ #タルト #季節限定',
-    sns:{
-      Instagram:{h1:{likes:54,comments:8,eg:'5.4%'}, h3:{likes:112,comments:18,eg:'11.2%'}, h24:{likes:158,comments:26,eg:'15.8%'}},
-    }
-  }],
-  21:[{
-    time:'19:02',
-    text:'🎸本日は月に一度のライブイベントを開催しました！地元アーティストの素敵な演奏とともに、特製カクテルを楽しんでいただける素晴らしい夜でした🍹ご来場いただいた皆さまありがとうございました。次回は来月第3水曜日を予定しています #渋谷ライブ #音楽カフェ #ジャズ',
-    sns:{
-      Instagram:{h1:{likes:62,comments:12,eg:'6.2%'}, h3:{likes:128,comments:24,eg:'12.8%'}, h24:{likes:184,comments:36,eg:'18.4%'}},
-      X:        {h1:{likes:48,reposts:12,replies:8,imprs:'1.4K',eg:'8.2%'}, h3:{likes:102,reposts:28,replies:18,imprs:'3.2K',eg:'16.8%'}, h24:{likes:148,reposts:42,replies:26,imprs:'4.8K',eg:'22.4%'}},
-      Threads:  {h1:{likes:22,reposts:4,replies:6,imprs:312,eg:'4.4%'}, h3:{likes:48,reposts:10,replies:14,imprs:684,eg:'9.8%'}, h24:{likes:72,reposts:16,replies:22,imprs:'1.0K',eg:'14.8%'}},
-    }
-  }],
-  23:[{
-    time:'11:30',
-    text:'☕️今月のコーヒー豆セレクションをご紹介します！今月はコロンビア・ナリーニョ産のウォッシュドプロセスをご用意しました。チョコレートのような甘みとほのかな酸味が特徴の飲みやすい一杯です。100gから購入可能・店頭のみの販売となります #スペシャルティコーヒー #コーヒー豆 #コロンビア',
-    sns:{
-      Instagram:{h1:{likes:28,comments:4,eg:'2.8%'}, h3:{likes:62,comments:10,eg:'6.2%'}, h24:{likes:88,comments:16,eg:'8.8%'}},
-    }
-  }],
-  25:[
-    {time:'08:00', text:'☀️おはようございます！本日は特別なモーニングイベントを開催します。シェフ特製の朝食プレートとスペシャルティコーヒーのペアリングをお楽しみください🥐☕️朝8時から10時まで限定20席。ご予約は不要ですのでお気軽にお越しください😊 #渋谷モーニング #朝活カフェ #特別イベント',
-    sns:{
-      X:       {t1:'09:01',t3:'11:01',t24:'翌08:01', h1:{likes:42,reposts:8,replies:5,imprs:'1.1K',eg:'5.2%'}, h3:{likes:88,reposts:18,replies:12,imprs:'2.4K',eg:'10.8%'}, h24:{likes:124,reposts:28,replies:18,imprs:'3.6K',eg:'14.8%'}},
-      Instagram:{t1:'09:01',t3:'11:01',t24:'翌08:01', h1:{likes:58,comments:9,eg:'5.8%'}, h3:{likes:124,comments:22,eg:'12.4%'}, h24:{likes:178,comments:34,eg:'17.8%'}},
-      Threads: {t1:'09:01',t3:'11:01',t24:'翌08:01', h1:{likes:18,reposts:3,replies:4,imprs:284,eg:'3.8%'}, h3:{likes:42,reposts:8,replies:10,imprs:612,eg:'8.2%'}, h24:{likes:64,reposts:14,replies:16,imprs:924,eg:'12.4%'}},
-    }},
-    {time:'09:30', text:'🍵本日限定！抹茶ラテと和スイーツのセットが特別価格980円でご提供中です。濃厚な宇治抹茶を使用した本格抹茶ラテと、季節の和菓子の組み合わせは絶品です✨数量限定のためお早めにどうぞ。店内でのゆったりとしたひとときをお楽しみください #抹茶ラテ #和スイーツ #渋谷カフェ',
-    sns:{
-      X:       {t1:'10:31',t3:'12:31',t24:'翌09:31', h1:{likes:38,reposts:6,replies:4,imprs:924,eg:'4.8%'}, h3:{likes:82,reposts:14,replies:10,imprs:'2.1K',eg:'9.8%'}, h24:{likes:118,reposts:22,replies:16,imprs:'3.2K',eg:'13.8%'}},
-      Instagram:{t1:'10:31',t3:'12:31',t24:'翌09:31', h1:{likes:52,comments:8,eg:'5.2%'}, h3:{likes:112,comments:18,eg:'11.2%'}, h24:{likes:162,comments:28,eg:'16.2%'}},
-    }},
-    {time:'11:00', text:'🌿本日のランチは旬の夏野菜をたっぷり使ったビーガンプレートが新登場！有機野菜を使った彩り豊かな一皿は見た目も美しく栄養満点です🥗スープ・ドリンク付きで1,100円（税込）。月〜土曜日のランチタイム限定メニューです。ぜひお試しください #ビーガン #オーガニック #渋谷ランチ',
-    sns:{
-      Instagram:{t1:'12:01',t3:'14:01',t24:'翌11:01', h1:{likes:44,comments:7,eg:'4.4%'}, h3:{likes:96,comments:16,eg:'9.6%'}, h24:{likes:142,comments:24,eg:'14.2%'}},
-    }},
-    {time:'12:30', text:'☕️本日のスペシャルコーヒーはパナマ・ゲイシャ種！フローラルでジャスミンのような香りが広がる世界最高峰のコーヒー豆を本日限定でご提供します。一杯一杯丁寧にハンドドリップでお作りします。数量は残り僅かです🌸 #パナマゲイシャ #スペシャルティコーヒー #渋谷',
-    sns:{
-      X:       {t1:'13:31',t3:'15:31',t24:'翌12:31', h1:{likes:56,reposts:12,replies:8,imprs:'1.6K',eg:'7.2%'}, h3:{likes:118,reposts:26,replies:18,imprs:'3.8K',eg:'14.8%'}, h24:{likes:168,reposts:42,replies:28,imprs:'5.6K',eg:'19.8%'}},
-      Threads: {t1:'13:31',t3:'15:31',t24:'翌12:31', h1:{likes:28,reposts:5,replies:6,imprs:412,eg:'5.8%'}, h3:{likes:62,reposts:12,replies:14,imprs:924,eg:'11.2%'}, h24:{likes:92,reposts:20,replies:22,imprs:'1.4K',eg:'16.8%'}},
-    }},
-    {time:'14:00', text:'🎂本日はお客様からうれしいご報告をいただきました！当店の抹茶テリーヌを記念日に選んでいただいたとのこと、誠にありがとうございます💕大切な記念日に選んでいただけることはスタッフ一同の励みになります。これからも皆さまの特別な日に寄り添えるよう努めてまいります #渋谷カフェ #記念日 #ありがとうございます',
-    sns:{
-      Instagram:{t1:'15:01',t3:'17:01',t24:'翌14:01', h1:{likes:78,comments:14,eg:'7.8%'}, h3:{likes:164,comments:32,eg:'16.4%'}, h24:{likes:236,comments:48,eg:'23.6%'}},
-      X:       {t1:'15:01',t3:'17:01',t24:'翌14:01', h1:{likes:64,reposts:14,replies:10,imprs:'1.8K',eg:'8.4%'}, h3:{likes:138,reposts:32,replies:22,imprs:'4.2K',eg:'16.8%'}, h24:{likes:198,reposts:52,replies:36,imprs:'6.4K',eg:'22.8%'}},
-    }},
-    {time:'15:30', text:'🍰本日のおやつタイムのおすすめはイチジクとクリームチーズのタルトです！秋の味覚イチジクのとろりとした甘みと濃厚なクリームチーズの組み合わせが絶品。季節限定のため今週末まで。コーヒーとの相性も抜群です☕️ぜひ一度お試しください #イチジク #タルト #秋スイーツ',
-    sns:{
-      Instagram:{t1:'16:31',t3:'18:31',t24:'翌15:31', h1:{likes:48,comments:8,eg:'4.8%'}, h3:{likes:102,comments:18,eg:'10.2%'}, h24:{likes:148,comments:28,eg:'14.8%'}},
-      Threads: {t1:'16:31',t3:'18:31',t24:'翌15:31', h1:{likes:22,reposts:4,replies:5,imprs:328,eg:'4.8%'}, h3:{likes:48,reposts:10,replies:12,imprs:712,eg:'9.8%'}, h24:{likes:72,reposts:16,replies:18,imprs:'1.1K',eg:'13.8%'}},
-    }},
-    {time:'17:00', text:'🌆本日のディナータイムは17時からのオープンです！本日のシェフおすすめコースは国産和牛を使ったローストビーフプレート。丁寧に低温調理した柔らかいお肉はまさに絶品です🥩スープ・サラダ・デザート付きで3,200円（税込）ご予約をおすすめします #渋谷ディナー #和牛 #ローストビーフ',
-    sns:{
-      X:       {t1:'18:01',t3:'20:01',t24:'翌17:01', h1:{likes:52,reposts:10,replies:7,imprs:'1.4K',eg:'6.8%'}, h3:{likes:112,reposts:24,replies:16,imprs:'3.2K',eg:'13.8%'}, h24:{likes:162,reposts:38,replies:24,imprs:'4.8K',eg:'18.8%'}},
-      Instagram:{t1:'18:01',t3:'20:01',t24:'翌17:01', h1:{likes:62,comments:11,eg:'6.2%'}, h3:{likes:132,comments:24,eg:'13.2%'}, h24:{likes:192,comments:38,eg:'19.2%'}},
-    }},
-    {time:'18:30', text:'🍷本日限定のワインペアリングディナーがスタートしました！フランス産自然派ワイン3種と季節の食材を使ったコース料理のマリアージュをお楽しみいただけます。ソムリエが丁寧にご説明しながらご提供いたします🌿お席は残り2席となっております #ワインペアリング #自然派ワイン #渋谷ディナー',
-    sns:{
-      Instagram:{t1:'19:31',t3:'21:31',t24:'翌18:31', h1:{likes:72,comments:14,eg:'7.2%'}, h3:{likes:152,comments:28,eg:'15.2%'}, h24:{likes:218,comments:44,eg:'21.8%'}},
-      Threads: {t1:'19:31',t3:'21:31',t24:'翌18:31', h1:{likes:32,reposts:7,replies:9,imprs:512,eg:'7.2%'}, h3:{likes:68,reposts:16,replies:20,imprs:'1.1K',eg:'13.8%'}, h24:{likes:98,reposts:26,replies:32,imprs:'1.8K',eg:'19.8%'}},
-    }},
-    {time:'20:00', text:'🌙本日もたくさんのご来店ありがとうございました！特別モーニングイベントから始まり、スペシャルコーヒー・ビーガンランチ・ワインペアリングディナーと盛りだくさんの一日でした✨明日も皆さまのご来店を心よりお待ちしております。おやすみなさい🌟 #渋谷カフェ #本日もありがとう #明日もよろしく',
-    sns:{
-      X:       {t1:'21:01',t3:'23:01',t24:'翌20:01', h1:{likes:88,reposts:18,replies:14,imprs:'2.4K',eg:'11.2%'}, h3:{likes:182,reposts:42,replies:32,imprs:'5.6K',eg:'21.8%'}, h24:{likes:264,reposts:68,replies:52,imprs:'8.4K',eg:'28.4%'}},
-      Instagram:{t1:'21:01',t3:'23:01',t24:'翌20:01', h1:{likes:98,comments:18,eg:'9.8%'}, h3:{likes:208,comments:42,eg:'20.8%'}, h24:{likes:312,comments:64,eg:'31.2%'}},
-      Threads: {t1:'21:01',t3:'23:01',t24:'翌20:01', h1:{likes:44,reposts:10,replies:12,imprs:712,eg:'9.8%'}, h3:{likes:96,reposts:24,replies:28,imprs:'1.6K',eg:'19.8%'}, h24:{likes:142,reposts:38,replies:44,imprs:'2.4K',eg:'28.4%'}},
-    }},
-    {time:'21:30', text:'🎵本日のクロージングタイムはジャズピアノの生演奏でお送りしました！渋谷在住のピアニスト田中さんの素晴らしい演奏に店内は大変盛り上がりました🎹次回の生演奏イベントは来月第4水曜日を予定しています。ぜひお楽しみに✨ご来場いただいた皆さまに感謝 #渋谷ジャズ #生演奏 #ピアノ',
-    sns:{
-      Instagram:{t1:'22:31',t3:'翌00:31',t24:'翌21:31', h1:{likes:68,comments:12,eg:'6.8%'}, h3:{likes:144,comments:26,eg:'14.4%'}, h24:{likes:212,comments:42,eg:'21.2%'}},
-      X:       {t1:'22:31',t3:'翌00:31',t24:'翌21:31', h1:{likes:58,reposts:12,replies:9,imprs:'1.6K',eg:'7.8%'}, h3:{likes:122,reposts:28,replies:22,imprs:'3.8K',eg:'15.8%'}, h24:{likes:178,reposts:46,replies:36,imprs:'5.8K',eg:'21.8%'}},
-    }},
-  ],
-};
+// 投稿本文などをinnerHTMLに入れる前のエスケープ（改行は<br>に変換）
+function escapeHtmlText(s) {
+  return String(s === undefined || s === null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/\r?\n/g, '<br>');
+}
+
+// 1,000以上の数を「1.2K」形式にする（それ未満はそのまま）
+function formatCalCount(n) {
+  const num = Number(n);
+  if (isNaN(num)) return n;
+  return num >= 1000 ? (Math.round(num / 100) / 10) + 'K' : num;
+}
+
+// GASの指標オブジェクト（h1／h3／h24）を、makeSNSBlock用の表示値に変換する
+function convertCalendarMetrics(h) {
+  if (!h) return undefined;
+  if (h.deleted) return { deleted: true };
+  const out = {};
+  Object.keys(h).forEach(function (k) {
+    if (k === 'eg') out.eg = h.eg + '%';
+    else if (k === 'imprs') out.imprs = formatCalCount(h.imprs);
+    else out[k] = h[k];
+  });
+  return out;
+}
+
+// GASの投稿オブジェクトを、カレンダー詳細表示用の形（time／text／sns）に変換する
+function convertCalendarPost(post) {
+  const sns = {};
+  Object.keys(post.sns || {}).forEach(function (snsKey) {
+    const s = post.sns[snsKey] || {};
+    const o = {};
+    ['t1', 't3', 't24'].forEach(function (t) { if (s[t] !== undefined) o[t] = s[t]; });
+    ['h1', 'h3', 'h24'].forEach(function (h) { if (s[h] !== undefined) o[h] = convertCalendarMetrics(s[h]); });
+    sns[snsKey] = o;
+  });
+  return { time: post.time, text: escapeHtmlText(post.honbun), sns: sns };
+}
+
+// getAnalyticsCalendarDataの応答を反映し、3タブ分のカレンダーを作り直す
+function applyCalendarData(cal) {
+  CAL_YEAR = cal.year;
+  CAL_MONTH = cal.month;
+  FIRST_DAY = cal.firstDayOfWeek;
+  DAYS = cal.daysInMonth;
+  TODAY = cal.today;
+
+  unifiedBadge = {};
+  unifiedData = {};
+  Object.keys(cal.days || {}).forEach(function (dayKey) {
+    const posts = cal.days[dayKey] || [];
+    unifiedBadge[dayKey] = posts.length;
+    unifiedData[dayKey] = posts.map(convertCalendarPost);
+  });
+
+  // 開いている詳細を閉じて、カレンダーを再構築する
+  lastUnifiedDay = null;
+  ['cal-lite-detail', 'cal-std-detail', 'cal-unified-detail'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  buildCal('cal-unified', unifiedBadge, '#1a237e', (d) => showUnified(d));
+  buildCal('cal-std-unified', unifiedBadge, '#1a237e', (d) => showStdUnified(d));
+  buildCal('cal-lite-unified', unifiedBadge, '#1a237e', (d) => showLiteUnified(d));
+}
 
 // SNSアイコン・カラー定義
 const snsStyle = {
@@ -2090,12 +2017,26 @@ const snsStyle = {
 // タイミングラベル
 const timingLabel = {h1:'1時間後', h3:'3時間後', h24:'24時間後'};
 
+// SNSのデータが無い場合（未取得・削除済み）に表示する簡易ブロック
+function makeNoDataBlock(snsKey, message) {
+  const s = snsStyle[snsKey] || {label:snsKey,color:'#555'};
+  return `<div style="margin-bottom:10px;">
+    <div style="font-size:11px;font-weight:700;color:${s.color};margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">${s.label}</div>
+    <div style="font-size:10px;color:var(--text-light);">${message}</div>
+  </div>`;
+}
+
 function makeSNSBlock(snsKey, snsData) {
   const s = snsStyle[snsKey] || {label:snsKey,color:'#555'};
   const h1 = snsData.h1 || {};
   const h3 = snsData.h3 || {};
   const h24 = snsData.h24 || {};
   const fmt = v => v === undefined ? '--' : v;
+
+  // 削除済み（元投稿が見つからない）の場合
+  if (h1.deleted || h3.deleted || h24.deleted) {
+    return makeNoDataBlock(snsKey, '投稿が見つかりません（削除された可能性があります）');
+  }
 
   // 使用するアイコンと値を収集
   const metrics = [];
@@ -2117,6 +2058,11 @@ function makeSNSBlock(snsKey, snsData) {
     metrics.push({icon:'👁️', h1:h1.imprs, h3:h3.imprs, h24:h24.imprs});
   if (h1.eg!==undefined || h3.eg!==undefined || h24.eg!==undefined)
     metrics.push({icon:'📊', h1:h1.eg, h3:h3.eg, h24:h24.eg});
+
+  // まだ1つもデータが取得されていない場合
+  if (metrics.length === 0) {
+    return makeNoDataBlock(snsKey, 'まだデータが取得されていません');
+  }
 
   const cols = metrics.length;
   const gridCols = `52px repeat(${cols}, 1fr)`;
@@ -2157,7 +2103,7 @@ function showUnified(d) {
   }
   lastUnifiedDay = d;
   const posts = unifiedData[d] || [];
-  document.getElementById('cal-unified-date').textContent = '6月' + d + '日の投稿';
+  document.getElementById('cal-unified-date').textContent = CAL_MONTH + '月' + d + '日の投稿';
   let html = '';
   const SNS_ORDER = ['X', 'Instagram', 'Threads'];
   posts.forEach((post, i) => {
@@ -2244,7 +2190,7 @@ function showStdUnified(d) {
   if (!detailEl) return;
   const postData = unifiedData ? unifiedData[d] : null;
   detailEl.style.display = 'block';
-  document.getElementById('cal-std-date').textContent = '6月' + d + '日の投稿';
+  document.getElementById('cal-std-date').textContent = CAL_MONTH + '月' + d + '日の投稿';
   let html = '';
   if (postData) {
     const posts = Array.isArray(postData) ? postData : [postData];
@@ -2252,7 +2198,10 @@ function showStdUnified(d) {
       if (posts.length > 1) html += `<div style="font-size:11px;font-weight:700;color:var(--text);margin:6px 0 4px;">${post.time} 投稿</div>`;
       for (const snsKey of Object.keys(post.sns)) {
         const d24 = post.sns[snsKey].h24;
-        if (!d24) continue;
+        if (!d24) {
+          html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です');
+          continue;
+        }
         html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 });
       }
     });
@@ -2269,7 +2218,7 @@ function showLiteUnified(d) {
   if (!detailEl) return;
   const postData = unifiedData ? unifiedData[d] : null;
   detailEl.style.display = 'block';
-  document.getElementById('cal-lite-date').textContent = '6月' + d + '日の投稿';
+  document.getElementById('cal-lite-date').textContent = CAL_MONTH + '月' + d + '日の投稿';
   let html = '';
   if (postData) {
     const posts = Array.isArray(postData) ? postData : [postData];
@@ -2277,7 +2226,10 @@ function showLiteUnified(d) {
       if (posts.length > 1) html += `<div style="font-size:11px;font-weight:700;color:var(--text);margin:6px 0 4px;">${post.time} 投稿</div>`;
       for (const snsKey of Object.keys(post.sns)) {
         const d24 = post.sns[snsKey].h24;
-        if (!d24) continue;
+        if (!d24) {
+          html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です');
+          continue;
+        }
         html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 });
       }
     });
@@ -2432,6 +2384,7 @@ async function initLiff() {
     LINE_UID = idToken.sub;
     applyQuotaFromCacheOrFetch();
     fetchAndApplyAnalyticsSummary();
+    fetchAndApplyAnalyticsCalendar();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -2555,6 +2508,25 @@ async function fetchAndApplyAnalyticsSummary() {
     });
   } catch (err) {
     console.error('分析データの取得エラー:', err);
+  }
+}
+
+// ★liff_analytics_html20：「投稿日別データ」カードの実データ取得
+// 　（getAnalyticsCalendarData）。取得できるまでカレンダーは空のまま表示する。
+async function fetchAndApplyAnalyticsCalendar() {
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'getAnalyticsCalendarData', lineUid: LINE_UID, params: { plan: currentActualPlan } })
+    });
+    const result = await response.json();
+    if (!result.success || !result.data || result.data.error) {
+      console.error('投稿日別データの取得エラー:', result.data && result.data.error);
+      return;
+    }
+    applyCalendarData(result.data);
+  } catch (err) {
+    console.error('投稿日別データの取得エラー:', err);
   }
 }
 
