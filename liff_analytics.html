@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析22 - AiPost</title>
+<title>分析23 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -164,7 +164,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析22</span>
+  <span class="header-logo">分析23</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -2224,7 +2224,8 @@ function showStdUnified(d) {
     html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません</p>';
   }
   html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ STANDARDプランは24時間後のデータのみ取得されます</p>';
-  html += '<p style="font-size:9px;color:#e65100;font-weight:700;margin-top:2px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>';
+  // ★liff_analytics_html23：カード下部の固定案内と重複していた「💎 1時間後・3時間後のデータは
+  // 　PROプランで確認できます」の追加を削除（固定案内に一本化）
   document.getElementById('cal-std-sns').innerHTML = html;
 }
 
@@ -2252,7 +2253,7 @@ function showLiteUnified(d) {
     html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません</p>';
   }
   html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ LITEプランは24時間後のデータのみ取得されます</p>';
-  html += '<p style="font-size:9px;color:#e65100;font-weight:700;margin-top:2px;">💎 より詳しいデータはSTANDARD・PROプランで確認できます</p>';
+  // ★liff_analytics_html23：カード下部の固定案内と重複していた💎の追加を削除（固定案内に一本化）
   document.getElementById('cal-lite-sns').innerHTML = html;
 }
 
@@ -2342,11 +2343,27 @@ async function warmupReservationListCache() {
   }
 }
 
+// ★liff_analytics_html23：読み込み中スピナー（画面中央）を、複数の取得処理
+// 　（プラン等の共有キャッシュ／分析データ）で共用するためのカウンター。
+// 　すべての取得が終わるまでスピナーを出し続ける。
+let loadingOverlayCount = 0;
+function acquireLoadingOverlay() {
+  loadingOverlayCount++;
+  const overlay = document.getElementById('profile-loading-overlay');
+  if (overlay) overlay.style.display = 'flex';
+}
+function releaseLoadingOverlay() {
+  loadingOverlayCount = Math.max(0, loadingOverlayCount - 1);
+  if (loadingOverlayCount === 0) {
+    const overlay = document.getElementById('profile-loading-overlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+}
+
 async function refreshReservationQuota(showOverlay) {
   const el = document.getElementById('reservation-quota');
   if (el) el.textContent = '確認中…';
-  const overlay = document.getElementById('profile-loading-overlay');
-  if (showOverlay && overlay) overlay.style.display = 'flex';
+  if (showOverlay) acquireLoadingOverlay();
   try {
     const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
     const tasks = [
@@ -2373,7 +2390,7 @@ async function refreshReservationQuota(showOverlay) {
   } catch (err) {
     console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
   } finally {
-    if (showOverlay && overlay) overlay.style.display = 'none';
+    if (showOverlay) releaseLoadingOverlay();
   }
 }
 
@@ -2398,8 +2415,7 @@ async function initLiff() {
     const idToken = liff.getDecodedIDToken();
     LINE_UID = idToken.sub;
     applyQuotaFromCacheOrFetch();
-    fetchAndApplyAnalyticsSummary();
-    fetchAndApplyAnalyticsCalendar();
+    loadAnalyticsData();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -2505,6 +2521,53 @@ function applyTodayStatus(prefix, data) {
   if (quotaUsedEl) quotaUsedEl.textContent = data.consumedThisMonth + ' / ' + data.totalReservable + '件使用';
 }
 
+// ★liff_analytics_html23：分析データ（今日の状況・直近投稿・投稿日別
+// 　データ）のセッション内キャッシュ。他画面の共有キャッシュと同じく
+// 　sessionStorage（アプリを終了するまで保持）に保存し、保存済みなら
+// 　再取得せず瞬時に表示する。
+// 　・キー`aipost_analytics`：{ date, summary, calendar }
+// 　・日付が変わった場合は無効とする（「今日」「今月」の数値が変わるため）
+// 　・予約確定・キャンセル等、分析の数値が変わる操作をした他画面は、
+// 　　このキーを削除すること（次に分析画面を開いた時だけ再取得される）
+const ANALYTICS_CACHE_KEY = 'aipost_analytics';
+
+function analyticsTodayKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+}
+
+function readAnalyticsCache() {
+  try {
+    const raw = sessionStorage.getItem(ANALYTICS_CACHE_KEY);
+    if (!raw) return null;
+    const cache = JSON.parse(raw);
+    if (!cache || cache.date !== analyticsTodayKey()) return null;
+    return cache;
+  } catch (e) {
+    return null;
+  }
+}
+
+// summary／calendar のどちらか一方だけを保存（もう一方は保持する）
+function writeAnalyticsCache(part, data) {
+  try {
+    const cache = readAnalyticsCache() || {};
+    cache.date = analyticsTodayKey();
+    cache[part] = data;
+    sessionStorage.setItem(ANALYTICS_CACHE_KEY, JSON.stringify(cache));
+  } catch (e) {
+    // sessionStorageが使えない環境でも動作は継続する
+  }
+}
+
+// 「今日の状況」「直近投稿と24時間後の状況」を3タブ分反映する
+function applySummaryData(data) {
+  ['lite', 'standard', 'pro'].forEach(function (prefix) {
+    applyTodayStatus(prefix, data);
+    applyLatestPostSection(prefix, data);
+  });
+}
+
 async function fetchAndApplyAnalyticsSummary() {
   try {
     const response = await fetch(WEBAPP_URL, {
@@ -2516,11 +2579,8 @@ async function fetchAndApplyAnalyticsSummary() {
       console.error('分析データの取得エラー:', result.data && result.data.error);
       return;
     }
-    const data = result.data;
-    ['lite', 'standard', 'pro'].forEach(function (prefix) {
-      applyTodayStatus(prefix, data);
-      applyLatestPostSection(prefix, data);
-    });
+    applySummaryData(result.data);
+    writeAnalyticsCache('summary', result.data);
   } catch (err) {
     console.error('分析データの取得エラー:', err);
   }
@@ -2540,11 +2600,40 @@ async function fetchAndApplyAnalyticsCalendar() {
       return;
     }
     applyCalendarData(result.data);
+    writeAnalyticsCache('calendar', result.data);
   } catch (err) {
     console.error('投稿日別データの取得エラー:', err);
   }
 }
 
+// 画面を開いた直後に、保存済みの分析データがあればすぐ表示する
+// （LINEの初期化を待たない。取得は不要）
+function applyCachedAnalyticsData() {
+  const cache = readAnalyticsCache();
+  if (!cache) return;
+  if (cache.summary) applySummaryData(cache.summary);
+  if (cache.calendar) applyCalendarData(cache.calendar);
+}
+
+// 保存済みでない分析データだけをサーバーから取得する。
+// 取得中は画面中央のスピナーを表示する。すべて保存済みなら何もしない。
+async function loadAnalyticsData() {
+  const cache = readAnalyticsCache();
+  const needSummary = !(cache && cache.summary);
+  const needCalendar = !(cache && cache.calendar);
+  if (!needSummary && !needCalendar) return;
+  acquireLoadingOverlay();
+  try {
+    await Promise.all([
+      needSummary ? fetchAndApplyAnalyticsSummary() : Promise.resolve(),
+      needCalendar ? fetchAndApplyAnalyticsCalendar() : Promise.resolve()
+    ]);
+  } finally {
+    releaseLoadingOverlay();
+  }
+}
+
+applyCachedAnalyticsData();
 initLiff();
 </script>
 </body>
