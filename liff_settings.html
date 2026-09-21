@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録49 - AiPost</title>
+<title>設定・登録50 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録49</span>
+  <span class="header-logo">設定・登録50</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -753,6 +753,7 @@ async function initLiff() {
     const needsAnyFetch = needsMasterFetch || needsProfileFetch;
 
     if (needsAnyFetch) setFormLoadingState(true);
+    traceLog('設定画面: マスタ=' + (needsMasterFetch ? '保存なし' : '保存あり') + ' プロフィール=' + (needsProfileFetch ? '保存なし' : '保存あり') + ' 予約一覧=' + (needsReservationList ? '保存なし' : '保存あり') + (needsAnyFetch ? ' →スピナー開始' : ' →スピナーなし'));
 
     // ★liff_settings.html49：この画面では使わないデータ（予約一覧・分析データ）
     // 　の先読みを、マスタデータ・プロフィールの取得と同時に開始する。
@@ -779,6 +780,7 @@ async function initLiff() {
     if (needsAnyFetch) {
       await Promise.all(warmTasks);
       setFormLoadingState(false);
+      traceLog('スピナー終了（設定画面）');
     }
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
@@ -799,10 +801,92 @@ async function warmupReservationListCache() {
     const result = await response.json();
     const list = (result.success && Array.isArray(result.data)) ? result.data : [];
     sessionStorage.setItem('aipost_reservation_list', JSON.stringify(list));
+    traceLog('予約一覧取得' + ((result.success && Array.isArray(result.data)) ? 'OK' : 'NG') + ' ' + list.length + '件');
   } catch (err) {
     console.error('予約一覧の先読み取得エラー:', err);
   }
 }
+
+// ★診断用（一時的）：スピナーが2度出る原因を調べるため、画面の起動・スピナーの表示・
+// 　各データの取得結果（成否・所要時間）を端末（localStorage）に記録する。
+// 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
+// 　原因の調査が終わったら削除する。個人情報は記録しない。
+const TRACE_KEY = 'aipost_trace';
+const TRACE_SCREEN = '設定50';
+
+function traceLog(msg) {
+  try {
+    const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
+    const d = new Date();
+    const p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    arr.push(p2(d.getHours()) + ':' + p2(d.getMinutes()) + ':' + p2(d.getSeconds()) + ' [' + TRACE_SCREEN + '] ' + msg);
+    while (arr.length > 100) arr.shift();
+    localStorage.setItem(TRACE_KEY, JSON.stringify(arr));
+  } catch (err) {
+    // 記録できなくても画面の動作は継続する
+  }
+}
+
+function traceCacheState() {
+  let q = '×', l = '×', a = '--', m = '×';
+  try { if (sessionStorage.getItem('aipost_reservation_quota')) q = '○'; } catch (e) {}
+  try { if (sessionStorage.getItem('aipost_reservation_list')) l = '○'; } catch (e) {}
+  try {
+    const c = JSON.parse(sessionStorage.getItem('aipost_analytics') || '{}');
+    a = (c.summary ? 'S' : '-') + (c.calendar ? 'C' : '-');
+  } catch (e) {}
+  try { if (localStorage.getItem('aipost_master_data_cache')) m = '○'; } catch (e) {}
+  return 'プラン等' + q + ' 予約一覧' + l + ' 分析' + a + ' マスタ' + m;
+}
+
+function traceStart() {
+  let nav = '?';
+  let n = '?';
+  try { nav = performance.getEntriesByType('navigation')[0].type; } catch (e) {}
+  try { n = sessionStorage.length; } catch (e) {}
+  traceLog('起動 保存済み[' + traceCacheState() + '] 遷移=' + nav + ' 一時保存の項目数=' + n + ' 履歴数=' + history.length);
+}
+
+function showTrace() {
+  let arr = [];
+  try { arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]'); } catch (e) {}
+  const old = document.getElementById('trace-panel');
+  if (old) old.remove();
+  const panel = document.createElement('div');
+  panel.id = 'trace-panel';
+  panel.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:9000;background:rgba(0,0,0,0.88);color:#fff;font-size:10px;line-height:1.5;padding:12px;overflow:auto;';
+  const bar = document.createElement('div');
+  bar.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;';
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '閉じる';
+  closeBtn.style.cssText = 'padding:6px 14px;font-size:12px;';
+  closeBtn.onclick = function () { panel.remove(); };
+  const clearBtn = document.createElement('button');
+  clearBtn.textContent = '履歴を消す';
+  clearBtn.style.cssText = 'padding:6px 14px;font-size:12px;';
+  clearBtn.onclick = function () { try { localStorage.removeItem(TRACE_KEY); } catch (e) {} panel.remove(); };
+  bar.appendChild(closeBtn);
+  bar.appendChild(clearBtn);
+  const pre = document.createElement('pre');
+  pre.style.cssText = 'white-space:pre-wrap;word-break:break-all;margin:0;';
+  pre.textContent = arr.slice().reverse().join('\n') || '（履歴なし）';
+  panel.appendChild(bar);
+  panel.appendChild(pre);
+  document.body.appendChild(panel);
+}
+
+(function () {
+  let taps = 0;
+  let timer = null;
+  const logo = document.querySelector('.header-logo');
+  if (!logo) return;
+  logo.addEventListener('click', function () {
+    taps++;
+    clearTimeout(timer);
+    timer = setTimeout(function () { taps = 0; }, 800);
+    if (taps >= 3) { taps = 0; showTrace(); }
+  });
+})();
 
 // ★liff_settings.html49：分析データ（今日の状況・直近投稿・投稿日別データ）
 // 　の先読み。アプリ起動後の最初の画面が設定画面だった場合でも、その後に
@@ -834,16 +918,27 @@ function writeAnalyticsCache(part, data) {
 }
 
 async function fetchAnalyticsPartToCache(action, part) {
-  try {
-    const response = await fetch(WEBAPP_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: action, lineUid: LINE_UID, params: {} })
-    });
-    const result = await response.json();
-    if (!result.success || !result.data || result.data.error) return;
-    writeAnalyticsCache(part, result.data);
-  } catch (err) {
-    console.error('分析データの先読み取得エラー:', err);
+  const label = part === 'summary' ? '分析(今日の状況)' : '分析(カレンダー)';
+  // ★通信の一時的な失敗で保存されないままになり、分析画面でスピナーが再び出るのを
+  // 　防ぐため、失敗した場合は1回だけ自動で再試行する
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const t0 = Date.now();
+    try {
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: action, lineUid: LINE_UID, params: {} })
+      });
+      const result = await response.json();
+      if (result.success && result.data && !result.data.error) {
+        writeAnalyticsCache(part, result.data);
+        traceLog(label + '取得OK' + (attempt > 1 ? '（再試行）' : '') + ' ' + (Date.now() - t0) + 'ms');
+        return;
+      }
+      traceLog(label + '取得NG(' + attempt + '回目) ' + String((result.data && result.data.error) || result.error || '') + ' ' + (Date.now() - t0) + 'ms');
+    } catch (err) {
+      traceLog(label + '通信エラー(' + attempt + '回目) ' + String(err && err.message) + ' ' + (Date.now() - t0) + 'ms');
+    }
+    if (attempt < 2) await new Promise(function (resolve) { setTimeout(resolve, 1500); });
   }
 }
 
@@ -1599,6 +1694,7 @@ async function saveEmail() {
 }
 
 // LIFF初期化は他の初期化処理より先に実行する
+traceStart();
 initLiff();
 
 // 外部ブラウザ（Xの認証画面等）からLINEアプリの画面に戻ってきた際、
