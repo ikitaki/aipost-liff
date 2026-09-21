@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録51 - AiPost</title>
+<title>設定・登録52 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -384,7 +384,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録51</span>
+  <span class="header-logo">設定・登録52</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -751,9 +751,11 @@ async function initLiff() {
     // 　終わるまで待ってから消す（スピナーを出していない場合は待たずに裏側で続ける）。
     // 　分析データは取得に数秒〜十数秒かかるため、スピナーの終了を待たせず、常に
     // 　裏側で取得する（分析画面を開いた時にまだ無ければ、分析画面が取得する）。
+    // ★liff_settings.html52：実機の履歴で、分析データの取得を同時に始めると、プロフィール等の
+    // 　軽い取得まで遅くなりスピナーが7〜10秒に延びていた（GAS側で同時の取得が競合する）ため、
+    // 　分析データの取得は、スピナーが終わった後（スピナーを出していない場合は直後）に開始する。
     const warmTasks = [];
     if (needsReservationList) warmTasks.push(warmupReservationListCache());
-    warmupAnalyticsCache();
 
     if (cachedMaster) {
       MASTER_DATA = cachedMaster;
@@ -774,6 +776,8 @@ async function initLiff() {
       setFormLoadingState(false);
       traceLog('スピナー終了（設定画面）');
     }
+    // スピナーが終わってから（出していない場合は直後に）、裏側で分析データを取得する（保存済みなら何もしない）
+    warmupAnalyticsCache();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -827,7 +831,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定51';
+const TRACE_SCREEN = '設定52';
 
 function traceLog(msg) {
   try {
