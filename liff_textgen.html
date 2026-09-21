@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成106 - AiPost</title>
+<title>投稿文作成107 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成106</span>
+  <span class="header-logo">投稿文作成107</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1273,18 +1273,41 @@ const RESERVATION_LIST_CACHE_KEY = 'aipost_reservation_list';
 // （本画面では表示しないが、次に予約確認画面を開いた時に即表示できる
 // よう、他画面を最初に開いた場合でもここで一緒に取得しておく）
 async function warmupReservationListCache() {
+  const result = await postToGas({ action: 'getMyReservations', lineUid: LINE_UID }, '予約一覧', function (r) { return r && r.success && Array.isArray(r.data); });
+  // ★取得できなかった場合は保存しない（空の一覧を保存すると「予約なし」と誤表示されるため）
+  if (!result) return;
   try {
-    const response = await fetch(WEBAPP_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'getMyReservations', lineUid: LINE_UID })
-    });
-    const result = await response.json();
-    const list = (result.success && Array.isArray(result.data)) ? result.data : [];
-    sessionStorage.setItem(RESERVATION_LIST_CACHE_KEY, JSON.stringify(list));
-    traceLog('予約一覧取得' + ((result.success && Array.isArray(result.data)) ? 'OK' : 'NG') + ' ' + list.length + '件');
+    sessionStorage.setItem(RESERVATION_LIST_CACHE_KEY, JSON.stringify(result.data));
   } catch (err) {
-    console.error('予約一覧の先読み取得エラー:', err);
+    // sessionStorageが使えない環境でも動作は継続する
   }
+}
+
+// ★通信の一時的な失敗（GAS・スプレッドシート側の一時的な不調、想定外の応答など）に
+// 　備え、失敗した場合は1回だけ自動で再試行してから諦める。
+// 　成功時は応答（result）を、最終的に失敗した場合は null を返す。
+// 　isOk：応答が成功かどうかの判定（省略時は result.success が true なら成功）
+let lastGasError = '';
+async function postToGas(payload, label, isOk) {
+  const check = isOk || function (r) { return r && r.success; };
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const t0 = Date.now();
+    try {
+      const response = await fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify(payload) });
+      const result = await response.json();
+      if (check(result)) {
+        traceLog(label + '取得OK' + (attempt > 1 ? '（再試行）' : '') + ' ' + (Date.now() - t0) + 'ms');
+        return result;
+      }
+      lastGasError = String((result && (result.error || (result.data && result.data.error))) || '');
+      traceLog(label + '取得NG(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
+    } catch (err) {
+      lastGasError = String(err && err.message);
+      traceLog(label + '通信エラー(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
+    }
+    if (attempt < 2) await new Promise(function (resolve) { setTimeout(resolve, 1500); });
+  }
+  return null;
 }
 
 // ★診断用（一時的）：スピナーが2度出る原因を調べるため、画面の起動・スピナーの表示・
@@ -1292,7 +1315,7 @@ async function warmupReservationListCache() {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成106';
+const TRACE_SCREEN = '投稿文作成107';
 
 function traceLog(msg) {
   try {
@@ -1402,23 +1425,8 @@ function writeMasterDataCache(data) {
 // 保存済み（24時間以内）でなければマスタデータを取得して保存する
 async function warmupMasterDataCache() {
   if (readMasterDataCache()) return;
-  const t0 = Date.now();
-  try {
-    const response = await fetch(WEBAPP_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'getMasterData', lineUid: LINE_UID, params: {} })
-    });
-    const result = await response.json();
-    if (result.success && result.data) {
-      writeMasterDataCache(result.data);
-      traceLog('マスタデータ取得OK ' + (Date.now() - t0) + 'ms');
-    } else {
-      traceLog('マスタデータ取得NG ' + String(result.error || '') + ' ' + (Date.now() - t0) + 'ms');
-    }
-  } catch (err) {
-    traceLog('マスタデータ通信エラー ' + String(err && err.message) + ' ' + (Date.now() - t0) + 'ms');
-    console.error('マスタデータの先読み取得エラー:', err);
-  }
+  const result = await postToGas({ action: 'getMasterData', lineUid: LINE_UID, params: {} }, 'マスタデータ');
+  if (result && result.data) writeMasterDataCache(result.data);
 }
 
 function readAnalyticsCache() {
@@ -1457,27 +1465,8 @@ function invalidateAnalyticsSummaryCache() {
 
 async function fetchAnalyticsPartToCache(action, part) {
   const label = part === 'summary' ? '分析(今日の状況)' : '分析(カレンダー)';
-  // ★通信の一時的な失敗で保存されないままになり、分析画面でスピナーが再び出るのを
-  // 　防ぐため、失敗した場合は1回だけ自動で再試行する
-  for (let attempt = 1; attempt <= 2; attempt++) {
-    const t0 = Date.now();
-    try {
-      const response = await fetch(WEBAPP_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: action, lineUid: LINE_UID, params: {} })
-      });
-      const result = await response.json();
-      if (result.success && result.data && !result.data.error) {
-        writeAnalyticsCache(part, result.data);
-        traceLog(label + '取得OK' + (attempt > 1 ? '（再試行）' : '') + ' ' + (Date.now() - t0) + 'ms');
-        return;
-      }
-      traceLog(label + '取得NG(' + attempt + '回目) ' + String((result.data && result.data.error) || result.error || '') + ' ' + (Date.now() - t0) + 'ms');
-    } catch (err) {
-      traceLog(label + '通信エラー(' + attempt + '回目) ' + String(err && err.message) + ' ' + (Date.now() - t0) + 'ms');
-    }
-    if (attempt < 2) await new Promise(function (resolve) { setTimeout(resolve, 1500); });
-  }
+  const result = await postToGas({ action: action, lineUid: LINE_UID, params: {} }, label, function (r) { return r && r.success && r.data && !r.data.error; });
+  if (result) writeAnalyticsCache(part, result.data);
 }
 
 // 保存済みでない分析データだけを取得して保存する（すべて保存済みなら何もしない）
@@ -1526,23 +1515,25 @@ async function refreshReservationQuota(showOverlay, alsoWarmReservationList) {
   if (showOverlay) traceLog('スピナー開始（プラン等の保存なし）');
   try {
     const tasks = [
-      fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getUserProfile', lineUid: LINE_UID }) }),
-      fetch(WEBAPP_URL, { method: 'POST', body: JSON.stringify({ action: 'getSnsStatus', lineUid: LINE_UID }) })
+      postToGas({ action: 'getUserProfile', lineUid: LINE_UID }, 'プロフィール'),
+      postToGas({ action: 'getSnsStatus', lineUid: LINE_UID }, 'SNS連携状況')
     ];
     if (alsoWarmReservationList) tasks.push(warmupReservationListCache());
     // ★liff_textgen.html105：スピナーを出している間（起動後の最初の画面）に、
-    // 　他画面が使うマスタデータ・分析データも一緒に取得する（保存済みなら何もしない）
-    if (showOverlay) tasks.push(warmupMasterDataCache(), warmupAnalyticsCache());
-    const [profileRes, snsRes] = await Promise.all(tasks);
-    const profileResult = await profileRes.json();
-    const snsResult = await snsRes.json();
-
-    if (!profileResult.success || !profileResult.data || profileResult.data.found === false) {
-      traceLog('プロフィール取得NG success=' + profileResult.success + ' found=' + (profileResult.data && profileResult.data.found));
+    // 　他画面が使うマスタデータも一緒に取得する（保存済みなら何もしない）。
+    // ★liff_textgen.html107：分析データは取得に数秒〜十数秒かかるため、スピナーの
+    // 　終了を待たせず、裏側で取得する（分析画面を開いた時にまだ無ければ、分析画面が取得する）。
+    if (showOverlay) {
+      tasks.push(warmupMasterDataCache());
+      warmupAnalyticsCache();
+    }
+    const [profileResult, snsResult] = await Promise.all(tasks);
+    if (!profileResult || !profileResult.data || profileResult.data.found === false) {
+      traceLog('プロフィール取得NG found=' + (profileResult && profileResult.data && profileResult.data.found));
       return;
     }
 
-    const sns = (snsResult.success && snsResult.data) ? {
+    const sns = (snsResult && snsResult.data) ? {
       x: snsResult.data.x === '連携中',
       instagram: snsResult.data.instagram === '連携中',
       threads: snsResult.data.threads === '連携中',
