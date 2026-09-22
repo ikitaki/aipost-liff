@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析28 - AiPost</title>
+<title>分析29 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -164,7 +164,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析28</span>
+  <span class="header-logo">分析29</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -341,16 +341,8 @@
   <!-- ⑤ 人気投稿ランキング -->
   <div class="card">
     <div class="card-title">🏆 今月の人気投稿ランキング</div>
-    <div class="ranking-item">
-      <div class="rank-num gold">1</div>
-      <div style="flex:1;">
-        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月21日（水）19:02投稿</div>
-        <div class="rank-text">週末限定✨抹茶テリーヌが本日より登場です🍵濃厚な宇治抹茶の香りとなめらかな口当たりが絶品。</div>
-        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️184　💬26　📊18.4%
-        </div>
-      </div>
-    </div>
+    <div id="ranking-lite"></div>
+  </div>
     <div class="ranking-item">
       <div class="rank-num silver">2</div>
       <div style="flex:1;">
@@ -656,39 +648,7 @@
   <!-- ⑤ 人気投稿ランキング -->
   <div class="card">
     <div class="card-title">🏆 今月の人気投稿ランキング</div>
-    <div class="ranking-item">
-      <div class="rank-num gold">1</div>
-      <div style="flex:1;">
-        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月21日（水）19:02投稿</div>
-        <div class="rank-text">週末限定✨抹茶テリーヌが本日より登場です🍵濃厚な宇治抹茶の香りとなめらかな口当たりが絶品。</div>
-        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️184　💬26　📊18.4%<br>
-          <span style="color:#555555;font-weight:700;">X</span> ❤️148　🔁42　📊22.4%
-        </div>
-      </div>
-    </div>
-    <div class="ranking-item">
-      <div class="rank-num silver">2</div>
-      <div style="flex:1;">
-        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月19日（月）10:01投稿</div>
-        <div class="rank-text">本日のスペシャルティコーヒーはエチオピア・イルガチェフェ産☕️希少豆をハンドドリップでご提供。</div>
-        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️158　💬24　📊15.8%<br>
-          <span style="color:#555555;font-weight:700;">TH</span> ❤️78　↩️15　🔁10　👁️1.2K　📊7.2%
-        </div>
-      </div>
-    </div>
-    <div class="ranking-item">
-      <div class="rank-num bronze">3</div>
-      <div style="flex:1;">
-        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月13日（土）12:01投稿</div>
-        <div class="rank-text">🌴週末限定ドリンク登場！南国フルーツたっぷりのトロピカルスムージー🥤3種からお選びいただけます。</div>
-        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️97　💬18　📊11.4%<br>
-          <span style="color:#555555;font-weight:700;">TH</span> ❤️72　↩️14　🔁9　👁️982　📊6.2%
-        </div>
-      </div>
-    </div>
+    <div id="ranking-standard"></div>
   </div>
 
   <!-- ⑥ あなたの投稿平均との比較（24時間後のみ・STANDARD固有） -->
@@ -1195,36 +1155,7 @@
   <!-- 人気投稿ランキング -->
   <div class="card">
     <div class="card-title">🏆 今月の人気投稿ランキング</div>
-    <div class="ranking-item">
-      <div class="rank-num gold">1</div>
-      <div style="flex:1;">
-        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月21日（水）19:02投稿</div>
-        <div class="rank-text">週末限定✨抹茶テリーヌが本日より登場です🍵濃厚な宇治抹茶の香りとなめらかな口当たりが絶品。</div>
-        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️184　💬26　📊18.4%<br><span style="color:#555555;font-weight:700;">X</span> ❤️148　🔁42　📊22.4%
-        </div>
-      </div>
-    </div>
-    <div class="ranking-item">
-      <div class="rank-num silver">2</div>
-      <div style="flex:1;">
-        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月19日（月）10:01投稿</div>
-        <div class="rank-text">本日のスペシャルティコーヒーはエチオピア・イルガチェフェ産☕️希少豆をハンドドリップでご提供。</div>
-        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️158　💬24　📊15.8%<br><span style="color:#555555;font-weight:700;">TH</span> ❤️78　↩️15　🔁10　👁️1.2K
-        </div>
-      </div>
-    </div>
-    <div class="ranking-item">
-      <div class="rank-num bronze">3</div>
-      <div style="flex:1;">
-        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">6月13日（土）12:01投稿</div>
-        <div class="rank-text">🌴週末限定ドリンク登場！南国フルーツたっぷりのトロピカルスムージー🥤3種からお選びいただけます。</div>
-        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">
-          <span style="color:#e1306c;font-weight:700;">IG</span> ❤️97　💬18　📊11.4%<br><span style="color:#555555;font-weight:700;">TH</span> ❤️72　↩️14　🔁9　👁️982
-        </div>
-      </div>
-    </div>
+    <div id="ranking-pro"></div>
   </div>
 
   <!-- 同業種・同エリア比較 -->
@@ -1626,6 +1557,13 @@
         <div style="font-size:11px;color:var(--text);line-height:1.7;">EG率が高い投稿は「あなたの投稿平均との比較」画面で確認できます。何が好まれているかを分析し、人気投稿ランキングと合わせてコンテンツの方向性を決める参考にしましょう。</div>
       </div>
     </div>
+
+    <!-- ★liff_analytics_html29：人気投稿ランキングの基準の説明 -->
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">🏆 今月の人気投稿ランキングの基準</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.7;">今月（暦月）に投稿したものを対象に、反応の合計数（いいね＋リポスト＋リプライ＋コメント＋引用の合計。インプレッションは含みません）が多い順に並べ、上位3件を表示します。データは投稿後24時間後の数値を使用します。</div>
+      </div>
+    </div>
   </div>
 
   <!-- AiPost分析の特徴 -->
@@ -1886,6 +1824,77 @@ function toggleAcc(id) {
   const isOpen = body.classList.contains('open');
   body.classList.toggle('open', !isOpen);
   if (arr) arr.style.transform = isOpen ? '' : 'rotate(90deg)';
+}
+
+// ===== 人気投稿ランキング =====
+// ★liff_analytics_html29：「今月の人気投稿ランキング」カードの実データ表示。
+// 　SNSごとの内訳は、makeSNSBlock等と同じ考え方で、値がある項目だけを表示する。
+const RANK_MEDALS = ['gold', 'silver', 'bronze'];
+
+// ★liff_analytics_html29：ISO文字列（+09:00固定）から、端末のタイムゾーン設定に
+// 　依存せず、文字列上のJSTの年月日時分をそのまま取り出す（Dateオブジェクトの
+// 　getHours()等は端末のローカルタイムゾーンを使ってしまうため使わない）。
+function formatRankPostedAt(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso);
+  if (!m) return iso;
+  const y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]), h = Number(m[4]), mi = Number(m[5]);
+  // 曜日の計算はUTC基準の計算式を使う（時刻を持たない年月日の計算のため、
+  // タイムゾーンには影響されない）
+  const week = ['日', '月', '火', '水', '木', '金', '土'][new Date(Date.UTC(y, mo - 1, d)).getUTCDay()];
+  const p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+  return mo + '月' + d + '日（' + week + '）' + p2(h) + ':' + p2(mi) + '投稿';
+}
+
+// ランキング1件分のSNS内訳（例：「IG ❤️184　💬26　📊18.4%」）を組み立てる
+function formatRankSnsLine(snsKey, m) {
+  const s = snsStyle[snsKey] || { label: snsKey, color: '#555' };
+  const short = { X: 'X', Instagram: 'IG', Threads: 'TH' }[snsKey] || snsKey;
+  if (m.deleted) {
+    return '<span style="color:' + s.color + ';font-weight:700;">' + short + '</span> 投稿が見つかりません';
+  }
+  const parts = [];
+  if (m.likes !== undefined) parts.push('\u2764\uFE0F' + m.likes);
+  if (m.reposts !== undefined) parts.push('\uD83D\uDD01' + m.reposts);
+  if (m.replies !== undefined) parts.push('\u21A9\uFE0F' + m.replies);
+  if (m.comments !== undefined) parts.push('\uD83D\uDCAC' + m.comments);
+  if (m.quotes !== undefined) parts.push('\uD83D\uDDE8\uFE0F' + m.quotes);
+  if (m.imprs !== undefined) parts.push('\uD83D\uDC41\uFE0F' + formatCalCount(m.imprs));
+  if (m.eg !== undefined) parts.push('\uD83D\uDCCA' + m.eg + '%');
+  return '<span style="color:' + s.color + ';font-weight:700;">' + short + '</span> ' + parts.join('\u3000');
+}
+
+function buildRankingHtml(items) {
+  if (!items || items.length === 0) {
+    return '<div style="font-size:11px;color:var(--text-light);padding:8px 0;">今月はまだ対象の投稿がありません</div>';
+  }
+  return items.map(function (item, index) {
+    const snsLines = Object.keys(item.sns).map(function (k) { return formatRankSnsLine(k, item.sns[k]); }).join('<br>\n          ');
+    return '<div class="ranking-item">\n' +
+      '      <div class="rank-num ' + (RANK_MEDALS[index] || '') + '">' + item.rank + '</div>\n' +
+      '      <div style="flex:1;">\n' +
+      '        <div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">' + formatRankPostedAt(item.postedAt) + '</div>\n' +
+      '        <div class="rank-text">' + escapeHtmlText(item.honbun) + '</div>\n' +
+      '        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">\n' +
+      '          ' + snsLines + '\n' +
+      '        </div>\n' +
+      '      </div>\n' +
+      '    </div>';
+  }).join('\n');
+}
+
+function applyRankingData(data) {
+  const html = buildRankingHtml(data.items);
+  ['ranking-lite', 'ranking-standard', 'ranking-pro'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  });
+}
+
+async function fetchAndApplyAnalyticsRanking() {
+  const result = await postToGas({ action: 'getAnalyticsRanking', lineUid: LINE_UID, params: { plan: currentActualPlan } }, '分析(ランキング)', function (r) { return r && r.success && r.data && !r.data.error; });
+  if (!result) return;
+  applyRankingData(result.data);
+  writeAnalyticsCache('ranking', result.data);
 }
 
 // ===== カレンダー共通関数 =====
@@ -2319,7 +2328,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析28';
+const TRACE_SCREEN = '分析29';
 
 function traceLog(msg) {
   try {
@@ -2734,6 +2743,7 @@ function applyCachedAnalyticsData() {
   if (!cache) return;
   if (cache.summary) applySummaryData(cache.summary);
   if (cache.calendar) applyCalendarData(cache.calendar);
+  if (cache.ranking) applyRankingData(cache.ranking);
 }
 
 // 保存済みでないデータだけをサーバーから取得する。
@@ -2748,20 +2758,22 @@ async function loadAnalyticsData() {
   const cache = readAnalyticsCache();
   const needSummary = !(cache && cache.summary);
   const needCalendar = !(cache && cache.calendar);
+  const needRanking = !(cache && cache.ranking);
   const needMaster = !readMasterDataCache();
-  if (!needSummary && !needCalendar && !needMaster) return;
-  const showSpinner = needSummary || needCalendar;
-  traceLog('分析画面: 今日の状況=' + (needSummary ? '保存なし' : '保存あり') + ' カレンダー=' + (needCalendar ? '保存なし' : '保存あり') + ' マスタ=' + (needMaster ? '保存なし' : '保存あり') + (showSpinner ? ' →スピナー開始' : ' →スピナーなし'));
+  if (!needSummary && !needCalendar && !needRanking && !needMaster) return;
+  const showSpinner = needSummary || needCalendar || needRanking;
+  traceLog('分析画面: 今日の状況=' + (needSummary ? '保存なし' : '保存あり') + ' カレンダー=' + (needCalendar ? '保存なし' : '保存あり') + ' ランキング=' + (needRanking ? '保存なし' : '保存あり') + ' マスタ=' + (needMaster ? '保存なし' : '保存あり') + (showSpinner ? ' →スピナー開始' : ' →スピナーなし'));
   if (showSpinner) acquireLoadingOverlay();
   try {
     // ★liff_analytics_html27：実機の履歴で、分析が最初の画面のとき5件が完全に同時になり、
     // 　GAS側の同時アクセスが重なって、単体なら数秒の取得が最大24秒に延びる例があった。
-    // 　この画面の表示に必要な今日の状況・カレンダーを先に取得し、それが終わってから
-    // 　（下のfinally内で）、この画面では使わないマスタデータを、スピナーを出さず
-    // 　裏側で取得するよう変更した（同時に走る問い合わせの最大数を減らすため）。
+    // 　この画面の表示に必要な今日の状況・カレンダー・ランキングを先に取得し、それが
+    // 　終わってから（下のfinally内で）、この画面では使わないマスタデータを、スピナーを
+    // 　出さず裏側で取得するよう変更した（同時に走る問い合わせの最大数を減らすため）。
     await Promise.all([
       needSummary ? fetchAndApplyAnalyticsSummary() : Promise.resolve(),
-      needCalendar ? fetchAndApplyAnalyticsCalendar() : Promise.resolve()
+      needCalendar ? fetchAndApplyAnalyticsCalendar() : Promise.resolve(),
+      needRanking ? fetchAndApplyAnalyticsRanking() : Promise.resolve()
     ]);
   } finally {
     if (showSpinner) { traceLog('スピナー終了（分析データ）'); releaseLoadingOverlay(); }
