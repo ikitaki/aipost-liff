@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析26 - AiPost</title>
+<title>分析27 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -164,7 +164,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析26</span>
+  <span class="header-logo">分析27</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -2319,7 +2319,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析26';
+const TRACE_SCREEN = '分析27';
 
 function traceLog(msg) {
   try {
@@ -2469,14 +2469,17 @@ async function refreshReservationQuota(showOverlay) {
   const el = document.getElementById('reservation-quota');
   if (el) el.textContent = '確認中…';
   if (showOverlay) { acquireLoadingOverlay(); traceLog('スピナー開始（プラン等の保存なし）'); }
+  // ★liff_analytics_html27：finally節から参照するため、try節の外で宣言する
+  const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
   try {
-    const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
-    const tasks = [
+    // ★liff_analytics_html27：実機の履歴で、分析が最初の画面のとき5件が完全に同時になり、
+    // 　GAS側の同時アクセスが重なって、単体なら数秒の取得が最大24秒に延びる例があった。
+    // 　この画面では使わない予約一覧の先読みは、ここでは同時に投げず、プロフィール・SNS連携の
+    // 　取得後（下のfinally内）に、スピナーを出さず裏側で行うよう変更した。
+    const [profileResult, snsResult] = await Promise.all([
       postToGas({ action: 'getUserProfile', lineUid: LINE_UID }, 'プロフィール'),
       postToGas({ action: 'getSnsStatus', lineUid: LINE_UID }, 'SNS連携状況')
-    ];
-    if (needsReservationList) tasks.push(warmupReservationListCache());
-    const [profileResult, snsResult] = await Promise.all(tasks);
+    ]);
     if (!profileResult || !profileResult.data || profileResult.data.found === false) {
       traceLog('プロフィール取得NG found=' + (profileResult && profileResult.data && profileResult.data.found));
       return;
@@ -2497,17 +2500,20 @@ async function refreshReservationQuota(showOverlay) {
     console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
   } finally {
     if (showOverlay) { traceLog('スピナー終了（プラン等）'); releaseLoadingOverlay(); }
+    if (needsReservationList) warmupReservationListCache();
   }
 }
 
-function applyQuotaFromCacheOrFetch() {
+// ★liff_analytics_html27：initLiff側で、この処理の完了を待ってから分析データの取得を
+// 　開始できるよう、async化してPromiseを返すようにした（呼び出し方自体は変更なし）。
+async function applyQuotaFromCacheOrFetch() {
   const cached = readQuotaCache();
   const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
   if (cached) {
     applyQuotaFromCache(cached);
     if (needsReservationList) warmupReservationListCache();
   } else {
-    refreshReservationQuota(true);
+    await refreshReservationQuota(true);
   }
 }
 
@@ -2520,7 +2526,11 @@ async function initLiff() {
     }
     const idToken = liff.getDecodedIDToken();
     LINE_UID = idToken.sub;
-    applyQuotaFromCacheOrFetch();
+    // ★liff_analytics_html27：この画面が最初の画面のとき、プロフィール・SNS連携（軽い
+    // 　取得）と、今日の状況・カレンダー（重い取得）が完全に同時になると、GAS側の同時アクセスが
+    // 　重なって遅くなっていたため、プロフィール・SNS連携の完了を待ってから、分析データの取得を
+    // 　開始するよう直列化した（保存済みの場合はほぼ待たずに進む）。
+    await applyQuotaFromCacheOrFetch();
     loadAnalyticsData();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
@@ -2746,13 +2756,18 @@ async function loadAnalyticsData() {
   traceLog('分析画面: 今日の状況=' + (needSummary ? '保存なし' : '保存あり') + ' カレンダー=' + (needCalendar ? '保存なし' : '保存あり') + ' マスタ=' + (needMaster ? '保存なし' : '保存あり') + (showSpinner ? ' →スピナー開始' : ' →スピナーなし'));
   if (showSpinner) acquireLoadingOverlay();
   try {
+    // ★liff_analytics_html27：実機の履歴で、分析が最初の画面のとき5件が完全に同時になり、
+    // 　GAS側の同時アクセスが重なって、単体なら数秒の取得が最大24秒に延びる例があった。
+    // 　この画面の表示に必要な今日の状況・カレンダーを先に取得し、それが終わってから
+    // 　（下のfinally内で）、この画面では使わないマスタデータを、スピナーを出さず
+    // 　裏側で取得するよう変更した（同時に走る問い合わせの最大数を減らすため）。
     await Promise.all([
       needSummary ? fetchAndApplyAnalyticsSummary() : Promise.resolve(),
-      needCalendar ? fetchAndApplyAnalyticsCalendar() : Promise.resolve(),
-      needMaster ? warmupMasterDataCache() : Promise.resolve()
+      needCalendar ? fetchAndApplyAnalyticsCalendar() : Promise.resolve()
     ]);
   } finally {
     if (showSpinner) { traceLog('スピナー終了（分析データ）'); releaseLoadingOverlay(); }
+    if (needMaster) warmupMasterDataCache();
   }
 }
 
