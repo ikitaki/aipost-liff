@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析27 - AiPost</title>
+<title>分析28 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -164,7 +164,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析27</span>
+  <span class="header-logo">分析28</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -2319,7 +2319,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析27';
+const TRACE_SCREEN = '分析28';
 
 function traceLog(msg) {
   try {
@@ -2476,6 +2476,10 @@ async function refreshReservationQuota(showOverlay) {
     // 　GAS側の同時アクセスが重なって、単体なら数秒の取得が最大24秒に延びる例があった。
     // 　この画面では使わない予約一覧の先読みは、ここでは同時に投げず、プロフィール・SNS連携の
     // 　取得後（下のfinally内）に、スピナーを出さず裏側で行うよう変更した。
+    // ★liff_analytics_html28：プロフィール・SNS連携→今日の状況・カレンダーを完全に順番待ち
+    // 　させる案（html27bとして検証）も試したが、実機では合計の待ち時間がむしろ延びた
+    // 　（各問い合わせ自体に5〜9秒程度かかっており、待たせる分がそのまま上乗せになるため）。
+    // 　そのため同時実行の削減はここまで（4件）にとどめ、順番待ちは行わない。
     const [profileResult, snsResult] = await Promise.all([
       postToGas({ action: 'getUserProfile', lineUid: LINE_UID }, 'プロフィール'),
       postToGas({ action: 'getSnsStatus', lineUid: LINE_UID }, 'SNS連携状況')
@@ -2504,16 +2508,14 @@ async function refreshReservationQuota(showOverlay) {
   }
 }
 
-// ★liff_analytics_html27：initLiff側で、この処理の完了を待ってから分析データの取得を
-// 　開始できるよう、async化してPromiseを返すようにした（呼び出し方自体は変更なし）。
-async function applyQuotaFromCacheOrFetch() {
+function applyQuotaFromCacheOrFetch() {
   const cached = readQuotaCache();
   const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
   if (cached) {
     applyQuotaFromCache(cached);
     if (needsReservationList) warmupReservationListCache();
   } else {
-    await refreshReservationQuota(true);
+    refreshReservationQuota(true);
   }
 }
 
@@ -2526,11 +2528,7 @@ async function initLiff() {
     }
     const idToken = liff.getDecodedIDToken();
     LINE_UID = idToken.sub;
-    // ★liff_analytics_html27：この画面が最初の画面のとき、プロフィール・SNS連携（軽い
-    // 　取得）と、今日の状況・カレンダー（重い取得）が完全に同時になると、GAS側の同時アクセスが
-    // 　重なって遅くなっていたため、プロフィール・SNS連携の完了を待ってから、分析データの取得を
-    // 　開始するよう直列化した（保存済みの場合はほぼ待たずに進む）。
-    await applyQuotaFromCacheOrFetch();
+    applyQuotaFromCacheOrFetch();
     loadAnalyticsData();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
