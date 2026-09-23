@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成110 - AiPost</title>
+<title>投稿文作成111 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成110</span>
+  <span class="header-logo">投稿文作成111</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1315,7 +1315,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成110';
+const TRACE_SCREEN = '投稿文作成111';
 
 function traceLog(msg) {
   try {
@@ -1542,7 +1542,11 @@ async function refreshReservationQuota(showOverlay, alsoWarmReservationList) {
       threadsAccount: snsResult.data.threadsAccount || ''
     } : null;
 
-    applyQuotaFromCache({ plan: profileResult.data.plan, remainingReservable: profileResult.data.remainingReservable, sns: sns });
+    // ★liff_textgen_html111：以前はplan・remainingReservableだけの間引いたオブジェクトを
+    // 　渡していたため、updateUserGenreFromProfile()がbusinessMajor・businessMinorを
+    // 　参照できず、業種登録済みでもセッション開始直後は必ずキーワード入力が必須になって
+    // 　いた不具合を修正。profileResult.dataをそのまま渡す（sns含む完全な形に統一）。
+    applyQuotaFromCache(Object.assign({}, profileResult.data, { sns: sns }));
     writeQuotaCache(profileResult.data, sns);
   } catch (err) {
     console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
@@ -2659,6 +2663,17 @@ function resetAllForm() {
   document.getElementById('my-img-preview-wrap').style.display = 'none';
   const existing = document.getElementById('trim-confirm-area');
   if (existing) existing.remove();
+  // ★liff_textgen_html111：finishTrimFlow()がトリミング完了時に非表示にした
+  // 　「SNSごとにトリミング」「トリミングせずに使う」の2ボタンを、ここで元の
+  // 　表示状態に戻す。これが無いと、1回予約を完了させた後は、次に画像を選んでも
+  // 　この2ボタンが出ず「画像なしで投稿する」しか選べない状態になっていた。
+  const wrapForReset = document.getElementById('my-img-preview-wrap');
+  if (wrapForReset) {
+    const trimBtnReset = wrapForReset.querySelector('button[onclick="startTrimFlow()"]');
+    if (trimBtnReset) trimBtnReset.style.display = '';
+    const noTrimBtnReset = wrapForReset.querySelector('button[onclick="selectMyImageWithoutTrim()"]');
+    if (noTrimBtnReset) noTrimBtnReset.style.display = '';
+  }
 
   // 日付リセット
   selectedDay = null;
@@ -2670,6 +2685,11 @@ function resetAllForm() {
   // 予約ボタン再度有効化
   const btn = document.querySelector('.modal-btn-success');
   if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
+
+  // ★liff_textgen_html111：予約完了後、画面が「内容を確認する」ボタン付近に
+  // 　スクロールしたままになり、データはリセットされているのに画面上は
+  // 　同じ場所に留まっているように見えていたため、画面の先頭へ戻す。
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }

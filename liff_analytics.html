@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析31 - AiPost</title>
+<title>分析32 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -160,7 +160,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析31</span>
+  <span class="header-logo">分析32</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -2097,6 +2097,13 @@ function showStdUnified(d) {
     const posts = Array.isArray(postData) ? postData : [postData];
     posts.forEach((post, i) => {
       if (posts.length > 1) html += `<div style="font-size:11px;font-weight:700;color:var(--text);margin:6px 0 4px;">${post.time} 投稿</div>`;
+      // ★liff_analytics_html32：最初期のオリジナル版から、PRO用のshowUnified()にだけ
+      // 　本文（post.text）を表示する行があり、STANDARD・LITE用にはこの行自体が
+      // 　存在せず、本文が表示されない状態だった。PROと同じ表示に揃える。
+      if (posts.length > 1 || i === 0) html += `<div style="font-size:11px;color:var(--text-sub);background:var(--bg);border-radius:8px;padding:8px;margin-bottom:8px;line-height:1.6;border-left:3px solid var(--border);">
+        <span style="font-size:9px;color:var(--text-light);display:block;margin-bottom:2px;">${post.time}投稿</span>
+        📝 ${post.text}
+      </div>`;
       for (const snsKey of Object.keys(post.sns)) {
         const d24 = post.sns[snsKey].h24;
         if (!d24) {
@@ -2126,6 +2133,13 @@ function showLiteUnified(d) {
     const posts = Array.isArray(postData) ? postData : [postData];
     posts.forEach((post, i) => {
       if (posts.length > 1) html += `<div style="font-size:11px;font-weight:700;color:var(--text);margin:6px 0 4px;">${post.time} 投稿</div>`;
+      // ★liff_analytics_html32：最初期のオリジナル版から、PRO用のshowUnified()にだけ
+      // 　本文（post.text）を表示する行があり、STANDARD・LITE用にはこの行自体が
+      // 　存在せず、本文が表示されない状態だった。PROと同じ表示に揃える。
+      if (posts.length > 1 || i === 0) html += `<div style="font-size:11px;color:var(--text-sub);background:var(--bg);border-radius:8px;padding:8px;margin-bottom:8px;line-height:1.6;border-left:3px solid var(--border);">
+        <span style="font-size:9px;color:var(--text-light);display:block;margin-bottom:2px;">${post.time}投稿</span>
+        📝 ${post.text}
+      </div>`;
       for (const snsKey of Object.keys(post.sns)) {
         const d24 = post.sns[snsKey].h24;
         if (!d24) {
@@ -2205,7 +2219,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析31';
+const TRACE_SCREEN = '分析32';
 
 function traceLog(msg) {
   try {
