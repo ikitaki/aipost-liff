@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析35 - AiPost</title>
+<title>分析36 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -160,7 +160,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析35</span>
+  <span class="header-logo">分析36</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -873,7 +873,6 @@
       </div>
       <div id="p1-detail" style="display:none;padding:10px;">
         <div id="pro-latest-detail"></div>
-        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:6px;">💎 1時間後・3時間後のデータ表示は準備中です</p>
         <p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ K = 1,000（例：1.2K = 1,200回）</p>
       </div>
     </div>
@@ -2227,7 +2226,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析35';
+const TRACE_SCREEN = '分析36';
 
 function traceLog(msg) {
   try {
@@ -2416,14 +2415,25 @@ async function refreshReservationQuota(showOverlay) {
   }
 }
 
-function applyQuotaFromCacheOrFetch() {
+// ★liff_analytics_html36：applyQuotaFromCacheOrFetch()を、必ずPromiseを
+// 　返すように統一した。以前はキャッシュが無い場合のみ内部でfetchが
+// 　発生し、呼び出し元（initLiff）がそれを待たずに次の処理
+// 　（loadAnalyticsData）を始めていたため、「アプリ起動後、最初に
+// 　分析画面を開く」場合（キャッシュがまだ無い場合）に限り、
+// 　currentActualPlanの確定より先に「直近投稿」カードの描画が
+// 　走ってしまうことがあった（PROプランでも既定値のLITE扱いで
+// 　描画され、1時間後・3時間後が表示されない不具合の原因になって
+// 　いた）。initLiff()側でこの関数の完了を待ってから
+// 　loadAnalyticsData()を呼ぶようにし、常にcurrentActualPlanが
+// 　確定した状態で分析データの描画が行われるようにした。
+async function applyQuotaFromCacheOrFetch() {
   const cached = readQuotaCache();
   const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
   if (cached) {
     applyQuotaFromCache(cached);
     if (needsReservationList) warmupReservationListCache();
   } else {
-    refreshReservationQuota(true);
+    await refreshReservationQuota(true);
   }
 }
 
@@ -2436,7 +2446,7 @@ async function initLiff() {
     }
     const idToken = liff.getDecodedIDToken();
     LINE_UID = idToken.sub;
-    applyQuotaFromCacheOrFetch();
+    await applyQuotaFromCacheOrFetch();
     loadAnalyticsData();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
@@ -2467,7 +2477,8 @@ function formatPostedAt(dateStr) {
   return mm + '月' + dd + '日（' + dayNames[d.getDay()] + '）' + hh + ':' + mi + '投稿';
 }
 
-// 1件のSNS結果（timing24h）を、そのSNSの指標に応じたHTML行に変換する
+// 1件のSNS結果（timing1h／timing3h／timing24h）を、そのSNSの指標に応じた
+// HTML行に変換する
 // ★liff_analytics_html33：投稿日別データ（makeSNSBlock）・あなたの投稿
 // 　平均との比較と表示を揃えるため、全角スペース区切りの1行テキストから、
 // 　display:gridを使った整列表示に書き換えた（データの範囲・内容自体は
@@ -2476,12 +2487,16 @@ function formatPostedAt(dateStr) {
 // 　データ（makeSNSBlock）と同じ見た目に統一した。以前はrenderSnsResultRow
 // 　という別関数が、SNS名を「（24時間後）」付きの見出し1つにまとめ、アイコンを
 // 　1行だけ並べる、独自の簡易表示をしていた。getAnalyticsSummary()が返す
-// 　timing24hオブジェクト（likeCount・retweetCount等の長い項目名）は、
+// 　timingXhオブジェクト（likeCount・retweetCount等の長い項目名）は、
 // 　makeSNSBlock()が期待する形式（likes・reposts等の短い項目名）と異なる
-// 　ため、まず変換してから渡す。このカードはどのプランでも現状24時間後の
-// 　データしか持たないため、showAllTimings=falseで1時間後・3時間後の行は
-// 　表示しない（投稿日別データのLITE・STANDARDと同じ扱い）。
-function adaptTiming24hForSNSBlock(sns, t) {
+// 　ため、まず変換してから渡す。
+// ★liff_analytics_html36：Analyticsgs_13で、getAnalyticsSummary()が
+// 　PROプランの場合にtiming1h・timing3hも返すようになったことに伴い、
+// 　この2つも扱えるようにした。1時間後・3時間後の行を表示するかどうか
+// 　（showAllTimings）は、契約プラン（currentActualPlan）がPROかどうかで
+// 　切り替える。LITE・STANDARDはtiming1h・timing3hが常にnullのため、
+// 　これまでどおり24時間後のみ表示する。
+function adaptTimingForSNSBlock(sns, t) {
   if (!t) return {};
   if (t.deleted) return { deleted: true };
   const eg = (t.egRate === '' || t.egRate === null || t.egRate === undefined) ? undefined : t.egRate;
@@ -2495,12 +2510,16 @@ function adaptTiming24hForSNSBlock(sns, t) {
 }
 
 function renderSnsResultRow(result) {
-  const t = result.timing24h;
-  if (!t) {
-    return makeNoDataBlock(result.sns, 'まだ24時間経過していないため未取得です');
+  if (!result.timing1h && !result.timing3h && !result.timing24h) {
+    return makeNoDataBlock(result.sns, 'まだデータが取得されていません');
   }
-  const h24 = adaptTiming24hForSNSBlock(result.sns, t);
-  return makeSNSBlock(result.sns, { h24: h24 }, false);
+  const showAllTimings = currentActualPlan === 'PRO';
+  const snsData = {
+    h1:  adaptTimingForSNSBlock(result.sns, result.timing1h),
+    h3:  adaptTimingForSNSBlock(result.sns, result.timing3h),
+    h24: adaptTimingForSNSBlock(result.sns, result.timing24h)
+  };
+  return makeSNSBlock(result.sns, snsData, showAllTimings);
 }
 
 function applyLatestPostSection(prefix, data) {
