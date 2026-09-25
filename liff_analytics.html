@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析36 - AiPost</title>
+<title>分析37 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -160,7 +160,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析36</span>
+  <span class="header-logo">分析37</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -412,7 +412,7 @@
         </div>
       </div>
       <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">
-        <div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div>
+        <div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。Instagramの反応が最も好調でした。</div>
       </div>
     </div>
   </div>
@@ -2226,7 +2226,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析36';
+const TRACE_SCREEN = '分析37';
 
 function traceLog(msg) {
   try {
@@ -2639,6 +2639,60 @@ function applySummaryData(data) {
   });
 }
 
+// ★liff_analytics_html37：「先週・先月のまとめ」カードの実データ表示。
+// 　「最も反応が高かった投稿」という個別の投稿紹介は、複数SNSに同時投稿
+// 　した場合にどのSNSの数値で判断するか一概に決められないため、先週・
+// 　先月とも「どのSNSが好調だったか」というSNS単位の紹介に統一している
+// 　（人気投稿ランキングを廃止した際と同じ考え方）。
+const PERIOD_SNS_ORDER = ['X', 'Instagram', 'Threads'];
+const PERIOD_SNS_SHORT_LABEL = { X: 'X', Instagram: 'IG', Threads: 'TH' };
+
+function periodStatCell(label, value, color) {
+  return '<div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">' +
+    '<div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">' + label + '</div>' +
+    '<div style="font-size:16px;font-weight:700;color:' + color + ';">' + value + '</div></div>';
+}
+
+// 1期間分（先週または先月）のデータを、カードの中身のHTMLに変換する
+function renderPeriodBlock(p) {
+  if (!p) {
+    return '<p style="font-size:11px;color:var(--text-sub);">データを取得できませんでした</p>';
+  }
+  const snsRows = PERIOD_SNS_ORDER.map(function (key) {
+    const s = (p.bySns && p.bySns[key]) || { totalLikes: 0, avgEgRate: null };
+    const egText = s.avgEgRate === null || s.avgEgRate === undefined ? '-' : s.avgEgRate + '%';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">' +
+      '<span style="font-size:10px;color:var(--text);">' + PERIOD_SNS_SHORT_LABEL[key] + '</span>' +
+      '<span style="font-size:10px;color:var(--text);">いいね計 ' + s.totalLikes + '　平均EG率 ' + egText + '</span></div>';
+  }).join('');
+
+  const cmpText = (p.comparisonPercent === null || p.comparisonPercent === undefined) ? '' :
+    ('前期間比' + (p.comparisonPercent >= 0 ? '+' : '') + p.comparisonPercent + '%。');
+  const bestText = p.bestSns ? ((SNS_META[p.bestSns] || {}).label || p.bestSns) + 'の反応が最も好調でした。' : '';
+  const highlightInner = (cmpText + bestText) || (p.postCount > 0 ? '比較できる前期間のデータがまだありません。' : 'この期間の投稿がありませんでした。');
+
+  return '<p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">' + (p.label || '') + '</p>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">' +
+    periodStatCell('投稿数', p.postCount + '<span style="font-size:10px;">件</span>', 'var(--primary)') +
+    periodStatCell('合計いいね', p.totalLikes, '#2e7d32') +
+    periodStatCell('平均EG率', (p.avgEgRate === null || p.avgEgRate === undefined) ? '-' : p.avgEgRate + '%', '#2e7d32') +
+    '</div>' +
+    '<div style="display:flex;flex-direction:column;gap:5px;">' + snsRows + '</div>' +
+    '<div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">' +
+    '<div style="font-size:10px;color:#166534;">📈 ' + highlightInner + '</div></div>';
+}
+
+// 「先週・先月のまとめ」を3タブ分反映する（IDの接尾辞：LITE=''／STANDARD='-2'／PRO='-3'）
+function applyPeriodSummaryData(data) {
+  if (!data || data.error) return;
+  ['', '-2', '-3'].forEach(function (suffix) {
+    const weeklyEl = document.getElementById('summary-weekly' + suffix);
+    const monthlyEl = document.getElementById('summary-monthly' + suffix);
+    if (weeklyEl) weeklyEl.innerHTML = renderPeriodBlock(data.weekly);
+    if (monthlyEl) monthlyEl.innerHTML = renderPeriodBlock(data.monthly);
+  });
+}
+
 async function fetchAndApplyAnalyticsSummary() {
   const result = await postToGas({ action: 'getAnalyticsSummary', lineUid: LINE_UID, params: { plan: currentActualPlan } }, '分析(今日の状況)', function (r) { return r && r.success && r.data && !r.data.error; });
   if (!result) return;
@@ -2655,6 +2709,15 @@ async function fetchAndApplyAnalyticsCalendar() {
   writeAnalyticsCache('calendar', result.data);
 }
 
+// ★liff_analytics_html37：「先週・先月のまとめ」カードの実データ取得
+// 　（getAnalyticsPeriodSummary）。
+async function fetchAndApplyAnalyticsPeriodSummary() {
+  const result = await postToGas({ action: 'getAnalyticsPeriodSummary', lineUid: LINE_UID, params: { plan: currentActualPlan } }, '分析(先週・先月のまとめ)', function (r) { return r && r.success && r.data && !r.data.error; });
+  if (!result) return;
+  applyPeriodSummaryData(result.data);
+  writeAnalyticsCache('periodSummary', result.data);
+}
+
 // 画面を開いた直後に、保存済みの分析データがあればすぐ表示する
 // （LINEの初期化を待たない。取得は不要）
 function applyCachedAnalyticsData() {
@@ -2662,6 +2725,7 @@ function applyCachedAnalyticsData() {
   if (!cache) return;
   if (cache.summary) applySummaryData(cache.summary);
   if (cache.calendar) applyCalendarData(cache.calendar);
+  if (cache.periodSummary) applyPeriodSummaryData(cache.periodSummary);
 }
 
 // 保存済みでないデータだけをサーバーから取得する。
@@ -2676,20 +2740,23 @@ async function loadAnalyticsData() {
   const cache = readAnalyticsCache();
   const needSummary = !(cache && cache.summary);
   const needCalendar = !(cache && cache.calendar);
+  const needPeriodSummary = !(cache && cache.periodSummary);
   const needMaster = !readMasterDataCache();
-  if (!needSummary && !needCalendar && !needMaster) return;
-  const showSpinner = needSummary || needCalendar;
-  traceLog('分析画面: 今日の状況=' + (needSummary ? '保存なし' : '保存あり') + ' カレンダー=' + (needCalendar ? '保存なし' : '保存あり') + ' マスタ=' + (needMaster ? '保存なし' : '保存あり') + (showSpinner ? ' →スピナー開始' : ' →スピナーなし'));
+  if (!needSummary && !needCalendar && !needPeriodSummary && !needMaster) return;
+  const showSpinner = needSummary || needCalendar || needPeriodSummary;
+  traceLog('分析画面: 今日の状況=' + (needSummary ? '保存なし' : '保存あり') + ' カレンダー=' + (needCalendar ? '保存なし' : '保存あり') + ' 先週先月=' + (needPeriodSummary ? '保存なし' : '保存あり') + ' マスタ=' + (needMaster ? '保存なし' : '保存あり') + (showSpinner ? ' →スピナー開始' : ' →スピナーなし'));
   if (showSpinner) acquireLoadingOverlay();
   try {
     // ★liff_analytics_html27：実機の履歴で、分析が最初の画面のとき5件が完全に同時になり、
     // 　GAS側の同時アクセスが重なって、単体なら数秒の取得が最大24秒に延びる例があった。
-    // 　この画面の表示に必要な今日の状況・カレンダーを先に取得し、それが終わってから
-    // 　（下のfinally内で）、この画面では使わないマスタデータを、スピナーを出さず
-    // 　裏側で取得するよう変更した（同時に走る問い合わせの最大数を減らすため）。
+    // 　この画面の表示に必要な今日の状況・カレンダー・先週先月のまとめを先に取得し、
+    // 　それが終わってから（下のfinally内で）、この画面では使わないマスタデータを、
+    // 　スピナーを出さず裏側で取得するよう変更した（同時に走る問い合わせの最大数を
+    // 　減らすため）。
     await Promise.all([
       needSummary ? fetchAndApplyAnalyticsSummary() : Promise.resolve(),
-      needCalendar ? fetchAndApplyAnalyticsCalendar() : Promise.resolve()
+      needCalendar ? fetchAndApplyAnalyticsCalendar() : Promise.resolve(),
+      needPeriodSummary ? fetchAndApplyAnalyticsPeriodSummary() : Promise.resolve()
     ]);
   } finally {
     if (showSpinner) { traceLog('スピナー終了（分析データ）'); releaseLoadingOverlay(); }
