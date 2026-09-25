@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析33 - AiPost</title>
+<title>分析34 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -160,7 +160,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析33</span>
+  <span class="header-logo">分析34</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -1926,41 +1926,36 @@ function makeNoDataBlock(snsKey, message) {
   </div>`;
 }
 
+// ★liff_analytics_html34：ガイド「⑦SNSごとの取得データと重要指標」・
+// 　GAS側の指標マッピングと一致する、SNSごとの固定項目リスト。
+// 　「値が無い（未取得・算出不可）」と「そのSNSに項目自体が無い」を
+// 　区別するため、これまでの「データにその項目があれば表示」という
+// 　動的な判定をやめ、SNSごとに常に同じ項目を表示するようにした
+// 　（値が無い項目は「-」で表示。アイコンごと消さない）。
+const SNS_METRIC_DEFS = {
+  X:         [{key:'likes',icon:'❤️'},{key:'reposts',icon:'🔁'},{key:'replies',icon:'↩️'},{key:'imprs',icon:'👁️'},{key:'eg',icon:'📊'}],
+  Instagram: [{key:'likes',icon:'❤️'},{key:'comments',icon:'💬'},{key:'eg',icon:'📊'}],
+  Threads:   [{key:'likes',icon:'❤️'},{key:'reposts',icon:'🔁'},{key:'replies',icon:'↩️'},{key:'quotes',icon:'🗨️'},{key:'imprs',icon:'👁️'},{key:'eg',icon:'📊'}]
+};
+
 function makeSNSBlock(snsKey, snsData) {
   const s = snsStyle[snsKey] || {label:snsKey,color:'#555'};
   const h1 = snsData.h1 || {};
   const h3 = snsData.h3 || {};
   const h24 = snsData.h24 || {};
-  const fmt = v => v === undefined ? '--' : v;
+  const fmt = v => (v === undefined || v === null || v === '') ? '-' : v;
 
   // 削除済み（元投稿が見つからない）の場合
   if (h1.deleted || h3.deleted || h24.deleted) {
     return makeNoDataBlock(snsKey, '投稿が見つかりません（削除された可能性があります）');
   }
 
-  // 使用するアイコンと値を収集
-  const metrics = [];
-  if (h1.likes!==undefined || h3.likes!==undefined || h24.likes!==undefined)
-    metrics.push({icon:'❤️', h1:h1.likes, h3:h3.likes, h24:h24.likes});
-  if (h1.comments!==undefined || h3.comments!==undefined || h24.comments!==undefined)
-    metrics.push({icon:'💬', h1:h1.comments, h3:h3.comments, h24:h24.comments});
-  if (h1.shares!==undefined || h3.shares!==undefined || h24.shares!==undefined)
-    metrics.push({icon:'📤', h1:h1.shares, h3:h3.shares, h24:h24.shares});
-  if (h1.reactions!==undefined || h3.reactions!==undefined || h24.reactions!==undefined)
-    metrics.push({icon:'👍', h1:h1.reactions, h3:h3.reactions, h24:h24.reactions});
-  if (h1.reposts!==undefined || h3.reposts!==undefined || h24.reposts!==undefined)
-    metrics.push({icon:'🔁', h1:h1.reposts, h3:h3.reposts, h24:h24.reposts});
-  if (h1.replies!==undefined || h3.replies!==undefined || h24.replies!==undefined)
-    metrics.push({icon:'↩️', h1:h1.replies, h3:h3.replies, h24:h24.replies});
-  if (h1.quotes!==undefined || h3.quotes!==undefined || h24.quotes!==undefined)
-    metrics.push({icon:'🗨️', h1:h1.quotes, h3:h3.quotes, h24:h24.quotes});
-  if (h1.imprs!==undefined || h3.imprs!==undefined || h24.imprs!==undefined)
-    metrics.push({icon:'👁️', h1:h1.imprs, h3:h3.imprs, h24:h24.imprs});
-  if (h1.eg!==undefined || h3.eg!==undefined || h24.eg!==undefined)
-    metrics.push({icon:'📊', h1:h1.eg, h3:h3.eg, h24:h24.eg});
+  // SNSごとの固定リストから、アイコンと値を組み立てる
+  const defs = SNS_METRIC_DEFS[snsKey] || [];
+  const metrics = defs.map(d => ({icon: d.icon, h1: h1[d.key], h3: h3[d.key], h24: h24[d.key]}));
 
-  // まだ1つもデータが取得されていない場合
-  if (metrics.length === 0) {
+  // まだ1つもデータが取得されていない場合（1h/3h/24hすべて空）
+  if (h1.likes === undefined && h3.likes === undefined && h24.likes === undefined) {
     return makeNoDataBlock(snsKey, 'まだデータが取得されていません');
   }
 
@@ -2104,14 +2099,16 @@ function showStdUnified(d) {
         <span style="font-size:9px;color:var(--text-light);display:block;margin-bottom:2px;">${post.time}投稿</span>
         📝 ${post.text}
       </div>`;
-      for (const snsKey of Object.keys(post.sns)) {
+      // ★liff_analytics_html34：表示順序をPROと同じ固定順（X→Instagram→Threads）に統一
+      const SNS_ORDER = ['X', 'Instagram', 'Threads'];
+      SNS_ORDER.filter(k => post.sns && post.sns[k]).forEach(snsKey => {
         const d24 = post.sns[snsKey].h24;
         if (!d24) {
           html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です');
-          continue;
+          return;
         }
         html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 });
-      }
+      });
     });
   } else {
     html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません</p>';
@@ -2140,14 +2137,16 @@ function showLiteUnified(d) {
         <span style="font-size:9px;color:var(--text-light);display:block;margin-bottom:2px;">${post.time}投稿</span>
         📝 ${post.text}
       </div>`;
-      for (const snsKey of Object.keys(post.sns)) {
+      // ★liff_analytics_html34：表示順序をPROと同じ固定順（X→Instagram→Threads）に統一
+      const SNS_ORDER = ['X', 'Instagram', 'Threads'];
+      SNS_ORDER.filter(k => post.sns && post.sns[k]).forEach(snsKey => {
         const d24 = post.sns[snsKey].h24;
         if (!d24) {
           html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です');
-          continue;
+          return;
         }
         html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 });
-      }
+      });
     });
   } else {
     html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません</p>';
@@ -2219,7 +2218,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析33';
+const TRACE_SCREEN = '分析34';
 
 function traceLog(msg) {
   try {
