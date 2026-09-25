@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析32 - AiPost</title>
+<title>分析33 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -160,7 +160,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析32</span>
+  <span class="header-logo">分析33</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -2219,7 +2219,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析32';
+const TRACE_SCREEN = '分析33';
 
 function traceLog(msg) {
   try {
@@ -2460,38 +2460,58 @@ function formatPostedAt(dateStr) {
 }
 
 // 1件のSNS結果（timing24h）を、そのSNSの指標に応じたHTML行に変換する
+// ★liff_analytics_html33：投稿日別データ（makeSNSBlock）・あなたの投稿
+// 　平均との比較と表示を揃えるため、全角スペース区切りの1行テキストから、
+// 　display:gridを使った整列表示に書き換えた（データの範囲・内容自体は
+// 　変更していない。24時間後のみ表示する現状の仕様のまま）。
 function renderSnsResultRow(result) {
   const meta = SNS_META[result.sns] || { label: result.sns, color: '#555' };
   const t = result.timing24h;
   if (!t) {
     return '<div style="margin-bottom:10px;">' +
-      '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;">' + meta.label + '（24時間後）</div>' +
+      '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">' + meta.label + '（24時間後）</div>' +
       '<div style="font-size:10px;color:var(--text-light);">まだ24時間経過していないため未取得です</div>' +
       '</div>';
   }
   if (t.deleted) {
     return '<div style="margin-bottom:10px;">' +
-      '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;">' + meta.label + '（24時間後）</div>' +
+      '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">' + meta.label + '（24時間後）</div>' +
       '<div style="font-size:10px;color:var(--text-light);">投稿が見つかりません（削除された可能性があります）</div>' +
       '</div>';
   }
   const egText = (t.egRate === '' || t.egRate === null) ? '-' : t.egRate + '%';
-  let cols, header, values;
+  let metrics;
   if (result.sns === 'X') {
-    header = '❤️　🔁　↩️　👁️　📊';
-    values = (t.likeCount || 0) + '　' + (t.retweetCount || 0) + '　' + (t.replyCount || 0) + '　' + (t.impressionCount || 0) + '　' + egText;
+    metrics = [
+      { icon: '❤️', value: t.likeCount || 0 },
+      { icon: '🔁', value: t.retweetCount || 0 },
+      { icon: '↩️', value: t.replyCount || 0 },
+      { icon: '👁️', value: t.impressionCount || 0 },
+      { icon: '📊', value: egText }
+    ];
   } else if (result.sns === 'Instagram') {
-    header = '❤️　💬　📊';
-    values = (t.likeCount || 0) + '　' + (t.commentCount || 0) + '　' + egText;
+    metrics = [
+      { icon: '❤️', value: t.likeCount || 0 },
+      { icon: '💬', value: t.commentCount || 0 },
+      { icon: '📊', value: egText }
+    ];
   } else {
-    header = '❤️　↩️　🔁　💬　📊';
-    values = (t.likeCount || 0) + '　' + (t.repliesCount || 0) + '　' + (t.retweetCount || 0) + '　' + (t.quotesCount || 0) + '　' + egText;
+    metrics = [
+      { icon: '❤️', value: t.likeCount || 0 },
+      { icon: '↩️', value: t.repliesCount || 0 },
+      { icon: '🔁', value: t.retweetCount || 0 },
+      { icon: '💬', value: t.quotesCount || 0 },
+      { icon: '📊', value: egText }
+    ];
   }
+  const cells = metrics.map(function (m) {
+    return '<div style="text-align:center;"><div style="font-size:14px;">' + m.icon + '</div>' +
+      '<div style="font-size:12px;font-weight:700;color:var(--primary);">' + m.value + '</div></div>';
+  }).join('');
   return '<div style="margin-bottom:10px;">' +
-    '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;">' + meta.label + '（24時間後）</div>' +
-    '<div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">' + header + '</div>' +
-    '<div style="font-size:12px;font-weight:700;">' + values + '</div>' +
-    '</div><hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">';
+    '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">' + meta.label + '（24時間後）</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(' + metrics.length + ', 1fr);gap:6px;">' + cells + '</div>' +
+    '</div>';
 }
 
 function applyLatestPostSection(prefix, data) {
