@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析34 - AiPost</title>
+<title>分析35 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -160,7 +160,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析34</span>
+  <span class="header-logo">分析35</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
 </div>
 
@@ -1938,12 +1938,17 @@ const SNS_METRIC_DEFS = {
   Threads:   [{key:'likes',icon:'❤️'},{key:'reposts',icon:'🔁'},{key:'replies',icon:'↩️'},{key:'quotes',icon:'🗨️'},{key:'imprs',icon:'👁️'},{key:'eg',icon:'📊'}]
 };
 
-function makeSNSBlock(snsKey, snsData) {
+// ★liff_analytics_html35：showAllTimingsがfalseの場合、1時間後・3時間後の
+// 　行を表示しない（LITE・STANDARDはこの2つのタイミングのデータを一切
+// 　取得しないため、「-」ばかりの行を表示する意味が無いという指摘に対応）。
+// 　省略時（PROのカレンダー詳細など）はtrue扱いで、従来どおり3段表示する。
+function makeSNSBlock(snsKey, snsData, showAllTimings) {
   const s = snsStyle[snsKey] || {label:snsKey,color:'#555'};
   const h1 = snsData.h1 || {};
   const h3 = snsData.h3 || {};
   const h24 = snsData.h24 || {};
   const fmt = v => (v === undefined || v === null || v === '') ? '-' : v;
+  const showTimings = showAllTimings !== false;
 
   // 削除済み（元投稿が見つからない）の場合
   if (h1.deleted || h3.deleted || h24.deleted) {
@@ -1975,8 +1980,8 @@ function makeSNSBlock(snsKey, snsData) {
       metrics.map(m => `<div style="text-align:center;"><div style="font-size:12px;">${m.icon}</div><div style="font-size:11px;font-weight:700;color:var(--primary);">${fmt(m[vals])}</div></div>`).join('');
   }
 
-  const h1Row  = makeTimingRow('1時間後',  t1,  'h1');
-  const h3Row  = makeTimingRow('3時間後',  t3,  'h3');
+  const h1Row  = showTimings ? makeTimingRow('1時間後',  t1,  'h1') : '';
+  const h3Row  = showTimings ? makeTimingRow('3時間後',  t3,  'h3') : '';
   const h24Row = makeTimingRow('24時間後', t24, 'h24');
 
   return `<div style="margin-bottom:10px;">
@@ -2107,7 +2112,9 @@ function showStdUnified(d) {
           html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です');
           return;
         }
-        html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 });
+        // ★liff_analytics_html35：STANDARDは1時間後・3時間後を一切取得しないため、
+        // 　「-」ばかりの行を表示しない（showAllTimings=false）
+        html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 }, false);
       });
     });
   } else {
@@ -2145,7 +2152,9 @@ function showLiteUnified(d) {
           html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です');
           return;
         }
-        html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 });
+        // ★liff_analytics_html35：LITEは1時間後・3時間後を一切取得しないため、
+        // 　「-」ばかりの行を表示しない（showAllTimings=false）
+        html += makeSNSBlock(snsKey, { t24: post.sns[snsKey].t24, h24: d24 }, false);
       });
     });
   } else {
@@ -2218,7 +2227,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析34';
+const TRACE_SCREEN = '分析35';
 
 function traceLog(msg) {
   try {
@@ -2463,54 +2472,35 @@ function formatPostedAt(dateStr) {
 // 　平均との比較と表示を揃えるため、全角スペース区切りの1行テキストから、
 // 　display:gridを使った整列表示に書き換えた（データの範囲・内容自体は
 // 　変更していない。24時間後のみ表示する現状の仕様のまま）。
+// ★liff_analytics_html35：「直近投稿と24時間後の状況」カードを、投稿日別
+// 　データ（makeSNSBlock）と同じ見た目に統一した。以前はrenderSnsResultRow
+// 　という別関数が、SNS名を「（24時間後）」付きの見出し1つにまとめ、アイコンを
+// 　1行だけ並べる、独自の簡易表示をしていた。getAnalyticsSummary()が返す
+// 　timing24hオブジェクト（likeCount・retweetCount等の長い項目名）は、
+// 　makeSNSBlock()が期待する形式（likes・reposts等の短い項目名）と異なる
+// 　ため、まず変換してから渡す。このカードはどのプランでも現状24時間後の
+// 　データしか持たないため、showAllTimings=falseで1時間後・3時間後の行は
+// 　表示しない（投稿日別データのLITE・STANDARDと同じ扱い）。
+function adaptTiming24hForSNSBlock(sns, t) {
+  if (!t) return {};
+  if (t.deleted) return { deleted: true };
+  const eg = (t.egRate === '' || t.egRate === null || t.egRate === undefined) ? undefined : t.egRate;
+  if (sns === 'X') {
+    return { likes: t.likeCount, reposts: t.retweetCount, replies: t.replyCount, imprs: t.impressionCount, eg: eg };
+  }
+  if (sns === 'Instagram') {
+    return { likes: t.likeCount, comments: t.commentCount, eg: eg };
+  }
+  return { likes: t.likeCount, replies: t.repliesCount, reposts: t.retweetCount, quotes: t.quotesCount, imprs: t.impressionCount, eg: eg };
+}
+
 function renderSnsResultRow(result) {
-  const meta = SNS_META[result.sns] || { label: result.sns, color: '#555' };
   const t = result.timing24h;
   if (!t) {
-    return '<div style="margin-bottom:10px;">' +
-      '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">' + meta.label + '（24時間後）</div>' +
-      '<div style="font-size:10px;color:var(--text-light);">まだ24時間経過していないため未取得です</div>' +
-      '</div>';
+    return makeNoDataBlock(result.sns, 'まだ24時間経過していないため未取得です');
   }
-  if (t.deleted) {
-    return '<div style="margin-bottom:10px;">' +
-      '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">' + meta.label + '（24時間後）</div>' +
-      '<div style="font-size:10px;color:var(--text-light);">投稿が見つかりません（削除された可能性があります）</div>' +
-      '</div>';
-  }
-  const egText = (t.egRate === '' || t.egRate === null) ? '-' : t.egRate + '%';
-  let metrics;
-  if (result.sns === 'X') {
-    metrics = [
-      { icon: '❤️', value: t.likeCount || 0 },
-      { icon: '🔁', value: t.retweetCount || 0 },
-      { icon: '↩️', value: t.replyCount || 0 },
-      { icon: '👁️', value: t.impressionCount || 0 },
-      { icon: '📊', value: egText }
-    ];
-  } else if (result.sns === 'Instagram') {
-    metrics = [
-      { icon: '❤️', value: t.likeCount || 0 },
-      { icon: '💬', value: t.commentCount || 0 },
-      { icon: '📊', value: egText }
-    ];
-  } else {
-    metrics = [
-      { icon: '❤️', value: t.likeCount || 0 },
-      { icon: '↩️', value: t.repliesCount || 0 },
-      { icon: '🔁', value: t.retweetCount || 0 },
-      { icon: '💬', value: t.quotesCount || 0 },
-      { icon: '📊', value: egText }
-    ];
-  }
-  const cells = metrics.map(function (m) {
-    return '<div style="text-align:center;"><div style="font-size:14px;">' + m.icon + '</div>' +
-      '<div style="font-size:12px;font-weight:700;color:var(--primary);">' + m.value + '</div></div>';
-  }).join('');
-  return '<div style="margin-bottom:10px;">' +
-    '<div style="font-size:11px;font-weight:700;color:' + meta.color + ';margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">' + meta.label + '（24時間後）</div>' +
-    '<div style="display:grid;grid-template-columns:repeat(' + metrics.length + ', 1fr);gap:6px;">' + cells + '</div>' +
-    '</div>';
+  const h24 = adaptTiming24hForSNSBlock(result.sns, t);
+  return makeSNSBlock(result.sns, { h24: h24 }, false);
 }
 
 function applyLatestPostSection(prefix, data) {
