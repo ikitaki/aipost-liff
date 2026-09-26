@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更32 - AiPost</title>
+<title>予約確認・変更33 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -409,6 +409,27 @@
     margin-bottom: 8px;
   }
 
+  /* ★liff_reservation_html33：予約本文の修正 */
+  .edit-textarea {
+    width: 100%;
+    min-height: 180px;
+    border: 1.5px solid var(--primary-light);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.7;
+    font-family: inherit;
+    resize: vertical;
+    margin: 10px 0 6px;
+  }
+  .edit-counts { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
+  .edit-count-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .edit-count-ok { color: var(--text-sub); }
+  .edit-count-ng { color: var(--danger); font-weight: 700; }
+  .edit-note { font-size: 11px; color: var(--text-sub); line-height: 1.6; }
+  .edit-error { font-size: 12px; color: var(--danger); font-weight: 600; line-height: 1.6; margin-top: 4px; }
+  .btn:disabled { opacity: 0.4; cursor: default; }
+
   /* ★liff_reservation_html31：投稿履歴タブ（実データ化） */
   .cal-nav:disabled { opacity: 0.25; cursor: default; }
   .cal-date.blank { cursor: default; }
@@ -494,7 +515,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更32</span>
+  <span class="header-logo">予約確認・変更33</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -669,11 +690,29 @@
       <span class="detail-val" id="detail-charcount"></span>
     </div>
 
-    <div class="post-text-box" id="detail-posttext"></div>
+    <!-- 表示モード -->
+    <div id="detail-view">
+      <div class="post-text-box" id="detail-posttext" style="white-space:pre-wrap;word-break:break-word;"></div>
 
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
-      <button class="btn btn-danger" onclick="confirmCancel()">キャンセル</button>
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
+        <!-- ★liff_reservation_html33：「修正する」ボタンを追加（投稿予定の5分前を過ぎた予約では非表示） -->
+        <button class="btn btn-primary" id="detail-edit-btn" onclick="startEditReservation()">修正する</button>
+        <button class="btn btn-danger" onclick="confirmCancel()">キャンセル</button>
+      </div>
+    </div>
+
+    <!-- 修正モード（★liff_reservation_html33） -->
+    <div id="detail-edit" style="display:none;">
+      <textarea class="edit-textarea" id="detail-edit-text" oninput="editServerError = ''; updateEditCounts()"></textarea>
+      <div class="edit-counts" id="detail-edit-counts"></div>
+      <div class="edit-note">修正できるのは本文のみです。ハッシュタグ・投稿日時・投稿先は変わりません。文字数はハッシュタグ込みで数えています。</div>
+      <div class="edit-error" id="detail-edit-error"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" id="detail-edit-cancel-btn" onclick="cancelEditReservation()">やめる</button>
+        <button class="btn btn-primary" id="detail-edit-save-btn" onclick="saveEditReservation()">保存する</button>
+      </div>
     </div>
   </div>
 </div>
@@ -721,20 +760,8 @@ function switchTab(id) {
 // ★liff_reservation_html32：予約カレンダーのデモデータ（Facebookを含むダミーデータ）と
 // 　buildCalendar()・selectDay()を削除し、実データ表示（下のscript内）に置き換えた。
 
-// 修正機能は未実装のため、editReservation()は一時的に未使用
-// （「修正する」ボタン非表示に伴い、呼び出し元が無い状態）。
-function editReservation() {
-  const params = new URLSearchParams({
-    edit: '1',
-    day: '15',
-    time: '13時ごろ',
-    sns: 'IG,X',
-    text: '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。',
-    tags: '渋谷カフェ,週末限定,抹茶スイーツ',
-    img: '🍵',
-  });
-  window.location.href = LIFF_URLS.textgen + '?' + params.toString();
-}
+// ★liff_reservation_html33：投稿文作成画面へ遷移する方式の旧デモ関数editReservation()を削除した
+// 　（本文の修正は、予約の詳細画面内で行う方式に決定したため）。
 
 </script>
 
@@ -884,7 +911,7 @@ function editReservation() {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認32';
+  const TRACE_SCREEN = '予約確認33';
 
   function traceLog(msg) {
     try {
@@ -1204,8 +1231,13 @@ function editReservation() {
       try {
         const cachedRaw = sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
         if (cachedRaw) {
-          renderReservationList(JSON.parse(cachedRaw));
-          return;
+          const cachedList = JSON.parse(cachedRaw);
+          // ★liff_reservation_html33：ハッシュタグ（hashtags）を含まない旧形式の保存データは使わず取得し直す
+          const isCurrentFormat = Array.isArray(cachedList) && cachedList.every(function (item) { return item && item.hashtags; });
+          if (isCurrentFormat) {
+            renderReservationList(cachedList);
+            return;
+          }
         }
       } catch (err) {
         // キャッシュの読み込みに失敗した場合は通常通り取得する
@@ -1247,9 +1279,14 @@ function editReservation() {
     document.getElementById('detail-sns').textContent = r.targetSns.join('・');
     document.getElementById('detail-charcount').textContent = r.honbun.length + '文字';
     document.getElementById('detail-posttext').textContent = r.honbun;
+    // ★liff_reservation_html33：修正モードを解除し、修正可能な予約のみ「修正する」を表示
+    setEditMode(false);
+    document.getElementById('detail-edit-btn').style.display = isReservationEditable(r) ? '' : 'none';
     document.getElementById('detail-modal').classList.add('open');
   }
   function closeDetail() {
+    if (editSaving) return;
+    setEditMode(false);
     document.getElementById('detail-modal').classList.remove('open');
   }
   function confirmCancel() {
@@ -1295,6 +1332,154 @@ function editReservation() {
       alert('通信エラーが発生しました。もう一度お試しください。');
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = 'キャンセルする'; }
+    }
+  }
+
+  // ============================================
+  // ★liff_reservation_html33：予約本文の修正
+  // ============================================
+  // ・修正できるのは本文のみ（GAS：updateReservationText）。
+  // ・投稿予定時刻の5分前を過ぎた予約は「修正する」を表示しない（GAS側でも同じ判定を行う）。
+  // ・文字数の数え方は自動投稿（AutoPost.gs）と同じ：本文＋改行2つ＋「#タグ」を半角スペース区切り。
+  // 　Xは全角2・半角1で数えて280まで、URLを含めると除外。Instagram 2,200文字・Threads 500文字まで。
+  // ・保存後は通信し直さず、手元の一覧データの本文を書き換えて一覧・カレンダー・保存データを更新する。
+  const EDIT_CUTOFF_MINUTES = 5;
+  const EDIT_LIMITS = { X: 280, Instagram: 2200, Threads: 500 };
+  let editSaving = false;
+  let editServerError = '';   // 保存時にGASから返されたエラー（入力し直すと消える）
+
+  function isReservationEditable(r) {
+    const t = new Date(r.scheduledAt).getTime();
+    return !isNaN(t) && t - Date.now() > EDIT_CUTOFF_MINUTES * 60 * 1000;
+  }
+
+  function buildSnsPostText(honbun, hashtagRaw) {
+    if (!hashtagRaw) return honbun;
+    const tags = String(hashtagRaw).split('，')
+      .map(function (t) { return t.trim(); })
+      .filter(function (t) { return t !== ''; });
+    if (tags.length === 0) return honbun;
+    return honbun + '\n\n' + tags.map(function (t) { return '#' + t; }).join(' ');
+  }
+
+  function xWeightedLength(text) {
+    let length = 0;
+    for (let i = 0; i < text.length; i++) {
+      length += text.charCodeAt(i) <= 255 ? 1 : 2;
+    }
+    return length;
+  }
+
+  function getDetailReservation() {
+    return currentReservationList.find(function (item) { return item.reservationId === currentDetailReservationId; });
+  }
+
+  function setEditMode(on) {
+    document.getElementById('detail-view').style.display = on ? 'none' : 'block';
+    document.getElementById('detail-edit').style.display = on ? 'block' : 'none';
+    editServerError = '';
+    document.getElementById('detail-edit-error').textContent = '';
+  }
+
+  function startEditReservation() {
+    const r = getDetailReservation();
+    if (!r) return;
+    if (!isReservationEditable(r)) {
+      alert('投稿予定時刻の' + EDIT_CUTOFF_MINUTES + '分前を過ぎたため修正できません');
+      document.getElementById('detail-edit-btn').style.display = 'none';
+      return;
+    }
+    document.getElementById('detail-edit-text').value = r.honbun;
+    setEditMode(true);
+    updateEditCounts();
+  }
+
+  function cancelEditReservation() {
+    if (editSaving) return;
+    setEditMode(false);
+  }
+
+  // SNSごとの文字数と、保存できるかどうかを表示する
+  function updateEditCounts() {
+    const r = getDetailReservation();
+    if (!r) return;
+    const raw = document.getElementById('detail-edit-text').value;
+    const text = raw.trim();
+    const hashtags = r.hashtags || {};
+    let problem = '';
+
+    const rows = r.targetSns.map(function (sns) {
+      const postText = buildSnsPostText(text, hashtags[sns] || '');
+      const count = sns === 'X' ? xWeightedLength(postText) : Array.from(postText).length;
+      const limit = EDIT_LIMITS[sns];
+      let ng = count > limit;
+      let note = '';
+      if (sns === 'X') {
+        note = '（全角2・半角1で計算）';
+        if (/https?:\/\//.test(text)) {
+          ng = true;
+          note = '（X宛てにはURLを含められません）';
+          if (!problem) problem = 'X宛ての投稿には、URLを含めることができません';
+        }
+      }
+      if (count > limit && !problem) problem = sns + 'の文字数上限を超えています';
+      return '<div class="edit-count-row">' + snsTagHtml(sns) +
+        '<span class="' + (ng ? 'edit-count-ng' : 'edit-count-ok') + '">' + count + ' / ' + limit + note + '</span></div>';
+    }).join('');
+    document.getElementById('detail-edit-counts').innerHTML = rows;
+
+    if (text === '' && !problem) problem = '本文を入力してください';
+    const unchanged = text === r.honbun;
+    document.getElementById('detail-edit-error').textContent = problem || editServerError;
+    document.getElementById('detail-edit-save-btn').disabled = !!problem || unchanged || editSaving;
+  }
+
+  async function saveEditReservation() {
+    const r = getDetailReservation();
+    if (!r || editSaving) return;
+    const newText = document.getElementById('detail-edit-text').value.trim();
+    const saveBtn = document.getElementById('detail-edit-save-btn');
+    const cancelBtn = document.getElementById('detail-edit-cancel-btn');
+    editSaving = true;
+    saveBtn.disabled = true;
+    saveBtn.textContent = '保存中…';
+    cancelBtn.disabled = true;
+    try {
+      // ★書き込み処理のため、自動再試行（postToGas）は使わず1回だけ送信する
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateReservationText',
+          lineUid: LINE_UID,
+          params: { reservationId: r.reservationId, honbun: newText }
+        })
+      });
+      const result = await response.json();
+      if (result.success && result.data && result.data.success) {
+        traceLog('本文修正OK');
+        r.honbun = result.data.honbun;
+        renderReservationList(currentReservationList);
+        try { sessionStorage.setItem(RESERVATION_LIST_CACHE_KEY, JSON.stringify(currentReservationList)); } catch (err) {}
+        document.getElementById('detail-posttext').textContent = r.honbun;
+        document.getElementById('detail-charcount').textContent = r.honbun.length + '文字';
+        editSaving = false;
+        setEditMode(false);
+        alert('本文を修正しました');
+      } else {
+        const message = (result.data && result.data.error) || result.error || '本文の修正に失敗しました。もう一度お試しください。';
+        traceLog('本文修正NG ' + message);
+        editServerError = message;
+      }
+    } catch (err) {
+      console.error('本文修正エラー:', err);
+      editServerError = '通信エラーが発生しました。もう一度お試しください。';
+    } finally {
+      editSaving = false;
+      saveBtn.textContent = '保存する';
+      cancelBtn.disabled = false;
+      if (document.getElementById('detail-edit').style.display !== 'none') {
+        updateEditCounts();
+      }
     }
   }
 
