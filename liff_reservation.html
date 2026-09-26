@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更33 - AiPost</title>
+<title>予約確認・変更34 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -409,6 +409,18 @@
     margin-bottom: 8px;
   }
 
+  /* ★liff_reservation_html34：予約画像の表示 */
+  .card-img-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; display: block; }
+  .detail-image {
+    display: block;
+    width: 100%;
+    max-height: 220px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: var(--bg);
+    margin-top: 10px;
+  }
+
   /* ★liff_reservation_html33：予約本文の修正 */
   .edit-textarea {
     width: 100%;
@@ -515,7 +527,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更33</span>
+  <span class="header-logo">予約確認・変更34</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -692,6 +704,8 @@
 
     <!-- 表示モード -->
     <div id="detail-view">
+      <!-- ★liff_reservation_html34：予約画像の表示（画像なし・読み込み失敗時は非表示） -->
+      <img class="detail-image" id="detail-image" alt="予約画像" style="display:none;">
       <div class="post-text-box" id="detail-posttext" style="white-space:pre-wrap;word-break:break-word;"></div>
 
       <div class="btn-row">
@@ -911,7 +925,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認33';
+  const TRACE_SCREEN = '予約確認34';
 
   function traceLog(msg) {
     try {
@@ -1180,6 +1194,50 @@ function switchTab(id) {
     return { dateLabel: dateLabel, timeLabel: timeLabel };
   }
 
+  // ★liff_reservation_html34：予約画像の表示。画像はGoogleドライブに「リンクを知っている
+  // 　全員が閲覧可」で保存されており、SNS投稿と同じ直リンク形式（lh3.googleusercontent.com）で
+  // 　表示する。サイズ指定付きのURLで読めない場合はサイズ指定なしで再試行し、それでも
+  // 　読めない場合は、カードは従来の🖼️アイコン、詳細画面は画像欄を非表示に戻す。
+  const IMAGE_BASE_URL = 'https://lh3.googleusercontent.com/d/';
+  function isValidImageFileId(id) {
+    return typeof id === 'string' && /^[A-Za-z0-9_-]+$/.test(id);
+  }
+  function reservationThumbHtml(r) {
+    if (isValidImageFileId(r.imageFileId)) {
+      const base = IMAGE_BASE_URL + r.imageFileId;
+      return '<img src="' + base + '=w200" alt="" loading="lazy" data-retry="' + base + '" onerror="handleThumbError(this)">';
+    }
+    return r.hasImage ? '🖼️' : '';
+  }
+  function handleThumbError(img) {
+    const retry = img.getAttribute('data-retry');
+    if (retry) {
+      img.removeAttribute('data-retry');
+      img.src = retry;
+      return;
+    }
+    const box = img.parentNode;
+    if (box) box.textContent = '🖼️';
+  }
+  function showDetailImage(r) {
+    const img = document.getElementById('detail-image');
+    if (!img) return;
+    img.onerror = null;
+    if (!isValidImageFileId(r.imageFileId)) {
+      img.style.display = 'none';
+      img.removeAttribute('src');
+      return;
+    }
+    const base = IMAGE_BASE_URL + r.imageFileId;
+    let retried = false;
+    img.onerror = function () {
+      if (!retried) { retried = true; img.src = base; return; }
+      img.style.display = 'none';
+    };
+    img.style.display = 'block';
+    img.src = base + '=w800';
+  }
+
   function renderReservationCard(r) {
     const time = formatScheduledAt(r.scheduledAt);
     const tags = r.targetSns.map(snsTagHtml).join('');
@@ -1195,7 +1253,7 @@ function switchTab(id) {
           '<div class="card-text">' + escapeHtml(r.honbun) + '</div>' +
         '</div>' +
         '<div class="card-footer">' +
-          '<div class="card-img-thumb">' + (r.hasImage ? '🖼️' : '') + '</div>' +
+          '<div class="card-img-thumb">' + reservationThumbHtml(r) + '</div>' +
         '</div>' +
       '</div>';
   }
@@ -1233,7 +1291,8 @@ function switchTab(id) {
         if (cachedRaw) {
           const cachedList = JSON.parse(cachedRaw);
           // ★liff_reservation_html33：ハッシュタグ（hashtags）を含まない旧形式の保存データは使わず取得し直す
-          const isCurrentFormat = Array.isArray(cachedList) && cachedList.every(function (item) { return item && item.hashtags; });
+          // ★liff_reservation_html34：画像ファイルID（imageFileId）を含まない保存データも取得し直す
+          const isCurrentFormat = Array.isArray(cachedList) && cachedList.every(function (item) { return item && item.hashtags && typeof item.imageFileId === 'string'; });
           if (isCurrentFormat) {
             renderReservationList(cachedList);
             return;
@@ -1279,6 +1338,7 @@ function switchTab(id) {
     document.getElementById('detail-sns').textContent = r.targetSns.join('・');
     document.getElementById('detail-charcount').textContent = r.honbun.length + '文字';
     document.getElementById('detail-posttext').textContent = r.honbun;
+    showDetailImage(r);
     // ★liff_reservation_html33：修正モードを解除し、修正可能な予約のみ「修正する」を表示
     setEditMode(false);
     document.getElementById('detail-edit-btn').style.display = isReservationEditable(r) ? '' : 'none';
