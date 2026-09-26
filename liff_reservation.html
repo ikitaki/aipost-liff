@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更30 - AiPost</title>
+<title>予約確認・変更31 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -409,6 +409,38 @@
     margin-bottom: 8px;
   }
 
+  /* ★liff_reservation_html31：投稿履歴タブ（実データ化） */
+  .cal-nav:disabled { opacity: 0.25; cursor: default; }
+  .cal-date.blank { cursor: default; }
+  .cal-date.blank:hover { background: none; }
+  .history-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .history-results { padding: 8px 14px; display: flex; flex-direction: column; gap: 5px; border-bottom: 1px solid var(--border); }
+  .history-result-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .history-result-row .sns-tag { min-width: 26px; text-align: center; }
+  .result-ok { color: var(--success); font-weight: 600; }
+  .result-ng { color: var(--danger); font-weight: 600; }
+  .history-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .history-card.expanded .history-text { display: block; -webkit-line-clamp: unset; overflow: visible; }
+  .history-more { font-size: 11px; color: var(--accent); margin-top: 4px; }
+  .history-card.expanded .history-more { display: none; }
+
   /* ============================================ */
   /* ボトムナビゲーションバー（全画面共通） */
   /* ============================================ */
@@ -462,7 +494,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更30</span>
+  <span class="header-logo">予約確認・変更31</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -548,25 +580,25 @@
   <div id="tab-history" class="tab-panel">
 
     <!-- 投稿件数表示 -->
+    <!-- ★liff_reservation_html31：デモの「30件中22件」表示（予約枠と投稿数が混在し誤解を招く）と進捗バーを廃止し、今月の投稿件数のみの表示に変更 -->
     <div style="background:var(--surface);border-radius:12px;padding:12px 14px;margin-bottom:12px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;">
-      <div style="text-align:center;flex-shrink:0;">
-        <div style="font-size:24px;font-weight:700;color:var(--primary);">22</div>
-        <div style="font-size:10px;color:var(--text-sub);">件投稿済み</div>
+      <div style="text-align:center;flex-shrink:0;min-width:48px;">
+        <div style="font-size:24px;font-weight:700;color:var(--primary);" id="history-month-count">-</div>
+        <div style="font-size:10px;color:var(--text-sub);">件</div>
       </div>
       <div style="flex:1;">
-        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;">今月の投稿済み件数</div>
-        <div style="height:6px;background:#e0e4ed;border-radius:3px;overflow:hidden;">
-          <div style="height:100%;width:73%;background:var(--primary);border-radius:3px;"></div>
-        </div>
-        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">30件中22件（月末まで13日）</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text);">今月の投稿件数</div>
+        <div style="font-size:10px;color:var(--text-sub);margin-top:3px;">SNSへの投稿処理が行われた予約の件数です</div>
       </div>
     </div>
 
+    <div id="history-status" class="empty-list-note" style="display:none;"></div>
+
     <div class="calendar-wrap">
       <div class="cal-header">
-        <button class="cal-nav">‹</button>
-        <div class="cal-title">2026年6月</div>
-        <button class="cal-nav">›</button>
+        <button class="cal-nav" id="history-prev-month" onclick="changeHistoryMonth(-1)">‹</button>
+        <div class="cal-title" id="history-cal-title"></div>
+        <button class="cal-nav" id="history-next-month" onclick="changeHistoryMonth(1)">›</button>
       </div>
       <div class="cal-grid">
         <div class="cal-days">
@@ -585,15 +617,15 @@
     <div id="history-selected-section" style="display:none;">
       <div class="selected-date-label">
         <span>✅</span>
-        <span id="history-day-label">6月1日の投稿</span>
+        <span id="history-day-label"></span>
       </div>
       <div id="history-day-cards"></div>
     </div>
 
     <div id="history-no-selected" class="empty-state" style="padding:24px 20px;">
       <div class="empty-icon">📋</div>
-      <div class="empty-title">日付をタップしてください</div>
-      <div class="empty-sub">投稿済みの日には件数が表示されます</div>
+      <div class="empty-title" id="history-empty-title">日付をタップしてください</div>
+      <div class="empty-sub" id="history-empty-sub">投稿済みの日には件数が表示されます</div>
     </div>
 
   </div>
@@ -659,27 +691,8 @@
 
 <script>
 
-// 投稿履歴データ
-const historyPostCounts = {1:3, 3:2, 5:1, 7:2, 9:3, 11:1, 13:2, 15:1};
-const historyPostData = {
-  1:  [{sns:'Instagram',text:'週末限定の抹茶テリーヌが登場しました。',likes:142,comments:18},
-       {sns:'Facebook', text:'週末限定の抹茶テリーヌが登場しました。',likes:98, comments:12},
-       {sns:'X',        text:'週末限定の抹茶テリーヌが登場しました。',likes:87, comments:9}],
-  3:  [{sns:'Instagram',text:'本日のスペシャルティコーヒーはエチオピア産。',likes:76,comments:8},
-       {sns:'Facebook', text:'本日のスペシャルティコーヒーはエチオピア産。',likes:54,comments:6}],
-  5:  [{sns:'X',text:'夏季限定メニュー開始のお知らせ。',likes:65,comments:7}],
-  7:  [{sns:'Instagram',text:'新しいランチセットが始まりました。',likes:112,comments:15},
-       {sns:'X',        text:'新しいランチセットが始まりました。',likes:88, comments:11}],
-  9:  [{sns:'Instagram',text:'今週のおすすめスイーツをご紹介。',likes:134,comments:18},
-       {sns:'Facebook', text:'今週のおすすめスイーツをご紹介。',likes:92, comments:13},
-       {sns:'X',        text:'今週のおすすめスイーツをご紹介。',likes:76, comments:9}],
-  11: [{sns:'Instagram',text:'スタッフのおすすめメニューです。',likes:88,comments:11}],
-  13: [{sns:'Instagram',text:'週末限定ドリンクが登場しました。',likes:169,comments:24},
-       {sns:'Facebook', text:'週末限定ドリンクが登場しました。',likes:121,comments:18}],
-  15: [{sns:'X',text:'本日のランチ情報をお届けします。',likes:76,comments:8}],
-};
-
-let historySelectedDay = null;
+// ★liff_reservation_html31：投稿履歴タブのデモデータ（Facebookを含むダミーデータ・
+// 　いいね/コメント数）を削除し、実データ表示（下のscript内）に置き換えた。
 
 // ===== プラン表示の適用 =====
 // ★liff_reservation_html8：デモ用切替ボタンを廃止し、実際の契約プランを
@@ -691,64 +704,6 @@ function applyPlan(plan) {
   currentDemoPlan = plan;
   document.getElementById('plan-badge').textContent = plan;
   document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
-  // 表示中の履歴があれば、プラン変更を即座に反映
-  if (historySelectedDay) selectHistoryDay(historySelectedDay);
-}
-
-function buildHistoryCalendar() {
-  const grid = document.getElementById('history-cal-dates');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const firstDay = 1; // 6月1日=月曜
-  const days = 30;
-  const todayNum = 17;
-
-  for (let i = 0; i < firstDay; i++) {
-    const blank = document.createElement('div');
-    blank.className = 'cal-date other-month';
-    blank.textContent = 31;
-    grid.appendChild(blank);
-  }
-  for (let d = 1; d <= days; d++) {
-    const el = document.createElement('div');
-    const dayOfWeek = (firstDay + d - 1) % 7;
-    let cls = 'cal-date';
-    if (dayOfWeek === 0) cls += ' sunday';
-    if (dayOfWeek === 6) cls += ' saturday';
-    if (d === todayNum) cls += ' today';
-    if (historyPostCounts[d]) cls += ' has-post';
-    if (d === historySelectedDay) cls += ' selected';
-    el.className = cls;
-    const count = historyPostCounts[d];
-    if (count) {
-      el.innerHTML = `<span>${d}</span><span class="cal-post-count">${count}件</span>`;
-    } else {
-      el.textContent = d;
-    }
-    el.onclick = () => selectHistoryDay(d);
-    grid.appendChild(el);
-  }
-}
-
-function selectHistoryDay(d) {
-  historySelectedDay = d;
-  buildHistoryCalendar();
-  const posts = historyPostData[d];
-  document.getElementById('history-no-selected').style.display = posts ? 'none' : 'block';
-  document.getElementById('history-selected-section').style.display = posts ? 'block' : 'none';
-  if (posts) {
-    // FREE・PERSONALは分析サービスがないため、いいね・コメント数は表示しない
-    const hasAnalytics = !['FREE', 'PERSONAL'].includes(currentDemoPlan);
-    document.getElementById('history-day-label').textContent = `6月${d}日の投稿（${posts.length}件）`;
-    document.getElementById('history-day-cards').innerHTML = posts.map(p => `
-      <div style="background:var(--surface);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border);">
-        <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:3px;">${p.sns}</div>
-        <div style="font-size:12px;color:var(--text);line-height:1.6;margin-bottom:6px;">${p.text}</div>
-        ${hasAnalytics ? `<div style="display:flex;gap:12px;font-size:11px;color:var(--text-sub);">
-          <span>❤️ ${p.likes}</span><span>💬 ${p.comments}</span>
-        </div>` : ''}
-      </div>`).join('');
-  }
 }
 
 function switchTab(id) {
@@ -756,6 +711,8 @@ function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===id));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
+  // ★liff_reservation_html31：投稿履歴タブを初めて開いた時にだけ取得する
+  if (id === 'history') ensurePostHistoryLoaded();
 }
 
 // カレンダー生成
@@ -873,7 +830,6 @@ function editReservation() {
 }
 
 buildCalendar();
-buildHistoryCalendar();
 </script>
 
 <!-- ボトムナビゲーションバー -->
@@ -1022,7 +978,7 @@ buildHistoryCalendar();
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認30';
+  const TRACE_SCREEN = '予約確認31';
 
   function traceLog(msg) {
     try {
@@ -1260,6 +1216,8 @@ buildHistoryCalendar();
       LINE_UID = idToken.sub;
       applyQuotaFromCacheOrFetch();
       fetchAndRenderReservationList();
+      // ★liff_reservation_html31：LINE UIDの取得前に投稿履歴タブが開かれていた場合は、ここで取得する
+      if (postHistoryRequested) ensurePostHistoryLoaded();
     } catch (err) {
       console.error('LIFF初期化エラー:', err);
       alert('LINEアプリ内でこの画面を開いてください。');
@@ -1425,6 +1383,228 @@ buildHistoryCalendar();
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = 'キャンセルする'; }
     }
+  }
+
+  // ============================================
+  // ★liff_reservation_html31：投稿履歴タブ（実データ）
+  // ============================================
+  // ・取得は「投稿履歴タブを初めて開いた時」のみ（GAS：getMyPostHistory）。
+  // 　投稿は予約時刻に裏側で実行されるため、sessionStorageには保存しない
+  // 　（保存すると新しい投稿が反映されない時間が生じる）。4画面共通の先読みにも含めない。
+  // ・いいね・コメント等の反応数は表示しない（反応の確認は分析画面の役割）。
+  // ・各SNSの結果は、投稿履歴シートの「◯◯投稿結果」列の値をそのまま表示する
+  // 　（「成功」は緑、それ以外＝失敗・除外は赤。空欄＝投稿対象外のSNSは表示しない）。
+  const HISTORY_SNS_ORDER = ['X', 'Instagram', 'Threads'];
+  let postHistoryItems = null;      // 取得済みの履歴（未取得はnull）
+  let postHistoryLoading = false;
+  let postHistoryRequested = false; // LINE UID取得前にタブが開かれた場合の予約
+  let postHistoryByDate = {};       // 'YYYY-MM-DD' → その日の履歴（新しい順）
+  let historyViewYear = null;
+  let historyViewMonth = null;      // 0〜11
+  let historySelectedKey = null;
+
+  function historyDateKey(dt) {
+    const p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    return dt.getFullYear() + '-' + p2(dt.getMonth() + 1) + '-' + p2(dt.getDate());
+  }
+
+  function setHistoryStatus(html) {
+    const el = document.getElementById('history-status');
+    if (!el) return;
+    el.innerHTML = html || '';
+    el.style.display = html ? 'block' : 'none';
+  }
+
+  function ensurePostHistoryLoaded() {
+    if (postHistoryItems !== null || postHistoryLoading) return;
+    if (!LINE_UID) {
+      postHistoryRequested = true;
+      setHistoryStatus('読み込み中…');
+      return;
+    }
+    loadPostHistory();
+  }
+
+  async function loadPostHistory() {
+    if (postHistoryLoading) return;
+    postHistoryLoading = true;
+    setHistoryStatus('読み込み中…');
+    try {
+      const result = await postToGas(
+        { action: 'getMyPostHistory', lineUid: LINE_UID, params: {} },
+        '投稿履歴',
+        function (r) { return r && r.success && r.data && r.data.success && Array.isArray(r.data.items); }
+      );
+      if (!result) {
+        // 取得できなかった場合は「履歴なし」と誤表示しない
+        setHistoryStatus('投稿履歴を取得できませんでした<br><button class="btn btn-outline" style="flex:none;margin-top:10px;padding:8px 20px;" onclick="loadPostHistory()">再読み込み</button>');
+        return;
+      }
+      postHistoryItems = result.data.items.map(function (item) {
+        return {
+          reservationId: item.reservationId,
+          postedAt: new Date(item.postedAt),
+          honbun: item.honbun || '',
+          results: item.results || {}
+        };
+      }).filter(function (item) { return !isNaN(item.postedAt.getTime()); });
+      postHistoryItems.sort(function (a, b) { return b.postedAt.getTime() - a.postedAt.getTime(); });
+
+      postHistoryByDate = {};
+      postHistoryItems.forEach(function (item) {
+        const key = historyDateKey(item.postedAt);
+        if (!postHistoryByDate[key]) postHistoryByDate[key] = [];
+        postHistoryByDate[key].push(item);
+      });
+
+      setHistoryStatus('');
+      renderPostHistory();
+    } catch (err) {
+      console.error('投稿履歴の取得エラー:', err);
+      setHistoryStatus('投稿履歴を取得できませんでした<br><button class="btn btn-outline" style="flex:none;margin-top:10px;padding:8px 20px;" onclick="loadPostHistory()">再読み込み</button>');
+    } finally {
+      postHistoryLoading = false;
+    }
+  }
+
+  function renderPostHistory() {
+    const now = new Date();
+    // 今月の投稿件数
+    const monthCount = postHistoryItems.filter(function (item) {
+      return item.postedAt.getFullYear() === now.getFullYear() && item.postedAt.getMonth() === now.getMonth();
+    }).length;
+    document.getElementById('history-month-count').textContent = monthCount;
+
+    if (postHistoryItems.length === 0) {
+      document.getElementById('history-empty-title').textContent = 'まだ投稿履歴はありません';
+      document.getElementById('history-empty-sub').textContent = '予約した投稿が実行されると、ここに結果が表示されます';
+    }
+
+    if (historyViewYear === null) {
+      historyViewYear = now.getFullYear();
+      historyViewMonth = now.getMonth();
+    }
+    buildPostHistoryCalendar();
+  }
+
+  // 月送りの範囲：最も古い投稿の月〜今月
+  function historyMonthRange() {
+    const now = new Date();
+    const max = now.getFullYear() * 12 + now.getMonth();
+    let min = max;
+    if (postHistoryItems && postHistoryItems.length) {
+      const oldest = postHistoryItems[postHistoryItems.length - 1].postedAt;
+      min = Math.min(max, oldest.getFullYear() * 12 + oldest.getMonth());
+    }
+    return { min: min, max: max };
+  }
+
+  function changeHistoryMonth(delta) {
+    if (postHistoryItems === null) return;
+    const range = historyMonthRange();
+    const next = historyViewYear * 12 + historyViewMonth + delta;
+    if (next < range.min || next > range.max) return;
+    historyViewYear = Math.floor(next / 12);
+    historyViewMonth = next % 12;
+    historySelectedKey = null;
+    showHistoryDay(null);
+    buildPostHistoryCalendar();
+  }
+
+  function buildPostHistoryCalendar() {
+    const grid = document.getElementById('history-cal-dates');
+    if (!grid || historyViewYear === null) return;
+    document.getElementById('history-cal-title').textContent = historyViewYear + '年' + (historyViewMonth + 1) + '月';
+
+    const range = historyMonthRange();
+    const current = historyViewYear * 12 + historyViewMonth;
+    document.getElementById('history-prev-month').disabled = current <= range.min;
+    document.getElementById('history-next-month').disabled = current >= range.max;
+
+    grid.innerHTML = '';
+    const firstDay = new Date(historyViewYear, historyViewMonth, 1).getDay();
+    const days = new Date(historyViewYear, historyViewMonth + 1, 0).getDate();
+    const todayKey = historyDateKey(new Date());
+
+    for (let i = 0; i < firstDay; i++) {
+      const blank = document.createElement('div');
+      blank.className = 'cal-date blank';
+      grid.appendChild(blank);
+    }
+    for (let d = 1; d <= days; d++) {
+      const key = historyDateKey(new Date(historyViewYear, historyViewMonth, d));
+      const posts = postHistoryByDate[key];
+      const dayOfWeek = (firstDay + d - 1) % 7;
+      let cls = 'cal-date';
+      if (dayOfWeek === 0) cls += ' sunday';
+      if (dayOfWeek === 6) cls += ' saturday';
+      if (key === todayKey) cls += ' today';
+      if (posts) cls += ' has-post';
+      if (key === historySelectedKey) cls += ' selected';
+      const el = document.createElement('div');
+      el.className = cls;
+      if (posts) {
+        el.innerHTML = '<span>' + d + '</span><span class="cal-post-count">' + posts.length + '件</span>';
+      } else {
+        el.textContent = d;
+      }
+      el.onclick = function () { selectHistoryDate(key, d); };
+      grid.appendChild(el);
+    }
+  }
+
+  function selectHistoryDate(key, d) {
+    historySelectedKey = key;
+    buildPostHistoryCalendar();
+    showHistoryDay(key, d);
+  }
+
+  function showHistoryDay(key, d) {
+    const section = document.getElementById('history-selected-section');
+    const empty = document.getElementById('history-no-selected');
+    if (!key) {
+      section.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    const posts = postHistoryByDate[key] || [];
+    section.style.display = 'block';
+    empty.style.display = 'none';
+    document.getElementById('history-day-label').textContent =
+      (historyViewMonth + 1) + '月' + d + '日の投稿（' + posts.length + '件）';
+    document.getElementById('history-day-cards').innerHTML = posts.length
+      ? posts.map(renderHistoryCard).join('')
+      : '<div class="empty-list-note">この日の投稿はありません</div>';
+  }
+
+  function renderHistoryCard(item) {
+    const p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    const timeLabel = item.postedAt.getHours() + ':' + p2(item.postedAt.getMinutes());
+    const targets = HISTORY_SNS_ORDER.filter(function (sns) { return item.results[sns]; });
+    const allOk = targets.length > 0 && targets.every(function (sns) { return item.results[sns] === '成功'; });
+    const dotClass = targets.length === 0 ? '' : (allOk ? 'dot-done' : 'dot-fail');
+    const rows = targets.length
+      ? targets.map(function (sns) {
+          const value = item.results[sns];
+          const ok = value === '成功';
+          return '<div class="history-result-row">' + snsTagHtml(sns) +
+            '<span class="' + (ok ? 'result-ok' : 'result-ng') + '">' + escapeHtml(value) + '</span></div>';
+        }).join('')
+      : '<div class="history-result-row" style="color:var(--text-sub);">投稿先の記録がありません</div>';
+    const longText = item.honbun.length > 60;
+    return '' +
+      '<div class="history-card"' + (longText ? ' onclick="this.classList.toggle(\'expanded\')"' : ' style="cursor:default;"') + '>' +
+        '<div class="card-header">' +
+          (dotClass ? '<div class="status-dot ' + dotClass + '"></div>' : '') +
+          '<div class="card-date">' + timeLabel + '</div>' +
+          '<div class="card-time">に投稿</div>' +
+        '</div>' +
+        '<div class="history-results">' + rows + '</div>' +
+        '<div class="card-body">' +
+          '<div class="history-text">' + escapeHtml(item.honbun) + '</div>' +
+          (longText ? '<div class="history-more">タップで全文を表示</div>' : '') +
+        '</div>' +
+      '</div>';
   }
 
   traceStart();
