@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更34 - AiPost</title>
+<title>予約確認・変更35 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -409,6 +409,158 @@
     margin-bottom: 8px;
   }
 
+  /* ★liff_reservation_html35：予約画像の差し替え（トリミング部分はliff_textgen.html112から移植） */
+  .trim-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1030; /* ★予約詳細モーダル(1010)・下部ナビ(1000)より上に表示 */
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .trim-overlay.open { display: flex; }
+  .trim-header {
+    background: var(--primary);
+    color: #fff;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .trim-header-title { font-size: 13px; font-weight: 700; }
+  .trim-header-sub { font-size: 10px; opacity: 0.8; margin-top: 2px; }
+  .trim-progress {
+    background: #13195f;
+    padding: 6px 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  .trim-step-chip {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.6);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .trim-step-chip.active {
+    background: #fff;
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .trim-step-chip.done {
+    background: rgba(255,255,255,0.35);
+    color: #fff;
+  }
+  .trim-canvas-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    background: #111;
+    touch-action: none;
+  }
+  .trim-canvas-wrap canvas { display: block; max-width: 100%; max-height: 100%; touch-action: none; }
+  .trim-live-ratio {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.65);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    pointer-events: none;
+    letter-spacing: 0.02em;
+  }
+  .trim-ratio-bar {
+    background: #1a1a2e;
+    padding: 8px 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .trim-ratio-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .trim-ratio-btn.active {
+    background: #fff;
+    color: var(--primary);
+    border-color: #fff;
+  }
+  .trim-ratio-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-right: 4px; }
+  .trim-hint {
+    background: #fff;
+    padding: 8px 16px;
+    flex-shrink: 0;
+    border-top: 1px solid #e0e0e0;
+  }
+  .trim-hint-main {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a237e;
+    margin-bottom: 2px;
+  }
+  .trim-hint-sub {
+    font-size: 10px;
+    color: #555;
+    line-height: 1.6;
+  }
+  .trim-actions {
+    background: #1a1a2e;
+    padding: 10px 16px;
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .trim-btn-skip {
+    flex: 1;
+    padding: 12px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .trim-btn-ok {
+    flex: 2;
+    padding: 12px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .ri-section-title { font-size: 13px; font-weight: 700; color: var(--text); margin: 12px 0 6px; }
+  .ri-note { font-size: 11px; color: var(--text-sub); line-height: 1.7; margin-bottom: 8px; }
+  .ri-btn { width: 100%; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .ri-summary { font-size: 12px; font-weight: 700; padding: 8px 10px; border-radius: 8px; margin-top: 8px; line-height: 1.6; white-space: pre-line; }
+  .ri-summary.ok { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
+  .ri-summary.warn { background: #fff8e1; color: #e65100; border: 1px solid #ffe0b2; }
+
   /* ★liff_reservation_html34：予約画像の表示 */
   .card-img-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; display: block; }
   .detail-image {
@@ -527,7 +679,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更34</span>
+  <span class="header-logo">予約確認・変更35</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -714,6 +866,44 @@
         <button class="btn btn-primary" id="detail-edit-btn" onclick="startEditReservation()">修正する</button>
         <button class="btn btn-danger" onclick="confirmCancel()">キャンセル</button>
       </div>
+      <!-- ★liff_reservation_html35：「画像を差し替える」ボタン（投稿予定の5分前を過ぎた予約では非表示） -->
+      <button class="ri-btn" id="detail-image-btn" onclick="startImageReplace()" style="background:transparent;color:var(--primary);border:1.5px solid var(--primary);">🖼️ 画像を差し替える</button>
+    </div>
+
+    <!-- 画像差し替えモード（★liff_reservation_html35） -->
+    <div id="detail-imgedit" style="display:none;">
+      <div class="ri-section-title">画像の差し替え</div>
+      <div class="ri-note" id="ri-target-note"></div>
+
+      <div id="ri-upload-area">
+        <input type="file" id="ri-img-input" accept="image/*" style="display:none;" onchange="handleReplaceImageUpload(event)">
+        <input type="file" id="ri-cam-input" accept="image/*" capture="environment" style="display:none;" onchange="handleReplaceImageUpload(event)">
+        <div style="display:flex;gap:8px;">
+          <button onclick="document.getElementById('ri-img-input').click()" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 フォルダから選ぶ</button>
+          <button onclick="document.getElementById('ri-cam-input').click()" style="flex:1;padding:10px;background:#2e7d32;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📷 写真を撮る</button>
+        </div>
+        <p style="font-size:10px;color:var(--text-light);text-align:center;margin-top:8px;">JPG・PNG対応　推奨：2MB以下</p>
+      </div>
+
+      <div id="ri-preview-wrap" style="display:none;">
+        <div style="border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:10px;">
+          <img id="ri-preview" style="width:100%;max-height:220px;object-fit:contain;display:block;background:var(--bg);" alt="新しい画像">
+        </div>
+        <div id="trim-status-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;"></div>
+        <button class="ri-btn" onclick="startTrimFlow()" style="background:var(--primary);color:#fff;border:none;">✂️ SNSごとにトリミングする</button>
+        <button class="ri-btn" onclick="selectReplaceWithoutTrim()" style="background:transparent;color:var(--text-sub);border:1px solid var(--border);font-weight:400;font-size:12px;">トリミングせずにそのまま使う</button>
+        <button class="ri-btn" onclick="resetReplaceImage()" style="background:transparent;color:var(--text-sub);border:1px solid var(--border);font-weight:400;font-size:12px;">📁 別の画像を選び直す</button>
+      </div>
+
+      <button class="ri-btn" id="ri-remove-btn" onclick="selectReplaceRemove()" style="background:#fff5f5;color:#e53935;border:1px solid #ffcdd2;font-weight:400;font-size:12px;">🚫 画像を外す（画像なしで投稿する）</button>
+
+      <div class="ri-summary" id="ri-summary" style="display:none;"></div>
+      <div class="edit-error" id="ri-error"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" id="ri-cancel-btn" onclick="cancelImageReplace()">やめる</button>
+        <button class="btn btn-primary" id="ri-save-btn" onclick="saveImageReplace()" disabled>保存する</button>
+      </div>
     </div>
 
     <!-- 修正モード（★liff_reservation_html33） -->
@@ -728,6 +918,55 @@
         <button class="btn btn-primary" id="detail-edit-save-btn" onclick="saveEditReservation()">保存する</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ===== トリミングモーダル（★liff_reservation_html35：liff_textgen.html112から移植） ===== -->
+<div class="trim-overlay" id="trim-overlay">
+  <!-- ヘッダー -->
+  <div class="trim-header">
+    <div>
+      <div class="trim-header-title" id="trim-sns-title">🐦 X用 トリミング</div>
+      <div class="trim-header-sub" id="trim-sns-sub">切り抜き枠を動かして位置を決めてください</div>
+    </div>
+    <button onclick="cancelTrim()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;">キャンセル</button>
+  </div>
+
+  <!-- 進捗チップ -->
+  <div class="trim-progress" id="trim-progress"></div>
+
+  <!-- 比率選択バー（IG・THのみ表示） -->
+  <div class="trim-ratio-bar" id="trim-ratio-bar" style="display:none;">
+    <span class="trim-ratio-label">比率：</span>
+    <button class="trim-ratio-btn active" onclick="setRatio('1:1',this)">1:1（正方形）</button>
+    <button class="trim-ratio-btn" onclick="setRatio('4:5',this)">4:5（縦長）</button>
+  </div>
+
+  <!-- キャンバスエリア -->
+  <div class="trim-canvas-wrap" id="trim-canvas-wrap">
+    <canvas id="trim-canvas"></canvas>
+    <div class="trim-live-ratio" id="trim-live-ratio">16:9</div>
+  </div>
+
+  <!-- ヒント -->
+  <div class="trim-hint">
+    <div class="trim-hint-main">✋ 枠を動かして切り抜く位置を調整してください</div>
+    <div class="trim-hint-sub">・枠の内側をドラッグ → 位置を移動<br>・枠の四隅をドラッグ → 拡大・縮小<br>・2本指のピンチ操作 → 拡大・縮小</div>
+  </div>
+
+  <!-- アクションボタン -->
+  <div class="trim-actions">
+    <button class="trim-btn-skip" onclick="skipTrim()">このSNSはスキップ</button>
+    <button class="trim-btn-ok" onclick="confirmTrim()" id="trim-btn-ok">切り抜いて確定 ✂️</button>
+  </div>
+</div>
+
+<!-- 画像保存中の表示（★liff_reservation_html35） -->
+<div class="modal-overlay" id="ri-saving-overlay" style="z-index:2000;align-items:center;">
+  <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
+    <div style="font-size:14px;font-weight:700;color:#333;">画像を保存しています…</div>
+    <div style="font-size:11px;color:#888;">画面を閉じずにお待ちください</div>
   </div>
 </div>
 
@@ -925,7 +1164,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認34';
+  const TRACE_SCREEN = '予約確認35';
 
   function traceLog(msg) {
     try {
@@ -1342,11 +1581,15 @@ function switchTab(id) {
     // ★liff_reservation_html33：修正モードを解除し、修正可能な予約のみ「修正する」を表示
     setEditMode(false);
     document.getElementById('detail-edit-btn').style.display = isReservationEditable(r) ? '' : 'none';
+    // ★liff_reservation_html35：画像差し替えモードも解除し、差し替え可能な予約のみボタンを表示
+    setImageReplaceMode(false);
+    document.getElementById('detail-image-btn').style.display = isReservationEditable(r) ? 'block' : 'none';
     document.getElementById('detail-modal').classList.add('open');
   }
   function closeDetail() {
-    if (editSaving) return;
+    if (editSaving || riSaving) return;
     setEditMode(false);
+    setImageReplaceMode(false);
     document.getElementById('detail-modal').classList.remove('open');
   }
   function confirmCancel() {
@@ -1392,6 +1635,733 @@ function switchTab(id) {
       alert('通信エラーが発生しました。もう一度お試しください。');
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = 'キャンセルする'; }
+    }
+  }
+
+  // ============================================
+  // ★liff_reservation_html35：予約画像の差し替え
+  // ============================================
+  // ・画像の選択・SNSごとのトリミング処理は、liff_textgen.html112の実装を移植したもの
+  // 　（トリミングの仕様を変える場合は、投稿文作成画面と両方の修正が必要）。
+  // ・保存は「元画像・トリミング画像のアップロード（saveOriginalImage／saveTrimmedImage）
+  // 　→ updateReservationImage」の順に1回ずつ送信する（自動再試行はしない）。
+  // ・古い画像は削除しない（ImageManager.gsの夜間処理が自動で片付ける）。
+  // ・投稿予定の5分前を過ぎた予約は差し替え不可（GAS側でも同じ判定を行う）。
+  // ・Instagram宛ての予約は画像必須のため「画像を外す」を表示せず、Instagram用の
+  // 　トリミングをスキップした状態では保存できない。
+
+  // --- トリミング処理（liff_textgen.html112から移植） ---
+const SNS_TRIM_CONFIG = {
+  'X':  { label: '🐦 X', ratios: [
+            { name:'16:9', w:16, h:9, recommend:true },
+            { name:'1:1',  w:1,  h:1 },
+            { name:'3:4',  w:3,  h:4 },
+            { name:'自由', free:true }
+          ], color:'#000' },
+  'IG': { label: '📱 Instagram', ratios: [
+            { name:'4:5',    w:4,   h:5, recommend:true },
+            { name:'1:1',    w:1,   h:1 },
+            { name:'1.91:1', w:191, h:100 },
+            { name:'自由',   free:true }
+          ], color:'#e1306c' },
+  'TH': { label: '🧵 Threads', ratios: [
+            { name:'4:5',  w:4,  h:5, recommend:true },
+            { name:'1:1',  w:1,  h:1 },
+            { name:'16:9', w:16, h:9 },
+            { name:'自由', free:true }
+          ], color:'#555' },
+};
+  let originalImage = null;        // 選択された新しい元画像
+  let originalImageDataUrl = null; // 元画像のBase64データURL（アップロード用）
+  let trimQueue = [];              // トリミング対象のSNSキュー
+  let currentTrimIndex = 0;        // 現在処理中のキューインデックス
+  let currentRatio = null;         // 現在の比率
+  let trimResults = {};            // SNSごとのトリミング結果 { 'X': dataUrl, ... }
+  let frame = { x:0, y:0, w:0, h:0 };
+  let dragging = false;
+  let dragStart = { x:0, y:0 };
+  let frameStart = { x:0, y:0 };
+  let canvasScale = 1;
+
+  // 差し替えの状態：null=未確定 / 'trimmed'=トリミング済み / 'raw'=そのまま使う / 'none'=画像を外す
+  let riState = null;
+  let riSaving = false;
+  const RI_SNS_CODE = { X: 'X', Instagram: 'IG', Threads: 'TH' };
+
+  function getReplaceTargetSns() {
+    const r = getDetailReservation();
+    if (!r) return [];
+    return r.targetSns.map(function (s) { return RI_SNS_CODE[s]; }).filter(function (c) { return !!c; });
+  }
+
+// トリミング状況リストを更新
+function updateTrimStatusList() {
+  const checkedSns = getReplaceTargetSns();
+  const list = document.getElementById('trim-status-list');
+  list.innerHTML = '';
+  checkedSns.forEach(sns => {
+    const cfg = SNS_TRIM_CONFIG[sns];
+    if (!cfg) return;
+    const done = trimResults[sns];
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg);border-radius:6px;font-size:11px;';
+    div.innerHTML = `
+      <span style="color:${cfg.color};font-weight:700;">${cfg.label}</span>
+      <span style="flex:1;color:var(--text-sub);">${cfg.ratios.map(r=>r.name).join(' / ')}</span>
+      <span style="font-weight:700;color:${done?'#2e7d32':'var(--text-light)'};">${done?'✅ 完了':'未処理'}</span>
+    `;
+    list.appendChild(div);
+  });
+}
+  // トリミングフロー開始
+  function startTrimFlow() {
+    if (!originalImage) return;
+    trimQueue = getReplaceTargetSns().filter(function (s) { return SNS_TRIM_CONFIG[s]; });
+    currentTrimIndex = 0;
+    trimResults = {};
+    riState = null;
+    updateReplaceSummary();
+    openTrimForCurrent();
+  }
+
+// 現在のSNSのトリミング画面を開く
+function openTrimForCurrent() {
+  if (currentTrimIndex >= trimQueue.length) {
+    finishTrimFlow();
+    return;
+  }
+  const sns = trimQueue[currentTrimIndex];
+  const cfg = SNS_TRIM_CONFIG[sns];
+  const ratioBar = document.getElementById('trim-ratio-bar');
+
+  // ヘッダー更新
+  document.getElementById('trim-sns-title').textContent = cfg.label + ' 用トリミング';
+  document.getElementById('trim-sns-sub').textContent = '枠を動かして位置・サイズを調整してください';
+
+  // 進捗チップ更新
+  const progress = document.getElementById('trim-progress');
+  progress.innerHTML = '';
+  trimQueue.forEach((s, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'trim-step-chip' + (i < currentTrimIndex ? ' done' : i === currentTrimIndex ? ' active' : '');
+    chip.textContent = SNS_TRIM_CONFIG[s].label;
+    progress.appendChild(chip);
+  });
+
+  // 比率選択バー
+  if (cfg.ratios.length > 1) {
+    ratioBar.style.display = 'flex';
+    ratioBar.innerHTML = '<span class="trim-ratio-label">比率：</span>';
+    const defaultIndex = Math.max(0, cfg.ratios.findIndex(r => r.recommend));
+    cfg.ratios.forEach((r, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'trim-ratio-btn' + (i === defaultIndex ? ' active' : '');
+      btn.textContent = r.recommend ? '⭐ ' + r.name : r.name;
+      btn.onclick = () => { setRatio(r, btn); };
+      ratioBar.appendChild(btn);
+    });
+    currentRatio = cfg.ratios[defaultIndex];
+  } else {
+    ratioBar.style.display = 'none';
+    currentRatio = cfg.ratios[0];
+  }
+
+  // ボタンラベル
+  const isLast = currentTrimIndex === trimQueue.length - 1;
+  document.getElementById('trim-btn-ok').textContent = isLast ? '切り抜いて完了 ✂️' : '切り抜いて次へ ✂️';
+
+  // モーダルを開く・bodyスクロールをロック
+  document.getElementById('trim-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => drawTrimCanvas(), 50);
+}
+
+// 比率変更
+function setRatio(ratio, btn) {
+  document.querySelectorAll('.trim-ratio-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRatio = typeof ratio === 'string'
+    ? SNS_TRIM_CONFIG[trimQueue[currentTrimIndex]].ratios.find(r => r.name === ratio)
+    : ratio;
+  drawTrimCanvas();
+}
+function drawTrimCanvas() {
+  const wrap = document.getElementById('trim-canvas-wrap');
+  const canvas = document.getElementById('trim-canvas');
+  const ctx = canvas.getContext('2d');
+  const img = originalImage;
+
+  // canvas実サイズを表示エリアに合わせる
+  const wrapW = wrap.clientWidth;
+  const wrapH = wrap.clientHeight;
+  const scale = Math.min(wrapW / img.naturalWidth, wrapH / img.naturalHeight);
+  canvas.width = Math.round(img.naturalWidth * scale);
+  canvas.height = Math.round(img.naturalHeight * scale);
+  canvasScale = scale;
+
+  // 初期フレームを中央に配置（自由トリミングの場合は画像全体に近い4:5相当で開始）
+  const rw = currentRatio.free ? 4 : currentRatio.w;
+  const rh = currentRatio.free ? 5 : currentRatio.h;
+  const maxFW = canvas.width * 0.9;
+  const maxFH = canvas.height * 0.9;
+  let fW = maxFW, fH = fW * rh / rw;
+  if (fH > maxFH) { fH = maxFH; fW = fH * rw / rh; }
+  frame = {
+    x: (canvas.width - fW) / 2,
+    y: (canvas.height - fH) / 2,
+    w: fW,
+    h: fH
+  };
+
+  renderCanvas();
+  setupTrimEvents();
+}
+
+// 現在の枠の縦横比を分かりやすい表記に変換して表示
+function updateLiveRatio() {
+  const label = document.getElementById('trim-live-ratio');
+  if (!label || !frame.w || !frame.h) return;
+  label.textContent = formatRatio(frame.w, frame.h);
+}
+
+function formatRatio(w, h) {
+  // よく使われる比率に近ければそのまま表示（誤差2%以内）
+  const known = [
+    [16,9],[9,16],[4,5],[5,4],[1,1],[3,4],[4,3],[191,100],[100,191]
+  ];
+  const val = w / h;
+  for (const [kw, kh] of known) {
+    if (Math.abs(val - kw/kh) / (kw/kh) < 0.02) {
+      return kw + ':' + kh;
+    }
+  }
+  // 一致しない場合は小数表記
+  return val >= 1 ? val.toFixed(2) + ':1' : '1:' + (1/val).toFixed(2);
+}
+
+// canvas描画
+function renderCanvas() {
+  const canvas = document.getElementById('trim-canvas');
+  const ctx = canvas.getContext('2d');
+  const img = originalImage;
+
+  // ライブ比率表示を更新
+  updateLiveRatio();
+
+  // 画像描画
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  // 暗幕（フレーム外）
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // フレーム内をクリア（元画像を表示）
+  ctx.save();
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = 'rgba(0,0,0,1)';
+  ctx.fillRect(frame.x, frame.y, frame.w, frame.h);
+  ctx.restore();
+  ctx.drawImage(img, frame.x/canvasScale, frame.y/canvasScale, frame.w/canvasScale, frame.h/canvasScale,
+    frame.x, frame.y, frame.w, frame.h);
+
+  // フレーム枠線
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(frame.x, frame.y, frame.w, frame.h);
+
+  // 三分割線
+  ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+  ctx.lineWidth = 0.8;
+  for (let i = 1; i < 3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(frame.x + frame.w * i/3, frame.y);
+    ctx.lineTo(frame.x + frame.w * i/3, frame.y + frame.h);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(frame.x, frame.y + frame.h * i/3);
+    ctx.lineTo(frame.x + frame.w, frame.y + frame.h * i/3);
+    ctx.stroke();
+  }
+
+  // 四隅のハンドル
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 3;
+  const hs = 14;
+  [[frame.x,frame.y],[frame.x+frame.w,frame.y],[frame.x,frame.y+frame.h],[frame.x+frame.w,frame.y+frame.h]].forEach(([cx,cy],i) => {
+    const dx = i%2===0?1:-1, dy = i<2?1:-1;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+dx*hs,cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx,cy+dy*hs); ctx.stroke();
+  });
+}
+
+// タッチ・マウスイベント設定
+const HANDLE_SIZE = 20; // 四隅ハンドルの当たり判定サイズ
+
+let resizing = false;
+let resizeCorner = null; // 'tl','tr','bl','br'
+let pinchStartDist = 0;
+let pinchStartFrame = null;
+
+function getCorner(x, y) {
+  const { x:fx, y:fy, w:fw, h:fh } = frame;
+  const corners = {
+    tl: [fx, fy],
+    tr: [fx+fw, fy],
+    bl: [fx, fy+fh],
+    br: [fx+fw, fy+fh],
+  };
+  for (const [key, [cx, cy]] of Object.entries(corners)) {
+    if (Math.abs(x-cx) <= HANDLE_SIZE && Math.abs(y-cy) <= HANDLE_SIZE) return key;
+  }
+  return null;
+}
+
+function setupTrimEvents() {
+  const canvas = document.getElementById('trim-canvas');
+  const ratio = currentRatio.free ? null : currentRatio.w / currentRatio.h;
+
+  // マウス
+  canvas.onmousedown = e => {
+    const corner = getCorner(e.offsetX, e.offsetY);
+    if (corner) { resizing=true; resizeCorner=corner; dragStart={x:e.offsetX,y:e.offsetY}; frameStart={...frame}; }
+    else if (e.offsetX>=frame.x&&e.offsetX<=frame.x+frame.w&&e.offsetY>=frame.y&&e.offsetY<=frame.y+frame.h) {
+      dragging=true; dragStart={x:e.offsetX,y:e.offsetY}; frameStart={x:frame.x,y:frame.y};
+    }
+  };
+  canvas.onmousemove = e => {
+    if (resizing) doResize(e.offsetX, e.offsetY, ratio);
+    else if (dragging) moveDrag(e.offsetX, e.offsetY);
+  };
+  canvas.onmouseup = () => { dragging=false; resizing=false; resizeCorner=null; };
+
+  // タッチ
+  canvas.ontouchstart = e => {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+      pinchStartDist = getPinchDist(e);
+      pinchStartFrame = {...frame};
+      dragging=false; resizing=false;
+      return;
+    }
+    const t = getTouchPos(e);
+    const corner = getCorner(t.x, t.y);
+    if (corner) { resizing=true; resizeCorner=corner; dragStart={...t}; frameStart={...frame}; }
+    else if (t.x>=frame.x&&t.x<=frame.x+frame.w&&t.y>=frame.y&&t.y<=frame.y+frame.h) {
+      dragging=true; dragStart={...t}; frameStart={x:frame.x,y:frame.y};
+    }
+  };
+  canvas.ontouchmove = e => {
+    e.preventDefault();
+    if (e.touches.length === 2) {
+      doPinch(e, ratio); return;
+    }
+    const t = getTouchPos(e);
+    if (resizing) doResize(t.x, t.y, ratio);
+    else if (dragging) moveDrag(t.x, t.y);
+  };
+  canvas.ontouchend = () => { dragging=false; resizing=false; resizeCorner=null; pinchStartFrame=null; };
+}
+
+function getPinchDist(e) {
+  const dx = e.touches[0].clientX - e.touches[1].clientX;
+  const dy = e.touches[0].clientY - e.touches[1].clientY;
+  return Math.sqrt(dx*dx + dy*dy);
+}
+
+function getTouchPos(e) {
+  const canvas = document.getElementById('trim-canvas');
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches[0];
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return {
+    x: (t.clientX - rect.left) * scaleX,
+    y: (t.clientY - rect.top) * scaleY
+  };
+}
+
+function doPinch(e, ratio) {
+  if (!pinchStartFrame) return;
+  const canvas = document.getElementById('trim-canvas');
+  const dist = getPinchDist(e);
+  const scale = dist / pinchStartDist;
+  const effectiveRatio = ratio === null ? (pinchStartFrame.w / pinchStartFrame.h) : ratio;
+  const minW = 60;
+  const maxW = canvas.width - pinchStartFrame.x;
+  let newW = Math.max(minW, Math.min(maxW, pinchStartFrame.w * scale));
+  let newH = newW / effectiveRatio;
+  if (pinchStartFrame.y + newH > canvas.height) { newH = canvas.height - pinchStartFrame.y; newW = newH * effectiveRatio; }
+  frame.w = newW;
+  frame.h = newH;
+  frame.x = Math.max(0, Math.min(canvas.width - frame.w, pinchStartFrame.x));
+  frame.y = Math.max(0, Math.min(canvas.height - frame.h, pinchStartFrame.y));
+  renderCanvas();
+}
+
+function doResize(x, y, ratio) {
+  const canvas = document.getElementById('trim-canvas');
+  const minW = 60, minH = 60;
+  let { x:fx, y:fy, w:fw, h:fh } = frameStart;
+  const dx = x - dragStart.x;
+  const dy = y - dragStart.y;
+
+  // 自由トリミング：縦横比を固定せず、縦横を独立してリサイズ
+  if (ratio === null) {
+    if (resizeCorner === 'br') {
+      let nw = Math.max(minW, Math.min(canvas.width - fx, fw + dx));
+      let nh = Math.max(minH, Math.min(canvas.height - fy, fh + dy));
+      frame.w = nw; frame.h = nh;
+    } else if (resizeCorner === 'bl') {
+      let nw = Math.max(minW, Math.min(fx + fw, fw - dx));
+      let nh = Math.max(minH, Math.min(canvas.height - fy, fh + dy));
+      frame.x = fx + fw - nw; frame.w = nw; frame.h = nh;
+    } else if (resizeCorner === 'tr') {
+      let nw = Math.max(minW, Math.min(canvas.width - fx, fw + dx));
+      let nh = Math.max(minH, Math.min(fy + fh, fh - dy));
+      frame.y = fy + fh - nh; frame.w = nw; frame.h = nh;
+    } else if (resizeCorner === 'tl') {
+      let nw = Math.max(minW, Math.min(fx + fw, fw - dx));
+      let nh = Math.max(minH, Math.min(fy + fh, fh - dy));
+      frame.x = fx + fw - nw; frame.y = fy + fh - nh; frame.w = nw; frame.h = nh;
+    }
+    renderCanvas();
+    return;
+  }
+
+  if (resizeCorner === 'br') {
+    let nw = Math.max(minW, fw + dx);
+    let nh = nw / ratio;
+    if (fx+nw > canvas.width) { nw=canvas.width-fx; nh=nw/ratio; }
+    if (fy+nh > canvas.height) { nh=canvas.height-fy; nw=nh*ratio; }
+    frame.w=nw; frame.h=nh;
+  } else if (resizeCorner === 'bl') {
+    let nw = Math.max(minW, fw - dx);
+    let nh = nw / ratio;
+    let nx = fx + fw - nw;
+    if (nx < 0) { nx=0; nw=fx+fw; nh=nw/ratio; }
+    if (fy+nh > canvas.height) { nh=canvas.height-fy; nw=nh*ratio; nx=fx+fw-nw; }
+    frame.x=nx; frame.w=nw; frame.h=nh;
+  } else if (resizeCorner === 'tr') {
+    let nw = Math.max(minW, fw + dx);
+    let nh = nw / ratio;
+    let ny = fy + fh - nh;
+    if (fx+nw > canvas.width) { nw=canvas.width-fx; nh=nw/ratio; ny=fy+fh-nh; }
+    if (ny < 0) { ny=0; nh=fy+fh; nw=nh*ratio; }
+    frame.y=ny; frame.w=nw; frame.h=nh;
+  } else if (resizeCorner === 'tl') {
+    let nw = Math.max(minW, fw - dx);
+    let nh = nw / ratio;
+    let nx = fx + fw - nw;
+    let ny = fy + fh - nh;
+    if (nx < 0) { nx=0; nw=fx+fw; nh=nw/ratio; ny=fy+fh-nh; }
+    if (ny < 0) { ny=0; nh=fy+fh; nw=nh*ratio; nx=fx+fw-nw; }
+    frame.x=nx; frame.y=ny; frame.w=nw; frame.h=nh;
+  }
+  renderCanvas();
+}
+
+function moveDrag(x, y) {
+  const canvas = document.getElementById('trim-canvas');
+  const dx = x - dragStart.x, dy = y - dragStart.y;
+  frame.x = Math.max(0, Math.min(canvas.width - frame.w, frameStart.x + dx));
+  frame.y = Math.max(0, Math.min(canvas.height - frame.h, frameStart.y + dy));
+  renderCanvas();
+}
+  // トリミングキャンセル（★textgenでは同名関数が二重定義され、後者がbodyのスクロールを
+  // 　戻していなかったため、移植にあたり戻す処理を含む版に統一した）
+  function cancelTrim() {
+    document.getElementById('trim-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // このSNSをスキップ
+  function skipTrim() {
+    currentTrimIndex++;
+    document.getElementById('trim-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => openTrimForCurrent(), 200);
+  }
+
+// トリミング確定
+function confirmTrim() {
+  const sns = trimQueue[currentTrimIndex];
+  // Canvasでクロップ
+  const offCanvas = document.createElement('canvas');
+  // 出力サイズ（推奨解像度）
+  const outSizes = { 'X':{ w:1200,h:675 }, 'IG':{ w:1080,h:1080 }, 'TH':{ w:1080,h:1080 } };
+  const outW = outSizes[sns]?.w || 1080;
+  // フレームをoriginalImageの座標に変換
+  const srcX = frame.x / canvasScale;
+  const srcY = frame.y / canvasScale;
+  const srcW = frame.w / canvasScale;
+  const srcH = frame.h / canvasScale;
+  // ★「自由」（currentRatio.free === true）の場合、currentRatio.w・
+  // 　currentRatio.hが未定義のため、固定比率の時と同じ計算式は使えない。
+  // 　自由モードでは、ユーザーが実際に選んだ枠（srcW・srcH）の比率を
+  // 　そのまま出力比率として採用する。
+  const rw = currentRatio.free ? srcW : currentRatio.w;
+  const rh = currentRatio.free ? srcH : currentRatio.h;
+  const outH = Math.round(outW * rh / rw);
+  offCanvas.width = outW;
+  offCanvas.height = outH;
+  const octx = offCanvas.getContext('2d');
+  octx.drawImage(originalImage, srcX, srcY, srcW, srcH, 0, 0, outW, outH);
+  trimResults[sns] = offCanvas.toDataURL('image/jpeg', 0.9);
+
+  updateTrimStatusList();
+  currentTrimIndex++;
+  document.getElementById('trim-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => openTrimForCurrent(), 200);
+}
+  // トリミングフロー完了
+  function finishTrimFlow() {
+    document.body.style.overflow = '';
+    updateTrimStatusList();
+    riState = Object.keys(trimResults).length > 0 ? 'trimmed' : null;
+    updateReplaceSummary();
+  }
+
+function _dataUrlToBase64(dataUrl) {
+  const match = dataUrl.match(/^data:(.+?);base64,(.+)$/);
+  if (!match) return { mimeType: 'image/jpeg', base64: dataUrl };
+  return { mimeType: match[1], base64: match[2] };
+}
+  // --- 差し替え画面の操作 ---
+  function setImageReplaceMode(on) {
+    document.getElementById('detail-imgedit').style.display = on ? 'block' : 'none';
+    if (on) {
+      document.getElementById('detail-view').style.display = 'none';
+      document.getElementById('detail-edit').style.display = 'none';
+    } else if (document.getElementById('detail-edit').style.display === 'none') {
+      document.getElementById('detail-view').style.display = 'block';
+    }
+    if (!on) resetReplaceState();
+  }
+
+  function resetReplaceState() {
+    originalImage = null;
+    originalImageDataUrl = null;
+    trimResults = {};
+    trimQueue = [];
+    riState = null;
+    const input1 = document.getElementById('ri-img-input');
+    const input2 = document.getElementById('ri-cam-input');
+    if (input1) input1.value = '';
+    if (input2) input2.value = '';
+    document.getElementById('ri-upload-area').style.display = 'block';
+    document.getElementById('ri-preview-wrap').style.display = 'none';
+    document.getElementById('ri-error').textContent = '';
+    updateReplaceSummary();
+  }
+
+  function startImageReplace() {
+    const r = getDetailReservation();
+    if (!r) return;
+    if (!isReservationEditable(r)) {
+      alert('投稿予定時刻の' + EDIT_CUTOFF_MINUTES + '分前を過ぎたため変更できません');
+      document.getElementById('detail-image-btn').style.display = 'none';
+      return;
+    }
+    const hasIg = r.targetSns.indexOf('Instagram') !== -1;
+    document.getElementById('ri-target-note').textContent =
+      'この予約の投稿先：' + r.targetSns.join('・') + '。新しい画像を選び、投稿先ごとにトリミングしてください。' +
+      (hasIg ? 'Instagramは画像が必須のため、画像を外すことはできません。' : '');
+    document.getElementById('ri-remove-btn').style.display = hasIg ? 'none' : 'block';
+    setImageReplaceMode(true);
+  }
+
+  function cancelImageReplace() {
+    if (riSaving) return;
+    setImageReplaceMode(false);
+  }
+
+  function handleReplaceImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        originalImage = img;
+        originalImageDataUrl = e.target.result;
+        trimResults = {};
+        riState = null;
+        document.getElementById('ri-preview').src = e.target.result;
+        document.getElementById('ri-preview-wrap').style.display = 'block';
+        document.getElementById('ri-upload-area').style.display = 'none';
+        document.getElementById('ri-error').textContent = '';
+        updateTrimStatusList();
+        updateReplaceSummary();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetReplaceImage() {
+    resetReplaceState();
+  }
+
+  function selectReplaceWithoutTrim() {
+    if (!originalImage) return;
+    trimResults = {};
+    updateTrimStatusList();
+    riState = 'raw';
+    updateReplaceSummary();
+  }
+
+  function selectReplaceRemove() {
+    const r = getDetailReservation();
+    if (!r || r.targetSns.indexOf('Instagram') !== -1) return;
+    originalImage = null;
+    originalImageDataUrl = null;
+    trimResults = {};
+    document.getElementById('ri-preview-wrap').style.display = 'none';
+    document.getElementById('ri-upload-area').style.display = 'block';
+    riState = 'none';
+    updateReplaceSummary();
+  }
+
+  // 現在の選択内容と、保存できるかどうかを表示する
+  function updateReplaceSummary() {
+    const box = document.getElementById('ri-summary');
+    const saveBtn = document.getElementById('ri-save-btn');
+    if (!box || !saveBtn) return;
+    const r = getDetailReservation();
+    const targets = getReplaceTargetSns();
+    let text = '';
+    let ok = false;
+    let warn = false;
+    if (riState === 'none') {
+      text = '🚫 画像を外して、画像なしで投稿します';
+      ok = true;
+    } else if (riState === 'raw') {
+      text = '🖼️ 新しい画像をトリミングせずに使います';
+      ok = true;
+    } else if (riState === 'trimmed') {
+      const done = targets.filter(function (s) { return trimResults[s]; });
+      const skipped = targets.filter(function (s) { return !trimResults[s]; });
+      text = '✂️ トリミング済み（' + done.map(function (s) { return SNS_TRIM_CONFIG[s].label; }).join('・') + '）';
+      ok = true;
+      if (skipped.indexOf('IG') !== -1) {
+        text += '\nInstagramは画像が必須です。Instagram用のトリミングをしてください。';
+        ok = false;
+        warn = true;
+      } else if (skipped.length) {
+        text += '\n' + skipped.map(function (s) { return SNS_TRIM_CONFIG[s].label; }).join('・') + ' はスキップしたため、画像なしで投稿されます。';
+        warn = true;
+      }
+    }
+    box.style.display = text ? 'block' : 'none';
+    box.textContent = text;
+    box.className = 'ri-summary ' + (warn ? 'warn' : 'ok');
+    saveBtn.disabled = !ok || riSaving || !r;
+  }
+
+  // 新しい画像をアップロードする（liff_textgen.html112のuploadImagesIfNeeded()と同じ手順）
+  async function uploadReplaceImages(snsTargets) {
+    const original = _dataUrlToBase64(originalImageDataUrl);
+    const originalRes = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'saveOriginalImage',
+        lineUid: LINE_UID,
+        params: { base64ImageData: original.base64, mimeType: original.mimeType }
+      })
+    }).then(r => r.json());
+    if (!originalRes.success || !originalRes.data || originalRes.data.error) {
+      throw new Error((originalRes.data && originalRes.data.error) || '元画像のアップロードに失敗しました');
+    }
+    const imageId = originalRes.data.imageId;
+    const originalFileId = originalRes.data.fileId;
+    const snsKeyMap = { x: 'X', instagram: 'IG', threads: 'TH' };
+    const trimmedImageFileIds = {};
+    for (const snsKey of Object.keys(snsKeyMap)) {
+      if (!snsTargets[snsKey]) continue;
+      if (riState === 'raw') {
+        trimmedImageFileIds[snsKey] = originalFileId;
+        continue;
+      }
+      const trimDataUrl = trimResults[snsKeyMap[snsKey]];
+      if (!trimDataUrl) continue;
+      const trimmed = _dataUrlToBase64(trimDataUrl);
+      const trimRes = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'saveTrimmedImage',
+          lineUid: LINE_UID,
+          params: { sns: snsKey, base64ImageData: trimmed.base64, mimeType: trimmed.mimeType }
+        })
+      }).then(r => r.json());
+      if (!trimRes.success || !trimRes.data || trimRes.data.error) {
+        throw new Error((trimRes.data && trimRes.data.error) || (snsKeyMap[snsKey] + '用画像のアップロードに失敗しました'));
+      }
+      trimmedImageFileIds[snsKey] = trimRes.data.fileId;
+    }
+    return { imageId: imageId, originalImageFileId: originalFileId, trimmedImageFileIds: trimmedImageFileIds };
+  }
+
+  async function saveImageReplace() {
+    const r = getDetailReservation();
+    if (!r || riSaving || !riState) return;
+    const errorEl = document.getElementById('ri-error');
+    errorEl.textContent = '';
+    riSaving = true;
+    updateReplaceSummary();
+    document.getElementById('ri-cancel-btn').disabled = true;
+    document.getElementById('ri-saving-overlay').classList.add('open');
+    try {
+      let imageParams = { imageId: '', originalImageFileId: '', trimmedImageFileIds: {} };
+      if (riState !== 'none') {
+        const snsTargets = {
+          x: r.targetSns.indexOf('X') !== -1,
+          instagram: r.targetSns.indexOf('Instagram') !== -1,
+          threads: r.targetSns.indexOf('Threads') !== -1
+        };
+        imageParams = await uploadReplaceImages(snsTargets);
+      }
+      // ★書き込み処理のため、自動再試行（postToGas）は使わず1回だけ送信する
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateReservationImage',
+          lineUid: LINE_UID,
+          params: {
+            reservationId: r.reservationId,
+            imageId: imageParams.imageId || '',
+            originalImageFileId: imageParams.originalImageFileId || '',
+            trimmedImageFileIds: imageParams.trimmedImageFileIds || {}
+          }
+        })
+      });
+      const result = await response.json();
+      if (result.success && result.data && result.data.success) {
+        traceLog('画像差し替えOK');
+        r.imageFileId = result.data.imageFileId || '';
+        r.hasImage = !!result.data.hasImage;
+        renderReservationList(currentReservationList);
+        try { sessionStorage.setItem(RESERVATION_LIST_CACHE_KEY, JSON.stringify(currentReservationList)); } catch (err) {}
+        showDetailImage(r);
+        riSaving = false;
+        document.getElementById('ri-saving-overlay').classList.remove('open');
+        setImageReplaceMode(false);
+        alert(r.hasImage ? '画像を差し替えました' : '画像を外しました');
+        return;
+      }
+      const message = (result.data && result.data.error) || result.error || '画像の差し替えに失敗しました。もう一度お試しください。';
+      traceLog('画像差し替えNG ' + message);
+      errorEl.textContent = message;
+    } catch (err) {
+      console.error('画像差し替えエラー:', err);
+      errorEl.textContent = (err && err.message) ? err.message : '通信エラーが発生しました。もう一度お試しください。';
+    } finally {
+      riSaving = false;
+      document.getElementById('ri-saving-overlay').classList.remove('open');
+      document.getElementById('ri-cancel-btn').disabled = false;
+      updateReplaceSummary();
     }
   }
 
