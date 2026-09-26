@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更31 - AiPost</title>
+<title>予約確認・変更32 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -494,7 +494,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更31</span>
+  <span class="header-logo">予約確認・変更32</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -539,12 +539,15 @@
 
   <!-- カレンダータブ -->
   <div id="tab-calendar" class="tab-panel">
+    <!-- ★liff_reservation_html32：予約カレンダーを実データ化（予約一覧タブと同じデータを日付別に表示） -->
+
+    <div id="res-cal-status" class="empty-list-note" style="display:none;"></div>
 
     <div class="calendar-wrap">
       <div class="cal-header">
-        <button class="cal-nav">‹</button>
-        <div class="cal-title">2026年6月</div>
-        <button class="cal-nav">›</button>
+        <button class="cal-nav" id="res-prev-month" onclick="changeReservationMonth(-1)">‹</button>
+        <div class="cal-title" id="res-cal-title"></div>
+        <button class="cal-nav" id="res-next-month" onclick="changeReservationMonth(1)">›</button>
       </div>
       <div class="cal-grid">
         <div class="cal-days">
@@ -563,15 +566,15 @@
     <div id="selected-day-section" style="display:none;">
       <div class="selected-date-label">
         <span>📌</span>
-        <span id="selected-day-label">6月13日の予約</span>
+        <span id="selected-day-label"></span>
       </div>
       <div id="selected-day-cards"></div>
     </div>
 
     <div id="no-selected" class="empty-state" style="padding:24px 20px;">
       <div class="empty-icon">📆</div>
-      <div class="empty-title">日付をタップしてください</div>
-      <div class="empty-sub">投稿予約がある日には件数が表示されます</div>
+      <div class="empty-title" id="res-empty-title">日付をタップしてください</div>
+      <div class="empty-sub" id="res-empty-sub">投稿予約がある日には件数が表示されます</div>
     </div>
 
   </div>
@@ -715,104 +718,8 @@ function switchTab(id) {
   if (id === 'history') ensurePostHistoryLoaded();
 }
 
-// カレンダー生成
-const postCounts = {15: 3, 17: 1, 20: 2, 25: 5, 28: 1}; // 日付:件数のマップ
-const postDataByDay = {
-  15: [
-    { time:'11時ごろ', sns:['IG','FB'],     text:'週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。', hashtag:'#渋谷カフェ #週末限定 #抹茶スイーツ', img:'🍵', chars:32 },
-    { time:'15時ごろ', sns:['IG','X'],      text:'本日のスペシャルティコーヒーはエチオピア産。フルーティな酸味が特徴です。', hashtag:'#スペシャルティコーヒー #渋谷カフェ', img:'☕', chars:29 },
-    { time:'18時ごろ', sns:['FB'],          text:'夜カフェタイムにぴったりのデカフェメニューを増やしました。', hashtag:'#デカフェ #夜カフェ', img:'🌙', chars:24 },
-  ],
-  17: [
-    { time:'13時ごろ', sns:['IG','FB','X'], text:'週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。', hashtag:'#渋谷カフェ #週末限定 #抹茶スイーツ', img:'🍵', chars:32 },
-  ],
-  20: [
-    { time:'9時ごろ',  sns:['IG'],          text:'モーニングセット始めました。トーストとスープのお得な組み合わせです。', hashtag:'#モーニング #渋谷カフェ', img:'🍞', chars:27 },
-    { time:'19時ごろ', sns:['IG','FB','X'], text:'新しいランチセットが始まりました。数量限定なのでお早めに。', hashtag:'#ランチセット #新メニュー', img:'🍽️', chars:25 },
-  ],
-  25: [
-    { time:'8時ごろ',  sns:['IG'],          text:'今週のおすすめスイーツをご紹介。季節のフルーツを使った特製タルトです。', hashtag:'#季節のスイーツ #タルト', img:'🍰', chars:28 },
-    { time:'11時ごろ', sns:['FB'],          text:'店内リニューアルのお知らせ。より快適な空間になりました。', hashtag:'#リニューアル #渋谷カフェ', img:'🛋️', chars:22 },
-    { time:'13時ごろ', sns:['IG','X'],      text:'ランチタイム限定、日替わりパスタセットが人気です。', hashtag:'#ランチ #パスタ', img:'🍝', chars:20 },
-    { time:'16時ごろ', sns:['IG','FB'],     text:'カフェタイムのお供に、焼き菓子の新作が仲間入りしました。', hashtag:'#焼き菓子 #新作', img:'🍪', chars:23 },
-    { time:'20時ごろ', sns:['IG','FB','X'], text:'今週のおすすめスイーツをご紹介。季節のフルーツを使った特製タルトです。', hashtag:'#季節のスイーツ #タルト', img:'🍰', chars:28 },
-  ],
-  28: [
-    { time:'12時ごろ', sns:['X'],           text:'本日のランチ情報をお届けします。数量限定のためお早めにどうぞ。', hashtag:'#ランチ情報 #数量限定', img:'🍱', chars:26 },
-  ],
-};
-const today = 13;
-let selectedDay = null;
-
-function buildCalendar() {
-  const grid = document.getElementById('cal-dates');
-  grid.innerHTML = '';
-  // 2026年6月は月曜日始まり→日曜日=0から
-  // 6月1日は月曜日
-  const firstDay = 1; // 月曜=1、日曜スタートなので1マス空ける
-  const days = 30;
-
-  // 空白
-  for (let i = 0; i < firstDay; i++) {
-    const blank = document.createElement('div');
-    blank.className = 'cal-date other-month';
-    blank.textContent = 31 - firstDay + i + 1;
-    grid.appendChild(blank);
-  }
-
-  for (let d = 1; d <= days; d++) {
-    const el = document.createElement('div');
-    const dayOfWeek = (firstDay + d - 1) % 7;
-    let cls = 'cal-date';
-    if (dayOfWeek === 0) cls += ' sunday';
-    if (dayOfWeek === 6) cls += ' saturday';
-    if (d === today) cls += ' today';
-    if (postCounts[d]) cls += ' has-post';
-    if (d === selectedDay) cls += ' selected';
-    el.className = cls;
-    // 件数バッジを含むHTML
-    const count = postCounts[d];
-    if (count) {
-      el.innerHTML = `<span>${d}</span><span class="cal-post-count">${count}件</span>`;
-    } else {
-      el.textContent = d;
-    }
-    el.onclick = () => selectDay(d);
-    grid.appendChild(el);
-  }
-}
-
-function selectDay(d) {
-  selectedDay = d;
-  buildCalendar();
-  const posts = postDataByDay[d];
-  document.getElementById('no-selected').style.display = posts ? 'none' : 'block';
-  document.getElementById('selected-day-section').style.display = posts ? 'block' : 'none';
-  if (posts) {
-    document.getElementById('selected-day-label').textContent = `6月${d}日の予約（${posts.length}件）`;
-    document.getElementById('selected-day-cards').innerHTML = posts.map((p, i) => {
-      const snsTags = p.sns.map(s => `<span class="sns-tag tag-${s.toLowerCase()}">${s}</span>`).join('');
-      return `
-      <div class="reservation-card" onclick="openDetail(${i + 1})">
-        <div class="card-header">
-          <div class="status-dot dot-pending"></div>
-          <div class="card-date">6月${d}日</div>
-          <div class="card-time">${p.time}</div>
-          <div class="sns-tags">${snsTags}</div>
-        </div>
-        <div class="card-body">
-          <div class="card-text">${p.text}</div>
-          <div class="card-hashtag">${p.hashtag}</div>
-        </div>
-        <div class="card-footer">
-          <div class="card-img-thumb">${p.img}</div>
-          <div class="card-chars">${p.chars}文字</div>
-          <span class="card-ai-badge">✨ AI生成</span>
-        </div>
-      </div>`;
-    }).join('');
-  }
-}
+// ★liff_reservation_html32：予約カレンダーのデモデータ（Facebookを含むダミーデータ）と
+// 　buildCalendar()・selectDay()を削除し、実データ表示（下のscript内）に置き換えた。
 
 // 修正機能は未実装のため、editReservation()は一時的に未使用
 // （「修正する」ボタン非表示に伴い、呼び出し元が無い状態）。
@@ -821,7 +728,7 @@ function editReservation() {
     edit: '1',
     day: '15',
     time: '13時ごろ',
-    sns: 'IG,FB,X',
+    sns: 'IG,X',
     text: '週末限定の抹茶テリーヌが登場しました。濃厚な抹茶の香りとなめらかな口当たり。',
     tags: '渋谷カフェ,週末限定,抹茶スイーツ',
     img: '🍵',
@@ -829,7 +736,6 @@ function editReservation() {
   window.location.href = LIFF_URLS.textgen + '?' + params.toString();
 }
 
-buildCalendar();
 </script>
 
 <!-- ボトムナビゲーションバー -->
@@ -978,7 +884,7 @@ buildCalendar();
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認31';
+  const TRACE_SCREEN = '予約確認32';
 
   function traceLog(msg) {
     try {
@@ -1287,6 +1193,10 @@ buildCalendar();
     container.innerHTML = list.length
       ? list.map(renderReservationCard).join('')
       : '<div class="empty-list-note">現在、予約中の投稿はありません</div>';
+    // ★liff_reservation_html32：予約カレンダーも同じデータで更新する
+    reservationListLoaded = true;
+    setReservationCalendarStatus('');
+    renderReservationCalendar();
   }
 
   async function fetchAndRenderReservationList(forceRefresh) {
@@ -1304,12 +1214,14 @@ buildCalendar();
 
     const container = document.getElementById('reservation-list-container');
     if (container) container.innerHTML = '<div class="empty-list-note">読み込み中…</div>';
+    if (!reservationListLoaded) setReservationCalendarStatus('読み込み中…');
     traceLog('予約一覧: 保存なし→取得');
     try {
       const result = await postToGas({ action: 'getMyReservations', lineUid: LINE_UID }, '予約一覧', function (r) { return r && r.success && Array.isArray(r.data); });
       if (!result) {
         // ★liff_reservation_html26：取得できなかった場合は「予約なし」と誤表示せず、保存もしない
         if (container) container.innerHTML = '<div class="empty-list-note">予約一覧を取得できませんでした</div>';
+        if (!reservationListLoaded) setReservationCalendarStatus('予約を取得できませんでした');
         return;
       }
       renderReservationList(result.data);
@@ -1317,6 +1229,7 @@ buildCalendar();
     } catch (err) {
       console.error('予約一覧の取得エラー:', err);
       if (container) container.innerHTML = '<div class="empty-list-note">予約一覧を取得できませんでした</div>';
+      if (!reservationListLoaded) setReservationCalendarStatus('予約を取得できませんでした');
     }
   }
 
@@ -1383,6 +1296,168 @@ buildCalendar();
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = 'キャンセルする'; }
     }
+  }
+
+  // ============================================
+  // ★liff_reservation_html32：予約カレンダータブ（実データ）
+  // ============================================
+  // ・予約一覧タブと同じデータ（currentReservationList＝予約中の予約）を日付別に表示する。
+  // 　新たな通信は行わない（一覧の取得・保存・キャンセル後の再取得の仕組みをそのまま使う）。
+  // ・カードをタップすると、一覧タブと同じ詳細画面（キャンセル可）を開く。
+  // ・月送りの範囲：今月（今月より前の予約があればその月）〜最も先の予約がある月。
+  let reservationListLoaded = false;
+  let resViewYear = null;
+  let resViewMonth = null;   // 0〜11
+  let resSelectedKey = null;
+
+  function resDateKey(dt) {
+    const p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    return dt.getFullYear() + '-' + p2(dt.getMonth() + 1) + '-' + p2(dt.getDate());
+  }
+
+  function setReservationCalendarStatus(text) {
+    const el = document.getElementById('res-cal-status');
+    if (!el) return;
+    el.textContent = text || '';
+    el.style.display = text ? 'block' : 'none';
+  }
+
+  function reservationsByDate() {
+    const map = {};
+    currentReservationList.forEach(function (r) {
+      const dt = new Date(r.scheduledAt);
+      if (isNaN(dt.getTime())) return;
+      const key = resDateKey(dt);
+      if (!map[key]) map[key] = [];
+      map[key].push(r);
+    });
+    Object.keys(map).forEach(function (key) {
+      map[key].sort(function (a, b) { return new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime(); });
+    });
+    return map;
+  }
+
+  function reservationMonthRange() {
+    const now = new Date();
+    const cur = now.getFullYear() * 12 + now.getMonth();
+    let min = cur, max = cur;
+    currentReservationList.forEach(function (r) {
+      const dt = new Date(r.scheduledAt);
+      if (isNaN(dt.getTime())) return;
+      const m = dt.getFullYear() * 12 + dt.getMonth();
+      if (m < min) min = m;
+      if (m > max) max = m;
+    });
+    return { min: min, max: max };
+  }
+
+  function renderReservationCalendar() {
+    const now = new Date();
+    if (resViewYear === null) {
+      resViewYear = now.getFullYear();
+      resViewMonth = now.getMonth();
+    }
+    // キャンセル等で表示中の月が範囲外になった場合は範囲内に戻す
+    const range = reservationMonthRange();
+    let current = resViewYear * 12 + resViewMonth;
+    if (current < range.min) current = range.min;
+    if (current > range.max) current = range.max;
+    resViewYear = Math.floor(current / 12);
+    resViewMonth = current % 12;
+
+    const emptyTitle = document.getElementById('res-empty-title');
+    const emptySub = document.getElementById('res-empty-sub');
+    if (currentReservationList.length === 0) {
+      emptyTitle.textContent = '現在、予約中の投稿はありません';
+      emptySub.textContent = '予約すると、投稿予定の日に件数が表示されます';
+    } else {
+      emptyTitle.textContent = '日付をタップしてください';
+      emptySub.textContent = '投稿予約がある日には件数が表示されます';
+    }
+
+    buildReservationCalendar();
+    // 日付を選択中なら、その日の表示も最新のデータで描き直す
+    showReservationDay(resSelectedKey);
+  }
+
+  function changeReservationMonth(delta) {
+    if (resViewYear === null) return;
+    const range = reservationMonthRange();
+    const next = resViewYear * 12 + resViewMonth + delta;
+    if (next < range.min || next > range.max) return;
+    resViewYear = Math.floor(next / 12);
+    resViewMonth = next % 12;
+    resSelectedKey = null;
+    showReservationDay(null);
+    buildReservationCalendar();
+  }
+
+  function buildReservationCalendar() {
+    const grid = document.getElementById('cal-dates');
+    if (!grid || resViewYear === null) return;
+    document.getElementById('res-cal-title').textContent = resViewYear + '年' + (resViewMonth + 1) + '月';
+
+    const range = reservationMonthRange();
+    const current = resViewYear * 12 + resViewMonth;
+    document.getElementById('res-prev-month').disabled = current <= range.min;
+    document.getElementById('res-next-month').disabled = current >= range.max;
+
+    const byDate = reservationsByDate();
+    grid.innerHTML = '';
+    const firstDay = new Date(resViewYear, resViewMonth, 1).getDay();
+    const days = new Date(resViewYear, resViewMonth + 1, 0).getDate();
+    const todayKey = resDateKey(new Date());
+
+    for (let i = 0; i < firstDay; i++) {
+      const blank = document.createElement('div');
+      blank.className = 'cal-date blank';
+      grid.appendChild(blank);
+    }
+    for (let d = 1; d <= days; d++) {
+      const key = resDateKey(new Date(resViewYear, resViewMonth, d));
+      const list = byDate[key];
+      const dayOfWeek = (firstDay + d - 1) % 7;
+      let cls = 'cal-date';
+      if (dayOfWeek === 0) cls += ' sunday';
+      if (dayOfWeek === 6) cls += ' saturday';
+      if (key === todayKey) cls += ' today';
+      if (list) cls += ' has-post';
+      if (key === resSelectedKey) cls += ' selected';
+      const el = document.createElement('div');
+      el.className = cls;
+      if (list) {
+        el.innerHTML = '<span>' + d + '</span><span class="cal-post-count">' + list.length + '件</span>';
+      } else {
+        el.textContent = d;
+      }
+      el.onclick = function () { selectReservationDate(key); };
+      grid.appendChild(el);
+    }
+  }
+
+  function selectReservationDate(key) {
+    resSelectedKey = key;
+    buildReservationCalendar();
+    showReservationDay(key);
+  }
+
+  function showReservationDay(key) {
+    const section = document.getElementById('selected-day-section');
+    const empty = document.getElementById('no-selected');
+    if (!key) {
+      section.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    const list = reservationsByDate()[key] || [];
+    const parts = key.split('-');
+    section.style.display = 'block';
+    empty.style.display = 'none';
+    document.getElementById('selected-day-label').textContent =
+      Number(parts[1]) + '月' + Number(parts[2]) + '日の予約（' + list.length + '件）';
+    document.getElementById('selected-day-cards').innerHTML = list.length
+      ? list.map(renderReservationCard).join('')
+      : '<div class="empty-list-note">この日の予約はありません</div>';
   }
 
   // ============================================
