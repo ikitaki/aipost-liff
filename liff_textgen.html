@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成114 - AiPost</title>
+<title>投稿文作成115 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -459,9 +459,9 @@
     top: 0;
     left: 0;
     right: 0;
-    bottom: 60px; /* ナビゲーションバー分上げる */
+    bottom: 0; /* ★liff_textgen.html115：画像を大きく表示するため、下部ナビ(1000)の上に重ねて画面下端まで使う */
     background: rgba(0,0,0,0.85);
-    z-index: 200;
+    z-index: 1030;
     flex-direction: column;
     overflow: hidden;
   }
@@ -469,18 +469,18 @@
   .trim-header {
     background: var(--primary);
     color: #fff;
-    padding: 10px 14px;
+    padding: 6px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
   }
   .trim-header-title { font-size: 13px; font-weight: 700; }
-  .trim-header-sub { font-size: 10px; opacity: 0.8; margin-top: 2px; }
+  .trim-header-sub { display: none; } /* ★liff_textgen.html115：非表示（画像を大きく表示するため） */
   .trim-progress {
     background: #13195f;
     padding: 6px 16px;
-    display: flex;
+    display: none; /* ★liff_textgen.html115：進捗はヘッダーの「（2/3）」で表示するため非表示 */
     gap: 8px;
     align-items: center;
     overflow-x: auto;
@@ -530,14 +530,14 @@
   }
   .trim-ratio-bar {
     background: #1a1a2e;
-    padding: 8px 16px;
+    padding: 6px 12px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
     flex-shrink: 0;
   }
   .trim-ratio-btn {
-    padding: 5px 14px;
+    padding: 4px 10px;
     border-radius: 20px;
     border: 1.5px solid rgba(255,255,255,0.3);
     background: transparent;
@@ -553,16 +553,15 @@
   }
   .trim-ratio-label { font-size: 10px; color: rgba(255,255,255,0.5); margin-right: 4px; }
   .trim-hint {
-    background: #fff;
-    padding: 8px 16px;
+    background: #1a1a2e;
+    padding: 6px 12px 0;
     flex-shrink: 0;
-    border-top: 1px solid #e0e0e0;
   }
   .trim-hint-main {
     font-size: 11px;
     font-weight: 700;
-    color: #1a237e;
-    margin-bottom: 2px;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
   }
   .trim-hint-sub {
     font-size: 10px;
@@ -571,16 +570,15 @@
   }
   .trim-actions {
     background: #1a1a2e;
-    padding: 10px 16px;
+    padding: 6px 12px 10px;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     flex-shrink: 0;
   }
-  .trim-actions-sub { display: flex; gap: 8px; }
   .trim-btn-skip {
     flex: 1;
-    padding: 10px 6px;
+    padding: 9px 4px;
+    white-space: nowrap;
     border: 1.5px solid rgba(255,255,255,0.3);
     background: transparent;
     color: rgba(255,255,255,0.7);
@@ -589,8 +587,9 @@
     cursor: pointer;
   }
   .trim-btn-ok {
-    width: 100%;
-    padding: 12px;
+    flex: 1;
+    padding: 9px 4px;
+    white-space: nowrap;
     background: var(--primary);
     color: #fff;
     border: none;
@@ -609,7 +608,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成114</span>
+  <span class="header-logo">投稿文作成115</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1005,7 +1004,7 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑦ SNSごとの画像トリミング比率<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
     <div class="accordion-body" id="acc-t7">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">画像は同じ元写真から、SNSごとに最適な比率でトリミングできます。⭐が付いている比率が特におすすめです。決まった比率以外にも「自由」を選べば、縦横比を固定せずに自由な形でトリミングすることもできます。「SNSごとにトリミングする」では、SNSごとに「切り抜く」「切り抜かず元画像のまま載せる」「画像なしで投稿」の3つから選べます（Instagramは画像が無いと投稿できないため、画像なしを選ぶとInstagramには投稿されません）。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">画像は同じ元写真から、SNSごとに最適な比率でトリミングできます。⭐が付いている比率が特におすすめです。決まった比率以外にも「自由」を選べば、縦横比を固定せずに自由な形でトリミングすることもできます。「SNSごとにトリミングする」では、SNSごとに「✂️ 切り抜く」「🖼️ 元画像」（切り抜かずに載せる）「🚫 画像なし」の3つから選べます（Instagramは画像が無いと投稿できないため、画像なしを選ぶとInstagramには投稿されません）。</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">アップロードする<strong>元の画像は1枚だけ</strong>で、⑤で説明した「同一投稿」の条件（投稿文・画像が同じであること）はこの元画像を指します。トリミングでSNSごとに見た目（比率）を変えても、画像そのものは変わらないため、同一投稿の扱いには影響しません。</div>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
@@ -1049,7 +1048,7 @@
       <div class="trim-header-title" id="trim-sns-title">🐦 X用 トリミング</div>
       <div class="trim-header-sub" id="trim-sns-sub">切り抜き枠を動かして位置を決めてください</div>
     </div>
-    <button onclick="cancelTrim()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;">キャンセル</button>
+    <button onclick="cancelTrim()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap;">キャンセル</button>
   </div>
 
   <!-- 進捗チップ -->
@@ -1070,18 +1069,16 @@
 
   <!-- ヒント -->
   <div class="trim-hint">
-    <div class="trim-hint-main">✋ 枠を動かして切り抜く位置を調整してください</div>
-    <div class="trim-hint-sub">・枠の内側をドラッグ → 位置を移動<br>・枠の四隅をドラッグ → 拡大・縮小<br>・2本指のピンチ操作 → 拡大・縮小</div>
+    <div class="trim-hint-main">枠を移動、拡大、縮小して調整してください</div>
   </div>
 
   <!-- アクションボタン -->
   <div class="trim-actions">
     <!-- ★liff_textgen.html114：「このSNSはスキップ」を廃止し、SNSごとに「切り抜く／元画像のまま載せる／画像なしで投稿」の3択にした -->
-    <button class="trim-btn-ok" onclick="confirmTrim()" id="trim-btn-ok">✂️ 枠のとおり切り抜いて次へ</button>
-    <div class="trim-actions-sub">
-      <button class="trim-btn-skip" onclick="chooseOriginalForSns()">🖼️ 切り抜かず<br>元画像のまま載せる</button>
-      <button class="trim-btn-skip" onclick="chooseNoImageForSns()" id="trim-btn-none">🚫 このSNSは<br>画像なしで投稿</button>
-    </div>
+    <!-- ★liff_textgen.html115：画像を大きく表示するため、3つを横一列・短い表示にした -->
+    <button class="trim-btn-ok" onclick="confirmTrim()" id="trim-btn-ok">✂️ 切り抜く</button>
+    <button class="trim-btn-skip" onclick="chooseOriginalForSns()">🖼️ 元画像</button>
+    <button class="trim-btn-skip" onclick="chooseNoImageForSns()" id="trim-btn-none">🚫 画像なし</button>
   </div>
 </div>
 
@@ -1321,7 +1318,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成114';
+const TRACE_SCREEN = '投稿文作成115';
 
 function traceLog(msg) {
   try {
@@ -3100,7 +3097,7 @@ function openTrimForCurrent() {
   const ratioBar = document.getElementById('trim-ratio-bar');
 
   // ヘッダー更新
-  document.getElementById('trim-sns-title').textContent = cfg.label + ' 用トリミング';
+  document.getElementById('trim-sns-title').textContent = cfg.label + ' の画像（' + (currentTrimIndex + 1) + '/' + trimQueue.length + '）';
   document.getElementById('trim-sns-sub').textContent = 'このSNSに載せる画像を選んでください';
 
   // 進捗チップ更新
@@ -3133,10 +3130,6 @@ function openTrimForCurrent() {
 
   // ボタンラベル
   const isLast = currentTrimIndex === trimQueue.length - 1;
-  document.getElementById('trim-btn-ok').textContent = isLast ? '✂️ 枠のとおり切り抜いて完了' : '✂️ 枠のとおり切り抜いて次へ';
-  document.getElementById('trim-btn-none').innerHTML = (sns === 'IG')
-    ? '🚫 Instagramには<br>投稿しない（画像なし）'
-    : '🚫 このSNSは<br>画像なしで投稿';
 
   // モーダルを開く・bodyスクロールをロック
   document.getElementById('trim-overlay').classList.add('open');
