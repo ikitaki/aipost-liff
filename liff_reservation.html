@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更37 - AiPost</title>
+<title>予約確認・変更38 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -693,7 +693,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更37</span>
+  <span class="header-logo">予約確認・変更38</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -886,7 +886,7 @@
 
     <!-- 画像差し替えモード（★liff_reservation_html35） -->
     <div id="detail-imgedit" style="display:none;">
-      <div class="ri-section-title">画像の差し替え</div>
+      <div class="ri-section-title" id="ri-section-title">画像の差し替え</div>
       <div class="ri-note" id="ri-target-note"></div>
 
       <div id="ri-upload-area">
@@ -1179,7 +1179,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認37';
+  const TRACE_SCREEN = '予約確認38';
 
   function traceLog(msg) {
     try {
@@ -1601,6 +1601,8 @@ function switchTab(id) {
     // ★liff_reservation_html35：画像差し替えモードも解除し、差し替え可能な予約のみボタンを表示
     setImageReplaceMode(false);
     document.getElementById('detail-image-btn').style.display = isReservationEditable(r) ? 'block' : 'none';
+    // ★liff_reservation_html38：画像なしの予約は「画像を掲載する」、画像ありは「画像を差し替える」
+    document.getElementById('detail-image-btn').textContent = r.hasImage ? '🖼️ 画像を差し替える' : '🖼️ 画像を掲載する';
     document.getElementById('detail-modal').classList.add('open');
   }
   function closeDetail() {
@@ -2212,10 +2214,12 @@ function _dataUrlToBase64(dataUrl) {
       return;
     }
     const hasIg = r.targetSns.indexOf('Instagram') !== -1;
+    // ★liff_reservation_html38：画像なしの予約では「画像の掲載」と表示し、「画像を外す」は出さない（外す画像が無いため）
+    document.getElementById('ri-section-title').textContent = r.hasImage ? '画像の差し替え' : '画像の掲載';
     document.getElementById('ri-target-note').textContent =
-      'この予約の投稿先：' + r.targetSns.join('・') + '。新しい画像を選び、投稿先ごとにトリミングしてください。' +
-      (hasIg ? 'Instagramは画像が必須のため、画像を外すことはできません。' : '');
-    document.getElementById('ri-remove-btn').style.display = hasIg ? 'none' : 'block';
+      'この予約の投稿先：' + r.targetSns.join('・') + '。' + (r.hasImage ? '新しい画像' : '掲載する画像') + 'を選んでください（投稿先ごとに切り抜き・元画像・画像なしを選べます）。' +
+      (hasIg && r.hasImage ? 'Instagramは画像が必須のため、画像を外すことはできません。' : '');
+    document.getElementById('ri-remove-btn').style.display = (hasIg || !r.hasImage) ? 'none' : 'block';
     setImageReplaceMode(true);
   }
 
@@ -2288,7 +2292,7 @@ function _dataUrlToBase64(dataUrl) {
       text = '🚫 画像を外して、画像なしで投稿します';
       ok = true;
     } else if (riState === 'raw') {
-      text = '🖼️ 新しい画像をトリミングせずに使います';
+      text = '🖼️ ' + (r && !r.hasImage ? '選んだ画像' : '新しい画像') + 'をトリミングせずに使います';
       ok = true;
     } else if (riState === 'trimmed') {
       // ★liff_reservation_html36：SNSごとの選択（切り抜き／元画像のまま／画像なし）を表示する
@@ -2396,6 +2400,7 @@ function _dataUrlToBase64(dataUrl) {
       const result = await response.json();
       if (result.success && result.data && result.data.success) {
         traceLog('画像差し替えOK');
+        const hadImage = r.hasImage;
         r.imageFileId = result.data.imageFileId || '';
         r.hasImage = !!result.data.hasImage;
         renderReservationList(currentReservationList);
@@ -2404,7 +2409,7 @@ function _dataUrlToBase64(dataUrl) {
         riSaving = false;
         document.getElementById('ri-saving-overlay').classList.remove('open');
         setImageReplaceMode(false);
-        alert(r.hasImage ? '画像を差し替えました' : '画像を外しました');
+        alert(r.hasImage ? (hadImage ? '画像を差し替えました' : '画像を掲載しました') : (hadImage ? '画像を外しました' : '画像なしのまま保存しました'));
         return;
       }
       const message = (result.data && result.data.error) || result.error || '画像の差し替えに失敗しました。もう一度お試しください。';
