@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成116 - AiPost</title>
+<title>投稿文作成117 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -346,6 +346,7 @@
     background: none; border: none; font-size: 18px; color: var(--primary);
     cursor: pointer; padding: 4px 8px;
   }
+  .cal-nav:disabled { opacity: 0.25; cursor: default; }
   .cal-grid { padding: 8px; }
   .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
   .cal-day-label { font-size: 11px; color: var(--text-sub); padding: 4px 0; text-align: center; }
@@ -608,7 +609,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成116</span>
+  <span class="header-logo">投稿文作成117</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -850,9 +851,9 @@
     </div>
     <div class="calendar-wrap">
       <div class="cal-header">
-        <button class="cal-nav" onclick="prevMonth()">‹</button>
+        <button class="cal-nav" id="cal-prev" onclick="prevMonth()">‹</button>
         <div class="cal-title" id="cal-title">2026年6月</div>
-        <button class="cal-nav" onclick="nextMonth()">›</button>
+        <button class="cal-nav" id="cal-next" onclick="nextMonth()">›</button>
       </div>
       <div class="cal-grid">
         <div class="cal-days">
@@ -1110,7 +1111,7 @@
       <div id="confirm-url-note" style="display:none;font-size:11px;color:#c62828;background:#ffebee;border-radius:6px;padding:6px 8px;margin:4px 0;line-height:1.6;white-space:pre-line;"></div>
       <div class="confirm-row"><span class="confirm-key">投稿日時</span><span class="confirm-val" id="confirm-date">6月17日 13時ごろ</span></div>
       <div class="confirm-row"><span class="confirm-key">画像</span><span class="confirm-val" id="confirm-image">抹茶ラテ</span></div>
-      <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain">残り22</span></div>
+      <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain"></span></div>
     </div>
     <div class="accordion-title" style="font-size:12px;color:var(--primary);font-weight:600;margin-bottom:10px;" onclick="toggleAcc('confirm-preview')">▼ SNSごとの投稿文を見る<span class="accordion-arrow" id="arr-confirm-preview">▶</span></div>
     <div class="accordion-body" id="confirm-preview" style="margin-bottom:10px;"></div>
@@ -1264,7 +1265,8 @@ function applyQuotaFromCache(cache) {
   }
   const el = document.getElementById('reservation-quota');
   if (el && typeof cache.remainingReservable === 'number') {
-    el.textContent = '残り投稿可能数' + cache.remainingReservable + '件';
+    // ★liff_textgen.html117：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
+    el.textContent = '残り投稿可能数' + Math.max(0, cache.remainingReservable) + '件';
   }
   applySnsConnectionStatus(cache.sns);
   updateUserGenreFromProfile(cache);
@@ -1320,7 +1322,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成116';
+const TRACE_SCREEN = '投稿文作成117';
 
 function traceLog(msg) {
   try {
@@ -2202,6 +2204,19 @@ let selectedMonth = null;
 let selectedYear = null;
 
 function buildCalendar() {
+  // ★liff_textgen.html117：表示中の月を今月〜翌月の範囲に収め、月送りボタンの有効/無効を切り替える
+  const range = reservableMonthRange();
+  let curIdx = calMonthIndex(calYear, calMonth);
+  if (curIdx < range.min || curIdx > range.max) {
+    curIdx = Math.min(Math.max(curIdx, range.min), range.max);
+    calYear = Math.floor(curIdx / 12);
+    calMonth = (curIdx % 12) + 1;
+  }
+  const prevBtn = document.getElementById('cal-prev');
+  const nextBtn = document.getElementById('cal-next');
+  if (prevBtn) prevBtn.disabled = curIdx <= range.min;
+  if (nextBtn) nextBtn.disabled = curIdx >= range.max;
+
   const grid = document.getElementById('cal-dates');
   grid.innerHTML = '';
   document.getElementById('cal-title').textContent = calYear + '年' + calMonth + '月';
@@ -2286,16 +2301,56 @@ function updateTimeOptions() {
   hint.style.display = (isToday && disabledAny) ? 'block' : 'none';
 }
 
+// ★liff_textgen.html117：予約できるのは翌月末までのため、カレンダーは今月と翌月だけ表示する
+// 　（GAS側のcreateReservation〔TextGenerationgs_21〕でも同じ範囲を確認している）
+function calMonthIndex(y, m) { return y * 12 + (m - 1); }
+function reservableMonthRange() {
+  const now = new Date();
+  const min = calMonthIndex(now.getFullYear(), now.getMonth() + 1);
+  return { min: min, max: min + 1 };
+}
+
 function prevMonth() {
+  if (calMonthIndex(calYear, calMonth) <= reservableMonthRange().min) return;
   calMonth--;
   if (calMonth < 1) { calMonth = 12; calYear--; }
   buildCalendar();
 }
 
 function nextMonth() {
+  if (calMonthIndex(calYear, calMonth) >= reservableMonthRange().max) return;
   calMonth++;
   if (calMonth > 12) { calMonth = 1; calYear++; }
   buildCalendar();
+}
+
+// ★liff_textgen.html117：月ごとの予約枠（残り件数）
+// 　・今月：プロフィールの保存データの「残り予約可能件数」（ユーザー管理シートの数式。投稿済みも含めて数える）
+// 　・翌月：総予約可能件数 − 予約一覧の保存データのうち翌月の予約（予約中）の件数
+// 　保存データが無い・プランが未確定などで計算できない場合は null を返す（画面では止めず、GAS側の確認に任せる）
+function getMonthQuota(y, m) {
+  const cache = readQuotaCache();
+  if (!cache || typeof cache.totalReservable !== 'number') return null;
+  const total = cache.totalReservable;
+  const now = new Date();
+  const idx = calMonthIndex(y, m);
+  const thisIdx = calMonthIndex(now.getFullYear(), now.getMonth() + 1);
+  if (idx === thisIdx) {
+    if (typeof cache.remainingReservable !== 'number') return null;
+    return { total: total, remaining: Math.max(0, cache.remainingReservable) };
+  }
+  let used = 0;
+  try {
+    const list = JSON.parse(sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY) || 'null');
+    if (!Array.isArray(list)) return null;
+    list.forEach(r => {
+      const dt = new Date(r && r.scheduledAt);
+      if (!isNaN(dt.getTime()) && calMonthIndex(dt.getFullYear(), dt.getMonth() + 1) === idx) used++;
+    });
+  } catch (err) {
+    return null;
+  }
+  return { total: total, remaining: Math.max(0, total - used) };
 }
 
 // ===== 予約確認 =====
@@ -2313,6 +2368,20 @@ function showConfirm() {
       updateTimeOptions();
       return;
     }
+  }
+
+  // ★liff_textgen.html117：予約できる期間（翌月末まで）と、選んだ日の月の予約枠を確認する
+  // 　（画面を開いたまま月が変わった場合などに備えた確認。最終的な判定はGAS側でも行う）
+  const selIdx = calMonthIndex(selectedYear, selectedMonth);
+  if (selIdx > reservableMonthRange().max) {
+    alert('予約できるのは翌月末までです。\n投稿日を選び直してください。');
+    return;
+  }
+  const selQuota = getMonthQuota(selectedYear, selectedMonth);
+  if (selQuota && selQuota.remaining <= 0) {
+    alert(selectedMonth + '月の予約枠（' + selQuota.total + '件）を使い切っているため、この月には予約できません。\n' +
+      '予約をキャンセルすると枠が空きます。');
+    return;
   }
 
   // URL・文字数超過：Xだけ対応不可のため、状況に応じて除外またはブロック
@@ -2461,7 +2530,11 @@ function showConfirm() {
   else imageLabel = '未選択';
   document.getElementById('confirm-image').textContent = imageLabel;
 
-  document.getElementById('confirm-remain').textContent = '残り22件 / 30件';
+  // ★liff_textgen.html117：固定の文字だったため、選んだ日の月の実際の残り件数を表示する
+  const quotaForConfirm = getMonthQuota(selectedYear, selectedMonth);
+  document.getElementById('confirm-remain').textContent = quotaForConfirm
+    ? selectedMonth + '月の残り ' + quotaForConfirm.remaining + '件 / ' + quotaForConfirm.total + '件'
+    : '確認中';
   document.getElementById('confirm-modal').classList.add('open');
 }
 
