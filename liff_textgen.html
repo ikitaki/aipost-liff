@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成115 - AiPost</title>
+<title>投稿文作成116 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -341,10 +341,10 @@
     padding: 12px 16px; border-bottom: 1px solid var(--border);
   }
   .cal-title { font-size: 15px; font-weight: 700; }
+  /* ★liff_textgen.html116：月送りボタン・選択日の色を、予約確認画面の予約カレンダーと同じにした */
   .cal-nav {
-    width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border);
-    background: var(--surface); cursor: pointer; font-size: 16px;
-    display: flex; align-items: center; justify-content: center;
+    background: none; border: none; font-size: 18px; color: var(--primary);
+    cursor: pointer; padding: 4px 8px;
   }
   .cal-grid { padding: 8px; }
   .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
@@ -360,8 +360,8 @@
   }
   .cal-date:hover { background: var(--bg); }
   .cal-date.today { background: var(--primary); color: white; font-weight: 700; }
-  .cal-date.selected { background: var(--accent); color: white; font-weight: 700; }
-  .cal-date.today.selected { background: var(--accent); }
+  .cal-date.selected { background: var(--primary-light); color: white; font-weight: 700; }
+  .cal-date.today.selected { background: var(--primary-light); }
   .cal-date.has-post { padding-top: 2px; justify-content: flex-start; gap: 1px; }
   .cal-post-count {
     font-size: 9px; font-weight: 700; color: white;
@@ -369,7 +369,7 @@
     line-height: 1.6; min-width: 14px; text-align: center;
   }
   .cal-date.today .cal-post-count { background: rgba(255,255,255,0.9); color: var(--primary); }
-  .cal-date.selected .cal-post-count { background: rgba(255,255,255,0.9); color: var(--accent); }
+  .cal-date.selected .cal-post-count { background: rgba(255,255,255,0.9); color: var(--primary-light); }
   .cal-date.other-month { color: var(--text-light); }
   .cal-date.past { color: #ccc; cursor: not-allowed; }
   .cal-date.past:hover { background: transparent; }
@@ -608,7 +608,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成115</span>
+  <span class="header-logo">投稿文作成116</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1284,6 +1284,8 @@ async function warmupReservationListCache() {
   } catch (err) {
     // sessionStorageが使えない環境でも動作は継続する
   }
+  // ★liff_textgen.html116：投稿日カレンダーの予約件数を最新の一覧で描き直す
+  refreshCalendarCounts();
 }
 
 // ★通信の一時的な失敗（GAS・スプレッドシート側の一時的な不調、想定外の応答など）に
@@ -1318,7 +1320,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成115';
+const TRACE_SCREEN = '投稿文作成116';
 
 function traceLog(msg) {
   try {
@@ -2152,7 +2154,38 @@ function filterCat(btn) {
 }
 
 // ===== カレンダー =====
-const postCounts = {}; // 実際の予約件数との連動は別途今後の課題。当面は空のままでよい
+// ★liff_textgen.html116：日付の下に、その日に既に入っている予約（予約中）の件数を表示する。
+// 　予約一覧の保存データ（sessionStorage・予約確認画面と共通のaipost_reservation_list）を使い、
+// 　新たな通信は行わない（保存データが無い場合は、起動時の先読みが終わった時点で表示する）。
+// 　以前は日（1〜31）だけをキーにしていた空のデモ用データ（postCounts）だったため、年月を含む
+// 　'YYYY-MM-DD'をキーにした。
+function calDateKey(y, m, d) {
+  const p2 = n => (n < 10 ? '0' : '') + n;
+  return y + '-' + p2(m) + '-' + p2(d);
+}
+
+function getReservationCountsByDate() {
+  const counts = {};
+  try {
+    const list = JSON.parse(sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY) || '[]');
+    if (!Array.isArray(list)) return counts;
+    list.forEach(r => {
+      const dt = new Date(r && r.scheduledAt);
+      if (isNaN(dt.getTime())) return;
+      const key = calDateKey(dt.getFullYear(), dt.getMonth() + 1, dt.getDate());
+      counts[key] = (counts[key] || 0) + 1;
+    });
+  } catch (err) {
+    // 保存データが読めない場合は件数を表示しない
+  }
+  return counts;
+}
+
+// 予約一覧の保存データが更新された時に、カレンダーと選択中の日の表示を描き直す
+function refreshCalendarCounts() {
+  buildCalendar();
+  if (selectedYear && selectedMonth && selectedDay) updateSelectedDateLabel();
+}
 
 function isPastDate(y, m, d) {
   const target = new Date(y, m - 1, d);
@@ -2175,6 +2208,7 @@ function buildCalendar() {
 
   const firstDayOfWeek = new Date(calYear, calMonth - 1, 1).getDay(); // 0=日曜
   const daysInMonth = new Date(calYear, calMonth, 0).getDate();
+  const reservationCounts = getReservationCountsByDate();
 
   for (let i = 0; i < firstDayOfWeek; i++) {
     const blank = document.createElement('div');
@@ -2194,12 +2228,12 @@ function buildCalendar() {
     if (calYear === now.getFullYear() && calMonth === now.getMonth() + 1 && d === now.getDate()) {
       cls += ' today';
     }
-    if (postCounts[d]) cls += ' has-post';
+    const count = reservationCounts[calDateKey(calYear, calMonth, d)] || 0;
+    if (count) cls += ' has-post';
     if (calYear === selectedYear && calMonth === selectedMonth && d === selectedDay) cls += ' selected';
     el.className = cls;
-    const count = postCounts[d];
     if (count) {
-      el.innerHTML = '<span>' + d + '</span><span class="cal-post-count">' + count + '</span>';
+      el.innerHTML = '<span>' + d + '</span><span class="cal-post-count">' + count + '件</span>';
     } else {
       el.textContent = d;
     }
@@ -2216,11 +2250,15 @@ function selectCalDay(d) {
   buildCalendar();
   const bar = document.getElementById('selected-date-bar');
   bar.classList.add('show');
-  const count = postCounts[d] || 0;
-  document.getElementById('selected-date-label').textContent =
-    calMonth + '月' + d + '日を選択中' + (count > 0 ? '（既に' + count + '件予約あり）' : '');
+  updateSelectedDateLabel();
   updateTimeOptions();
   setStep(5);
+}
+
+function updateSelectedDateLabel() {
+  const count = getReservationCountsByDate()[calDateKey(selectedYear, selectedMonth, selectedDay)] || 0;
+  document.getElementById('selected-date-label').textContent =
+    selectedMonth + '月' + selectedDay + '日を選択中' + (count > 0 ? '（既に' + count + '件予約あり）' : '');
 }
 
 // 選択日が本日の場合、現在時刻より前の時間帯を選択不可にする
@@ -2682,6 +2720,8 @@ async function executeReserve() {
     // 無効化する（同じsessionStorageを見ているため、ここから消して
     // おけば、予約確認画面を開いた時に最新の一覧を取得し直す）
     try { sessionStorage.removeItem('aipost_reservation_list'); } catch (err) {}
+    // ★liff_textgen.html116：投稿日カレンダーの予約件数に今回の予約を反映するため、裏側で一覧を取り直す
+    warmupReservationListCache();
     // ★liff_textgen.html105：予約で今月の投稿枠が変わるため、分析の「今日の状況」の
     // 　保存済みデータも無効にし、裏側（スピナーなし）で取得し直す
     invalidateAnalyticsSummaryCache();
