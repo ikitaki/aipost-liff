@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更38 - AiPost</title>
+<title>予約確認・変更39 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -693,7 +693,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更38</span>
+  <span class="header-logo">予約確認・変更39</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1142,7 +1142,8 @@ function switchTab(id) {
     }
     const el = document.getElementById('reservation-quota');
     if (el && typeof remainingReservable === 'number') {
-      el.textContent = '残り投稿可能数' + remainingReservable + '件';
+      // ★liff_reservation_html39：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
+      el.textContent = '残り投稿可能数' + Math.max(0, remainingReservable) + '件';
     }
     applySubbarSnsTags(sns);
   }
@@ -1179,7 +1180,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認38';
+  const TRACE_SCREEN = '予約確認39';
 
   function traceLog(msg) {
     try {
