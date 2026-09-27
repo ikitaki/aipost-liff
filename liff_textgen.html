@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成112 - AiPost</title>
+<title>投稿文作成113 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -607,7 +607,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成112</span>
+  <span class="header-logo">投稿文作成113</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1104,7 +1104,7 @@
     <div class="modal-title">📋 予約内容の確認</div>
     <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:16px;">
       <div class="confirm-row"><span class="confirm-key">投稿先</span><span class="confirm-val" id="confirm-sns">Instagram・X</span></div>
-      <div id="confirm-url-note" style="display:none;font-size:11px;color:#c62828;background:#ffebee;border-radius:6px;padding:6px 8px;margin:4px 0;line-height:1.6;"></div>
+      <div id="confirm-url-note" style="display:none;font-size:11px;color:#c62828;background:#ffebee;border-radius:6px;padding:6px 8px;margin:4px 0;line-height:1.6;white-space:pre-line;"></div>
       <div class="confirm-row"><span class="confirm-key">投稿日時</span><span class="confirm-val" id="confirm-date">6月17日 13時ごろ</span></div>
       <div class="confirm-row"><span class="confirm-key">画像</span><span class="confirm-val" id="confirm-image">抹茶ラテ</span></div>
       <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain">残り22</span></div>
@@ -1315,7 +1315,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成112';
+const TRACE_SCREEN = '投稿文作成113';
 
 function traceLog(msg) {
   try {
@@ -2305,30 +2305,78 @@ function showConfirm() {
     }
   }
 
+  // ★liff_textgen.html113：Instagramの画像なし除外を、Xの除外と同じように
+  // 　投稿先の表示・注意書き・送信する投稿対象のすべてに反映する。
+  // 　Instagram用の画像が無い（画像なし／Instagram用のトリミングをスキップ）場合は
+  // 　Instagramを投稿対象から外す（GAS側createReservationの判定と同じ条件）。
+  const igChecked = checkedItems.some(el => el.querySelector('.sns-icon-sm.sns-ig'));
+  const thChecked = checkedItems.some(el => el.querySelector('.sns-icon-sm.sns-th'));
+  const igHasImage = (imageState === 'raw') || (imageState === 'trimmed' && !!trimResults['IG']);
+  let igExcluded = false;
+  let igExcludeReason = '';
+  if (igChecked && !igHasImage) {
+    igExcluded = true;
+    igExcludeReason = (imageState === 'trimmed') ? 'skip' : 'noimage';
+  }
+
+  // 除外した結果、投稿先が1つも残らない場合は予約させない
+  const remainingSnsNames = [];
+  if (xChecked && !xExcluded) remainingSnsNames.push('X');
+  if (igChecked && !igExcluded) remainingSnsNames.push('Instagram');
+  if (thChecked) remainingSnsNames.push('Threads');
+  if (remainingSnsNames.length === 0) {
+    const reasons = [];
+    if (xExcludeReason === 'url') reasons.push('・Xは、投稿文にURLが含まれているため投稿できません');
+    if (xExcludeReason === 'char') reasons.push('・Xは、本文＋ハッシュタグの文字数が上限を超えているため投稿できません');
+    if (igExcluded) reasons.push(igExcludeReason === 'skip'
+      ? '・Instagramは、Instagram用のトリミングをスキップしたため投稿できません'
+      : '・Instagramは、画像が無いと投稿できません');
+    alert('投稿できるSNSがないため、このままでは予約できません。\n' + reasons.join('\n') + '\n内容を修正するか、他のSNSも選択してください。');
+    return;
+  }
+
   // 画像状態確認
   if (imageState === null) {
-    const igCheckedForImageWarning = checkedItems.some(el => el.querySelector('.sns-icon-sm.sns-ig'));
-    const noImageConfirmMsg = igCheckedForImageWarning
-      ? '画像が選択されていません。\nInstagramは画像が無いと投稿できないため、この予約はInstagramには反映されません（X・Threadsのみ投稿されます）。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。'
+    const noImageConfirmMsg = igExcluded
+      ? '画像が選択されていません。\nInstagramは画像が無いと投稿できないため、この予約はInstagramには反映されません（' + remainingSnsNames.join('・') + 'のみ投稿されます）。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。'
       : '画像が選択されていません。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。';
     if (!confirm(noImageConfirmMsg)) return;
     imageState = 'none';
   }
 
+  const isExcludedItem = el => {
+    const icon = el.querySelector('.sns-icon-sm');
+    return (xExcluded && icon.classList.contains('sns-x')) || (igExcluded && icon.classList.contains('sns-ig'));
+  };
   const snsNames = checkedItems
-    .filter(el => !(xExcluded && el.querySelector('.sns-icon-sm').classList.contains('sns-x')))
+    .filter(el => !isExcludedItem(el))
     .map(el => el.querySelector('.sns-check-name').textContent).join('・');
   const timeSelectEl = document.getElementById('post-time');
   const time = timeSelectEl.selectedOptions[0] ? timeSelectEl.selectedOptions[0].textContent : timeSelectEl.value;
   document.getElementById('confirm-sns').textContent = snsNames || '未選択';
 
+  // 予約を確定する時に送る投稿対象（除外したSNSはfalse）
+  confirmedSnsTargets = {
+    x: xChecked && !xExcluded,
+    instagram: igChecked && !igExcluded,
+    threads: thChecked
+  };
+
   const urlNote = document.getElementById('confirm-url-note');
+  const excludeNotes = [];
   if (xExcludeReason === 'url') {
-    urlNote.style.display = 'block';
-    urlNote.textContent = '🐦 投稿文にURLが含まれているため、Xは自動的に除外されました。';
+    excludeNotes.push('🐦 投稿文にURLが含まれているため、Xは自動的に除外されました。');
   } else if (xExcludeReason === 'char') {
+    excludeNotes.push('🐦 本文＋ハッシュタグの文字数がXの上限を超えているため、Xは自動的に除外されました。');
+  }
+  if (igExcludeReason === 'noimage') {
+    excludeNotes.push('📱 画像が選択されていないため、Instagramは自動的に除外されました。');
+  } else if (igExcludeReason === 'skip') {
+    excludeNotes.push('📱 Instagram用のトリミングをスキップしたため（画像が無いため）、Instagramは自動的に除外されました。');
+  }
+  if (excludeNotes.length > 0) {
     urlNote.style.display = 'block';
-    urlNote.textContent = '🐦 本文＋ハッシュタグの文字数がXの上限を超えているため、Xは自動的に除外されました。';
+    urlNote.textContent = excludeNotes.join('\n');
   } else {
     urlNote.style.display = 'none';
     urlNote.textContent = '';
@@ -2345,10 +2393,7 @@ function showConfirm() {
   // SNSごとの投稿文プレビューを生成
   const SNS_CODE_MAP = { 'sns-x': 'X', 'sns-ig': 'IG', 'sns-th': 'TH' };
   const SNS_ICON_MAP = { X: '🐦', IG: '📱', FB: '💻', TH: '🧵' };
-  const previewTargets = checkedItems.filter(el => {
-    const isX = el.querySelector('.sns-icon-sm').classList.contains('sns-x');
-    return !(xExcluded && isX);
-  });
+  const previewTargets = checkedItems.filter(el => !isExcludedItem(el));
   const previewEl = document.getElementById('confirm-preview');
   previewEl.innerHTML = previewTargets.map(el => {
     const iconEl = el.querySelector('.sns-icon-sm');
@@ -2493,6 +2538,11 @@ function hideReserveLoadingOverlay() {
 // 　新しいIDを発行する。
 let pendingReservationRequestId = null;
 
+// ★liff_textgen.html113：予約内容の確認画面（showConfirm）で、除外判定（XのURL・
+// 　文字数超過、Instagramの画像なし）を反映して確定した投稿対象。
+// 　executeReserve()は、①でチェックされているSNSではなく、この値を送信する。
+let confirmedSnsTargets = null;
+
 async function executeReserve() {
   const btn = document.querySelector('.modal-btn-success');
   if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
@@ -2512,15 +2562,29 @@ async function executeReserve() {
 
   const keywords = getKeywords();
   const includeFlags = getIncludeFlags();
-  const snsTargets = getSnsTargets();
+  // ★liff_textgen.html113：確認画面で除外判定を反映した投稿対象を送る
+  if (!confirmedSnsTargets) {
+    alert('予約内容を確認してから、もう一度お試しください。');
+    hideReserveLoadingOverlay();
+    if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
+    return;
+  }
+  const snsTargets = confirmedSnsTargets;
   const time = document.getElementById('post-time').value;
   const scheduledAt = new Date(selectedYear, selectedMonth - 1, selectedDay, parseInt(time, 10), 0, 0).toISOString();
 
-  showReserveLoadingOverlay(!!originalImageDataUrl);
+  // ★liff_textgen.html113：確認ダイアログで「画像なしのまま進む」を選んだ場合
+  // 　（imageState === 'none'）は、選択途中の画像があってもアップロードしない
+  // 　（以前は元画像だけがアップロード・予約に記録され、画像なしの予約なのに
+  // 　予約確認画面で画像が表示されてしまう状態になっていた）。
+  const useImage = (imageState === 'raw' || imageState === 'trimmed');
+  showReserveLoadingOverlay(useImage && !!originalImageDataUrl);
 
   let imageUploadResult;
   try {
-    imageUploadResult = await uploadImagesIfNeeded(snsTargets);
+    imageUploadResult = useImage
+      ? await uploadImagesIfNeeded(snsTargets)
+      : { imageId: null, originalImageFileId: '', trimmedImageFileIds: {} };
   } catch (imgErr) {
     alert('画像のアップロードに失敗しました：' + imgErr.message);
     hideReserveLoadingOverlay();
@@ -2549,9 +2613,9 @@ async function executeReserve() {
       appealPattern: LAST_APPEAL_PATTERN || '⑦新登場',
       generatedText: document.getElementById('post-textarea').value,
       hashtagsBySns: {
-        x: getHashtagsForSns('X'),
-        instagram: getHashtagsForSns('IG'),
-        threads: getHashtagsForSns('TH')
+        x: snsTargets.x ? getHashtagsForSns('X') : [],
+        instagram: snsTargets.instagram ? getHashtagsForSns('IG') : [],
+        threads: snsTargets.threads ? getHashtagsForSns('TH') : []
       },
       scheduledAt: scheduledAt,
       snsTargets: snsTargets,
@@ -2626,6 +2690,7 @@ function resetAllForm() {
   // 予約が成功した場合のみ呼ばれるため、次回は新しいリクエストIDを
   // 発行する（同じ画面で続けて別の予約を作る場合の重複防止に影響しない）
   pendingReservationRequestId = null;
+  confirmedSnsTargets = null;
 
   // 文章
   const ta = document.getElementById('post-textarea');
@@ -3477,19 +3542,35 @@ function resetImagePreview() {
   imgCancelReupload();
 }
 
+// ★liff_textgen.html113：画像なしを選んだ時に、Instagram以外で投稿される
+// 　SNSを案内する文言（URL付きで除外されるXは含めない）
+function otherSnsNoteForNoImage() {
+  const checked = getCheckedSns();
+  const hasUrl = /https?:\/\//.test(document.getElementById('post-textarea').value);
+  const names = [];
+  if (checked.includes('X') && !hasUrl) names.push('X');
+  if (checked.includes('TH')) names.push('Threads');
+  return names.length
+    ? '（' + names.join('・') + 'のみ投稿されます）'
+    : '（他に投稿できるSNSが無いため、このままでは予約できません）';
+}
+
 // 画像なし選択（確認ダイアログ付き）
 // ★liff_textgen.html84：Instagramが投稿先に選択されている場合、
 // 　「画像なし」を選ぶとInstagramには反映されない（Instagram側APIの
 // 　仕様で画像なし投稿ができないため）ことを確認ダイアログで案内する。
 function selectNoImage() {
   const igCheckedForNoImage = !!document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-ig');
+  // ★liff_textgen.html113：「（X・Threadsのみ投稿されます）」と固定の文言だったため、
+  // 　実際に選択中のSNS（URL付きで除外されるXは除く）を表示するよう変更した
+  const igNoImageNote = 'Instagramは画像が無いと投稿できないため、この予約はInstagramには反映されません' + otherSnsNoteForNoImage() + '。';
   if (originalImage) {
     const msg = igCheckedForNoImage
-      ? 'アップロードした画像を削除して「画像なし」で投稿しますか？\nInstagramは画像が無いと投稿できないため、この予約はInstagramには反映されません（X・Threadsのみ投稿されます）。'
+      ? 'アップロードした画像を削除して「画像なし」で投稿しますか？\n' + igNoImageNote
       : 'アップロードした画像を削除して「画像なし」で投稿しますか？';
     if (!confirm(msg)) return;
   } else if (igCheckedForNoImage) {
-    if (!confirm('画像なしで投稿しますか？\nInstagramは画像が無いと投稿できないため、この予約はInstagramには反映されません（X・Threadsのみ投稿されます）。')) return;
+    if (!confirm('画像なしで投稿しますか？\n' + igNoImageNote)) return;
   }
   originalImage = null;
   originalImageDataUrl = null;
