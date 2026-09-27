@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成117 - AiPost</title>
+<title>投稿文作成118 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -609,7 +609,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成117</span>
+  <span class="header-logo">投稿文作成118</span>
   <span class="header-sub">AiPost</span>
 </div>
 
@@ -1322,7 +1322,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成117';
+const TRACE_SCREEN = '投稿文作成118';
 
 function traceLog(msg) {
   try {
@@ -2337,7 +2337,8 @@ function getMonthQuota(y, m) {
   const thisIdx = calMonthIndex(now.getFullYear(), now.getMonth() + 1);
   if (idx === thisIdx) {
     if (typeof cache.remainingReservable !== 'number') return null;
-    return { total: total, remaining: Math.max(0, cache.remainingReservable) };
+    const usedThisMonth = (typeof cache.consumedThisMonth === 'number') ? cache.consumedThisMonth : total - cache.remainingReservable;
+    return { total: total, used: usedThisMonth, remaining: Math.max(0, cache.remainingReservable) };
   }
   let used = 0;
   try {
@@ -2350,7 +2351,7 @@ function getMonthQuota(y, m) {
   } catch (err) {
     return null;
   }
-  return { total: total, remaining: Math.max(0, total - used) };
+  return { total: total, used: used, remaining: Math.max(0, total - used) };
 }
 
 // ===== 予約確認 =====
@@ -2379,8 +2380,11 @@ function showConfirm() {
   }
   const selQuota = getMonthQuota(selectedYear, selectedMonth);
   if (selQuota && selQuota.remaining <= 0) {
+    // ★liff_textgen.html118：「キャンセルすると枠が空きます」は、上限を大きく超えている場合や
+    // 　投稿済みの分（取り消せない）がある場合に不正確だったため、条件を正確に伝える文言にした
     alert(selectedMonth + '月の予約枠（' + selQuota.total + '件）を使い切っているため、この月には予約できません。\n' +
-      '予約をキャンセルすると枠が空きます。');
+      '（' + selectedMonth + '月の予約・投稿：' + selQuota.used + '件）\n' +
+      '予約中の投稿をキャンセルして、' + selectedMonth + '月の予約・投稿の合計が' + selQuota.total + '件を下回ると、予約できるようになります。');
     return;
   }
 
