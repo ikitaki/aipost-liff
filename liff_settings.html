@@ -387,7 +387,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録57</span>
+  <span class="header-logo">設定・登録58</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -458,6 +458,7 @@
     </div>
     <div class="card">
       <div class="card-title" id="sns-connected-title">連携状況（3/3）</div>
+      <p id="sns-post-limit-note" style="display:none;font-size:11px;color:#e65100;margin:-4px 0 8px;"></p>
       <div class="sns-item connected" id="sns-item-x">
         <div class="sns-icon sns-x">X</div>
         <div class="sns-info">
@@ -871,7 +872,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定57';
+const TRACE_SCREEN = '設定58';
 
 function traceLog(msg) {
   try {
@@ -1054,7 +1055,10 @@ function switchTab(id) {
 // ===== プラン別のSNS連携数上限表示 =====
 const SNS_ORDER = ['x', 'ig', 'th'];
 const SNS_LABEL = { ig: 'Instagram', x: 'X', th: 'Threads' };
-const PLAN_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
+// ★liff_settings.html58：SNSの連携はプランに関係なく3つまで可能（オーナー確定の仕様）。
+// 　プランで変わるのは「投稿先に選べるSNSの数」のみ（投稿文作成画面・サーバー側で制限）。
+const SNS_CONNECT_MAX = 3;
+const PLAN_POST_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
 let currentDemoPlan = 'STANDARD';
 let currentRemainingReservable = null;
@@ -1126,18 +1130,8 @@ function toggleSnsConnection(sns) {
     document.getElementById('sns-disconnect-modal').classList.add('open');
     return;
   }
-  // FREEプランはXと連携できない
-  if (sns === 'x' && currentDemoPlan === 'FREE') {
-    alert('FREEプランではXと連携できません。');
-    return;
-  }
-  // 現在のプランの連携上限をチェック
-  const limit = PLAN_SNS_LIMIT[currentDemoPlan];
-  const connectedCount = SNS_ORDER.filter(isConnected).length;
-  if (connectedCount >= limit) {
-    alert('現在の' + currentDemoPlan + 'プランでは、SNSは' + limit + 'つまでしか連携できません。\n他のSNSの連携を解除するか、プランをアップグレードしてください。');
-    return;
-  }
+  // ★liff_settings.html58：プランによる連携数の上限・FREEプランのX連携不可を廃止した
+  // 　（連携は全プラン3つまで可能。投稿先の数だけをプランで制限する）
 
   // X・Instagram・Threadsは実際のOAuth連携フローを開始する
   if (sns === 'x') {
@@ -1247,8 +1241,21 @@ async function startThreadsConnection() {
 // サブバー「連携中：」表示・カード見出しの件数表示を更新
 function updateSnsSummary() {
   const connectedList = SNS_ORDER.filter(isConnected);
-  const limit = PLAN_SNS_LIMIT[currentDemoPlan];
-  document.getElementById('sns-connected-title').textContent = `連携状況（${connectedList.length}/${limit}）`;
+  document.getElementById('sns-connected-title').textContent = `連携状況（${connectedList.length}/${SNS_CONNECT_MAX}）`;
+  // ★liff_settings.html58：プランごとの投稿先の数を案内する（STANDARD・PROは3つとも選べるため表示しない）
+  const postLimit = PLAN_POST_SNS_LIMIT[currentDemoPlan];
+  const postNote = document.getElementById('sns-post-limit-note');
+  if (postNote) {
+    if (currentDemoPlan === 'FREE') {
+      postNote.textContent = '💎 FREEプランの投稿先は1つまで（Xは選べません）';
+      postNote.style.display = 'block';
+    } else if (postLimit && postLimit < 3) {
+      postNote.textContent = '💎 ' + currentDemoPlan + 'プランの投稿先は' + postLimit + 'つまで';
+      postNote.style.display = 'block';
+    } else {
+      postNote.style.display = 'none';
+    }
+  }
 
   const quotaHtml = (typeof currentRemainingReservable === 'number')
     // ★liff_settings.html57：プラン変更等で上限を超えている場合（マイナス）は0件と表示する

@@ -612,7 +612,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成119</span>
+  <span class="header-logo">投稿文作成120</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(true)">🔄 更新</button>
 </div>
@@ -701,7 +701,7 @@
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
-    <p class="sns-plan-note" id="sns-plan-note" style="display:none;">💎 FREEプランではXは選択できません</p>
+    <p class="sns-plan-note" id="sns-plan-note" style="display:none;"></p>
     <p class="sns-plan-note" id="sns-unconnected-note" style="display:none;"></p>
   </div>
 
@@ -1309,6 +1309,9 @@ function applyQuotaFromCache(cache) {
     el.textContent = '残り投稿可能数' + Math.max(0, cache.remainingReservable) + '件';
   }
   applySnsConnectionStatus(cache.sns);
+  // ★liff_textgen.html120：プランと連携状況の両方を反映した後で、投稿先の数をプランの上限に合わせる
+  // 　（未連携のSNSのチェックが先に外れてから数えるため、ここで1回だけ行う）
+  enforcePostSnsLimit();
   updateUserGenreFromProfile(cache);
 }
 
@@ -1362,7 +1365,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成119';
+const TRACE_SCREEN = '投稿文作成120';
 
 function traceLog(msg) {
   try {
@@ -2105,6 +2108,21 @@ function updateCharCount() {
 // 　適用ロジック）自体は変更していない。
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
 
+// ★liff_textgen.html120：プランごとの「投稿先に選べるSNSの数」（SNSの連携自体は全プラン3つまで可能）。
+// 　サーバー側（TextGenerationgs_22のcreateReservation()）でも同じ数で確認している。
+const PLAN_POST_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
+let currentPostSnsLimit = 3;
+let currentPlanName = '';
+
+// 選択中の投稿先が上限を超えていたら、後ろ（Threads→Instagram→X）から外して上限に合わせる
+function enforcePostSnsLimit() {
+  const order = ['sns-item-th', 'sns-item-ig', 'sns-item-x'];
+  for (let i = 0; i < order.length && getCheckedSns().length > currentPostSnsLimit; i++) {
+    const el = document.getElementById(order[i]);
+    if (el && el.classList.contains('checked')) toggleSns(el);
+  }
+}
+
 function applyPlan(plan) {
   document.getElementById('plan-badge').textContent = plan;
   document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
@@ -2119,10 +2137,20 @@ function applyPlan(plan) {
     }
     xItem.classList.add('disabled');
     xItem.onclick = null;
-    xNote.style.display = 'block';
   } else {
     xItem.classList.remove('disabled');
     xItem.onclick = () => toggleSns(xItem);
+  }
+  // ★liff_textgen.html120：投稿先に選べる数をプランに合わせ、案内文を出す
+  currentPlanName = plan;
+  currentPostSnsLimit = PLAN_POST_SNS_LIMIT[plan] || 1;
+  if (plan === 'FREE') {
+    xNote.textContent = '💎 FREEプランの投稿先は1つまで（Xは選べません）';
+    xNote.style.display = 'block';
+  } else if (currentPostSnsLimit < 3) {
+    xNote.textContent = '💎 ' + plan + 'プランの投稿先は' + currentPostSnsLimit + 'つまで';
+    xNote.style.display = 'block';
+  } else {
     xNote.style.display = 'none';
   }
   updateHashtagColumns();
@@ -2140,6 +2168,11 @@ function applyPlan(plan) {
 }
 
 function toggleSns(el) {
+  // ★liff_textgen.html120：プランの上限の数まで選んでいる時は、新たにチェックを付けない
+  if (!el.classList.contains('checked') && getCheckedSns().length >= currentPostSnsLimit) {
+    alert((currentPlanName || '現在の') + 'プランで選べる投稿先は' + currentPostSnsLimit + 'つまでです。\n別のSNSにする場合は、先にチェックを外してください。');
+    return;
+  }
   el.classList.toggle('checked');
   el.querySelector('.sns-checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
   updateHashtagColumns();
