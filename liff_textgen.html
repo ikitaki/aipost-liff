@@ -612,7 +612,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成120</span>
+  <span class="header-logo">投稿文作成121</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(true)">🔄 更新</button>
 </div>
@@ -1365,7 +1365,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成120';
+const TRACE_SCREEN = '投稿文作成121';
 
 function traceLog(msg) {
   try {
@@ -1646,13 +1646,24 @@ const HASHTAG_RECOMMEND = { X: 2, IG: 5, FB: 3, TH: 1 };
 const HASHTAG_SNS_ORDER = ['X', 'IG', 'TH'];
 
 // SNSごとに、チェックが入っている有効なハッシュタグ値を取得
+// ★liff_textgen.html121：入力欄の値を、自動投稿（AutoPostgs_14の_splitHashtags()）と同じ
+// 　ルールでタグに分ける（空白・全角/半角カンマ・読点で区切り、先頭の「#」「＃」は除く）。
+// 　1つの欄に「夜景 カウンター」と入力された場合も2つのタグとして扱い、
+// 　画面の文字数・プレビュー・保存内容を実際の投稿と一致させる。
+function splitHashtagInput(value) {
+  return String(value || '')
+    .split(/[\s，,、]+/)
+    .map(t => t.replace(/^[#＃]+/, '').trim())
+    .filter(t => t !== '');
+}
+
 function getHashtagsForSns(sns) {
   const result = [];
   for (let i = 1; i <= 5; i++) {
     const input = document.getElementById('hashtag-input-' + i);
     const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
     const val = input ? input.value.trim() : '';
-    if (val && cb && cb.checked) result.push(val);
+    if (val && cb && cb.checked) splitHashtagInput(val).forEach(t => result.push(t));
   }
   return result;
 }
@@ -1728,7 +1739,8 @@ function getXCombinedTotal() {
   // 　実際より多くカウントされてしまうため）
   let full = text;
   if (tags.length) {
-    full += ' ' + tags.map(t => '#' + t).join(' ');
+    // ★liff_textgen.html121：実際の投稿（AutoPost）と同じく、本文とハッシュタグの間は改行2つ
+    full += '\n\n' + tags.map(t => '#' + t).join(' ');
   }
   return countCharsX(full);
 }
@@ -2588,7 +2600,8 @@ function showConfirm() {
     const code = SNS_CODE_MAP[codeClass];
     const name = el.querySelector('.sns-check-name').textContent;
     const tags = getHashtagsForSns(code);
-    const tagText = tags.length ? ' ' + tags.map(t => '#' + t).join(' ') : '';
+    // ★liff_textgen.html121：実際の投稿と同じく、本文の後に改行2つを入れてハッシュタグを並べる
+    const tagText = tags.length ? '\n\n' + tags.map(t => '#' + t).join(' ') : '';
     const bodyText = (ta.value + tagText) || '（本文なし）';
     return `<div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:6px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">${SNS_ICON_MAP[code] || ''} ${name}</div>

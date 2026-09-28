@@ -696,7 +696,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更40</span>
+  <span class="header-logo">予約確認・変更41</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -1220,7 +1220,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認40';
+  const TRACE_SCREEN = '予約確認41';
 
   function traceLog(msg) {
     try {
@@ -2487,8 +2487,10 @@ function _dataUrlToBase64(dataUrl) {
 
   function buildSnsPostText(honbun, hashtagRaw) {
     if (!hashtagRaw) return honbun;
-    const tags = String(hashtagRaw).split('，')
-      .map(function (t) { return t.trim(); })
+    // ★liff_reservation.html41：自動投稿（AutoPostgs_14の_splitHashtags()）と同じ分け方にそろえた
+    // 　（保存は半角スペース区切り。以前は「，」で区切っていたため、2つ目以降のタグを数え損ねていた）
+    const tags = String(hashtagRaw).split(/[\s，,、]+/)
+      .map(function (t) { return t.replace(/^[#＃]+/, '').trim(); })
       .filter(function (t) { return t !== ''; });
     if (tags.length === 0) return honbun;
     return honbun + '\n\n' + tags.map(function (t) { return '#' + t; }).join(' ');
