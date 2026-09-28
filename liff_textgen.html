@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成118 - AiPost</title>
+<title>投稿文作成122 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -612,7 +612,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成121</span>
+  <span class="header-logo">投稿文作成122</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(true)">🔄 更新</button>
 </div>
@@ -1365,7 +1365,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成121';
+const TRACE_SCREEN = '投稿文作成122';
 
 function traceLog(msg) {
   try {
@@ -3705,10 +3705,9 @@ function confirmTrim() {
 
 // トリミングフロー完了
 
-// トリミングキャンセル
-function cancelTrim() {
-  document.getElementById('trim-overlay').classList.remove('open');
-}
+// ★liff_textgen.html122：cancelTrim()が二重に定義されており、後から定義された
+// 　（画面のスクロールを元に戻さない）方が使われていたため削除した。
+// 　スクロールを戻す方（上の定義）だけを残す（予約確認画面の移植版と同じ）。
 
 // ×ボタンのやり直し選択モーダル
 function showImageCancelOptions() {
