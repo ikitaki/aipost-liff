@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成123 - AiPost</title>
+<title>投稿文作成124 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -612,9 +612,9 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成123</span>
+  <span class="header-logo">投稿文作成124</span>
   <span class="header-sub">AiPost</span>
-  <button type="button" class="header-refresh" onclick="aipostRefreshAll(true)">🔄 更新</button>
+  <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
 <script>
 // ★liff_textgen.html119：保存済み情報（プラン・残り件数・SNS連携・予約一覧・分析）の読み直し。
@@ -1365,7 +1365,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成123';
+const TRACE_SCREEN = '投稿文作成124';
 
 function traceLog(msg) {
   try {
@@ -3202,6 +3202,19 @@ let trimResults = {};           // SNSごとのトリミング結果 { 'X': base
 let trimChoice = {};
 // 画像状態管理: null=未選択 / 'none'=画像なし / 'trimmed'=トリミング済み / 'raw'=そのまま使う
 let imageState = null;
+
+// ★liff_textgen.html124：「🔄 更新」で確認を出すのは、何か入力・選択している時だけにする
+// 　（キーワード・ご要望・投稿文・ハッシュタグのどれかに文字がある、または画像を選んでいる）。
+// 　何も入力していない状態では確認を出さずにそのまま更新する。
+function textgenHasInput() {
+  const ids = ['keyword-input-1', 'keyword-input-2', 'keyword-input-3', 'free-text-input', 'post-textarea',
+    'hashtag-input-1', 'hashtag-input-2', 'hashtag-input-3', 'hashtag-input-4', 'hashtag-input-5'];
+  const hasText = ids.some(function (id) {
+    const el = document.getElementById(id);
+    return el && String(el.value || '').trim() !== '';
+  });
+  return hasText || !!originalImage;
+}
 
 // 枠の位置・サイズ（canvas座標）
 let frame = { x:0, y:0, w:0, h:0 };
