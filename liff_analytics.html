@@ -153,6 +153,9 @@
     to { transform: rotate(360deg); }
   }
   .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); display:flex; justify-content:center; z-index:2000; }
+  /* ★liff_analytics.html38：保存済み情報の更新ボタン */
+  .header-refresh { background: rgba(255,255,255,0.15); color: #fff; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; padding: 3px 9px; line-height: 1.4; cursor: pointer; white-space: nowrap; }
+  .header-refresh:active { background: rgba(255,255,255,0.3); }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -160,9 +163,46 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析37</span>
+  <span class="header-logo">分析38</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
+  <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
+<script>
+// ★liff_analytics.html38：保存済み情報（プラン・残り件数・SNS連携・予約一覧・分析）の読み直し。
+// 　①ヘッダー右端の「🔄 更新」ボタンで、保存済み情報を捨てて画面を読み込み直す。
+// 　②保存してから30分を過ぎていれば、画面を開いた時に自動で捨てて取り直す
+// 　　（シート側でプランを変更した場合などに、古い表示が残り続けないようにするため）。
+// 　4画面（投稿文作成・予約確認・分析・設定）で同じ処理。
+(function () {
+  var SESSION_KEYS = ['aipost_reservation_quota', 'aipost_reservation_list', 'aipost_analytics'];
+  var MASTER_KEY = 'aipost_master_data_cache';
+  var MAX_AGE_MS = 30 * 60 * 1000; // 30分
+
+  function clearSessionCaches() {
+    SESSION_KEYS.forEach(function (k) {
+      try { sessionStorage.removeItem(k); } catch (e) {}
+    });
+  }
+
+  // 画面を開いた時点で、保存から30分を過ぎていれば保存済み情報をまとめて捨てる
+  try {
+    var raw = sessionStorage.getItem('aipost_reservation_quota');
+    if (raw) {
+      var c = JSON.parse(raw);
+      if (!c || !c.fetchedAt || Date.now() - c.fetchedAt > MAX_AGE_MS) clearSessionCaches();
+    }
+  } catch (e) {
+    clearSessionCaches();
+  }
+
+  window.aipostRefreshAll = function (needConfirm) {
+    if (needConfirm && !confirm('入力中の内容は消えます。最新の情報に更新しますか？')) return;
+    clearSessionCaches();
+    try { localStorage.removeItem(MASTER_KEY); } catch (e) {}
+    location.reload();
+  };
+})();
+</script>
 
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
@@ -2226,7 +2266,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析37';
+const TRACE_SCREEN = '分析38';
 
 function traceLog(msg) {
   try {
@@ -2336,7 +2376,8 @@ function applyQuotaFromCache(cache) {
   }
   const el = document.getElementById('reservation-quota');
   if (el && typeof cache.remainingReservable === 'number') {
-    el.textContent = '残り投稿可能数' + cache.remainingReservable + '件';
+    // ★liff_analytics.html38：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
+    el.textContent = '残り投稿可能数' + Math.max(0, cache.remainingReservable) + '件';
   }
 }
 
@@ -2559,7 +2600,8 @@ function applyTodayStatus(prefix, data) {
 
   const quotaRemainEl = document.getElementById(prefix + '-quota-remaining');
   const quotaUsedEl = document.getElementById(prefix + '-quota-used');
-  if (quotaRemainEl) quotaRemainEl.textContent = '残り' + data.remainingReservable + '件';
+  // ★liff_analytics.html38：マイナスは0件と表示する
+  if (quotaRemainEl) quotaRemainEl.textContent = '残り' + Math.max(0, Number(data.remainingReservable) || 0) + '件';
   if (quotaUsedEl) quotaUsedEl.textContent = data.consumedThisMonth + ' / ' + data.totalReservable + '件使用';
 }
 

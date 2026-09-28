@@ -602,6 +602,9 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
+  /* ★liff_textgen.html119：保存済み情報の更新ボタン */
+  .header-refresh { background: rgba(255,255,255,0.15); color: #fff; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; padding: 3px 9px; line-height: 1.4; cursor: pointer; white-space: nowrap; }
+  .header-refresh:active { background: rgba(255,255,255,0.3); }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -609,9 +612,46 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成118</span>
+  <span class="header-logo">投稿文作成119</span>
   <span class="header-sub">AiPost</span>
+  <button type="button" class="header-refresh" onclick="aipostRefreshAll(true)">🔄 更新</button>
 </div>
+<script>
+// ★liff_textgen.html119：保存済み情報（プラン・残り件数・SNS連携・予約一覧・分析）の読み直し。
+// 　①ヘッダー右端の「🔄 更新」ボタンで、保存済み情報を捨てて画面を読み込み直す。
+// 　②保存してから30分を過ぎていれば、画面を開いた時に自動で捨てて取り直す
+// 　　（シート側でプランを変更した場合などに、古い表示が残り続けないようにするため）。
+// 　4画面（投稿文作成・予約確認・分析・設定）で同じ処理。
+(function () {
+  var SESSION_KEYS = ['aipost_reservation_quota', 'aipost_reservation_list', 'aipost_analytics'];
+  var MASTER_KEY = 'aipost_master_data_cache';
+  var MAX_AGE_MS = 30 * 60 * 1000; // 30分
+
+  function clearSessionCaches() {
+    SESSION_KEYS.forEach(function (k) {
+      try { sessionStorage.removeItem(k); } catch (e) {}
+    });
+  }
+
+  // 画面を開いた時点で、保存から30分を過ぎていれば保存済み情報をまとめて捨てる
+  try {
+    var raw = sessionStorage.getItem('aipost_reservation_quota');
+    if (raw) {
+      var c = JSON.parse(raw);
+      if (!c || !c.fetchedAt || Date.now() - c.fetchedAt > MAX_AGE_MS) clearSessionCaches();
+    }
+  } catch (e) {
+    clearSessionCaches();
+  }
+
+  window.aipostRefreshAll = function (needConfirm) {
+    if (needConfirm && !confirm('入力中の内容は消えます。最新の情報に更新しますか？')) return;
+    clearSessionCaches();
+    try { localStorage.removeItem(MASTER_KEY); } catch (e) {}
+    location.reload();
+  };
+})();
+</script>
 
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
@@ -1322,7 +1362,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成118';
+const TRACE_SCREEN = '投稿文作成119';
 
 function traceLog(msg) {
   try {
