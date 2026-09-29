@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成125 - AiPost</title>
+<title>投稿文作成126 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -612,7 +612,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成125</span>
+  <span class="header-logo">投稿文作成126</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
@@ -754,8 +754,8 @@
   </div>
 
   <!-- ⑥ 店名・所在地を含める -->
-  <!-- ★liff_textgen.html125：所在地はレイアウト確認用の表示のみ（準備中・押せない）。
-       所在地はAIに書かせず、生成後の本文末尾に「📍所在地」として登録内容をそのまま付け足す予定。 -->
+  <!-- ★liff_textgen.html126：所在地を含める（AIには書かせず、生成後の本文末尾に「📍所在地」として
+       登録内容をそのまま付け足す。付け足す分の文字数はGAS〔TextGenerationgs_08c〕が差し引いて生成する） -->
   <div class="card">
     <div class="card-title">⑥ 店名・所在地を含める（任意）</div>
     <div class="sns-check-list">
@@ -763,9 +763,9 @@
         <div class="sns-check-name">店名を含める</div>
         <div class="sns-checkbox">✓</div>
       </div>
-      <div class="include-check-item" id="include-address-item" style="opacity:0.5;cursor:not-allowed;">
-        <div class="sns-check-name">所在地を含める（準備中）</div>
-        <div class="sns-checkbox"></div>
+      <div class="include-check-item" id="include-address-item" onclick="toggleIncludeAddress(this)">
+        <div class="sns-check-name">所在地を含める</div>
+        <div class="sns-checkbox">✓</div>
       </div>
     </div>
     <div class="keyword-hint" style="margin-top:6px;">📍 所在地はAIに書かせず、本文の最後に登録内容をそのまま付けます</div>
@@ -1383,7 +1383,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成125';
+const TRACE_SCREEN = '投稿文作成126';
 
 function traceLog(msg) {
   try {
@@ -1650,12 +1650,14 @@ function getFreeText() {
 function renderKeywordGuide() {
   const el = document.getElementById('keyword-guide');
   if (!el) return;
+  // ★liff_textgen.html126：案内文をB案に差し替え（Kenさん確定）。「キーワードが必要」という
+  // 　必須に見える表現は使わない。注意ではないため、業種未登録でも同じ緑の表示にする。
   if (USER_GENRE) {
     el.className = 'keyword-guide registered';
-    el.innerHTML = `<p>AIで投稿文を生成するには、キーワードの入力が必要です。なお、未入力のまま登録業種（${USER_GENRE.main}・${USER_GENRE.sub}）をもとに生成することもできます</p>`;
+    el.innerHTML = `<p>ここに入れた言葉は、投稿文に必ず含めます。空欄の場合は登録業種〈${USER_GENRE.main}・${USER_GENRE.sub}〉をもとに作成します</p>`;
   } else {
-    el.className = 'keyword-guide unregistered';
-    el.innerHTML = `<p>AIで投稿文を生成するには、キーワードを入力してください。</p><p>※業種を登録すると、キーワード未入力でも生成できるようになります</p>`;
+    el.className = 'keyword-guide registered';
+    el.innerHTML = `<p>ここに入れた言葉は、投稿文に必ず含めます</p>`;
   }
 }
 
@@ -1868,11 +1870,18 @@ function selectPattern(btn) {
 // 　（業種未登録時はご要望かキーワードのいずれかが必須）を正しく
 // 　動かすために必要な対応。
 let USER_GENRE = null;
+// ★liff_textgen.html126：登録済みの所在地（null＝保存済み情報に項目が無く不明、''＝未登録）
+let USER_ADDRESS = null;
 
 function updateUserGenreFromProfile(profile) {
   USER_GENRE = (profile && profile.businessMajor && profile.businessMinor)
     ? { main: profile.businessMajor, sub: profile.businessMinor }
     : null;
+  USER_ADDRESS = (profile && profile.address !== undefined && profile.address !== null)
+    ? String(profile.address).trim() : null;
+  // 所在地が未登録と分かった場合、「所在地を含める」がONなら外す
+  const addrItem = document.getElementById('include-address-item');
+  if (USER_ADDRESS === '' && addrItem && addrItem.classList.contains('checked')) toggleInclude(addrItem);
   renderKeywordGuide();
 }
 
@@ -1928,6 +1937,7 @@ async function executeGenerate() {
       freeText: freeText,
       includeShopName: includeFlags.includeShopName,
       includeArea: includeFlags.includeArea,
+      includeAddress: includeFlags.includeAddress, // ★html126
       appealPatternOverride: appealPatternOverride
     }
   };
@@ -1947,7 +1957,9 @@ async function executeGenerate() {
     }
 
     const ta = document.getElementById('post-textarea');
-    ta.value = result.data.generatedText;
+    // ★liff_textgen.html126：所在地を含める場合、本文の最後に改行して「📍所在地」をそのまま付ける
+    // 　（ハッシュタグは所在地を除いた本文から作る）
+    ta.value = result.data.generatedText + (result.data.addressLine ? '\n' + result.data.addressLine : '');
     LAST_APPEAL_PATTERN = result.data.appealPattern;
 
     // ハッシュタグも続けて生成する
@@ -2229,8 +2241,19 @@ function toggleInclude(el) {
 function getIncludeFlags() {
   return {
     includeShopName: document.getElementById('include-shopname-item').classList.contains('checked'),
-    includeArea: document.getElementById('include-area-item').classList.contains('checked')
+    includeArea: document.getElementById('include-area-item').classList.contains('checked'),
+    includeAddress: document.getElementById('include-address-item').classList.contains('checked') // ★html126
   };
+}
+
+// ★liff_textgen.html126：所在地を含める。所在地が未登録と分かっている場合はONにしない
+// 　（保存済み情報に所在地の項目が無い＝不明の場合はONにでき、未登録ならGASがエラーを返す）
+function toggleIncludeAddress(el) {
+  if (!el.classList.contains('checked') && USER_ADDRESS === '') {
+    alert('所在地が未登録です。設定画面から登録してください。');
+    return;
+  }
+  toggleInclude(el);
 }
 
 // ===== 画像選択 =====
