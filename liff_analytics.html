@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析39 - AiPost</title>
+<title>分析40 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析39</span>
+  <span class="header-logo">分析40</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -833,21 +833,11 @@
     </div>
 
     <!-- ⚡ 直近投稿の1時間後の反応 -->
+    <!-- ★liff_analytics.html40：ダミー表示をやめ、getAnalyticsSummary()の直近投稿の1時間後の数値を表示する（applyPro1hReaction） -->
     <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
       <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;">⚡ 直近投稿の1時間後の反応</div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;align-items:center;padding:4px 6px;background:var(--surface);border-radius:6px;">
-          <span style="font-size:10px;font-weight:700;color:#000;width:40px;flex-shrink:0;">X</span>
-          <span style="font-size:10px;color:var(--text);flex:1;white-space:nowrap;">❤️42　🔁8　↩️5　👁️1.1K　📊5.2%</span>
-        </div>
-        <div style="display:flex;align-items:center;padding:4px 6px;background:var(--surface);border-radius:6px;">
-          <span style="font-size:10px;font-weight:700;color:#e1306c;width:40px;flex-shrink:0;">IG</span>
-          <span style="font-size:10px;color:var(--text);flex:1;white-space:nowrap;">❤️58　💬9　📊5.8%</span>
-        </div>
-        <div style="display:flex;align-items:center;padding:4px 6px;background:var(--surface);border-radius:6px;">
-          <span style="font-size:10px;font-weight:700;color:#555;width:40px;flex-shrink:0;">TH</span>
-          <span style="font-size:10px;color:var(--text);flex:1;white-space:nowrap;">❤️18　🔁3　↩️4　👁️284　📊3.8%</span>
-        </div>
+      <div style="display:flex;flex-direction:column;gap:5px;" id="pro-1h-reaction">
+        <div style="font-size:10px;color:var(--text-light);padding:4px 6px;">-</div>
       </div>
     </div>
 
@@ -900,24 +890,8 @@
     </div>
   </div>
 
-  <!-- 直近投稿の初速状況（最新1投稿のみ） -->
-  <div class="card">
-    <div class="card-title">⚡ 直近投稿の初速状況</div>
-
-    <!-- 投稿① -->
-    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
-      <div style="padding:10px 10px 0 10px;">
-        <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;" id="pro-latest-meta">投稿データがありません</div>
-        <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;" id="pro-latest-text"></p>
-        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('p1-detail','p1-btn')" id="p1-btn">詳細を見る ▼</button>
-      </div>
-      <div id="p1-detail" style="display:none;padding:10px;">
-        <div id="pro-latest-detail"></div>
-        <p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ K = 1,000（例：1.2K = 1,200回）</p>
-      </div>
-    </div>
-
-  </div>
+  <!-- ★liff_analytics.html40：「⚡ 直近投稿の初速状況」カードを削除した（Kenさん指示）。
+       1時間後・3時間後・24時間後の数値は、投稿日別データ（カレンダー）の詳細で確認できるため。 -->
 
   <!-- あなたの投稿平均との比較 -->
   <div class="card">
@@ -2266,7 +2240,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析39';
+const TRACE_SCREEN = '分析40';
 
 function traceLog(msg) {
   try {
@@ -2673,12 +2647,57 @@ async function warmupMasterDataCache() {
   if (result && result.data) writeMasterDataCache(result.data);
 }
 
+
+// ★liff_analytics.html40：PROの「今日の状況」の「⚡ 直近投稿の1時間後の反応」を
+// 　実データで表示する。データはgetAnalyticsSummary()のlatestPost.results[].timing1h
+// 　（PROのみ返る）を使う。表示する項目はSNS_METRIC_DEFS（投稿日別データと同じ固定の
+// 　一覧）に従い、値が無い項目は「-」。SNSの順はX→Instagram→Threadsで固定。
+const PRO_1H_SNS_ORDER = ['X', 'Instagram', 'Threads'];
+const PRO_1H_SNS_LABEL = {
+  X: { label: 'X', color: '#000' },
+  Instagram: { label: 'IG', color: '#e1306c' },
+  Threads: { label: 'TH', color: '#555' }
+};
+
+function _pro1hRow(labelObj, bodyHtml) {
+  return '<div style="display:flex;align-items:center;padding:4px 6px;background:var(--surface);border-radius:6px;">' +
+    '<span style="font-size:10px;font-weight:700;color:' + labelObj.color + ';width:40px;flex-shrink:0;">' + labelObj.label + '</span>' +
+    '<span style="font-size:10px;color:var(--text);flex:1;white-space:nowrap;overflow-x:auto;">' + bodyHtml + '</span></div>';
+}
+
+function applyPro1hReaction(data) {
+  const el = document.getElementById('pro-1h-reaction');
+  if (!el) return;
+  const noteStyle = 'font-size:10px;color:var(--text-light);padding:4px 6px;';
+  if (!data || !data.latestPost || !Array.isArray(data.latestPost.results) || data.latestPost.results.length === 0) {
+    el.innerHTML = '<div style="' + noteStyle + '">まだ投稿がありません</div>';
+    return;
+  }
+  const bySns = {};
+  data.latestPost.results.forEach(function (r) { if (r && r.sns) bySns[r.sns] = r; });
+  const fmt = function (v) { return (v === undefined || v === null || v === '') ? '-' : v; };
+  const rows = PRO_1H_SNS_ORDER.filter(function (k) { return bySns[k]; }).map(function (k) {
+    const labelObj = PRO_1H_SNS_LABEL[k];
+    const t = bySns[k].timing1h;
+    if (!t) return _pro1hRow(labelObj, '<span style="color:var(--text-light);">まだ取得されていません</span>');
+    if (t.deleted) return _pro1hRow(labelObj, '<span style="color:var(--text-light);">投稿が見つかりません</span>');
+    const v = adaptTimingForSNSBlock(k, t);
+    const defs = SNS_METRIC_DEFS[k] || [];
+    return _pro1hRow(labelObj, defs.map(function (d) { return d.icon + fmt(v[d.key]); }).join('　'));
+  });
+  el.innerHTML = rows.length ? rows.join('') : '<div style="' + noteStyle + '">まだ投稿がありません</div>';
+}
+
 // 「今日の状況」「直近投稿と24時間後の状況」を3タブ分反映する
+// ★liff_analytics.html40：PROの「直近投稿の初速状況」カードを削除したため、
+// 　applyLatestPostSection()はLITE・STANDARDだけに適用し、PROには
+// 　「⚡ 直近投稿の1時間後の反応」（applyPro1hReaction）を適用する。
 function applySummaryData(data) {
   ['lite', 'standard', 'pro'].forEach(function (prefix) {
     applyTodayStatus(prefix, data);
-    applyLatestPostSection(prefix, data);
+    if (prefix !== 'pro') applyLatestPostSection(prefix, data);
   });
+  applyPro1hReaction(data);
 }
 
 // ★liff_analytics_html37：「先週・先月のまとめ」カードの実データ表示。
