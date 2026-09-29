@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成124 - AiPost</title>
+<title>投稿文作成125 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -612,7 +612,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成124</span>
+  <span class="header-logo">投稿文作成125</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
@@ -705,25 +705,29 @@
     <p class="sns-plan-note" id="sns-unconnected-note" style="display:none;"></p>
   </div>
 
-  <!-- ② キーワード入力 -->
+  <!-- ② キーワードから文章を生成する -->
   <div class="card">
-    <div class="card-title">② キーワードを入力する</div>
+    <div class="card-title">② キーワードから文章を生成する</div>
     <div class="keyword-guide" id="keyword-guide"></div>
     <div class="keyword-input-grid">
       <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" placeholder="キーワード1">
       <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" placeholder="キーワード2">
       <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" placeholder="キーワード3">
     </div>
-    <div class="keyword-hint">💡 キーワードは最大3個・1個15文字までです。商品名・特徴・季節など</div>
-    <div class="keyword-hint" style="margin-top:6px;">✏️ 自分で文章を書く場合は④の入力欄に直接入力してください</div>
-    <div class="keyword-hint" style="margin-top:10px;font-weight:600;">✍️ 文章でご要望を伝えることもできます（任意）</div>
-    <textarea id="free-text-input" maxlength="150" placeholder="例：新装開店する予定なので、特別サービスの告知をしたい" style="width:100%;margin-top:6px;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
-    <div class="keyword-hint" style="margin-top:4px;">キーワードと両方入力すれば、両方を考慮して生成します</div>
+    <div class="keyword-hint">💡 最大3個・1個15文字まで（商品名・特徴・季節など）</div>
   </div>
 
-  <!-- ③ 訴求パターン -->
+  <!-- ③ 要望から文章を生成する -->
   <div class="card">
-    <div class="card-title">③ 訴求パターンを選ぶ（任意）</div>
+    <div class="card-title">③ 要望から文章を生成する（任意）</div>
+    <textarea id="free-text-input" maxlength="150" placeholder="例：新商品の告知をしたい" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
+    <div class="keyword-hint" style="margin-top:4px;">②と両方入力すると、両方を考慮して生成します</div>
+    <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で書く場合は⑦に直接入力できます</div>
+  </div>
+
+  <!-- ④ 訴求パターン -->
+  <div class="card">
+    <div class="card-title">④ 訴求パターンを選ぶ（任意）</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">どんな雰囲気で伝えたいですか？</p>
     <div class="pattern-grid">
       <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">🤖</span>AIに任せる</button>
@@ -738,20 +742,34 @@
     </div>
   </div>
 
-  <!-- ④ 店名・エリアを含める -->
+  <!-- ⑤ エリアを含める -->
   <div class="card">
-    <div class="card-title">④ 店名・エリアを含める（任意）</div>
-    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">投稿文に含める場合は選択してください。店舗名・エリアが未登録の場合は先に設定画面から登録が必要です。</p>
+    <div class="card-title">⑤ エリアを含める（任意）</div>
     <div class="sns-check-list">
-      <div class="include-check-item" id="include-shopname-item" onclick="toggleInclude(this)">
-        <div class="sns-check-name">店名を含める</div>
-        <div class="sns-checkbox">✓</div>
-      </div>
       <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
         <div class="sns-check-name">エリアを含める</div>
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
+  </div>
+
+  <!-- ⑥ 店名・所在地を含める -->
+  <!-- ★liff_textgen.html125：所在地はレイアウト確認用の表示のみ（準備中・押せない）。
+       所在地はAIに書かせず、生成後の本文末尾に「📍所在地」として登録内容をそのまま付け足す予定。 -->
+  <div class="card">
+    <div class="card-title">⑥ 店名・所在地を含める（任意）</div>
+    <div class="sns-check-list">
+      <div class="include-check-item" id="include-shopname-item" onclick="toggleInclude(this)">
+        <div class="sns-check-name">店名を含める</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="include-check-item" id="include-address-item" style="opacity:0.5;cursor:not-allowed;">
+        <div class="sns-check-name">所在地を含める（準備中）</div>
+        <div class="sns-checkbox"></div>
+      </div>
+    </div>
+    <div class="keyword-hint" style="margin-top:6px;">📍 所在地はAIに書かせず、本文の最後に登録内容をそのまま付けます</div>
+    <div class="keyword-hint" style="margin-top:4px;">店名・エリア・所在地は設定画面で登録が必要です</div>
   </div>
 
   <!-- AI生成ボタン -->
@@ -765,9 +783,9 @@
     <div class="loading-text">AIが投稿文を考えています…<br>少々お待ちください</div>
   </div>
 
-  <!-- ④ 文章確認・編集 -->
+  <!-- ⑦ 文章確認・編集 -->
   <div class="card">
-    <div class="card-title">④ 文章を確認・編集する</div>
+    <div class="card-title">⑦ 文章を確認・編集する</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで作成した文章が表示されます。自由に編集できます。直接入力することもできます。</p>
     <div class="genre-notice" id="genre-notice">📍 登録業種（<span id="genre-label"></span>）をもとに文章を生成しました。</div>
     <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount()"
@@ -785,9 +803,9 @@
 
 
 
-  <!-- ⑤ ハッシュタグ -->
+  <!-- ⑧ ハッシュタグ -->
   <div class="card">
-    <div class="card-title">⑤ ハッシュタグ</div>
+    <div class="card-title">⑧ ハッシュタグ</div>
     <p class="hashtag-desc">AIで作成したハッシュタグが表示されます。文章と同様、自由に編集できます。チェックしたSNSにだけ付与されます。「#」は自動で挿入されるため入力不要です。</p>
     <div class="hashtag-x-status" id="hashtag-x-status"></div>
     <div class="hashtag-header">
@@ -838,10 +856,10 @@
     <div class="keyword-hint" style="margin-top:6px;">💡 ハッシュタグは1個15文字までです</div>
   </div>
 
-  <!-- ⑥ 画像アップロード（インライン） -->
+  <!-- ⑨ 画像アップロード（インライン） -->
   <div class="image-section">
     <div class="image-section-header">
-      <div class="image-section-title">⑥ 画像アップロード</div>
+      <div class="image-section-title">⑨ 画像アップロード</div>
     </div>
 
     <!-- 選択中プレビューバー -->
@@ -884,10 +902,10 @@
 
   </div>
 
-  <!-- ⑦ 投稿日時：カレンダー -->
+  <!-- ⑩ 投稿日時：カレンダー -->
   <div class="card" style="padding:0;overflow:hidden;">
     <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);">
-      <div class="card-title" style="margin-bottom:0;">⑦ 投稿日を選ぶ</div>
+      <div class="card-title" style="margin-bottom:0;">⑩ 投稿日を選ぶ</div>
     </div>
     <div class="calendar-wrap">
       <div class="cal-header">
@@ -1365,7 +1383,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成124';
+const TRACE_SCREEN = '投稿文作成125';
 
 function traceLog(msg) {
   try {
@@ -1628,7 +1646,7 @@ function getFreeText() {
   return el ? el.value.trim() : '';
 }
 
-// ② キーワード入力欄の案内文（業種登録の有無で出し分け）
+// ② キーワード入力欄の案内文（html125：カード名「② キーワードから文章を生成する」）（業種登録の有無で出し分け）
 function renderKeywordGuide() {
   const el = document.getElementById('keyword-guide');
   if (!el) return;
@@ -1745,7 +1763,7 @@ function getXCombinedTotal() {
   return countCharsX(full);
 }
 
-// ⑤ハッシュタグカード内にXのリアルタイム文字数ステータスを表示
+// ⑧ハッシュタグカード内にXのリアルタイム文字数ステータスを表示
 function updateHashtagXStatus() {
   const el = document.getElementById('hashtag-x-status');
   if (!el) return;
