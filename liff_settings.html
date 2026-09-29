@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録59 - AiPost</title>
+<title>設定・登録61 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -303,6 +303,8 @@
     cursor: pointer; margin-bottom: 8px;
   }
   .btn-primary { background: var(--primary); color: white; }
+  /* ★liff_settings.html60：変更が無い時は保存ボタンを押せない（薄く表示） */
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
   .btn-caution { background: #fff3e0; color: #e65100; }
 
@@ -387,7 +389,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録59</span>
+  <span class="header-logo">設定・登録61</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -454,7 +456,7 @@
   <div id="tab-sns" class="tab-panel active">
     <div class="notice">
       <span>💡</span>
-      <span>SNSと連携することで自動投稿が可能になります。パスワードはお預かりしません。</span>
+      <span>SNSへ自動投稿するには、各SNSでの承認が必要です。パスワードはお預かりしません。</span><!-- ★liff_settings.html61：文言変更（Kenさん指示） -->
     </div>
     <div class="card">
       <div class="card-title" id="sns-connected-title">連携状況（3/3）</div>
@@ -500,9 +502,8 @@
       <!-- 店舗情報 -->
       <div class="card">
         <div class="card-title">店舗情報</div>
-        <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
-          AI文章生成の精度向上のために登録してください。入力しなくても文章生成は利用できます。
-        </p>
+        <!-- ★liff_settings.html60：案内文「AI文章生成の精度向上のために…」は一旦削除（Kenさん指示。
+             業種・エリアは競合との比較分析にも使うため、いずれ別の文言を表示する） -->
         <div class="form-group">
           <label class="form-label">店舗名</label>
           <input type="text" class="form-input" id="shop-name-input" placeholder="例：山田カフェ" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
@@ -525,7 +526,13 @@
             <select class="form-select" id="prefecture-select"></select>
           </div>
         </div>
-        <button class="btn btn-primary" onclick="saveShopInfo()">店舗情報を保存する</button>
+        <!-- ★liff_settings.html60：所在地（ユーザー管理シート「所在地」列。50文字まで） -->
+        <div class="form-group">
+          <label class="form-label">所在地（任意）</label>
+          <input type="text" class="form-input" id="address-input" maxlength="50" placeholder="例：東京都渋谷区神南1-2-3 ○○ビル2F" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
+          <p style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:4px;">投稿文の最後に📍を付けて、そのまま載せられます</p>
+        </div>
+        <button class="btn btn-primary" onclick="saveShopInfo()" disabled>店舗情報を保存する</button>
       </div>
 
       <!-- アカウント情報 -->
@@ -545,17 +552,12 @@
         <div class="form-group" style="margin-bottom:0;">
           <input type="email" class="form-input" id="email-input" placeholder="例：info@example.com" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
         </div>
-        <button class="btn btn-primary" style="margin-top:10px;" onclick="saveEmail()">保存する</button>
+        <button class="btn btn-primary" style="margin-top:10px;" onclick="saveEmail()" disabled>保存する</button>
       </div>
 
 
 
-      <div class="card">
-        <div class="card-title">SNSトークンについて</div>
-        <p style="font-size:12px;color:var(--text-sub);line-height:1.8;">
-          パスワードはお預かりしていません。各SNSが発行した投稿専用の許可証のみお預かりしています。<br>許可の取り消しは各SNSの設定画面からいつでも可能です。
-        </p>
-      </div>
+      <!-- ★liff_settings.html61：「SNSトークンについて」カードを削除（Kenさん指示） -->
 
       <div class="card">
         <div class="card-title">退会について</div>
@@ -770,7 +772,8 @@ async function initLiff() {
     const cachedMaster = readMasterDataCache();
     const shared = readSharedCache();
     const needsMasterFetch = !cachedMaster;
-    const needsProfileFetch = !(shared && shared.found !== false);
+    // ★liff_settings.html60：所在地（address）を含まない古い保存済み情報は使わず、取り直す
+    const needsProfileFetch = !(shared && shared.found !== false && shared.address !== undefined);
 
     // ★liff_settings.html43：予約一覧も「最初に開いた画面での一括
     // 　取得」の対象に加えた（設定画面自体は表示しないが、次に予約
@@ -805,7 +808,7 @@ async function initLiff() {
       await loadMasterDataAndPopulateForm();
     }
 
-    if (shared && shared.found !== false) {
+    if (!needsProfileFetch) {
       applyProfileToForm(shared);
       applySnsFromCache(shared.sns);
     } else {
@@ -872,7 +875,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定59';
+const TRACE_SCREEN = '設定61';
 
 function traceLog(msg) {
   try {
@@ -1021,7 +1024,7 @@ function writeMasterDataCache(data) {
 }
 
 function setFormLoadingState(isLoading) {
-  const ids = ['shop-name-input', 'business-major-select', 'business-minor-select', 'prefecture-select', 'email-input'];
+  const ids = ['shop-name-input', 'business-major-select', 'business-minor-select', 'prefecture-select', 'address-input', 'email-input'];
   ids.forEach(function(id) {
     const el = document.getElementById(id);
     if (el) el.disabled = isLoading;
@@ -1633,7 +1636,70 @@ function applyProfileToForm(profile) {
     const emailBtn = document.querySelector('button[onclick="saveEmail()"]');
     if (emailBtn) emailBtn.textContent = '変更する';
   }
+  // ★liff_settings.html60：所在地
+  if (profile.address) {
+    document.getElementById('address-input').value = profile.address;
+  }
+  if (profile.address) {
+    const shopBtn2 = document.querySelector('button[onclick="saveShopInfo()"]');
+    if (shopBtn2) shopBtn2.textContent = '店舗情報を変更する';
+  }
+  // ★liff_settings.html60：表示した内容を「保存済みの内容」として覚え、ボタンの状態を更新する
+  captureSavedForm();
 }
+
+// ===== ★liff_settings.html60：変更が無い時は保存ボタンを押せないようにする =====
+// 保存済みの内容（画面に表示した内容・保存に成功した内容）と、今の入力内容を比べ、
+// 違いがある時だけ「店舗情報を保存する（変更する）」「保存する（変更する）」を押せる。
+let SAVED_SHOP_INFO = { shopName: '', businessMajor: '', businessMinor: '', prefecture: '', address: '' };
+let SAVED_EMAIL = '';
+let SHOP_SAVING = false;
+let EMAIL_SAVING = false;
+
+function readShopForm() {
+  return {
+    shopName: document.getElementById('shop-name-input').value.trim(),
+    businessMajor: document.getElementById('business-major-select').value,
+    businessMinor: document.getElementById('business-minor-select').value,
+    prefecture: document.getElementById('prefecture-select').value,
+    address: document.getElementById('address-input').value.trim()
+  };
+}
+
+function isShopFormChanged() {
+  const now = readShopForm();
+  return Object.keys(SAVED_SHOP_INFO).some(function(k) { return now[k] !== SAVED_SHOP_INFO[k]; });
+}
+
+function isEmailChanged() {
+  return document.getElementById('email-input').value.trim() !== SAVED_EMAIL;
+}
+
+function updateSaveButtons() {
+  const shopBtn = document.querySelector('button[onclick="saveShopInfo()"]');
+  if (shopBtn && !SHOP_SAVING) shopBtn.disabled = !isShopFormChanged();
+  const emailBtn = document.querySelector('button[onclick="saveEmail()"]');
+  if (emailBtn && !EMAIL_SAVING) emailBtn.disabled = !isEmailChanged();
+}
+
+function captureSavedForm() {
+  SAVED_SHOP_INFO = readShopForm();
+  SAVED_EMAIL = document.getElementById('email-input').value.trim();
+  updateSaveButtons();
+}
+
+// 入力・選択のたびにボタンの状態を更新する（業種大分類の変更で小分類が作り直されるため、
+// 他の処理が終わった後に判定する）
+(function attachSaveButtonWatchers() {
+  ['shop-name-input', 'address-input', 'email-input'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', function() { setTimeout(updateSaveButtons, 0); });
+  });
+  ['business-major-select', 'business-minor-select', 'prefecture-select'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', function() { setTimeout(updateSaveButtons, 0); });
+  });
+})();
 
 // loadSavedProfile()はloadProfileAndSnsFresh()に統合されたため削除
 // （initLiff()からはそちらを呼ぶ。他に呼び出し箇所は無い）
@@ -1644,8 +1710,15 @@ async function saveShopInfo() {
     return;
   }
 
+  // ★liff_settings.html60：変更が無ければ何もしない（ボタンも押せない状態）
+  if (!isShopFormChanged()) {
+    updateSaveButtons();
+    return;
+  }
+
   const btn = document.querySelector('button[onclick="saveShopInfo()"]');
   let originalText = btn ? btn.textContent : '';
+  SHOP_SAVING = true;
   if (btn) {
     btn.disabled = true;
     btn.textContent = '保存中...';
@@ -1655,6 +1728,7 @@ async function saveShopInfo() {
   const businessMajor = document.getElementById('business-major-select').value;
   const businessMinor = document.getElementById('business-minor-select').value;
   const prefecture = document.getElementById('prefecture-select').value;
+  const address = document.getElementById('address-input').value.trim();
 
   const requestPayload = {
     action: 'updateUserProfile',
@@ -1664,7 +1738,8 @@ async function saveShopInfo() {
       businessMajor: businessMajor,
       businessMinor: businessMinor,
       prefecture: prefecture,
-      shopName: shopName
+      shopName: shopName,
+      address: address
     }
   };
 
@@ -1686,18 +1761,22 @@ async function saveShopInfo() {
       shopName: shopName,
       businessMajor: businessMajor,
       businessMinor: businessMinor,
-      prefecture: prefecture
+      prefecture: prefecture,
+      address: address
     });
+    // ★liff_settings.html60：保存した内容を「保存済みの内容」として覚える
+    SAVED_SHOP_INFO = { shopName: shopName, businessMajor: businessMajor, businessMinor: businessMinor, prefecture: prefecture, address: address };
     if (btn) btn.textContent = '店舗情報を変更する';
     originalText = '店舗情報を変更する';
   } catch (err) {
     console.error('保存リクエストエラー:', err);
     alert('通信エラーが発生しました。もう一度お試しください。');
   } finally {
+    SHOP_SAVING = false;
     if (btn) {
-      btn.disabled = false;
       btn.textContent = originalText;
     }
+    updateSaveButtons();
   }
 }
 
@@ -1707,8 +1786,15 @@ async function saveEmail() {
     return;
   }
 
+  // ★liff_settings.html60：変更が無ければ何もしない（ボタンも押せない状態）
+  if (!isEmailChanged()) {
+    updateSaveButtons();
+    return;
+  }
+
   const btn = document.querySelector('button[onclick="saveEmail()"]');
   let originalText = btn ? btn.textContent : '';
+  EMAIL_SAVING = true;
   if (btn) {
     btn.disabled = true;
     btn.textContent = '保存中...';
@@ -1739,16 +1825,18 @@ async function saveEmail() {
     }
     showToast('メールアドレスを保存しました');
     writeSharedCache({ found: true, email: email });
+    SAVED_EMAIL = email; // ★liff_settings.html60
     if (btn) btn.textContent = '変更する';
     originalText = '変更する';
   } catch (err) {
     console.error('保存リクエストエラー:', err);
     alert('通信エラーが発生しました。もう一度お試しください。');
   } finally {
+    EMAIL_SAVING = false;
     if (btn) {
-      btn.disabled = false;
       btn.textContent = originalText;
     }
+    updateSaveButtons();
   }
 }
 
