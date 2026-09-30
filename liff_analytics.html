@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析40 - AiPost</title>
+<title>分析41 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析40</span>
+  <span class="header-logo">分析41</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -654,34 +654,16 @@
   </div>
 
   <!-- ⑥ あなたの投稿平均との比較（24時間後のみ・STANDARD固有） -->
+  <!-- ★liff_analytics.html41：ダミー表示をやめ、getAnalyticsSummary()のcompareを表示する（applyCompareSection） -->
   <div class="card">
     <div class="card-title">📊 あなたの投稿平均との比較
-      <button class="acc-btn" onclick="toggleCompare('std-compare-detail','std-compare-btn')" id="std-compare-btn">詳細を見る ▼</button>
+      <button class="acc-btn" onclick="toggleCompare('std-compare-detail','std-compare-btn')" id="std-compare-btn" style="display:none;">詳細を見る ▼</button>
     </div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">直近投稿（6月25日）の24時間後データと過去平均を比較しています</p>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="std-compare-desc">-</p>
     <div id="std-compare-detail" style="display:none;margin-top:10px;">
-      <div style="margin-bottom:10px;">
-        <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:6px;">X（24時間後）</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div><div style="font-size:12px;font-weight:700;text-align:center;">🔁</div><div style="font-size:12px;font-weight:700;text-align:center;">↩️</div><div style="font-size:12px;font-weight:700;text-align:center;">👁️</div><div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
-          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">124 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 88</div></div>
-          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">28 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 19</div></div>
-          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 12</div></div>
-          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">3.6K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 2.7K</div></div>
-          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">14.8% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 11.2%</div></div>
-        </div>
-      </div>
-      <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
-      <div style="margin-bottom:10px;">
-        <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">Instagram（24時間後）</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 8px;align-items:center;">
-          <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div><div style="font-size:12px;font-weight:700;text-align:center;">💬</div><div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
-          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">178 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 124</div></div>
-          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">34 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 22</div></div>
-          <div style="text-align:center;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">17.8% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 12.4%</div></div>
-        </div>
-      </div>
-      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 最大過去30投稿の24時間後データをもとに算出しています</p>
+      <div id="std-compare-body"></div>
+      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
       <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
     </div>
   </div>
@@ -878,9 +860,11 @@
     <!-- 📈データ蓄積率・📆今月の投稿枠（簡易テキスト2列） -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
+        <!-- ★liff_analytics.html41：ダミー表示をやめ、getAnalyticsSummary()のdataAccumulationを表示する（applyDataAccumulation） -->
         <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📈 データ蓄積率</div>
-        <div style="font-size:14px;font-weight:700;color:#2e7d32;">73%</div>
-        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;">22 / 30投稿</div>
+        <div style="font-size:14px;font-weight:700;color:#2e7d32;" id="pro-accum-rate">-</div>
+        <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="pro-accum-count">- / 30投稿</div>
+        <div style="font-size:8px;color:var(--text-light);margin-top:2px;">直近60日以内の投稿が対象です</div>
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
         <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
@@ -894,102 +878,21 @@
        1時間後・3時間後・24時間後の数値は、投稿日別データ（カレンダー）の詳細で確認できるため。 -->
 
   <!-- あなたの投稿平均との比較 -->
+  <!-- ★liff_analytics.html41：ダミー表示をやめ、getAnalyticsSummary()のcompareを表示する（applyCompareSection）。
+       「※ データが30投稿以上蓄積された時点から表示されます」は、過去の投稿が1件からでも表示する仕様に合わせて削除した -->
   <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <div class="card-title" style="margin-bottom:0;">📊 あなたの投稿平均との比較</div>
-      <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;" onclick="toggleSNSDetail('compare-detail')">▶ 詳細を見る</span>
+    <!-- 見出しと説明文を1つの枠にまとめる（toggleSNSDetail()が直前の要素の中の「詳細を見る」を探すため） -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="card-title" style="margin-bottom:0;">📊 あなたの投稿平均との比較</div>
+        <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;display:none;" onclick="toggleSNSDetail('compare-detail')" id="pro-compare-toggle">▶ 詳細を見る</span>
+      </div>
+      <p style="font-size:11px;color:var(--text-sub);margin-top:8px;" id="pro-compare-desc">-</p>
     </div>
     <div id="compare-detail" style="display:none;margin-top:10px;">
-    <!-- X -->
-    <div style="margin-bottom:4px;">
-      <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:6px;">X</div>
-      <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-        <div></div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">🔁</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">↩️</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">👁️</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">1時間後</div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">1.8K</div><div style="font-size:10px;color:var(--text-sub);">平均 1.2K</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">1.2K</div><div style="font-size:10px;color:var(--text-sub);">平均 1.0K</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">1.0K</div><div style="font-size:10px;color:var(--text-sub);">平均 856</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">1.2K</div><div style="font-size:10px;color:var(--text-sub);">平均 1.0K</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8%</div><div style="font-size:10px;color:var(--text-sub);">平均 8.4%</div></div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">3時間後</div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">3.5K</div><div style="font-size:10px;color:var(--text-sub);">平均 2.8K</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">2.8K</div><div style="font-size:10px;color:var(--text-sub);">平均 2.2K</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">2.4K</div><div style="font-size:10px;color:var(--text-sub);">平均 1.9K</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">3.6K</div><div style="font-size:10px;color:var(--text-sub);">平均 2.9K</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18.2%</div><div style="font-size:10px;color:var(--text-sub);">平均 15.6%</div></div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;">24時間後</div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">8.4K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 7.5K</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">6.4K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 5.6K</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">5.6K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 4.8K</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.2K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 8.1K</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">24.6% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 21.3%</div></div>
-      </div>
-    </div>
-    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
-
-    <!-- Instagram -->
-    <div style="margin-bottom:4px;">
-      <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:6px;">Instagram</div>
-      <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:4px 8px;align-items:center;">
-        <div></div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">💬</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">1時間後</div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">142</div><div style="font-size:10px;color:var(--text-sub);">平均 128</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">124</div><div style="font-size:10px;color:var(--text-sub);">平均 108</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8%</div><div style="font-size:10px;color:var(--text-sub);">平均 8.4%</div></div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">3時間後</div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">356</div><div style="font-size:10px;color:var(--text-sub);">平均 312</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">287</div><div style="font-size:10px;color:var(--text-sub);">平均 243</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18.2%</div><div style="font-size:10px;color:var(--text-sub);">平均 15.6%</div></div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;">24時間後</div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">847 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 756</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">512 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 468</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">24.6% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 21.3%</div></div>
-      </div>
-    </div>
-    <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
-
-    <!-- Threads -->
-    <div style="margin-bottom:4px;">
-      <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:6px;">Threads</div>
-      <div style="display:grid;grid-template-columns:52px 1fr 1fr 1fr 1fr 1fr;gap:4px 6px;align-items:center;">
-        <div></div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">❤️</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">🔁</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">↩️</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">👁️</div>
-        <div style="font-size:12px;font-weight:700;text-align:center;">📊</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">1時間後</div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">142</div><div style="font-size:10px;color:var(--text-sub);">平均 128</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">124</div><div style="font-size:10px;color:var(--text-sub);">平均 108</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">113</div><div style="font-size:10px;color:var(--text-sub);">平均 98</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">3.2K</div><div style="font-size:10px;color:var(--text-sub);">平均 2.8K</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8%</div><div style="font-size:10px;color:var(--text-sub);">平均 8.4%</div></div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;border-bottom:1px solid var(--border);">3時間後</div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">356</div><div style="font-size:10px;color:var(--text-sub);">平均 312</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">287</div><div style="font-size:10px;color:var(--text-sub);">平均 243</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">245</div><div style="font-size:10px;color:var(--text-sub);">平均 218</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">6.4K</div><div style="font-size:10px;color:var(--text-sub);">平均 5.8K</div></div>
-        <div style="text-align:center;padding:2px 0;border-bottom:1px solid var(--border);"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">18.2%</div><div style="font-size:10px;color:var(--text-sub);">平均 15.6%</div></div>
-        <div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;">24時間後</div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">847 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 756</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">512 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 468</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">432 ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 387</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">9.8K ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 8.6K</div></div>
-        <div style="text-align:center;padding:2px 0;"><div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">24.6% ↑</div><div style="font-size:10px;color:var(--text-sub);">平均 21.3%</div></div>
-      </div>
-    </div>
-
-    <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 平均は過去30投稿の同時間帯データをもとに算出しています</p>
-    <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
-    <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ データが30投稿以上蓄積された時点から表示されます</p>
+      <div id="pro-compare-body"></div>
+      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
     </div>
   </div>
 
@@ -2240,7 +2143,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析40';
+const TRACE_SCREEN = '分析41';
 
 function traceLog(msg) {
   try {
@@ -2675,7 +2578,6 @@ function applyPro1hReaction(data) {
   }
   const bySns = {};
   data.latestPost.results.forEach(function (r) { if (r && r.sns) bySns[r.sns] = r; });
-  const fmt = function (v) { return (v === undefined || v === null || v === '') ? '-' : v; };
   const rows = PRO_1H_SNS_ORDER.filter(function (k) { return bySns[k]; }).map(function (k) {
     const labelObj = PRO_1H_SNS_LABEL[k];
     const t = bySns[k].timing1h;
@@ -2683,9 +2585,114 @@ function applyPro1hReaction(data) {
     if (t.deleted) return _pro1hRow(labelObj, '<span style="color:var(--text-light);">投稿が見つかりません</span>');
     const v = adaptTimingForSNSBlock(k, t);
     const defs = SNS_METRIC_DEFS[k] || [];
-    return _pro1hRow(labelObj, defs.map(function (d) { return d.icon + fmt(v[d.key]); }).join('　'));
+    // ★liff_analytics.html41：EG率に「%」、1,000以上に「K」を付ける（カレンダーの表示と揃える）
+    return _pro1hRow(labelObj, defs.map(function (d) { return d.icon + formatCompareValue(d.key, v[d.key]); }).join('　'));
   });
   el.innerHTML = rows.length ? rows.join('') : '<div style="' + noteStyle + '">まだ投稿がありません</div>';
+}
+
+// ★liff_analytics.html41：PROの「📈 データ蓄積率」を実データで表示する。
+// 　getAnalyticsSummary()のdataAccumulation（{count, target, rate}）を使う。
+// 　古い保存データ（dataAccumulationが無い）の場合は何もしない（「-」のまま）。
+function applyDataAccumulation(data) {
+  if (!data || !data.dataAccumulation) return;
+  const a = data.dataAccumulation;
+  const rateEl = document.getElementById('pro-accum-rate');
+  const countEl = document.getElementById('pro-accum-count');
+  if (rateEl) rateEl.textContent = a.rate + '%';
+  if (countEl) countEl.textContent = a.count + ' / ' + a.target + '投稿';
+}
+
+// ★liff_analytics.html41：「📊 あなたの投稿平均との比較」を実データで表示する。
+// 　getAnalyticsSummary()のcompare（Analyticsgs_14）を使う。STANDARDは24時間後のみ、
+// 　PROは1時間後・3時間後・24時間後を表示する。項目はSNS_METRIC_DEFSの固定の一覧。
+// 　compareの各値（likeCount等の長い項目名）を、表示用の短い項目名に対応させる。
+const COMPARE_KEY_MAP = {
+  X: { likes: 'likeCount', reposts: 'retweetCount', replies: 'replyCount', imprs: 'impressionCount', eg: 'egRate' },
+  Instagram: { likes: 'likeCount', comments: 'commentCount', eg: 'egRate' },
+  Threads: { likes: 'likeCount', replies: 'repliesCount', reposts: 'retweetCount', quotes: 'quotesCount', imprs: 'impressionCount', eg: 'egRate' }
+};
+const COMPARE_TIMINGS = [
+  { field: 'timing1h', label: '1時間後' },
+  { field: 'timing3h', label: '3時間後' },
+  { field: 'timing24h', label: '24時間後' }
+];
+
+// 比較表示用の値の整形（EG率は%付き、それ以外は1,000以上をK表示）
+function formatCompareValue(key, v) {
+  if (v === null || v === undefined || v === '') return '-';
+  if (key === 'eg') return v + '%';
+  return formatCalCount(v);
+}
+
+// 投稿の値と平均を比べた矢印（上なら↑、下なら↓、同じ・比較できない場合は無し）
+function compareArrow(v, avg) {
+  if (v === null || v === undefined || avg === null || avg === undefined) return '';
+  if (Number(v) > Number(avg)) return ' <span style="color:var(--primary);">↑</span>';
+  if (Number(v) < Number(avg)) return ' <span style="color:var(--text-light);">↓</span>';
+  return '';
+}
+
+// 1SNS分の比較表示（timingsに表示するタイミングを渡す）
+function renderCompareSNS(r, timings) {
+  const s = snsStyle[r.sns] || { label: r.sns, color: '#555' };
+  const defs = SNS_METRIC_DEFS[r.sns] || [];
+  const keyMap = COMPARE_KEY_MAP[r.sns] || {};
+  const hasAny = timings.some(function (t) { return r[t.field] && r[t.field].averageCount > 0; });
+  let html = '<div style="margin-bottom:4px;">' +
+    '<div style="font-size:11px;font-weight:700;color:' + s.color + ';margin-bottom:6px;">' + s.label + '</div>';
+  if (!hasAny) {
+    return html + '<div style="font-size:10px;color:var(--text-light);">比較できる過去の投稿がまだありません</div></div>';
+  }
+  html += '<div style="display:grid;grid-template-columns:52px repeat(' + defs.length + ', 1fr);gap:4px 6px;align-items:center;">';
+  html += '<div></div>' + defs.map(function (d) {
+    return '<div style="font-size:12px;font-weight:700;text-align:center;">' + d.icon + '</div>';
+  }).join('');
+  timings.forEach(function (t, i) {
+    const cell = r[t.field] || { post: null, average: null, averageCount: 0 };
+    const last = i === timings.length - 1;
+    const border = last ? '' : 'border-bottom:1px solid var(--border);';
+    html += '<div style="font-size:10px;font-weight:700;color:var(--text-sub);padding:3px 0;' + border + '">' + t.label +
+      '<br><span style="font-size:9px;font-weight:400;color:var(--text-light);">' + cell.averageCount + '投稿</span></div>';
+    defs.forEach(function (d) {
+      const k = keyMap[d.key];
+      const v = cell.post ? cell.post[k] : null;
+      const avg = cell.average ? cell.average[k] : null;
+      html += '<div style="text-align:center;padding:2px 0;' + border + '">' +
+        '<div style="font-weight:700;font-size:11px;color:var(--primary);white-space:nowrap;">' + formatCompareValue(d.key, v) + compareArrow(v, avg) + '</div>' +
+        '<div style="font-size:10px;color:var(--text-sub);white-space:nowrap;">平均 ' + formatCompareValue(d.key, avg) + '</div></div>';
+    });
+  });
+  return html + '</div></div>';
+}
+
+// STANDARD・PROの比較カードに反映する。
+// 　compareがundefined（古い保存データ）の場合は何もしない。
+function applyCompareSection(data) {
+  if (!data || data.compare === undefined) return;
+  const targets = [
+    { desc: 'std-compare-desc', body: 'std-compare-body', toggle: 'std-compare-btn', timings: [COMPARE_TIMINGS[2]] },
+    { desc: 'pro-compare-desc', body: 'pro-compare-body', toggle: 'pro-compare-toggle', timings: COMPARE_TIMINGS }
+  ];
+  targets.forEach(function (t) {
+    const descEl = document.getElementById(t.desc);
+    const bodyEl = document.getElementById(t.body);
+    const toggleEl = document.getElementById(t.toggle);
+    const c = data.compare;
+    if (!c || !Array.isArray(c.results) || c.results.length === 0) {
+      if (descEl) descEl.textContent = '24時間後の数値がそろった投稿がまだありません';
+      if (bodyEl) bodyEl.innerHTML = '';
+      if (toggleEl) toggleEl.style.display = 'none';
+      return;
+    }
+    const d = new Date(c.postedAt);
+    if (descEl) descEl.textContent = (d.getMonth() + 1) + '月' + d.getDate() + '日投稿の数値と、過去の平均を比べています';
+    if (bodyEl) {
+      bodyEl.innerHTML = c.results.map(function (r) { return renderCompareSNS(r, t.timings); })
+        .join('<hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">');
+    }
+    if (toggleEl) toggleEl.style.display = '';
+  });
 }
 
 // 「今日の状況」「直近投稿と24時間後の状況」を3タブ分反映する
@@ -2698,6 +2705,9 @@ function applySummaryData(data) {
     if (prefix !== 'pro') applyLatestPostSection(prefix, data);
   });
   applyPro1hReaction(data);
+  // ★liff_analytics.html41：データ蓄積率・投稿平均との比較を反映する
+  applyDataAccumulation(data);
+  applyCompareSection(data);
 }
 
 // ★liff_analytics_html37：「先週・先月のまとめ」カードの実データ表示。
