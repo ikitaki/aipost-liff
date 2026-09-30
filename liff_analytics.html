@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析43 - AiPost</title>
+<title>分析44 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析43</span>
+  <span class="header-logo">分析44</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -2134,7 +2134,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析43';
+const TRACE_SCREEN = '分析44';
 
 function traceLog(msg) {
   try {
@@ -2728,11 +2728,18 @@ function applyFirstSpeedScore(data) {
   const bySnsEl = document.getElementById('pro-fs-bysns');
 
   if (!f) {
+    // ★liff_analytics.html44：点数が出ない理由が反応の少なさの場合（Analyticsgs_18の
+    // 　firstSpeedLowReaction）は、その旨を表示する。それ以外は従来どおり。
+    const lowReaction = data.firstSpeedLowReaction === true;
     if (rankEl) rankEl.textContent = '-';
     if (rankSubEl) rankSubEl.textContent = '-';
     if (totalEl) { totalEl.textContent = '-'; totalEl.style.color = 'var(--text-sub)'; }
-    if (totalSubEl) totalSubEl.textContent = '-';
-    if (bySnsEl) bySnsEl.innerHTML = '<div style="font-size:10px;color:var(--text-light);">投稿が増えると表示されます</div>';
+    // 枠が狭いため、ここは「算出できません」のみ。理由の全文は下のSNS別の欄に出す
+    if (totalSubEl) totalSubEl.textContent = lowReaction ? '算出できません' : '-';
+    if (bySnsEl) {
+      bySnsEl.innerHTML = '<div style="font-size:10px;color:var(--text-light);">' +
+        (lowReaction ? '反応がまだ少ないため算出できません' : '投稿が増えると表示されます') + '</div>';
+    }
     return;
   }
 
@@ -2754,9 +2761,14 @@ function applyFirstSpeedScore(data) {
         '<div style="font-size:9px;color:var(--text-sub);">' + (FIRST_SPEED_SNS_LABEL[b.sns] || b.sns) + '　' + b.sharePercent + '%</div>' +
         '<div style="font-size:13px;font-weight:700;color:' + firstSpeedScoreColor(b.score) + ';">' + b.score + '点</div></div>';
     });
-    bySnsEl.innerHTML = items.length
+    // ★liff_analytics.html44：反応が少なく点数が出ないSNS（lowReactionSns）を下に添える
+    const lowNotes = (f.lowReactionSns || []).map(function (sns) {
+      return '<div style="font-size:9px;color:var(--text-light);margin-top:4px;">※ ' +
+        (FIRST_SPEED_SNS_LABEL[sns] || sns) + '：反応がまだ少ないため算出できません</div>';
+    }).join('');
+    bySnsEl.innerHTML = (items.length
       ? '<div style="display:grid;grid-template-columns:repeat(' + items.length + ', 1fr);gap:4px;">' + items.join('') + '</div>'
-      : '<div style="font-size:10px;color:var(--text-light);">投稿が増えると表示されます</div>';
+      : '<div style="font-size:10px;color:var(--text-light);">投稿が増えると表示されます</div>') + lowNotes;
   }
 }
 
