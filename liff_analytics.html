@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析41 - AiPost</title>
+<title>分析42 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析41</span>
+  <span class="header-logo">分析42</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -2143,7 +2143,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析41';
+const TRACE_SCREEN = '分析42';
 
 function traceLog(msg) {
   try {
@@ -2427,15 +2427,32 @@ function adaptTimingForSNSBlock(sns, t) {
   return { likes: t.likeCount, replies: t.repliesCount, reposts: t.retweetCount, quotes: t.quotesCount, imprs: t.impressionCount, eg: eg };
 }
 
+// ★liff_analytics.html42：「直近投稿と24時間後の状況」カード用に、EG率に「%」、
+// 　インプレッション・ビューの1,000以上に「K」を付ける（カレンダーの表示と揃える）。
+// 　値が無い項目・削除済みはそのまま（makeSNSBlock()側で「-」などになる）。
+function formatSnsBlockValues(obj) {
+  if (!obj || obj.deleted) return obj;
+  const out = {};
+  Object.keys(obj).forEach(function (k) {
+    const v = obj[k];
+    if (v === null || v === undefined || v === '') { out[k] = v; return; }
+    if (k === 'eg') out[k] = v + '%';
+    else if (k === 'imprs') out[k] = formatCalCount(v);
+    else out[k] = v;
+  });
+  return out;
+}
+
 function renderSnsResultRow(result) {
   if (!result.timing1h && !result.timing3h && !result.timing24h) {
     return makeNoDataBlock(result.sns, 'まだデータが取得されていません');
   }
   const showAllTimings = currentActualPlan === 'PRO';
+  // ★liff_analytics.html42：formatSnsBlockValues()で表示用に整形してから渡す
   const snsData = {
-    h1:  adaptTimingForSNSBlock(result.sns, result.timing1h),
-    h3:  adaptTimingForSNSBlock(result.sns, result.timing3h),
-    h24: adaptTimingForSNSBlock(result.sns, result.timing24h)
+    h1:  formatSnsBlockValues(adaptTimingForSNSBlock(result.sns, result.timing1h)),
+    h3:  formatSnsBlockValues(adaptTimingForSNSBlock(result.sns, result.timing3h)),
+    h24: formatSnsBlockValues(adaptTimingForSNSBlock(result.sns, result.timing24h))
   };
   return makeSNSBlock(result.sns, snsData, showAllTimings);
 }
