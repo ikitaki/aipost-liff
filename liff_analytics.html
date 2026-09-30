@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析42 - AiPost</title>
+<title>分析43 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析42</span>
+  <span class="header-logo">分析43</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -785,32 +785,23 @@
         <div class="today-sub">本日投稿済み</div>
       </div>
       <div class="today-item">
+        <!-- ★liff_analytics.html43：初速スコア順位・総合初速スコアを実データで表示する（applyFirstSpeedScore） -->
         <div class="today-label">初速スコア順位</div>
-        <div class="today-val" style="color:var(--primary);">4<span style="font-size:10px;">位</span></div>
-        <div class="today-sub">💎 準備中</div>
+        <div class="today-val" style="color:var(--primary);" id="pro-fs-rank">-</div>
+        <div class="today-sub" id="pro-fs-rank-sub">-</div>
       </div>
       <div class="today-item">
         <div class="today-label">総合初速スコア</div>
-        <div class="today-val" style="color:#2e7d32;">87<span style="font-size:10px;">点</span></div>
-        <div class="today-sub" style="color:var(--success);">💎 準備中</div>
+        <div class="today-val" style="color:var(--text-sub);" id="pro-fs-total">-</div>
+        <div class="today-sub" id="pro-fs-total-sub">-</div>
       </div>
     </div>
     <!-- 内訳 -->
     <div style="background:var(--bg);border-radius:8px;padding:6px 10px;margin-bottom:10px;">
       <div style="font-size:9px;color:var(--text-sub);margin-bottom:6px;">SNS別初速スコア（投稿割合による重み付け）</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
-        <div style="text-align:center;padding:5px 4px;background:var(--surface);border-radius:6px;">
-          <div style="font-size:9px;color:var(--text-sub);">X　33%</div>
-          <div style="font-size:13px;font-weight:700;color:#1565c0;">94点</div>
-        </div>
-        <div style="text-align:center;padding:5px 4px;background:var(--surface);border-radius:6px;">
-          <div style="font-size:9px;color:var(--text-sub);">IG　50%</div>
-          <div style="font-size:13px;font-weight:700;color:#2e7d32;">88点</div>
-        </div>
-        <div style="text-align:center;padding:5px 4px;background:var(--surface);border-radius:6px;">
-          <div style="font-size:9px;color:var(--text-sub);">TH　17%</div>
-          <div style="font-size:13px;font-weight:700;color:#2e7d32;">78点</div>
-        </div>
+      <!-- ★liff_analytics.html43：SNS別初速スコアを実データで表示する（applyFirstSpeedScore） -->
+      <div id="pro-fs-bysns">
+        <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
 
@@ -2143,7 +2134,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析42';
+const TRACE_SCREEN = '分析43';
 
 function traceLog(msg) {
   try {
@@ -2712,6 +2703,63 @@ function applyCompareSection(data) {
   });
 }
 
+// ★liff_analytics.html43：PROの「初速スコア順位」「総合初速スコア」「SNS別初速スコア」を
+// 　実データで表示する。getAnalyticsSummary()のfirstSpeedScore（Analyticsgs_16）を使う。
+// 　点数の色はガイドの判定基準に合わせる（90点以上＝青、70〜89点＝緑、50〜69点＝黄土色、
+// 　49点以下＝灰色。低い点数は警告ではないため赤は使わない）。
+// 　データ蓄積率が30投稿に達するまでは「参考値」と添える。
+// 　古い保存データ（firstSpeedScoreが無い）の場合は何もしない（「-」のまま）。
+const FIRST_SPEED_SNS_LABEL = { X: 'X', Instagram: 'IG', Threads: 'TH' };
+
+function firstSpeedScoreColor(score) {
+  if (score >= 90) return '#1565c0';
+  if (score >= 70) return '#2e7d32';
+  if (score >= 50) return '#b8860b';
+  return 'var(--text-sub)';
+}
+
+function applyFirstSpeedScore(data) {
+  if (!data || data.firstSpeedScore === undefined) return;
+  const f = data.firstSpeedScore;
+  const rankEl = document.getElementById('pro-fs-rank');
+  const rankSubEl = document.getElementById('pro-fs-rank-sub');
+  const totalEl = document.getElementById('pro-fs-total');
+  const totalSubEl = document.getElementById('pro-fs-total-sub');
+  const bySnsEl = document.getElementById('pro-fs-bysns');
+
+  if (!f) {
+    if (rankEl) rankEl.textContent = '-';
+    if (rankSubEl) rankSubEl.textContent = '-';
+    if (totalEl) { totalEl.textContent = '-'; totalEl.style.color = 'var(--text-sub)'; }
+    if (totalSubEl) totalSubEl.textContent = '-';
+    if (bySnsEl) bySnsEl.innerHTML = '<div style="font-size:10px;color:var(--text-light);">投稿が増えると表示されます</div>';
+    return;
+  }
+
+  if (rankEl) rankEl.innerHTML = f.rank + '<span style="font-size:10px;">位</span>';
+  if (rankSubEl) rankSubEl.textContent = f.rankCount + '投稿中';
+  if (totalEl) {
+    totalEl.innerHTML = f.totalScore + '<span style="font-size:10px;">点</span>';
+    totalEl.style.color = firstSpeedScoreColor(f.totalScore);
+  }
+  if (totalSubEl) {
+    const d = new Date(f.postedAt);
+    const isReference = !data.dataAccumulation || data.dataAccumulation.count < data.dataAccumulation.target;
+    // 枠が狭いため「参考値」は2行目に分ける（途中で折り返さないように）
+    totalSubEl.innerHTML = (d.getMonth() + 1) + '月' + d.getDate() + '日投稿' + (isReference ? '<br>参考値' : '');
+  }
+  if (bySnsEl) {
+    const items = (f.bySns || []).map(function (b) {
+      return '<div style="text-align:center;padding:5px 4px;background:var(--surface);border-radius:6px;">' +
+        '<div style="font-size:9px;color:var(--text-sub);">' + (FIRST_SPEED_SNS_LABEL[b.sns] || b.sns) + '　' + b.sharePercent + '%</div>' +
+        '<div style="font-size:13px;font-weight:700;color:' + firstSpeedScoreColor(b.score) + ';">' + b.score + '点</div></div>';
+    });
+    bySnsEl.innerHTML = items.length
+      ? '<div style="display:grid;grid-template-columns:repeat(' + items.length + ', 1fr);gap:4px;">' + items.join('') + '</div>'
+      : '<div style="font-size:10px;color:var(--text-light);">投稿が増えると表示されます</div>';
+  }
+}
+
 // 「今日の状況」「直近投稿と24時間後の状況」を3タブ分反映する
 // ★liff_analytics.html40：PROの「直近投稿の初速状況」カードを削除したため、
 // 　applyLatestPostSection()はLITE・STANDARDだけに適用し、PROには
@@ -2725,6 +2773,8 @@ function applySummaryData(data) {
   // ★liff_analytics.html41：データ蓄積率・投稿平均との比較を反映する
   applyDataAccumulation(data);
   applyCompareSection(data);
+  // ★liff_analytics.html43：初速スコアを反映する
+  applyFirstSpeedScore(data);
 }
 
 // ★liff_analytics_html37：「先週・先月のまとめ」カードの実データ表示。
