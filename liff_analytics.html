@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析46 - AiPost</title>
+<title>分析47 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析46</span>
+  <span class="header-logo">分析47</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -814,67 +814,13 @@
   </div>
 
   <!-- 同業種・同エリア比較 -->
+  <!-- ★liff_analytics.html47：ダミー表示をやめ、getAnalyticsSummary()のindustryCompareを表示する（applyIndustryCompare）。
+       「月間投稿数」は実際の計算に合わせて「30日間の投稿数」に変更 -->
   <div class="card">
     <div class="card-title">🏙️ 同業種・同エリア平均との比較</div>
-    <p style="font-size:10px;color:var(--text-sub);margin-bottom:10px;">同業種・同エリアの店舗平均値との比較です（匿名集計）</p>
-
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <!-- EG率 -->
-      <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:11px;font-weight:700;color:var(--text);">📊 EG率</span>
-          <span style="font-size:10px;color:var(--success);font-weight:700;">上位 12%</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">
-            <div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>
-            <div style="font-size:13px;font-weight:700;color:#1b5e20;">7.2%</div>
-          </div>
-          <div style="background:white;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
-            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">業界平均</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text-sub);">5.8%</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- フォロワー総数 -->
-      <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:11px;font-weight:700;color:var(--text);">👥 フォロワー総数</span>
-          <span style="font-size:10px;color:var(--success);font-weight:700;">上位 18%</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">
-            <div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>
-            <div style="font-size:13px;font-weight:700;color:#1b5e20;">3,847人</div>
-          </div>
-          <div style="background:white;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
-            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">業界平均</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text-sub);">2,340人</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 月間投稿数 -->
-      <div style="background:var(--bg);border-radius:8px;padding:8px 10px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:11px;font-weight:700;color:var(--text);">📅 月間投稿数</span>
-          <span style="font-size:10px;color:var(--success);font-weight:700;">平均より多い</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">
-            <div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>
-            <div style="font-size:13px;font-weight:700;color:#1b5e20;">22件</div>
-          </div>
-          <div style="background:white;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
-            <div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">業界平均</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text-sub);">18件</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 同業種・同エリアの利用ユーザー5件以上のデータを匿名で集計しています</p>
+    <p style="font-size:10px;color:var(--text-sub);margin-bottom:10px;" id="pro-ind-desc">-</p>
+    <div style="display:flex;flex-direction:column;gap:8px;" id="pro-ind-body"></div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 同じ業種・地域の店舗（自分を除いて5店舗以上）のデータを匿名で集計しています。毎朝更新</p>
   </div>
 
   <!-- ネガティブコメント検知 -->
@@ -1909,7 +1855,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析46';
+const TRACE_SCREEN = '分析47';
 
 function traceLog(msg) {
   try {
@@ -2673,6 +2619,64 @@ function applyFollowers(data) {
   });
 }
 
+// ★liff_analytics.html47：PROの「🏙️ 同業種・同エリア平均との比較」を実データで表示する。
+// 　getAnalyticsSummary()のindustryCompare（Analyticsgs_21）を使う。
+// 　比較できない場合は理由ごとの案内を出す。古い保存データ（industryCompareが無い）の場合は何もしない。
+const IND_REASON_TEXT = {
+  noIndustry: '設定画面で業種と都道府県を登録すると、比較が表示されます',
+  otherIndustry: '業種が「上記に当てはまらない業種」のため、比較できません',
+  fewStores: '同じ業種の店舗がまだ少ないため表示できません',
+  noData: '比較用のデータは毎朝更新されます。明日以降に表示されます',
+  error: '比較を表示できませんでした。時間をおいて開き直してください'
+};
+const IND_SNS_NAME = { X: 'X', Instagram: 'Instagram', Threads: 'Threads' };
+
+// digits：自分の値の小数の桁数、avgDigits：平均の小数の桁数（投稿数の平均は9.6件のように出す）
+function renderIndustryItem(title, item, unit, digits, avgDigits) {
+  const fmtWith = function (v, d) {
+    if (v === null || v === undefined) return '-';
+    return Number(v).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }) + unit;
+  };
+  const fmt = function (v) { return fmtWith(v, digits); };
+  const header = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+    '<span style="font-size:11px;font-weight:700;color:var(--text);">' + title + '</span>' +
+    (item.topPercent !== null ? '<span style="font-size:10px;color:var(--primary);font-weight:700;">上位 ' + item.topPercent + '%</span>' : '') +
+    '</div>';
+  const body = item.average === null
+    ? '<div style="font-size:10px;color:var(--text-light);">比較できる店舗が少ないため表示できません</div>'
+    : '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">' +
+      '<div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">' +
+      '<div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>' +
+      '<div style="font-size:13px;font-weight:700;color:#1b5e20;">' + fmt(item.mine) + '</div></div>' +
+      '<div style="background:var(--surface);border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">' +
+      '<div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">平均（' + item.peerCount + '店舗）</div>' +
+      '<div style="font-size:13px;font-weight:700;color:var(--text-sub);">' + fmtWith(item.average, avgDigits) + '</div></div></div>';
+  return '<div style="background:var(--bg);border-radius:8px;padding:8px 10px;">' + header + body + '</div>';
+}
+
+function applyIndustryCompare(data) {
+  if (!data || !data.industryCompare) return;
+  const c = data.industryCompare;
+  const descEl = document.getElementById('pro-ind-desc');
+  const bodyEl = document.getElementById('pro-ind-body');
+  if (!c.available) {
+    if (descEl) descEl.textContent = IND_REASON_TEXT[c.reason] || IND_REASON_TEXT.error;
+    if (bodyEl) bodyEl.innerHTML = '';
+    return;
+  }
+  if (descEl) descEl.textContent = c.levelLabel + 'の' + c.storeCount + '店舗と比べています（匿名集計）';
+  const parts = [];
+  (c.eg || []).forEach(function (e) {
+    parts.push(renderIndustryItem('📊 EG率（' + (IND_SNS_NAME[e.sns] || e.sns) + '）', e, '%', 1, 1));
+  });
+  if (c.followers) parts.push(renderIndustryItem('👥 フォロワー総数', c.followers, '人', 0, 0));
+  if (c.posts30) parts.push(renderIndustryItem('📅 30日間の投稿数', c.posts30, '件', 0, 1));
+  if (bodyEl) {
+    bodyEl.innerHTML = parts.length ? parts.join('')
+      : '<div style="font-size:10px;color:var(--text-light);">比較できる項目がまだありません</div>';
+  }
+}
+
 // 「今日の状況」「直近投稿と24時間後の状況」を3タブ分反映する
 // ★liff_analytics.html40：PROの「直近投稿の初速状況」カードを削除したため、
 // 　applyLatestPostSection()はLITE・STANDARDだけに適用し、PROには
@@ -2692,6 +2696,8 @@ function applySummaryData(data) {
   applyNextRecommendation(data);
   // ★liff_analytics.html46：フォロワー前日比・推移を反映する
   applyFollowers(data);
+  // ★liff_analytics.html47：同業種・同エリア平均との比較を反映する
+  applyIndustryCompare(data);
 }
 
 // ★liff_analytics_html37：「先週・先月のまとめ」カードの実データ表示。
