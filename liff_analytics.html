@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析44 - AiPost</title>
+<title>分析45 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析44</span>
+  <span class="header-logo">分析45</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -457,34 +457,20 @@
     </div>
   </div>
 
-  <!-- 次回おすすめカード（アドバイス統合） -->
+  <!-- 次回おすすめカード -->
+  <!-- ★liff_analytics.html45：ダミー表示をやめ、getAnalyticsSummary()のnextRecommendationを表示する（applyNextRecommendation）。
+       根拠を示せない文言（「最もフォロワーが活発」等）は使わず、数値で言えることだけを表示する -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
-    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
-      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-        <span style="font-size:13px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Instagramのいいね・コメントが平均比+18%と好調です。引き続き同じ時間帯での投稿を続けましょう。</span>
-      </div>
-    </div>
+    <div style="display:none;flex-direction:column;gap:6px;margin-bottom:12px;" id="lite-rec-trends"></div>
     <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:18px;">🥇</span>
-          <div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:18px;">🥈</span>
-          <div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:18px;">🥉</span>
-          <div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div>
-        </div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="lite-rec-slots">
+        <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています</p>
   </div>
 
   </div><!-- /lite-content -->
@@ -707,34 +693,20 @@
   </div>
 
 
-  <!-- 次回おすすめカード（アドバイス統合） -->
+  <!-- 次回おすすめカード -->
+  <!-- ★liff_analytics.html45：ダミー表示をやめ、getAnalyticsSummary()のnextRecommendationを表示する（applyNextRecommendation）。
+       根拠を示せない文言（「最もフォロワーが活発」等）は使わず、数値で言えることだけを表示する -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
-    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
-      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-        <span style="font-size:13px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xのいいね・リポストが平均比+24%と好調です。引き続き同じ時間帯での投稿を続けましょう。</span>
-      </div>
-    </div>
+    <div style="display:none;flex-direction:column;gap:6px;margin-bottom:12px;" id="standard-rec-trends"></div>
     <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:18px;">🥇</span>
-          <div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:18px;">🥈</span>
-          <div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:18px;">🥉</span>
-          <div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div>
-        </div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="standard-rec-slots">
+        <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています</p>
   </div>
 
   </div><!-- /standard-content -->
@@ -1148,38 +1120,20 @@
   </div>
 
 
-  <!-- 次回おすすめカード（アドバイス統合） -->
+  <!-- 次回おすすめカード -->
+  <!-- ★liff_analytics.html45：ダミー表示をやめ、getAnalyticsSummary()のnextRecommendationを表示する（applyNextRecommendation）。
+       根拠を示せない文言（「最もフォロワーが活発」等）は使わず、数値で言えることだけを表示する -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の投稿おすすめ</div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
-    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
-      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-        <span style="font-size:13px;flex-shrink:0;">✅</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Xのいいね・リポストが平均比+32%と好調です。08:00の投稿時間帯が効果的だった可能性があります。</span>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">
-        <span style="font-size:13px;flex-shrink:0;">⚠️</span>
-        <span style="font-size:11px;color:var(--text);line-height:1.6;">Threadsの反応が平均を下回っています。投稿時間帯の見直しを検討してみてください。</span>
-      </div>
-    </div>
+    <div style="display:none;flex-direction:column;gap:6px;margin-bottom:12px;" id="pro-rec-trends"></div>
     <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:18px;">🥇</span>
-          <div><div style="font-size:12px;font-weight:600;">日曜日 13〜15時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 9.8%・最もフォロワーが活発</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:18px;">🥈</span>
-          <div><div style="font-size:12px;font-weight:600;">金曜日 19〜21時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 8.2%・週末前で関心が高まる</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:18px;">🥉</span>
-          <div><div style="font-size:12px;font-weight:600;">水曜日 12〜13時</div><div style="font-size:10px;color:var(--text-sub);">平均EG率 7.5%・ランチタイムに閲覧増</div></div>
-        </div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="pro-rec-slots">
+        <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ あなたの過去投稿データの数値分析をもとに算出するAiPost独自の指標です</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています</p>
   </div>
 
   </div><!-- /pro-content -->
@@ -2134,7 +2088,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析44';
+const TRACE_SCREEN = '分析45';
 
 function traceLog(msg) {
   try {
@@ -2772,6 +2726,58 @@ function applyFirstSpeedScore(data) {
   }
 }
 
+// ★liff_analytics.html45：「🎯 次回の投稿おすすめ」を実データで表示する（LITE・STANDARD・PRO共通）。
+// 　getAnalyticsSummary()のnextRecommendation（Analyticsgs_19）を使う。
+// 　傾向：好調（good）は✅、下回り（low）は⚠️。該当が無ければ欄ごと表示しない。
+// 　時間帯：いつもの1.0倍以上の時間帯だけを表示する（Kenさん決定）。
+// 　古い保存データ（nextRecommendationが無い）の場合は何もしない（「-」のまま）。
+const REC_SNS_LABEL = { X: 'X', Instagram: 'Instagram', Threads: 'Threads' };
+const REC_MEDALS = ['🥇', '🥈', '🥉'];
+
+function applyNextRecommendation(data) {
+  if (!data || !data.nextRecommendation) return;
+  const rec = data.nextRecommendation;
+  const trends = Array.isArray(rec.trends) ? rec.trends : [];
+  const slots = Array.isArray(rec.timeSlots) ? rec.timeSlots : [];
+  const goodSlots = slots.filter(function (sl) { return Number(sl.ratio) >= 1.0; });
+
+  const trendHtml = trends.map(function (t) {
+    const name = REC_SNS_LABEL[t.sns] || t.sns;
+    const isGood = t.type === 'good';
+    const text = isGood
+      ? name + 'の反応が、最近' + t.recentCount + '投稿で平均の' + Number(t.ratio).toFixed(1) + '倍と好調です。'
+      : name + 'の反応が、最近' + t.recentCount + '投稿で平均を下回っています（平均の' + Number(t.ratio).toFixed(1) + '倍）。下のおすすめの投稿時間帯も参考にしてください。';
+    return '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg);border-radius:8px;">' +
+      '<span style="font-size:13px;flex-shrink:0;">' + (isGood ? '✅' : '⚠️') + '</span>' +
+      '<span style="font-size:11px;color:var(--text);line-height:1.6;">' + text + '</span></div>';
+  }).join('');
+
+  let slotHtml;
+  if (slots.length === 0) {
+    slotHtml = '<div style="font-size:10px;color:var(--text-light);">いろいろな時間帯に投稿すると、おすすめが表示されます</div>';
+  } else if (goodSlots.length === 0) {
+    slotHtml = '<div style="font-size:10px;color:var(--text-light);">今のところ、いつもより反応が良い時間帯は見つかっていません</div>';
+  } else {
+    slotHtml = goodSlots.map(function (sl, i) {
+      const dayLabel = sl.dayType === 'weekend' ? '土日' : '平日';
+      return '<div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg);border-radius:8px;">' +
+        '<span style="font-size:18px;">' + (REC_MEDALS[i] || '') + '</span>' +
+        '<div><div style="font-size:12px;font-weight:600;">' + dayLabel + ' ' + sl.startHour + '〜' + sl.endHour + '時</div>' +
+        '<div style="font-size:10px;color:var(--text-sub);">いつもの' + Number(sl.ratio).toFixed(1) + '倍（' + sl.postCount + '投稿）</div></div></div>';
+    }).join('');
+  }
+
+  ['lite', 'standard', 'pro'].forEach(function (prefix) {
+    const trendEl = document.getElementById(prefix + '-rec-trends');
+    const slotEl = document.getElementById(prefix + '-rec-slots');
+    if (trendEl) {
+      trendEl.innerHTML = trendHtml;
+      trendEl.style.display = trendHtml ? 'flex' : 'none';
+    }
+    if (slotEl) slotEl.innerHTML = slotHtml;
+  });
+}
+
 // 「今日の状況」「直近投稿と24時間後の状況」を3タブ分反映する
 // ★liff_analytics.html40：PROの「直近投稿の初速状況」カードを削除したため、
 // 　applyLatestPostSection()はLITE・STANDARDだけに適用し、PROには
@@ -2787,6 +2793,8 @@ function applySummaryData(data) {
   applyCompareSection(data);
   // ★liff_analytics.html43：初速スコアを反映する
   applyFirstSpeedScore(data);
+  // ★liff_analytics.html45：次回の投稿おすすめを反映する
+  applyNextRecommendation(data);
 }
 
 // ★liff_analytics_html37：「先週・先月のまとめ」カードの実データ表示。
