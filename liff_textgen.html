@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成126 - AiPost</title>
+<title>投稿文作成127 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -612,7 +612,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成126</span>
+  <span class="header-logo">投稿文作成127</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
@@ -1383,7 +1383,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成126';
+const TRACE_SCREEN = '投稿文作成127';
 
 function traceLog(msg) {
   try {
@@ -2956,6 +2956,11 @@ function resetAllForm() {
     const kw = document.getElementById('keyword-input-' + i);
     if (kw) kw.value = '';
   }
+
+  // ★liff_textgen.html127：ご要望（自由記述）欄も空にする。後から追加した欄のため、
+  // 　予約確定後のリセットから漏れており、文字が残ったままになっていた（Kenさん報告）
+  const freeText = document.getElementById('free-text-input');
+  if (freeText) freeText.value = '';
 
   // ハッシュタグ
   for (let i = 1; i <= 5; i++) {
