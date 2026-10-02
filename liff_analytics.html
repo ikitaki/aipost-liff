@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析48 - AiPost</title>
+<title>分析49 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析48</span>
+  <span class="header-logo">分析49</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -729,18 +729,10 @@
     </div>
 
     <!-- 😊 コメント感情分析（グラフ） -->
+    <!-- ★liff_analytics.html49：ダミー表示をやめ、getAnalyticsSummary()のsentimentを表示する（applySentiment） -->
     <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
-      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;">😊 コメント感情分析（今月 128件）</div>
-      <div class="sentiment-bar" style="height:11px;margin:5px 0;">
-        <div class="sent-pos" style="width:72%;"></div>
-        <div class="sent-neu" style="width:21%;"></div>
-        <div class="sent-neg" style="width:7%;"></div>
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:5px;">
-        <div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--success);display:inline-block;"></span>ポジティブ 72%（92件）</div>
-        <div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:#e0e0e0;border:1px solid #ccc;display:inline-block;"></span>中立 21%（27件）</div>
-        <div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--danger);display:inline-block;"></span>ネガティブ 7%（9件）</div>
-      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;" id="pro-sent-title">😊 コメント感情分析（今月）</div>
+      <div id="pro-sent-body"><div style="font-size:10px;color:var(--text-light);">-</div></div>
     </div>
 
     <!-- 📈データ蓄積率・📆今月の投稿枠（簡易テキスト2列） -->
@@ -824,27 +816,15 @@
   </div>
 
   <!-- ネガティブコメント検知 -->
+  <!-- ★liff_analytics.html49：ダミー表示をやめ、getAnalyticsSummary()のsentimentを表示する（applySentiment）。
+       コメントの本文は保存していないため表示しない。投稿を開くリンクから、SNS上で確認してもらう -->
   <div class="card">
     <div class="card-title">⚠️ ネガティブコメント検知</div>
     <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
       <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の大切なヒントです。早めに気づいて対応することで、お客様との信頼関係を深めるチャンスに変えましょう。</div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);margin-bottom:8px;">
-      <span style="font-size:22px;">⚠️</span>
-      <div>
-        <div style="font-size:13px;font-weight:700;color:#b71c1c;">今月 15件 検知</div>
-        <div style="font-size:10px;color:var(--text-sub);margin-top:2px;">直近：6月25日に10件・6月13日に3件・6月11日に2件</div>
-      </div>
-    </div>
-    <button style="width:100%;text-align:center;padding:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--primary);font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;" onclick="toggleCompare('neg-detail','neg-btn')" id="neg-btn">詳細を見る ▼</button>
-    <div id="neg-detail" style="display:none;margin-top:10px;">
-      <div style="font-size:11px;font-weight:700;color:#b71c1c;margin-bottom:8px;">■ 6月25日（10件）</div>
-      <div id="neg-comment-25"></div>
-      <div style="font-size:11px;font-weight:700;color:#b71c1c;margin:10px 0 8px;">■ 6月13日（3件）</div>
-      <div id="neg-comment-13"></div>
-      <div style="font-size:11px;font-weight:700;color:#b71c1c;margin:10px 0 8px;">■ 6月11日（2件）</div>
-      <div id="neg-comment-11"></div>
-    </div>
+    <div id="pro-neg-body"><div style="font-size:10px;color:var(--text-light);">-</div></div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 投稿の1時間後・3時間後・24時間後にコメントを確認し、AIが判定しています。コメントの内容は保存していないため、リンクからSNSでご確認ください</p>
   </div>
 
 
@@ -1650,63 +1630,8 @@ function showUnified(d) {
   detailEl.style.display = 'block';
 }
 
-// ===== ネガティブコメントデータ =====
-const negData = {11:2, 13:3, 25:10};
-const negDetails = {
-  11:[
-    {time:'10:55', sns:'Instagram', text:'先日注文したのですが、対応が少し冷たく感じました…'},
-    {time:'17:22', sns:'X',         text:'待ち時間が長かったです'},
-  ],
-  13:[
-    {time:'09:14', sns:'Threads',  text:'思ったより量が少なかったです'},
-    {time:'13:08', sns:'Instagram', text:'値段が高い気がします'},
-    {time:'20:45', sns:'X',         text:'接客が雑でした'},
-  ],
-  25:[
-    {time:'09:42', sns:'X',         text:'モーニングイベントに行ったのですが、スタッフの案内が不親切で最初どこに並べばいいかわかりませんでした。せっかく楽しみにしていたのに出鼻をくじかれた感じがして残念でした。改善をお願いしたいです。'},
-    {time:'10:18', sns:'Instagram', text:'抹茶ラテセットを注文したのですが、ラテの温度がぬるくて少し残念でした。和菓子は美味しかったので、次回はもう少し熱めで提供していただけると嬉しいです。また来たいとは思っているので改善を期待しています。'},
-    {time:'11:55', sns:'Threads',  text:'ビーガンランチを頼んだのですが、メニューに書いてあった食材が一部使われていなかったようです。スタッフに確認したところ本日は仕入れの都合で変更したとのことでした。事前にメニューや店頭に告知してほしかったです。'},
-    {time:'12:34', sns:'Threads',   text:'ランチタイムに訪問したのですが、テーブルが片付いておらず少し待たされました。混んでいるのはわかりますがもう少しスタッフを増やして対応していただけると助かります。料理自体は美味しかっただけに残念でした。'},
-    {time:'13:22', sns:'X',         text:'パナマゲイシャを注文したのですが、お値段の割には量が少なく感じました。希少豆だというのはわかるのですが、せめてもう少し丁寧な説明や紹介カードなどがあればまた違った印象だったと思います。次回に期待します。'},
-    {time:'15:48', sns:'Instagram', text:'おやつタイムに来店したのですが、イチジクのタルトは既に売り切れでした。SNSで宣伝しておいて売り切れというのは少し不満です。数量が少ないなら投稿に限定○個などと記載していただけると無駄足を防げると思います。'},
-    {time:'17:12', sns:'Threads',  text:'ディナーを予約しようとしたのですが、電話が全然つながりませんでした。オンライン予約のシステムもないようで、結局予約できずに当日並んだのですが満席で入れませんでした。予約手段をもう少し充実させてほしいです。'},
-    {time:'18:44', sns:'X',         text:'ワインペアリングディナーのコースを楽しみにしていたのですが、説明がソムリエではなくアルバイトのスタッフで知識が浅く、ワインの特徴についての説明がほとんどありませんでした。料金が高めなので相応のサービスを期待していました。'},
-    {time:'20:22', sns:'Threads',   text:'本日夜に来店したのですがBGMがとても大きくて会話がしにくかったです。ジャズライブが終わった後もボリュームがそのままになっていたようで、落ち着いて食事を楽しみたいと思っていたので少し残念でした。雰囲気は好きなので次回に期待します。'},
-    {time:'22:08', sns:'Instagram', text:'ジャズピアノの生演奏イベントに行ったのですが、店内が想像以上に混雑していて演奏がほとんど聞こえませんでした。せっかくの生演奏なのに音楽よりも周りの声の方が大きくて残念でした。キャパシティを考えた人数制限をお願いしたいです。'},
-  ],
-};
-
-let lastNegDay = null;
-function showNeg(d, val) {
-  const el = document.getElementById('neg-detail');
-  if (lastNegDay === d && el.classList.contains('show')) {
-    el.classList.remove('show'); lastNegDay = null; return;
-  }
-  lastNegDay = d;
-  const comments = negDetails[d] || [];
-  const negSnsAbbr = {Instagram:'IG', X:'X', Threads:'TH'};
-  let html = '';
-  html += comments.map(c => `<div style="padding:6px 0;border-bottom:1px solid rgba(180,0,0,0.1);"><div style="font-size:10px;color:var(--text-sub);margin-bottom:2px;">${c.time}　${negSnsAbbr[c.sns]||c.sns}</div><div style="font-size:11px;color:var(--text);line-height:1.6;">「${c.text}」</div></div>`).join('');
-  el.classList.add('show');
-  return html;
-}
-
-// ネガティブコメント詳細を展開時に描画
-function initNegComments() {
-  const negSnsAbbr = {Instagram:'IG', X:'X', Threads:'TH'};
-  [25, 13, 11].forEach(d => {
-    const el = document.getElementById('neg-comment-' + d);
-    if (!el) return;
-    const comments = negDetails[d] || [];
-    el.innerHTML = comments.map(c =>
-      `<div style="padding:6px 0;border-bottom:1px solid rgba(180,0,0,0.1);">
-        <div style="font-size:10px;color:var(--text-sub);margin-bottom:2px;">${c.time}　${negSnsAbbr[c.sns]||c.sns}</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.6;">「${c.text}」</div>
-      </div>`
-    ).join('');
-  });
-}
-initNegComments();
+// ★liff_analytics.html49：ネガティブコメントのダミーデータと表示処理（negData・negDetails・showNeg・
+// 　initNegComments）は削除した。実データは applySentiment() で表示する。
 
 // ===== カレンダー初期化 =====
 buildCal('cal-unified', unifiedBadge, 'var(--accent)', (d) => showUnified(d));
@@ -1855,7 +1780,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析48';
+const TRACE_SCREEN = '分析49';
 
 function traceLog(msg) {
   try {
@@ -2700,6 +2625,82 @@ function applyIndustryCompare(data) {
   }
 }
 
+// ★liff_analytics.html49：PROの「😊 コメント感情分析」と「⚠️ ネガティブコメント検知」を実データで表示する。
+// 　getAnalyticsSummary()のsentiment（Analyticsgs_23〜25）を使う。
+// 　enabled が false の時は「停止中」を表示する。xLimitReached の時は、Xの取得が上限に達したことを添える。
+// 　古い保存データ（sentimentが無い）の場合は何もしない（「-」のまま）。
+const SENT_SNS_LABEL = { X: 'X', Instagram: 'Instagram', Threads: 'Threads' };
+
+// 投稿のURLを開く（LINEアプリ内では外部のブラウザ／SNSアプリで開く）
+function openPostUrl(url) {
+  if (!url) return;
+  try {
+    if (window.liff && typeof liff.openWindow === 'function' && liff.isInClient && liff.isInClient()) {
+      liff.openWindow({ url: url, external: true });
+      return;
+    }
+  } catch (e) { /* 失敗した場合は下で開く */ }
+  window.open(url, '_blank');
+}
+
+function applySentiment(data) {
+  if (!data || !data.sentiment) return;
+  const st = data.sentiment;
+  const titleEl = document.getElementById('pro-sent-title');
+  const sentEl = document.getElementById('pro-sent-body');
+  const negEl = document.getElementById('pro-neg-body');
+  const note = function (text) { return '<div style="font-size:10px;color:var(--text-light);line-height:1.6;">' + text + '</div>'; };
+  const xLimitNote = st.xLimitReached ? note('※ 今月のXのコメントの取得は上限に達したため、Xの新しいコメントは判定していません') : '';
+
+  if (st.enabled === false) {
+    if (titleEl) titleEl.textContent = '😊 コメント感情分析（今月）';
+    if (sentEl) sentEl.innerHTML = note('ネガティブ検知は現在停止中です');
+    if (negEl) negEl.innerHTML = note('ネガティブ検知は現在停止中です');
+    return;
+  }
+
+  const total = st.total || 0;
+  if (titleEl) titleEl.textContent = '😊 コメント感情分析（今月 ' + total + '件）';
+  if (sentEl) {
+    if (total === 0) {
+      sentEl.innerHTML = note('今月はまだ判定したコメントがありません') + xLimitNote;
+    } else {
+      const pct = function (n) { return Math.round((n / total) * 100); };
+      const dot = function (color, border) { return '<span style="width:8px;height:8px;border-radius:50%;background:' + color + ';' + (border ? 'border:1px solid #ccc;' : '') + 'display:inline-block;"></span>'; };
+      const item = function (color, border, label, n) {
+        return '<div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;">' + dot(color, border) + label + ' ' + pct(n) + '%（' + n + '件）</div>';
+      };
+      sentEl.innerHTML =
+        '<div class="sentiment-bar" style="height:11px;margin:5px 0;">' +
+        '<div class="sent-pos" style="width:' + (st.positive / total * 100) + '%;"></div>' +
+        '<div class="sent-neu" style="width:' + (st.neutral / total * 100) + '%;"></div>' +
+        '<div class="sent-neg" style="width:' + (st.negative / total * 100) + '%;"></div></div>' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:5px;">' +
+        item('var(--success)', false, 'ポジティブ', st.positive) +
+        item('#e0e0e0', true, '中立', st.neutral) +
+        item('var(--danger)', false, 'ネガティブ', st.negative) + '</div>' + xLimitNote;
+    }
+  }
+  if (negEl) {
+    if (!st.negative) {
+      negEl.innerHTML = '<div style="padding:8px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--text-sub);">今月のネガティブなコメントはありません</div>' + xLimitNote;
+    } else {
+      const rows = (st.recentNegatives || []).map(function (n) {
+        const link = n.postUrl
+          ? '<span style="color:var(--primary);font-weight:700;cursor:pointer;" onclick="openPostUrl(\'' + String(n.postUrl).replace(/'/g, '%27') + '\')">投稿を開く ›</span>'
+          : '<span style="color:var(--text-light);">-</span>';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(180,0,0,0.1);font-size:11px;">' +
+          '<span style="color:var(--text);">' + n.date + '　' + (SENT_SNS_LABEL[n.sns] || n.sns) + '</span>' + link + '</div>';
+      }).join('');
+      negEl.innerHTML =
+        '<div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);margin-bottom:8px;">' +
+        '<span style="font-size:22px;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#b71c1c;">今月 ' + st.negative + '件 検知</div>' +
+        '<div style="font-size:10px;color:var(--text-sub);margin-top:2px;">新しい順に最大5件を表示しています</div></div></div>' +
+        rows + xLimitNote;
+    }
+  }
+}
+
 // 「今日の状況」「直近投稿と24時間後の状況」を3タブ分反映する
 // ★liff_analytics.html40：PROの「直近投稿の初速状況」カードを削除したため、
 // 　applyLatestPostSection()はLITE・STANDARDだけに適用し、PROには
@@ -2721,6 +2722,8 @@ function applySummaryData(data) {
   applyFollowers(data);
   // ★liff_analytics.html47：同業種・同エリア平均との比較を反映する
   applyIndustryCompare(data);
+  // ★liff_analytics.html49：コメント感情分析・ネガティブコメント検知を反映する
+  applySentiment(data);
 }
 
 // ★liff_analytics_html37：「先週・先月のまとめ」カードの実データ表示。
