@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析49 - AiPost</title>
+<title>分析50 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析49</span>
+  <span class="header-logo">分析50</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -824,7 +824,7 @@
       <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の大切なヒントです。早めに気づいて対応することで、お客様との信頼関係を深めるチャンスに変えましょう。</div>
     </div>
     <div id="pro-neg-body"><div style="font-size:10px;color:var(--text-light);">-</div></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 投稿の1時間後・3時間後・24時間後にコメントを確認し、AIが判定しています。コメントの内容は保存していないため、リンクからSNSでご確認ください</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 投稿の1時間後・3時間後・24時間後にコメントを確認し、AIが判定しています。1投稿あたり新しい順にXは10件・Instagram・Threadsは50件まで判定します。返信の件数はSNSの数値です</p>
   </div>
 
 
@@ -1780,7 +1780,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析49';
+const TRACE_SCREEN = '分析50';
 
 function traceLog(msg) {
   try {
@@ -2631,12 +2631,14 @@ function applyIndustryCompare(data) {
 // 　古い保存データ（sentimentが無い）の場合は何もしない（「-」のまま）。
 const SENT_SNS_LABEL = { X: 'X', Instagram: 'Instagram', Threads: 'Threads' };
 
-// 投稿のURLを開く（LINEアプリ内では外部のブラウザ／SNSアプリで開く）
+// 投稿のURLを開く
+// ★liff_analytics.html50：LINEアプリ内では、LINEの中のブラウザで開く（左上の「✕」ですぐ分析画面に戻れる。
+// 　以前は外部のブラウザ／SNSアプリで開いていたため、Xではアプリが切り替わり戻りにくかった）
 function openPostUrl(url) {
   if (!url) return;
   try {
     if (window.liff && typeof liff.openWindow === 'function' && liff.isInClient && liff.isInClient()) {
-      liff.openWindow({ url: url, external: true });
+      liff.openWindow({ url: url, external: false });
       return;
     }
   } catch (e) { /* 失敗した場合は下で開く */ }
@@ -2681,22 +2683,42 @@ function applySentiment(data) {
         item('var(--danger)', false, 'ネガティブ', st.negative) + '</div>' + xLimitNote;
     }
   }
+  // ★liff_analytics.html50：投稿ごとの一覧（getAnalyticsSummary()のnegativePosts。Analyticsgs_27）に変更した。
+  // 　ネガティブが付いた新しい投稿10件までを、枠の中でスクロールして見られるようにする。
+  // 　コメントの本文・投稿文は、表示の前に escapeHtmlText() で無害化する。
   if (negEl) {
-    if (!st.negative) {
+    const posts = Array.isArray(data.negativePosts) ? data.negativePosts : [];
+    if (!st.negative && posts.length === 0) {
       negEl.innerHTML = '<div style="padding:8px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--text-sub);">今月のネガティブなコメントはありません</div>' + xLimitNote;
     } else {
-      const rows = (st.recentNegatives || []).map(function (n) {
-        const link = n.postUrl
-          ? '<span style="color:var(--primary);font-weight:700;cursor:pointer;" onclick="openPostUrl(\'' + String(n.postUrl).replace(/'/g, '%27') + '\')">投稿を開く ›</span>'
-          : '<span style="color:var(--text-light);">-</span>';
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(180,0,0,0.1);font-size:11px;">' +
-          '<span style="color:var(--text);">' + n.date + '　' + (SENT_SNS_LABEL[n.sns] || n.sns) + '</span>' + link + '</div>';
+      const summary = '<div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);margin-bottom:8px;">' +
+        '<span style="font-size:22px;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#b71c1c;">今月 ' + (st.negative || 0) + '件 検知</div>' +
+        '<div style="font-size:10px;color:var(--text-sub);margin-top:2px;">ネガティブが付いた新しい投稿10件までを表示しています</div></div></div>';
+      const linkBtn = function (u) {
+        return '<span style="display:inline-block;font-size:10px;color:var(--primary);font-weight:700;border:1px solid var(--primary);border-radius:12px;padding:2px 8px;margin:0 4px 4px 0;cursor:pointer;" onclick="openPostUrl(\'' +
+          String(u.url).replace(/'/g, '%27') + '\')">' + escapeHtmlText(SENT_SNS_LABEL[u.sns] || u.sns) + 'で開く ›</span>';
+      };
+      const cards = posts.map(function (p) {
+        const snsNames = (p.postUrls || []).map(function (u) { return SENT_SNS_LABEL[u.sns] || u.sns; }).join('・');
+        const total = (p.totalReplies === null || p.totalReplies === undefined) ? '-' : Number(p.totalReplies).toLocaleString() + '件';
+        const comments = (p.comments || []).map(function (c) {
+          return '<div style="padding:6px 0;border-top:1px solid rgba(180,0,0,0.08);">' +
+            '<div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">' + escapeHtmlText(SENT_SNS_LABEL[c.sns] || c.sns) + '　' + escapeHtmlText(c.date) + '</div>' +
+            '<div style="font-size:11px;color:var(--text);line-height:1.6;word-break:break-word;">' + escapeHtmlText(c.text) + '</div></div>';
+        }).join('');
+        return '<div style="border:1px solid #f3c6c6;border-radius:8px;padding:8px 10px;margin-bottom:8px;background:var(--surface);">' +
+          '<div style="font-size:10px;color:var(--text-sub);margin-bottom:3px;">' + escapeHtmlText(p.postedAt || '') + ' 投稿' + (snsNames ? '　' + escapeHtmlText(snsNames) : '') + '</div>' +
+          '<div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' +
+          escapeHtmlText(p.postText || '（投稿文なし）') + '</div>' +
+          '<div style="font-size:10px;color:var(--text-sub);margin-bottom:6px;">返信 ' + total + '（うち判定 ' + p.judgedCount + '件・<span style="color:#b71c1c;font-weight:700;">ネガティブ ' + p.negativeCount + '件</span>）</div>' +
+          '<div>' + (p.postUrls || []).map(linkBtn).join('') + '</div>' +
+          '<div style="font-size:9px;color:var(--text-sub);margin-top:4px;">主なネガティブコメント（最大10件・日時はコメントが書き込まれた日時）</div>' +
+          comments + '</div>';
       }).join('');
-      negEl.innerHTML =
-        '<div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);margin-bottom:8px;">' +
-        '<span style="font-size:22px;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#b71c1c;">今月 ' + st.negative + '件 検知</div>' +
-        '<div style="font-size:10px;color:var(--text-sub);margin-top:2px;">新しい順に最大5件を表示しています</div></div></div>' +
-        rows + xLimitNote;
+      const list = posts.length
+        ? '<div style="max-height:420px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:2px;">' + cards + '</div>'
+        : '<div style="font-size:10px;color:var(--text-light);">コメントの内容を表示できる投稿がありません（古い投稿の内容は表示されません）</div>';
+      negEl.innerHTML = summary + list + xLimitNote;
     }
   }
 }
