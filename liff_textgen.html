@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成127 - AiPost</title>
+<title>投稿文作成128 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -612,7 +612,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成127</span>
+  <span class="header-logo">投稿文作成128</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
@@ -795,6 +795,13 @@
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
       <span style="font-size:11px;color:var(--text-light);" id="char-limit-label">上限140字（半角280字）</span>
     </div>
+    <!-- ★liff_textgen.html128：手で書いた文章にも店名・所在地を入れられるよう、文章の最後に入れるボタンを追加
+         （AIで作った文章にも使える。⑥の「店名・所在地を含める」の動きは変えない） -->
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button type="button" onclick="appendProfileLine('shop')" style="flex:1;padding:8px 6px;font-size:12px;font-weight:700;color:var(--primary);background:var(--surface);border:1px solid var(--primary);border-radius:8px;cursor:pointer;font-family:inherit;">＋ 🏠店名を入れる</button>
+      <button type="button" onclick="appendProfileLine('address')" style="flex:1;padding:8px 6px;font-size:12px;font-weight:700;color:var(--primary);background:var(--surface);border:1px solid var(--primary);border-radius:8px;cursor:pointer;font-family:inherit;">＋ 📍所在地を入れる</button>
+    </div>
+    <div class="keyword-hint" style="margin-top:4px;">登録済みの店名・所在地を、文章の最後に改行して入れます。不要な場合は、入れた後に消せます</div>
     <div class="url-warning" id="url-warning">
       🔗 <strong>投稿文にURLが含まれています。</strong><br>当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます。
     </div>
@@ -1383,7 +1390,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成127';
+const TRACE_SCREEN = '投稿文作成128';
 
 function traceLog(msg) {
   try {
@@ -1872,6 +1879,8 @@ function selectPattern(btn) {
 let USER_GENRE = null;
 // ★liff_textgen.html126：登録済みの所在地（null＝保存済み情報に項目が無く不明、''＝未登録）
 let USER_ADDRESS = null;
+// ★liff_textgen.html128：登録済みの店名（null＝保存済み情報に項目が無く不明、''＝未登録）
+let USER_SHOP_NAME = null;
 
 function updateUserGenreFromProfile(profile) {
   USER_GENRE = (profile && profile.businessMajor && profile.businessMinor)
@@ -1879,10 +1888,40 @@ function updateUserGenreFromProfile(profile) {
     : null;
   USER_ADDRESS = (profile && profile.address !== undefined && profile.address !== null)
     ? String(profile.address).trim() : null;
+  USER_SHOP_NAME = (profile && profile.shopName !== undefined && profile.shopName !== null) // ★html128
+    ? String(profile.shopName).trim() : null;
   // 所在地が未登録と分かった場合、「所在地を含める」がONなら外す
   const addrItem = document.getElementById('include-address-item');
   if (USER_ADDRESS === '' && addrItem && addrItem.classList.contains('checked')) toggleInclude(addrItem);
   renderKeywordGuide();
+}
+
+// ★liff_textgen.html128：⑦の文章の最後に、改行して「🏠店名」または「📍所在地」を入れる
+// 　（所在地の形は、AIで作った時に付け足す「📍所在地」と同じ）。
+// 　未登録・不明の場合は案内を出して入れない。同じ行がすでに入っていれば二重に入れない。
+// 　入れた後は input イベントを起こし、文字数などの表示を更新する。
+function appendProfileLine(kind) {
+  const value = kind === 'shop' ? USER_SHOP_NAME : USER_ADDRESS;
+  const label = kind === 'shop' ? '店名' : '所在地';
+  if (value === null) {
+    alert(label + 'を確認できませんでした。画面を開き直してから、もう一度お試しください。');
+    return;
+  }
+  if (value === '') {
+    alert(label + 'が未登録です。設定画面から登録してください。');
+    return;
+  }
+  const line = (kind === 'shop' ? '🏠' : '📍') + value;
+  const ta = document.getElementById('post-textarea');
+  if (!ta) return;
+  if (ta.value.split('\n').some(function (l) { return l.trim() === line; })) {
+    alert(label + 'はすでに文章に入っています。');
+    return;
+  }
+  const body = ta.value.replace(/\s+$/, '');
+  ta.value = body === '' ? line : body + '\n' + line;
+  ta.dispatchEvent(new Event('input'));
+  ta.focus();
 }
 
 function confirmAndGenerate() {
