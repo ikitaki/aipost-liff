@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更44 - AiPost</title>
+<title>予約確認・変更45 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -625,6 +625,8 @@
   .history-result-row .sns-tag { min-width: 26px; text-align: center; }
   .result-ok { color: var(--success); font-weight: 600; }
   .result-ng { color: var(--danger); font-weight: 600; }
+  /* ★liff_reservation.html45：投稿を削除したSNSは灰色で表示する（失敗ではないため） */
+  .result-deleted { color: var(--text-light); font-weight: 600; }
   .history-text {
     font-size: 13px;
     line-height: 1.7;
@@ -644,6 +646,17 @@
   /* ★liff_reservation.html44：投稿削除タブ（試作。削除の実行はGAS側の実装後に有効にする） */
   .del-warning { font-size: 12px; line-height: 1.7; background: #fff8e1; color: #e65100; border: 1px solid #ffe0b2; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; }
   .del-warning b { font-weight: 700; }
+  /* ★liff_reservation.html45：投稿削除タブのSNSの切り替え（X／Threads） */
+  .del-sns-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+  .del-sns-tab { flex: 1; padding: 9px 4px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text-sub); font-size: 13px; font-weight: 700; cursor: pointer; }
+  .del-sns-tab.active { border-color: var(--primary); background: var(--primary); color: #fff; }
+  .del-note-ng { font-size: 12px; color: var(--danger); font-weight: 600; text-align: center; padding: 10px 0; line-height: 1.6; }
+  .del-row { display: flex; align-items: flex-start; gap: 10px; }
+  .del-row input { width: 20px; height: 20px; accent-color: var(--danger); margin-top: 2px; flex-shrink: 0; }
+  .del-row-body { flex: 1; min-width: 0; }
+  .del-card.disabled { background: var(--bg); }
+  .del-card-reason { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+  .del-card-error { font-size: 11px; color: var(--danger); font-weight: 600; margin-top: 4px; line-height: 1.5; }
   .del-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
   .del-toolbar .cal-title { font-size: 14px; }
   .del-selectall { background: none; border: none; color: var(--primary); font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 0; }
@@ -715,7 +728,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更44</span>
+  <span class="header-logo">予約確認・変更45</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -896,16 +909,23 @@
   </div>
 
   <!-- ★liff_reservation.html44：投稿削除タブ（データは投稿履歴タブと共通） -->
+  <!-- ★liff_reservation.html45：タブの中を「X」「Threads」に分け、実際に削除できるようにした -->
   <div id="tab-delete" class="tab-panel">
 
     <div class="del-warning">
       ⚠️ <b>SNSから削除した投稿は、元に戻せません。</b><br>
-      削除できるのは、AiPostから投稿した X・Threads の投稿です。Instagramは、Instagramのアプリから削除してください。
+      削除できるのは、AiPostから投稿した X・Threads の投稿です（今月と過去12か月）。Instagramは、Instagramのアプリから削除してください。
+    </div>
+
+    <div class="del-sns-tabs">
+      <button type="button" class="del-sns-tab active" id="del-sns-tab-X" onclick="switchDeleteSns('X')">X</button>
+      <button type="button" class="del-sns-tab" id="del-sns-tab-Threads" onclick="switchDeleteSns('Threads')">Threads</button>
     </div>
 
     <div id="del-status" class="empty-list-note" style="display:none;"></div>
 
     <div id="del-body" style="display:none;">
+      <div id="del-unlinked" class="del-note-ng" style="display:none;"></div>
       <div class="del-toolbar">
         <button class="cal-nav" id="del-prev-month" onclick="changeDeleteMonth(-1)">‹</button>
         <div class="cal-title" id="del-month-title"></div>
@@ -1072,6 +1092,15 @@
   <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
     <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
     <div style="font-size:14px;font-weight:700;color:#333;">画像を保存しています…</div>
+    <div style="font-size:11px;color:#888;">画面を閉じずにお待ちください</div>
+  </div>
+</div>
+
+<!-- ★liff_reservation.html45：投稿の削除中の表示 -->
+<div class="modal-overlay" id="del-saving-overlay" style="z-index:2000;align-items:center;">
+  <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
+    <div style="font-size:14px;font-weight:700;color:#333;" id="del-saving-text">投稿を削除しています…</div>
     <div style="font-size:11px;color:#888;">画面を閉じずにお待ちください</div>
   </div>
 </div>
@@ -1288,7 +1317,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認44';
+  const TRACE_SCREEN = '予約確認45';
 
   function traceLog(msg) {
     try {
@@ -2913,7 +2942,9 @@ function _dataUrlToBase64(dataUrl) {
           reservationId: item.reservationId,
           postedAt: new Date(item.postedAt),
           honbun: item.honbun || '',
-          results: item.results || {}
+          results: item.results || {},
+          // ★liff_reservation.html45：AiPostから削除できるか（TextGenerationgs_23。無い時はfalse）
+          deletable: item.deletable || {}
         };
       }).filter(function (item) { return !isNaN(item.postedAt.getTime()); });
       postHistoryItems.sort(function (a, b) { return b.postedAt.getTime() - a.postedAt.getTime(); });
@@ -2958,6 +2989,7 @@ function _dataUrlToBase64(dataUrl) {
   }
 
   // 月送りの範囲：最も古い投稿の月〜今月
+  // ★liff_reservation.html45：遡れるのは今月と過去12か月まで（投稿履歴の保存期間を1年とするため）
   function historyMonthRange() {
     const now = new Date();
     const max = now.getFullYear() * 12 + now.getMonth();
@@ -2966,7 +2998,7 @@ function _dataUrlToBase64(dataUrl) {
       const oldest = postHistoryItems[postHistoryItems.length - 1].postedAt;
       min = Math.min(max, oldest.getFullYear() * 12 + oldest.getMonth());
     }
-    return { min: min, max: max };
+    return { min: Math.max(min, max - 12), max: max };
   }
 
   function changeHistoryMonth(delta) {
@@ -3051,14 +3083,17 @@ function _dataUrlToBase64(dataUrl) {
     const p2 = function (n) { return (n < 10 ? '0' : '') + n; };
     const timeLabel = item.postedAt.getHours() + ':' + p2(item.postedAt.getMinutes());
     const targets = HISTORY_SNS_ORDER.filter(function (sns) { return item.results[sns]; });
-    const allOk = targets.length > 0 && targets.every(function (sns) { return item.results[sns] === '成功'; });
+    // ★liff_reservation.html45：「削除済み」は失敗ではないため、成功と同じく緑の点にする
+    const allOk = targets.length > 0 && targets.every(function (sns) { return item.results[sns] === '成功' || item.results[sns] === '削除済み'; });
     const dotClass = targets.length === 0 ? '' : (allOk ? 'dot-done' : 'dot-fail');
     const rows = targets.length
       ? targets.map(function (sns) {
           const value = item.results[sns];
           const ok = value === '成功';
+          // ★liff_reservation.html45：削除済みは灰色
+          const cls = ok ? 'result-ok' : (value === '削除済み' ? 'result-deleted' : 'result-ng');
           return '<div class="history-result-row">' + snsTagHtml(sns) +
-            '<span class="' + (ok ? 'result-ok' : 'result-ng') + '">' + escapeHtml(value) + '</span></div>';
+            '<span class="' + cls + '">' + escapeHtml(value) + '</span></div>';
         }).join('')
       : '<div class="history-result-row" style="color:var(--text-sub);">投稿先の記録がありません</div>';
     const longText = item.honbun.length > 60;
@@ -3079,29 +3114,43 @@ function _dataUrlToBase64(dataUrl) {
 
   // ============================================
   // ★liff_reservation.html44：投稿削除タブ（試作）
+  // ★liff_reservation.html45：タブの中を「X」「Threads」に分け、GASの deletePosts（TextGenerationgs_23）で
+  // 　実際に削除するようにした。
   // ============================================
-  // ・投稿履歴で「成功」になっている X・Threads の投稿を、SNSごとに選んでまとめて削除する。
-  // 　Instagramは今の連携方式ではAPIで削除できないため、選ばせずに案内だけ出す。
-  // ・データは投稿履歴タブと同じ（getMyPostHistoryの結果。どちらかのタブを開いた時に1回だけ取得）。
-  // ・★試作：GAS側の削除処理は未実装のため、「削除する」を押しても実際には削除せず、
-  // 　準備中の案内を出すだけにしている（executeDeletePosts）。GASの実装後に送信処理を入れる。
-  // ・選んだ内容は月を移っても保持する（キー：予約ID + '|' + SNS名）。
+  // ・表示中のSNS（X または Threads）で「成功」になっている投稿を、月ごとに一覧で出す（今月と過去12か月）。
+  // 　投稿IDの記録が無い投稿（deletable が false）は、選べない状態で理由を出す。
+  // ・選んだ内容はSNSごとに別々に覚える（月を移っても残る）。「削除する」は表示中のSNSの選択だけを送る。
+  // ・件数の上限は画面に出さない（月40件が最大。GAS側に1回50件の安全装置がある）。
+  // ・削除の送信は書き込みのため、自動再試行（postToGas）は使わず1回だけ送る。
+  // ・削除できた投稿は、手元の投稿履歴のデータの結果を「削除済み」に書き換え（再取得しない）、一覧から消える。
+  // 　削除できなかった投稿は一覧に残し、GASが返した理由を表示する。
+  // ・表示中のSNSが未連携と分かっている時は、選べない状態で案内する。
   const DELETABLE_SNS = ['X', 'Threads'];
-  let deleteSelection = {};   // { 'RSV-000123|X': true, ... }
+  const DELETE_SNS_KEY = { X: 'x', Threads: 'threads' };   // プラン等の保存済み情報の sns のキー
+  let deleteSns = 'X';                                      // 表示中のSNS
+  let deleteSelection = { X: {}, Threads: {} };             // SNSごとの選択 { '元予約ID': true }
+  let deleteErrors = { X: {}, Threads: {} };                // SNSごとの、削除できなかった理由 { '元予約ID': 理由 }
   let deleteTabOpened = false;
+  let deleteRunning = false;
   let delViewYear = null;
   let delViewMonth = null;    // 0〜11
 
-  function isDeletableResult(item, sns) {
-    return DELETABLE_SNS.indexOf(sns) !== -1 && item.results[sns] === '成功';
+  // 表示中のSNSが未連携と分かっているか（保存済み情報が無い・不明な時は false＝連携中として扱う）
+  function isDeleteSnsUnlinked() {
+    const cached = readQuotaCache();
+    if (!cached || !cached.sns) return false;
+    return cached.sns[DELETE_SNS_KEY[deleteSns]] === false;
   }
 
-  // 一覧に出す投稿（いずれかのSNSで成功している投稿。Instagramだけの投稿は案内のみ）
+  // 一覧に出す投稿（表示中のSNSで「成功」の投稿。削除済みは出さない）
   function deleteCandidates() {
     if (!postHistoryItems) return [];
-    return postHistoryItems.filter(function (item) {
-      return HISTORY_SNS_ORDER.some(function (sns) { return item.results[sns] === '成功'; });
-    });
+    return postHistoryItems.filter(function (item) { return item.results[deleteSns] === '成功'; });
+  }
+
+  // 選べる投稿か（投稿IDの記録があり、SNSが未連携でない）
+  function isDeleteSelectable(item) {
+    return !!(item.deletable && item.deletable[deleteSns]) && !isDeleteSnsUnlinked();
   }
 
   function renderDeleteTab() {
@@ -3115,8 +3164,17 @@ function _dataUrlToBase64(dataUrl) {
     renderDeleteList();
   }
 
+  function switchDeleteSns(sns) {
+    if (deleteRunning || DELETABLE_SNS.indexOf(sns) === -1) return;
+    deleteSns = sns;
+    DELETABLE_SNS.forEach(function (s) {
+      document.getElementById('del-sns-tab-' + s).classList.toggle('active', s === sns);
+    });
+    if (postHistoryItems !== null && deleteTabOpened) renderDeleteList();
+  }
+
   function changeDeleteMonth(delta) {
-    if (delViewYear === null) return;
+    if (delViewYear === null || deleteRunning) return;
     const range = historyMonthRange();
     const next = delViewYear * 12 + delViewMonth + delta;
     if (next < range.min || next > range.max) return;
@@ -3131,109 +3189,115 @@ function _dataUrlToBase64(dataUrl) {
     });
   }
 
-  // この月の、選べる（X・Threadsで成功した）項目のキー
+  // この月の、選べる投稿の元予約ID
   function deleteMonthKeys() {
-    const keys = [];
-    deleteMonthItems().forEach(function (item) {
-      DELETABLE_SNS.forEach(function (sns) {
-        if (isDeletableResult(item, sns)) keys.push(item.reservationId + '|' + sns);
-      });
-    });
-    return keys;
+    return deleteMonthItems().filter(isDeleteSelectable).map(function (item) { return item.reservationId; });
   }
 
   function renderDeleteList() {
-    document.getElementById('del-month-title').textContent = delViewYear + '年' + (delViewMonth + 1) + '月';
+    // 表示中の月が範囲外になっていたら範囲内に戻す
     const range = historyMonthRange();
-    const current = delViewYear * 12 + delViewMonth;
+    let current = delViewYear * 12 + delViewMonth;
+    if (current < range.min) current = range.min;
+    if (current > range.max) current = range.max;
+    delViewYear = Math.floor(current / 12);
+    delViewMonth = current % 12;
+
+    document.getElementById('del-month-title').textContent = delViewYear + '年' + (delViewMonth + 1) + '月';
     document.getElementById('del-prev-month').disabled = current <= range.min;
     document.getElementById('del-next-month').disabled = current >= range.max;
 
+    const unlinked = isDeleteSnsUnlinked();
+    const unlinkedEl = document.getElementById('del-unlinked');
+    unlinkedEl.textContent = unlinked ? deleteSns + 'が未連携のため削除できません。設定画面で連携してから削除してください。' : '';
+    unlinkedEl.style.display = unlinked ? 'block' : 'none';
+
     const items = deleteMonthItems();
     const list = document.getElementById('del-list');
+    const selection = deleteSelection[deleteSns];
+    const errors = deleteErrors[deleteSns];
     if (items.length === 0) {
-      list.innerHTML = '<div class="empty-list-note">この月に削除できる投稿はありません</div>';
+      list.innerHTML = '<div class="empty-list-note">この月に削除できる' + deleteSns + 'の投稿はありません</div>';
     } else {
       const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
       const p2 = function (n) { return (n < 10 ? '0' : '') + n; };
       list.innerHTML = items.map(function (item) {
         const dt = item.postedAt;
         const head = (dt.getMonth() + 1) + '月' + dt.getDate() + '日（' + dayNames[dt.getDay()] + '） ' + dt.getHours() + ':' + p2(dt.getMinutes()) + ' に投稿';
+        const selectable = isDeleteSelectable(item);
+        const on = selectable && !!selection[item.reservationId];
         const rid = escapeHtml(item.reservationId);
-        const anySelected = DELETABLE_SNS.some(function (sns) { return deleteSelection[item.reservationId + '|' + sns]; });
-        const chips = DELETABLE_SNS.filter(function (sns) { return isDeletableResult(item, sns); }).map(function (sns) {
-          const on = !!deleteSelection[item.reservationId + '|' + sns];
-          return '<label class="del-sns-chip' + (on ? ' on' : '') + '">' +
-            '<input type="checkbox"' + (on ? ' checked' : '') + ' onchange="toggleDeleteItem(\'' + rid + '\',\'' + sns + '\',this.checked)">' +
-            sns + 'から削除</label>';
-        }).join('');
-        const igNote = item.results['Instagram'] === '成功'
-          ? '<div class="del-ig-note">📱 Instagramの投稿は、Instagramのアプリから削除してください</div>' : '';
-        return '<div class="del-card' + (anySelected ? ' selected' : '') + '">' +
-          '<div class="del-card-head">' + head + '</div>' +
-          '<div class="del-card-text">' + escapeHtml(item.honbun) + '</div>' +
-          (chips ? '<div class="del-sns-row">' + chips + '</div>' : '') +
-          igNote +
-        '</div>';
+        const noIdReason = (item.deletable && item.deletable[deleteSns]) ? '' :
+          '<div class="del-card-reason">この投稿はAiPostから削除できません（投稿IDの記録がありません）</div>';
+        const err = errors[item.reservationId]
+          ? '<div class="del-card-error">⚠️ ' + escapeHtml(errors[item.reservationId]) + '</div>' : '';
+        return '<label class="del-card' + (on ? ' selected' : '') + (selectable ? '' : ' disabled') + '" style="display:block;cursor:' + (selectable ? 'pointer' : 'default') + ';">' +
+          '<div class="del-row">' +
+            '<input type="checkbox"' + (on ? ' checked' : '') + (selectable ? '' : ' disabled') +
+              ' onchange="toggleDeleteItem(\'' + rid + '\',this.checked)">' +
+            '<div class="del-row-body">' +
+              '<div class="del-card-head">' + head + '</div>' +
+              '<div class="del-card-text" style="margin-bottom:0;">' + escapeHtml(item.honbun) + '</div>' +
+              noIdReason + err +
+            '</div>' +
+          '</div>' +
+        '</label>';
       }).join('');
     }
     updateDeleteControls();
   }
 
-  function toggleDeleteItem(reservationId, sns, checked) {
-    const key = reservationId + '|' + sns;
-    if (checked) deleteSelection[key] = true; else delete deleteSelection[key];
+  function toggleDeleteItem(reservationId, checked) {
+    if (deleteRunning) return;
+    if (checked) deleteSelection[deleteSns][reservationId] = true; else delete deleteSelection[deleteSns][reservationId];
     renderDeleteList();
   }
 
-  // この月の削除できる投稿をすべて選ぶ（すべて選ばれていれば、この月の選択を外す）
+  // この月の選べる投稿をすべて選ぶ（すべて選ばれていれば、この月の選択を外す）
   function toggleDeleteSelectAll() {
+    if (deleteRunning) return;
     const keys = deleteMonthKeys();
     if (keys.length === 0) return;
-    const allOn = keys.every(function (k) { return deleteSelection[k]; });
-    keys.forEach(function (k) { if (allOn) delete deleteSelection[k]; else deleteSelection[k] = true; });
+    const sel = deleteSelection[deleteSns];
+    const allOn = keys.every(function (k) { return sel[k]; });
+    keys.forEach(function (k) { if (allOn) delete sel[k]; else sel[k] = true; });
     renderDeleteList();
   }
 
-  // すべての月の選択を外す
+  // 表示中のSNSの選択をすべて外す（ほかの月の選択も外す）
   function clearDeleteSelection() {
-    deleteSelection = {};
+    if (deleteRunning) return;
+    deleteSelection[deleteSns] = {};
     renderDeleteList();
   }
 
-  // 選んだ件数の集計（投稿の数・SNSごとの数）
-  function deleteSelectionSummary() {
-    const posts = {};
-    const bySns = { X: 0, Threads: 0 };
-    Object.keys(deleteSelection).forEach(function (key) {
-      const parts = key.split('|');
-      posts[parts[0]] = true;
-      bySns[parts[1]] = (bySns[parts[1]] || 0) + 1;
-    });
-    return { postCount: Object.keys(posts).length, bySns: bySns };
+  // 表示中のSNSで選んでいる元予約ID（今も選べる投稿だけ）
+  function selectedDeleteIds() {
+    const sel = deleteSelection[deleteSns];
+    return deleteCandidates().filter(function (item) { return sel[item.reservationId] && isDeleteSelectable(item); })
+      .map(function (item) { return item.reservationId; });
   }
 
   function updateDeleteControls() {
-    const sum = deleteSelectionSummary();
+    const count = selectedDeleteIds().length;
     const btn = document.getElementById('del-exec-btn');
-    btn.disabled = sum.postCount === 0;
-    btn.textContent = sum.postCount === 0 ? '削除する' : '削除する（' + sum.postCount + '件）';
-    document.getElementById('del-clear-btn').disabled = sum.postCount === 0;
+    btn.disabled = count === 0 || deleteRunning;
+    btn.textContent = count === 0 ? '削除する' : '削除する（' + count + '件）';
+    document.getElementById('del-clear-btn').disabled = count === 0 || deleteRunning;
 
     const selBtn = document.getElementById('del-selectall-btn');
     const keys = deleteMonthKeys();
-    selBtn.disabled = keys.length === 0;
-    selBtn.textContent = (keys.length > 0 && keys.every(function (k) { return deleteSelection[k]; })) ? 'この月の選択を外す' : 'この月をすべて選ぶ';
+    const sel = deleteSelection[deleteSns];
+    selBtn.disabled = keys.length === 0 || deleteRunning;
+    selBtn.textContent = (keys.length > 0 && keys.every(function (k) { return sel[k]; })) ? 'この月の選択を外す' : 'この月をすべて選ぶ';
   }
 
   function openDeleteConfirm() {
-    const sum = deleteSelectionSummary();
-    if (sum.postCount === 0) return;
-    const lines = DELETABLE_SNS.filter(function (sns) { return sum.bySns[sns] > 0; })
-      .map(function (sns) { return sns + '：' + sum.bySns[sns] + '件'; });
-    document.getElementById('del-confirm-title').textContent = sum.postCount + '件の投稿を削除しますか？';
+    const count = selectedDeleteIds().length;
+    if (count === 0 || deleteRunning) return;
+    document.getElementById('del-confirm-title').textContent = deleteSns + 'から' + count + '件の投稿を削除しますか？';
     document.getElementById('del-confirm-text').textContent =
-      lines.join('\n') + '\n\nSNSから削除した投稿は、元に戻せません。';
+      '選んだ投稿を' + deleteSns + 'から削除します。\nSNSから削除した投稿は、元に戻せません。';
     document.getElementById('del-confirm-modal').classList.add('open');
   }
 
@@ -3241,10 +3305,69 @@ function _dataUrlToBase64(dataUrl) {
     document.getElementById('del-confirm-modal').classList.remove('open');
   }
 
-  // ★試作：GAS側の削除処理が未実装のため、実際には削除しない
-  function executeDeletePosts() {
+  // 削除の送信（書き込みのため、自動再試行は使わず1回だけ送る）
+  async function executeDeletePosts() {
+    const sns = deleteSns;
+    const ids = selectedDeleteIds();
     closeDeleteConfirm();
-    alert('投稿の削除機能は準備中です。\n（この画面は、表示と操作の流れを確認するための試作です。実際には削除されていません）');
+    if (ids.length === 0 || deleteRunning) return;
+    deleteRunning = true;
+    updateDeleteControls();
+    document.getElementById('del-saving-text').textContent = sns + 'から' + ids.length + '件の投稿を削除しています…';
+    document.getElementById('del-saving-overlay').classList.add('open');
+    traceLog('投稿削除 送信 ' + sns + ' ' + ids.length + '件');
+    let message = '';
+    try {
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'deletePosts', lineUid: LINE_UID, params: { sns: sns, reservationIds: ids } })
+      });
+      const result = await response.json();
+      const data = result && result.data;
+      if (!(result && result.success && data && data.success && Array.isArray(data.results))) {
+        message = (data && data.error) || (result && result.error) || '投稿の削除に失敗しました。もう一度お試しください。';
+        traceLog('投稿削除NG ' + message);
+      } else {
+        let okCount = 0;
+        let ngCount = 0;
+        data.results.forEach(function (r) {
+          const rid = String(r.reservationId);
+          if (r.ok) {
+            okCount++;
+            delete deleteSelection[sns][rid];
+            delete deleteErrors[sns][rid];
+            // 手元の投稿履歴のデータを書き換える（再取得しない）
+            postHistoryItems.forEach(function (item) {
+              if (item.reservationId === rid) {
+                item.results[sns] = '削除済み';
+                if (item.deletable) item.deletable[sns] = false;
+              }
+            });
+          } else {
+            ngCount++;
+            deleteErrors[sns][rid] = r.error || '削除できませんでした';
+          }
+        });
+        traceLog('投稿削除OK ' + sns + ' 削除' + okCount + '件 失敗' + ngCount + '件');
+        message = sns + 'から' + okCount + '件の投稿を削除しました。' +
+          (ngCount > 0 ? '\n' + ngCount + '件は削除できませんでした（理由は一覧に表示しています）。' : '');
+        // 投稿履歴タブの表示も新しい結果で描き直す
+        renderPostHistory();
+        if (historySelectedKey) {
+          const parts = historySelectedKey.split('-');
+          showHistoryDay(historySelectedKey, Number(parts[2]));
+        }
+      }
+    } catch (err) {
+      console.error('投稿削除エラー:', err);
+      message = '通信エラーが発生しました。削除できたかどうかは、もう一度画面を開いてご確認ください。';
+      traceLog('投稿削除 通信エラー ' + (err && err.message));
+    } finally {
+      deleteRunning = false;
+      document.getElementById('del-saving-overlay').classList.remove('open');
+      renderDeleteList();
+    }
+    if (message) alert(message);
   }
 
   traceStart();
