@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更45 - AiPost</title>
+<title>予約確認・変更46 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -728,7 +728,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更45</span>
+  <span class="header-logo">予約確認・変更46</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -945,13 +945,8 @@
 
 </div>
 
-<!-- 新規予約ボタン -->
-<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:12px 16px;background:white;border-top:1px solid var(--border);z-index:98;">
-  <button onclick="alert('文章生成画面へ移動します')" style="width:100%;padding:14px;border-radius:12px;border:none;background:var(--primary);color:white;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-    <span style="font-size:20px;">✏️</span>
-    <span>投稿文を作って予約する</span>
-  </button>
-</div>
+<!-- ★liff_reservation.html46：デモの頃の固定ボタン「投稿文を作って予約する」（押すと案内が出るだけで何もしない）を削除した。
+     下のメニューバーの裏に重なり、上の部分が青い帯のように見えていたため。投稿文作成へは下のメニューバーから移動する -->
 
 <!-- 予約詳細モーダル -->
 <div class="modal-overlay" id="profile-loading-overlay" style="z-index:2000;align-items:center;">
@@ -1317,7 +1312,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認45';
+  const TRACE_SCREEN = '予約確認46';
 
   function traceLog(msg) {
     try {
