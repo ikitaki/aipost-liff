@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録62 - AiPost</title>
+<title>設定・登録61 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -43,7 +43,7 @@
   }
   .header-logo { font-size: 15px; font-weight: 700; }
   .subbar {
-    background: #0A1222;
+    background: #13195f;
     padding: 6px 14px;
     display: flex;
     flex-direction: column;
@@ -114,11 +114,11 @@
     font-size: 12px;
     font-weight: 700;
   }
-  .plan-FREE { background: #122130; color: #8FA0BF; }
-  .plan-PERSONAL { background: #122330; color: #7BB4F4; }
-  .plan-LITE { background: #123015; color: #7BF481; }
-  .plan-STANDARD { background: #302912; color: #F4A67B; }
-  .plan-PRO { background: #2C1230; color: #C67BF4; }
+  .plan-FREE { background: #f1f5f9; color: #64748b; }
+  .plan-PERSONAL { background: #e3f2fd; color: #1565c0; }
+  .plan-LITE { background: #e8f5e9; color: #2e7d32; }
+  .plan-STANDARD { background: #fff8e1; color: #e65100; }
+  .plan-PRO { background: #f3e5f5; color: #6a1b9a; }
 
   .profile-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
   .profile-avatar {
@@ -157,7 +157,7 @@
     padding: 10px; border: 1.5px solid var(--border);
     border-radius: 10px; background: var(--bg); margin-bottom: 8px;
   }
-  .sns-item.connected { border-color: var(--success); background: #123012; }
+  .sns-item.connected { border-color: var(--success); background: #f0faf0; }
   .sns-item:last-child { margin-bottom: 0; }
   .sns-icon {
     width: 34px; height: 34px; border-radius: 8px;
@@ -175,20 +175,20 @@
   .sns-account { font-size: 10px; color: var(--text-sub); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .plan-demo-btn {
     font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
-    border: 1px solid rgba(27,42,74,0.4); background: transparent; color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.4); background: transparent; color: rgba(255,255,255,0.7);
     cursor: pointer;
   }
-  .plan-demo-btn.active { background: rgba(10,18,34,0.9); color: #E6EDF7; border-color: transparent; }
+  .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
   .sns-btn {
     padding: 5px 12px; border-radius: 16px; border: none;
     font-size: 11px; font-weight: 600; cursor: pointer; flex-shrink: 0;
   }
   .btn-connect { background: var(--primary); color: white; }
-  .btn-disconnect { background: #301212; color: var(--danger); }
+  .btn-disconnect { background: #fee2e2; color: var(--danger); }
 
   /* プラン比較 */
   .plan-current-card {
-    background: linear-gradient(135deg, #0891B2, #0891B2);
+    background: linear-gradient(135deg, #1a237e, #3949ab);
     color: white;
     border-radius: 12px;
     padding: 16px;
@@ -199,19 +199,19 @@
   .plan-current-price { font-size: 13px; opacity: 0.85; margin-bottom: 12px; }
   .plan-current-features { display: flex; flex-wrap: wrap; gap: 6px; }
   .plan-feature-tag {
-    background: rgba(10,18,34,0.2);
+    background: rgba(255,255,255,0.2);
     padding: 3px 8px; border-radius: 10px;
     font-size: 11px;
   }
 
   .compare-btn {
     width: 100%; padding: 12px; border-radius: 10px;
-    border: 1.5px solid var(--primary); background: #0A1222;
+    border: 1.5px solid var(--primary); background: white;
     color: var(--primary); font-size: 14px; font-weight: 600;
     cursor: pointer; margin-bottom: 8px;
     display: flex; align-items: center; justify-content: center; gap: 6px;
   }
-  .compare-btn:active { background: #070E1C; }
+  .compare-btn:active { background: #f0f2ff; }
 
   /* 比較モーダル */
   .modal-overlay {
@@ -221,7 +221,7 @@
   }
   .modal-overlay.open { display: flex; }
   .modal {
-    background: #0A1222; border-radius: 20px 20px 0 0;
+    background: white; border-radius: 20px 20px 0 0;
     padding: 20px 16px; width: 100%; max-width: 480px;
     max-height: 85vh; overflow-y: auto;
   }
@@ -242,9 +242,9 @@
   }
   .compare-table tr:last-child td { border-bottom: none; }
   .compare-table .feature-name { text-align: left; color: var(--text-sub); font-size: 11px; }
-  .compare-table .section-row td { background: #070E1C; color: var(--text-sub); font-size: 10px; font-weight: 700; padding: 6px 6px; text-align: left; letter-spacing: 0.05em; }
-  .compare-table .current-col { background: #070E1C; }
-  .compare-table .upper-col { background: #070E1C; }
+  .compare-table .section-row td { background: #f8f9fa; color: var(--text-sub); font-size: 10px; font-weight: 700; padding: 6px 6px; text-align: left; letter-spacing: 0.05em; }
+  .compare-table .current-col { background: #f0f2ff; }
+  .compare-table .upper-col { background: #faf0ff; }
   .check { color: var(--success); font-size: 14px; }
   .cross { color: var(--text-light); }
   .modal-close {
@@ -271,12 +271,12 @@
   .toggle input { opacity: 0; width: 0; height: 0; }
   .toggle-slider {
     position: absolute; inset: 0;
-    background: #172945; border-radius: 24px; cursor: pointer; transition: 0.2s;
+    background: #d1d5db; border-radius: 24px; cursor: pointer; transition: 0.2s;
   }
   .toggle-slider::before {
     content: ''; position: absolute;
     width: 18px; height: 18px; left: 3px; top: 3px;
-    background: #0A1222; border-radius: 50%; transition: 0.2s;
+    background: white; border-radius: 50%; transition: 0.2s;
   }
   .toggle input:checked + .toggle-slider { background: var(--primary); }
   .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
@@ -291,9 +291,9 @@
   .info-val { font-weight: 500; }
 
   .notice {
-    background: #302912; border: 1px solid #7A6629;
+    background: #fff8e1; border: 1px solid #ffe082;
     border-radius: 8px; padding: 10px 12px;
-    font-size: 12px; color: #F4987B;
+    font-size: 12px; color: #5d4037;
     margin-bottom: 12px; display: flex; gap: 8px; line-height: 1.6;
   }
 
@@ -305,8 +305,8 @@
   .btn-primary { background: var(--primary); color: white; }
   /* ★liff_settings.html60：変更が無い時は保存ボタンを押せない（薄く表示） */
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-outline { background: #0A1222; color: var(--primary); border: 1.5px solid var(--primary); }
-  .btn-caution { background: #302512; color: #F4A67B; }
+  .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn-caution { background: #fff3e0; color: #e65100; }
 
   /* 解約確認画面 */
   .cancel-screen { display: none; }
@@ -322,9 +322,9 @@
   .cancel-sub { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
 
   .cancel-note {
-    background: #302512; border-left: 3px solid var(--warning);
+    background: #fff3e0; border-left: 3px solid var(--warning);
     border-radius: 0 8px 8px 0; padding: 12px;
-    font-size: 12px; line-height: 1.8; color: #F4987B;
+    font-size: 12px; line-height: 1.8; color: #5d4037;
     margin-bottom: 12px;
   }
   .btn-cancel-execute {
@@ -342,8 +342,8 @@
     left: 0;
     right: 0;
     height: 60px;
-    background: #0A1222;
-    border-top: 1px solid #1B2A4A;
+    background: #ffffff;
+    border-top: 1px solid #e0e0e0;
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -359,7 +359,7 @@
     height: 100%;
     cursor: pointer;
     text-decoration: none;
-    color: #8FA0BF;
+    color: #9e9e9e;
     transition: color 0.2s;
     -webkit-tap-highlight-color: transparent;
     background: none;
@@ -369,7 +369,7 @@
     font-size: inherit;
     outline: none;
   }
-  .nav-item.active { color: #67E8F9; }
+  .nav-item.active { color: #1a237e; }
   .nav-item:active { opacity: 0.7; }
   .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
   .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
@@ -380,80 +380,16 @@
   }
 
   /* ★liff_settings.html57：保存済み情報の更新ボタン */
-  .header-refresh { background: rgba(10,18,34,0.15); color: #fff; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; padding: 3px 9px; line-height: 1.4; cursor: pointer; white-space: nowrap; }
-  .header-refresh:active { background: rgba(10,18,34,0.3); }
-
-/* ============================================================
-   ★ネオン・コックピットデザイン（全画面共通の見た目。2026年10月）
-   既存のクラス名・idはそのままに、色・枠・光り方だけを上書きする
-   ============================================================ */
-:root{
-  color-scheme:dark;
-  --primary:#0891B2; --primary-light:#22D3EE; --accent:#22D3EE;
-  --success:#34D399; --warning:#FBBF24; --danger:#F87171;
-  --bg:#050912; --surface:#0A1222; --border:#1B2A4A;
-  --text:#E6EDF7; --text-sub:#8FA0BF; --text-light:#6B7A99; --white:#0A1222;
-  --neon:#22D3EE; --neon-soft:rgba(34,211,238,.12); --panel:#070E1C;
-}
-html{background:#050912}
-body{background-color:#050912 !important;color:var(--text);
-  background-image:linear-gradient(#0B1324 1px,transparent 1px),linear-gradient(90deg,#0B1324 1px,transparent 1px) !important;
-  background-size:26px 26px !important;background-attachment:fixed}
-.header{background:rgba(5,9,18,.94) !important;color:var(--text) !important;border-bottom:1px solid var(--border);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);min-height:52px}
-.neon-mark{width:32px;height:32px;border-radius:9px;border:1px solid var(--neon);color:var(--neon);display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:0 0 14px rgba(34,211,238,.35),inset 0 0 8px rgba(34,211,238,.2)}
-.neon-title{display:flex;flex-direction:column;line-height:1.25}
-.neon-tag{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:.18em;color:var(--neon);font-weight:700}
-.header-logo{color:var(--text) !important}
-.header-sub{color:var(--text-light) !important;opacity:1 !important}
-.header-refresh{background:var(--surface) !important;border:1px solid var(--border) !important;color:var(--text) !important;padding:6px 10px !important;border-radius:10px !important}
-.subbar{background:rgba(10,18,34,.95) !important;border-bottom:1px solid var(--border)}
-.tab-nav{background:var(--surface) !important;border:1px solid var(--border) !important;border-radius:12px;margin:10px 12px 0;overflow:hidden}
-.tab-btn{color:#6B7A99 !important;border-bottom:none !important;border-right:1px solid var(--border) !important}
-.tab-btn:last-child{border-right:none !important}
-.tab-btn.active{color:#050912 !important;background:var(--neon) !important;box-shadow:0 0 18px rgba(34,211,238,.55);font-weight:700}
-.card,.section{background:rgba(10,18,34,.92) !important;border:1px solid var(--border) !important;border-radius:16px !important}
-.card-title,.section-title{color:var(--text) !important}
-input,select,textarea,.form-input,.form-select{background:var(--panel) !important;color:var(--text) !important;border-color:var(--border) !important}
-input:focus,select:focus,textarea:focus{border-color:var(--neon) !important;box-shadow:0 0 0 2px rgba(34,211,238,.2);outline:none}
-input::placeholder,textarea::placeholder{color:#4E5D7C !important}
-input[type=checkbox],input[type=radio]{accent-color:var(--neon)}
-select option{background:#0A1222;color:#E6EDF7}
-.btn-primary,.modal-close,.btn-connect,.plan-guide-btn{background:var(--neon) !important;color:#050912 !important;border:none !important;font-weight:700;box-shadow:0 0 18px rgba(34,211,238,.45)}
-.btn-primary:disabled{box-shadow:none}
-.btn-outline,.compare-btn{background:transparent !important;color:#67E8F9 !important;border:1px solid var(--neon) !important}
-.modal{background:#0A1222 !important;color:var(--text);border:1px solid var(--border);box-shadow:0 -8px 40px rgba(34,211,238,.12)}
-.modal-overlay{background:rgba(2,5,12,.72)}
-.bottom-nav{background:rgba(10,18,34,.96) !important;border:1px solid var(--border) !important;border-radius:18px;left:10px !important;right:10px !important;bottom:8px !important;
-  height:62px !important;box-shadow:0 0 24px rgba(0,0,0,.6) !important;padding:4px;max-width:460px;margin:0 auto}
-.nav-item{color:#6B7A99 !important;border-radius:13px}
-.nav-item.active{color:var(--neon) !important;background:rgba(34,211,238,.1) !important;box-shadow:inset 0 0 0 1px rgba(34,211,238,.45)}
-.nav-icon svg{display:block}
-body{padding-bottom:84px}
-
-/* 設定画面だけの見た目 */
-.notice{background:rgba(34,211,238,.06) !important;border:1px solid rgba(34,211,238,.35) !important;color:#C3CDE0 !important;border-radius:12px !important}
-.sns-item{background:var(--panel) !important;border:1px solid var(--border) !important;border-radius:12px !important;padding:12px !important}
-.sns-item.connected{border-color:rgba(52,211,153,.45) !important;box-shadow:0 0 14px rgba(52,211,153,.12)}
-.sns-icon{border:1px solid rgba(255,255,255,.15)}
-.btn-disconnect{background:transparent !important;color:#FCA5A5 !important;border:1px solid rgba(248,113,113,.5) !important}
-.sns-btn{padding:8px 14px !important;border-radius:10px !important}
-.btn-caution{background:transparent !important;color:#FDBA74 !important;border:1px solid rgba(251,146,60,.5) !important}
-.cancel-note{background:rgba(251,146,60,.08) !important;border-left-color:#FB923C !important;color:#FDBA74 !important}
-.btn-cancel-execute{background:#DC2626 !important;box-shadow:0 0 16px rgba(220,38,38,.35)}
-.info-row,.toggle-row{border-color:#12203B !important}
-
+  .header-refresh { background: rgba(255,255,255,0.15); color: #fff; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; padding: 3px 9px; line-height: 1.4; cursor: pointer; white-space: nowrap; }
+  .header-refresh:active { background: rgba(255,255,255,0.3); }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="header">
-  <!-- ★liff_settings.html62：ネオン・コックピットのデザインに変更（見た目のみ。動きは変更なし） -->
-  <span class="neon-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span>
-  <span class="neon-title"><span class="neon-tag">SETTINGS</span><span class="header-logo">設定・登録62</span></span>
+  <span style="font-size:20px;">⚙️</span>
+  <span class="header-logo">設定・登録61</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -497,7 +433,7 @@ body{padding-bottom:84px}
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span id="plan-badge" style="background:#302912;color:#F4A67B;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
+    <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
     <span id="plan-price">¥1,280/月</span>
     <!-- ★liff_settings.html59：デモの固定文字「次回更新：2026年7月1日」を削除した。決済（Stripe）実装時に、有料プランのみ実際の次回請求日を表示する -->
   </div>
@@ -524,7 +460,7 @@ body{padding-bottom:84px}
     </div>
     <div class="card">
       <div class="card-title" id="sns-connected-title">連携状況（3/3）</div>
-      <p id="sns-post-limit-note" style="display:none;font-size:11px;color:#F4A67B;margin:-4px 0 8px;"></p>
+      <p id="sns-post-limit-note" style="display:none;font-size:11px;color:#e65100;margin:-4px 0 8px;"></p>
       <div class="sns-item connected" id="sns-item-x">
         <div class="sns-icon sns-x">X</div>
         <div class="sns-info">
@@ -723,9 +659,9 @@ body{padding-bottom:84px}
 </div>
 
 <div class="modal-overlay" id="profile-loading-overlay" style="z-index:2000;align-items:center;">
-  <div style="background:#0A1222;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
-    <div style="width:32px;height:32px;border:3px solid #1B2A4A;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
-    <div style="font-size:14px;font-weight:700;color:#E6EDF7;">保存済みの情報を読み込んでいます…</div>
+  <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
+    <div style="font-size:14px;font-weight:700;color:#333;">保存済みの情報を読み込んでいます…</div>
   </div>
 </div>
 
@@ -939,7 +875,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定62';
+const TRACE_SCREEN = '設定61';
 
 function traceLog(msg) {
   try {
@@ -1107,7 +1043,7 @@ function setFormLoadingState(isLoading) {
 function showToast(msg) {
   const t = document.createElement('div');
   t.textContent = msg;
-  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0891B2;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:3000;white-space:nowrap;';
+  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a237e;color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:3000;white-space:nowrap;';
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 2000);
 }
@@ -1330,7 +1266,7 @@ function updateSnsSummary() {
     : '';
   const planSns = document.getElementById('plan-sns');
   planSns.innerHTML = '<span>連携中：</span>' + connectedList.map(s =>
-    `<span style="background:rgba(10,18,34,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${SNS_LABEL[s]}</span>`
+    `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${SNS_LABEL[s]}</span>`
   ).join('') + quotaHtml;
 }
 
@@ -1924,22 +1860,22 @@ updateSnsSummary();
 <!-- ボトムナビゲーションバー -->
 <nav class="bottom-nav" id="bottom-nav">
   <button class="nav-item" onclick="navigateTo('textgen')">
-    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg></span><span class="nav-label">投稿文作成</span>
+    <span class="nav-icon">📝</span><span class="nav-label">投稿文作成</span>
   </button>
   <button class="nav-item" onclick="navigateTo('reservation')">
-    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span><span class="nav-label">予約確認</span>
+    <span class="nav-icon">📅</span><span class="nav-label">予約確認</span>
   </button>
   <button class="nav-item" onclick="navigateTo('analytics')">
-    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span><span class="nav-label">分析</span>
+    <span class="nav-icon">📊</span><span class="nav-label">分析</span>
   </button>
   <button class="nav-item active" onclick="navigateTo('settings')">
-    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span><span class="nav-label">設定</span>
+    <span class="nav-icon">⚙️</span><span class="nav-label">設定</span>
   </button>
   <button class="nav-item" onclick="navigateTo('support')">
-    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5z"/></svg></span><span class="nav-label">AIサポート</span>
+    <span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span>
   </button>
   <button class="nav-item" onclick="navigateTo('plan')">
-    <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12l3 5-9 11L3 9l3-5z"/></svg></span><span class="nav-label">プラン</span>
+    <span class="nav-icon">💎</span><span class="nav-label">プラン</span>
   </button>
 </nav>
 

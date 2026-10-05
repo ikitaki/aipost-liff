@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>利用規約3 - AiPost</title>
+  <title>利用規約2 - AiPost</title>
   <style>
     :root {
       --primary: #1a237e;
@@ -51,7 +51,7 @@
     }
 
     .section {
-      background: var(--#0A1222);
+      background: var(--white);
       border-radius: 10px;
       border: 1px solid var(--border);
       padding: 14px 16px;
@@ -86,37 +86,37 @@
     li:last-child { margin-bottom: 0; }
 
     .warn-box {
-      background: #302912;
+      background: #fff8e1;
       border-left: 4px solid #e65100;
       border-radius: 0 8px 8px 0;
       padding: 10px 12px;
       margin: 10px 0;
       font-size: 12px;
-      color: #F4987B;
+      color: #5d4037;
       line-height: 1.8;
     }
 
     .info-box {
-      background: #070E1C;
+      background: #f0f2ff;
       border-left: 4px solid var(--primary);
       border-radius: 0 8px 8px 0;
       padding: 10px 12px;
       margin: 10px 0;
       font-size: 12px;
-      color: #67E8F9;
+      color: #1a237e;
       line-height: 1.8;
     }
 
     .placeholder {
-      background: #302512;
+      background: #fff3e0;
       border-radius: 4px;
       padding: 1px 6px;
       font-weight: 700;
-      color: #F4A67B;
+      color: #e65100;
     }
 
     .company-info {
-      background: var(--#0A1222);
+      background: var(--white);
       border-radius: 10px;
       border: 1px solid var(--border);
       padding: 14px 16px;
@@ -132,72 +132,14 @@
     .company-row:last-child { border-bottom: none; }
     .company-key { color: var(--text-sub); width: 80px; flex-shrink: 0; }
     .company-val { color: var(--text); font-weight: 600; }
-  
-/* ============================================================
-   ★ネオン・コックピットデザイン（全画面共通の見た目。2026年10月）
-   既存のクラス名・idはそのままに、色・枠・光り方だけを上書きする
-   ============================================================ */
-:root{
-  color-scheme:dark;
-  --primary:#0891B2; --primary-light:#22D3EE; --accent:#22D3EE;
-  --success:#34D399; --warning:#FBBF24; --danger:#F87171;
-  --bg:#050912; --surface:#0A1222; --border:#1B2A4A;
-  --text:#E6EDF7; --text-sub:#8FA0BF; --text-light:#6B7A99; --white:#0A1222;
-  --neon:#22D3EE; --neon-soft:rgba(34,211,238,.12); --panel:#070E1C;
-}
-html{background:#050912}
-body{background-color:#050912 !important;color:var(--text);
-  background-image:linear-gradient(#0B1324 1px,transparent 1px),linear-gradient(90deg,#0B1324 1px,transparent 1px) !important;
-  background-size:26px 26px !important;background-attachment:fixed}
-.header{background:rgba(5,9,18,.94) !important;color:var(--text) !important;border-bottom:1px solid var(--border);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);min-height:52px}
-.neon-mark{width:32px;height:32px;border-radius:9px;border:1px solid var(--neon);color:var(--neon);display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:0 0 14px rgba(34,211,238,.35),inset 0 0 8px rgba(34,211,238,.2)}
-.neon-title{display:flex;flex-direction:column;line-height:1.25}
-.neon-tag{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:.18em;color:var(--neon);font-weight:700}
-.header-logo{color:var(--text) !important}
-.header-sub{color:var(--text-light) !important;opacity:1 !important}
-.header-refresh{background:var(--surface) !important;border:1px solid var(--border) !important;color:var(--text) !important;padding:6px 10px !important;border-radius:10px !important}
-.subbar{background:rgba(10,18,34,.95) !important;border-bottom:1px solid var(--border)}
-.tab-nav{background:var(--surface) !important;border:1px solid var(--border) !important;border-radius:12px;margin:10px 12px 0;overflow:hidden}
-.tab-btn{color:#6B7A99 !important;border-bottom:none !important;border-right:1px solid var(--border) !important}
-.tab-btn:last-child{border-right:none !important}
-.tab-btn.active{color:#050912 !important;background:var(--neon) !important;box-shadow:0 0 18px rgba(34,211,238,.55);font-weight:700}
-.card,.section{background:rgba(10,18,34,.92) !important;border:1px solid var(--border) !important;border-radius:16px !important}
-.card-title,.section-title{color:var(--text) !important}
-input,select,textarea,.form-input,.form-select{background:var(--panel) !important;color:var(--text) !important;border-color:var(--border) !important}
-input:focus,select:focus,textarea:focus{border-color:var(--neon) !important;box-shadow:0 0 0 2px rgba(34,211,238,.2);outline:none}
-input::placeholder,textarea::placeholder{color:#4E5D7C !important}
-input[type=checkbox],input[type=radio]{accent-color:var(--neon)}
-select option{background:#0A1222;color:#E6EDF7}
-.btn-primary,.modal-close,.btn-connect,.plan-guide-btn{background:var(--neon) !important;color:#050912 !important;border:none !important;font-weight:700;box-shadow:0 0 18px rgba(34,211,238,.45)}
-.btn-primary:disabled{box-shadow:none}
-.btn-outline,.compare-btn{background:transparent !important;color:#67E8F9 !important;border:1px solid var(--neon) !important}
-.modal{background:#0A1222 !important;color:var(--text);border:1px solid var(--border);box-shadow:0 -8px 40px rgba(34,211,238,.12)}
-.modal-overlay{background:rgba(2,5,12,.72)}
-.bottom-nav{background:rgba(10,18,34,.96) !important;border:1px solid var(--border) !important;border-radius:18px;left:10px !important;right:10px !important;bottom:8px !important;
-  height:62px !important;box-shadow:0 0 24px rgba(0,0,0,.6) !important;padding:4px;max-width:460px;margin:0 auto}
-.nav-item{color:#6B7A99 !important;border-radius:13px}
-.nav-item.active{color:var(--neon) !important;background:rgba(34,211,238,.1) !important;box-shadow:inset 0 0 0 1px rgba(34,211,238,.45)}
-.nav-icon svg{display:block}
-body{padding-bottom:84px}
-
-.doc-title{color:var(--text) !important}.doc-date{color:var(--text-sub) !important}
-.section-title{border-bottom-color:#22D3EE55 !important}
-.info-box{background:rgba(34,211,238,.06) !important;border-left-color:var(--neon) !important;color:#C3CDE0 !important}
-.placeholder{background:rgba(251,146,60,.12) !important;color:#FDBA74 !important}
-th{background:rgba(34,211,238,.08) !important;color:#67E8F9 !important}
-
-</style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  </style>
 </head>
 <body>
 
   <div class="header">
-    <button onclick="history.back()" class="neon-back" style="background:#0A1222;border:1px solid #1B2A4A;color:#E6EDF7;font-size:12px;cursor:pointer;padding:8px 10px;border-radius:10px;margin-right:4px;">◀ 戻る</button>
-    <!-- ★liff_terms.html3：ネオン・コックピットのデザインに変更（見た目のみ） -->
-    <span class="neon-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h7"/></svg></span>
-    <span class="neon-title"><span class="neon-tag">TERMS</span><span class="header-logo">利用規約3</span></span>
+    <button onclick="history.back()" style="background:none;border:none;color:white;font-size:13px;cursor:pointer;padding:0;margin-right:4px;">◀ 戻る</button>
+    <span style="font-size:16px;">📄</span>
+    <span class="header-logo">利用規約2</span>
     <span class="header-sub">AiPost</span>
   </div>
 
@@ -408,11 +350,11 @@ th{background:rgba(34,211,238,.08) !important;color:#67E8F9 !important}
 
     <!-- 申し込み用：同意チェックとボタン（プラン申し込み時のみ表示） -->
     <div id="agreement-section" style="display:none;">
-      <div style="background:#0A1222;border-radius:10px;border:2px solid var(--primary);padding:16px;margin-bottom:12px;">
+      <div style="background:#ffffff;border-radius:10px;border:2px solid var(--primary);padding:16px;margin-bottom:12px;">
         <div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:12px;text-align:center;">
           申し込み確認
         </div>
-        <div style="background:#070E1C;border-radius:8px;padding:12px;margin-bottom:14px;font-size:13px;color:var(--primary);text-align:center;">
+        <div style="background:#f0f2ff;border-radius:8px;padding:12px;margin-bottom:14px;font-size:13px;color:var(--primary);text-align:center;">
           選択プラン：<strong id="selected-plan-name">-</strong>
         </div>
         <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:14px;">
@@ -420,7 +362,7 @@ th{background:rgba(34,211,238,.08) !important;color:#67E8F9 !important}
           <span style="font-size:13px;color:var(--text);line-height:1.8;">利用規約の内容を読み、同意します</span>
         </label>
         <button id="agree-btn" disabled onclick="proceedToPayment()"
-          style="width:100%;padding:14px;border-radius:10px;border:none;background:#451717;color:white;font-size:15px;font-weight:700;cursor:not-allowed;transition:all 0.2s;">
+          style="width:100%;padding:14px;border-radius:10px;border:none;background:#cccccc;color:white;font-size:15px;font-weight:700;cursor:not-allowed;transition:all 0.2s;">
           申し込みを完了する
         </button>
         <p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:8px;line-height:1.7;">
@@ -453,11 +395,11 @@ function toggleAgreeBtn() {
   const btn = document.getElementById('agree-btn');
   if (checked) {
     btn.disabled = false;
-    btn.style.background = '#0891B2';
+    btn.style.background = '#1a237e';
     btn.style.cursor = 'pointer';
   } else {
     btn.disabled = true;
-    btn.style.background = '#451717';
+    btn.style.background = '#cccccc';
     btn.style.cursor = 'not-allowed';
   }
 }

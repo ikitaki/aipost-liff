@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プライバシーポリシー2 - AiPost</title>
+  <title>プライバシーポリシー1 - AiPost</title>
   <style>
     :root {
       --primary: #1a237e;
@@ -51,7 +51,7 @@
     }
 
     .section {
-      background: var(--#0A1222);
+      background: var(--white);
       border-radius: 10px;
       border: 1px solid var(--border);
       padding: 14px 16px;
@@ -86,22 +86,22 @@
     li:last-child { margin-bottom: 0; }
 
     .info-box {
-      background: #070E1C;
+      background: #f0f2ff;
       border-left: 4px solid var(--primary);
       border-radius: 0 8px 8px 0;
       padding: 10px 12px;
       margin: 10px 0;
       font-size: 12px;
-      color: #67E8F9;
+      color: #1a237e;
       line-height: 1.8;
     }
 
     .placeholder {
-      background: #302512;
+      background: #fff3e0;
       border-radius: 4px;
       padding: 1px 6px;
       font-weight: 700;
-      color: #F4A67B;
+      color: #e65100;
     }
 
     table {
@@ -111,7 +111,7 @@
       margin: 8px 0;
     }
     th {
-      background: #121630;
+      background: #e8eaf6;
       color: var(--primary);
       font-weight: 700;
       padding: 7px 8px;
@@ -137,72 +137,14 @@
     .company-row:last-child { border-bottom: none; }
     .company-key { color: var(--text-sub); width: 100px; flex-shrink: 0; }
     .company-val { color: var(--text); font-weight: 600; }
-  
-/* ============================================================
-   ★ネオン・コックピットデザイン（全画面共通の見た目。2026年10月）
-   既存のクラス名・idはそのままに、色・枠・光り方だけを上書きする
-   ============================================================ */
-:root{
-  color-scheme:dark;
-  --primary:#0891B2; --primary-light:#22D3EE; --accent:#22D3EE;
-  --success:#34D399; --warning:#FBBF24; --danger:#F87171;
-  --bg:#050912; --surface:#0A1222; --border:#1B2A4A;
-  --text:#E6EDF7; --text-sub:#8FA0BF; --text-light:#6B7A99; --white:#0A1222;
-  --neon:#22D3EE; --neon-soft:rgba(34,211,238,.12); --panel:#070E1C;
-}
-html{background:#050912}
-body{background-color:#050912 !important;color:var(--text);
-  background-image:linear-gradient(#0B1324 1px,transparent 1px),linear-gradient(90deg,#0B1324 1px,transparent 1px) !important;
-  background-size:26px 26px !important;background-attachment:fixed}
-.header{background:rgba(5,9,18,.94) !important;color:var(--text) !important;border-bottom:1px solid var(--border);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);min-height:52px}
-.neon-mark{width:32px;height:32px;border-radius:9px;border:1px solid var(--neon);color:var(--neon);display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:0 0 14px rgba(34,211,238,.35),inset 0 0 8px rgba(34,211,238,.2)}
-.neon-title{display:flex;flex-direction:column;line-height:1.25}
-.neon-tag{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:.18em;color:var(--neon);font-weight:700}
-.header-logo{color:var(--text) !important}
-.header-sub{color:var(--text-light) !important;opacity:1 !important}
-.header-refresh{background:var(--surface) !important;border:1px solid var(--border) !important;color:var(--text) !important;padding:6px 10px !important;border-radius:10px !important}
-.subbar{background:rgba(10,18,34,.95) !important;border-bottom:1px solid var(--border)}
-.tab-nav{background:var(--surface) !important;border:1px solid var(--border) !important;border-radius:12px;margin:10px 12px 0;overflow:hidden}
-.tab-btn{color:#6B7A99 !important;border-bottom:none !important;border-right:1px solid var(--border) !important}
-.tab-btn:last-child{border-right:none !important}
-.tab-btn.active{color:#050912 !important;background:var(--neon) !important;box-shadow:0 0 18px rgba(34,211,238,.55);font-weight:700}
-.card,.section{background:rgba(10,18,34,.92) !important;border:1px solid var(--border) !important;border-radius:16px !important}
-.card-title,.section-title{color:var(--text) !important}
-input,select,textarea,.form-input,.form-select{background:var(--panel) !important;color:var(--text) !important;border-color:var(--border) !important}
-input:focus,select:focus,textarea:focus{border-color:var(--neon) !important;box-shadow:0 0 0 2px rgba(34,211,238,.2);outline:none}
-input::placeholder,textarea::placeholder{color:#4E5D7C !important}
-input[type=checkbox],input[type=radio]{accent-color:var(--neon)}
-select option{background:#0A1222;color:#E6EDF7}
-.btn-primary,.modal-close,.btn-connect,.plan-guide-btn{background:var(--neon) !important;color:#050912 !important;border:none !important;font-weight:700;box-shadow:0 0 18px rgba(34,211,238,.45)}
-.btn-primary:disabled{box-shadow:none}
-.btn-outline,.compare-btn{background:transparent !important;color:#67E8F9 !important;border:1px solid var(--neon) !important}
-.modal{background:#0A1222 !important;color:var(--text);border:1px solid var(--border);box-shadow:0 -8px 40px rgba(34,211,238,.12)}
-.modal-overlay{background:rgba(2,5,12,.72)}
-.bottom-nav{background:rgba(10,18,34,.96) !important;border:1px solid var(--border) !important;border-radius:18px;left:10px !important;right:10px !important;bottom:8px !important;
-  height:62px !important;box-shadow:0 0 24px rgba(0,0,0,.6) !important;padding:4px;max-width:460px;margin:0 auto}
-.nav-item{color:#6B7A99 !important;border-radius:13px}
-.nav-item.active{color:var(--neon) !important;background:rgba(34,211,238,.1) !important;box-shadow:inset 0 0 0 1px rgba(34,211,238,.45)}
-.nav-icon svg{display:block}
-body{padding-bottom:84px}
-
-.doc-title{color:var(--text) !important}.doc-date{color:var(--text-sub) !important}
-.section-title{border-bottom-color:#22D3EE55 !important}
-.info-box{background:rgba(34,211,238,.06) !important;border-left-color:var(--neon) !important;color:#C3CDE0 !important}
-.placeholder{background:rgba(251,146,60,.12) !important;color:#FDBA74 !important}
-th{background:rgba(34,211,238,.08) !important;color:#67E8F9 !important}
-
-</style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  </style>
 </head>
 <body>
 
   <div class="header">
-    <button onclick="history.back()" class="neon-back" style="background:#0A1222;border:1px solid #1B2A4A;color:#E6EDF7;font-size:12px;cursor:pointer;padding:8px 10px;border-radius:10px;margin-right:4px;">◀ 戻る</button>
-    <!-- ★liff_privacy.html2：ネオン・コックピットのデザインに変更（見た目のみ） -->
-    <span class="neon-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
-    <span class="neon-title"><span class="neon-tag">PRIVACY</span><span class="header-logo">プライバシーポリシー2</span></span>
+    <button onclick="history.back()" style="background:none;border:none;color:white;font-size:13px;cursor:pointer;padding:0;margin-right:4px;">◀ 戻る</button>
+    <span style="font-size:16px;">🔒</span>
+    <span class="header-logo">プライバシーポリシー1</span>
     <span class="header-sub">AiPost</span>
   </div>
 

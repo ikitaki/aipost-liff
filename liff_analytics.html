@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析52 - AiPost</title>
+<title>分析51 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -15,7 +15,7 @@
   body { font-family:'Hiragino Sans','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); max-width:480px; margin:0 auto; padding-bottom:70px; }
   .header { background:var(--primary); color:white; padding:8px 14px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; }
   .header-logo { font-size:15px; font-weight:700; }
-  .subbar { background:#0A1222; padding:6px 14px; display:flex; flex-direction:column; position:sticky; top:40px; z-index:99; }
+  .subbar { background:#13195f; padding:6px 14px; display:flex; flex-direction:column; position:sticky; top:40px; z-index:99; }
   .tab-nav { display:flex; background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:74px; z-index:98; }
   .tab-btn { flex:1; padding:10px 4px; border:none; background:none; font-size:11px; font-weight:600; color:var(--text-sub); cursor:pointer; border-bottom:2px solid transparent; font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:2px; }
   .tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
@@ -48,7 +48,7 @@
   .accordion-arrow { font-size:10px; color:var(--text-sub); transition:transform 0.2s; margin-left:8px; }
   .accordion-body { display:none; margin-top:8px; }
   .accordion-body.open { display:block; }
-  .sent-pos { background:var(--success); } .sent-neu { background:#070E1C; } .sent-neg { background:var(--danger); }
+  .sent-pos { background:var(--success); } .sent-neu { background:#e0e0e0; } .sent-neg { background:var(--danger); }
   .sentiment-legend { display:flex; gap:10px; flex-wrap:wrap; }
   .sent-label { font-size:11px; color:var(--text-sub); display:flex; align-items:center; gap:4px; }
   .sent-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
@@ -70,21 +70,21 @@
   .cal-date.today { background:var(--primary); color:white; font-weight:700; }
   .cal-date.has-post { padding-top:2px; justify-content:flex-start; gap:1px; }
   .cal-date.selected { background:var(--primary-light) !important; color:white !important; border-radius:6px; }
-  .cal-date.selected .cal-post-count { background:#0A1222 !important; color:var(--primary) !important; }
+  .cal-date.selected .cal-post-count { background:white !important; color:var(--primary) !important; }
   .cal-post-count { font-size:9px; font-weight:700; color:white; border-radius:8px; padding:0px 4px; line-height:1.6; min-width:14px; text-align:center; }
-  .cal-date.today .cal-post-count { background:rgba(10,18,34,0.9) !important; color:var(--primary); }
+  .cal-date.today .cal-post-count { background:rgba(255,255,255,0.9) !important; color:var(--primary); }
   .cal-date.other-month { color:var(--text-light); }
   .cal-date.sunday { color:var(--danger); }
   .cal-date.saturday { color:var(--accent); }
   .cal-date.today.sunday, .cal-date.today.saturday { color:white; }
   /* 詳細表示 */
-  .metric-detail { display:none; margin-top:10px; background:#123012; border-radius:8px; padding:10px; border:1px solid #297A2C; }
+  .metric-detail { display:none; margin-top:10px; background:#f0f7f0; border-radius:8px; padding:10px; border:1px solid #a5d6a7; }
   .metric-detail.show { display:block; }
-  .metric-detail-title { font-size:12px; font-weight:700; color:#7BF481; margin-bottom:6px; }
-  .neg-detail { display:none; margin-top:10px; background:#30121C; border-radius:8px; padding:10px; }
+  .metric-detail-title { font-size:12px; font-weight:700; color:#2e7d32; margin-bottom:6px; }
+  .neg-detail { display:none; margin-top:10px; background:#fce4ec; border-radius:8px; padding:10px; }
   .neg-detail.show { display:block; }
-  .neg-detail-title { font-size:12px; font-weight:700; color:#F47BBC; margin-bottom:6px; }
-  .neg-comment { font-size:12px; color:#F47BBC; line-height:1.8; white-space:pre-line; }
+  .neg-detail-title { font-size:12px; font-weight:700; color:#880e4f; margin-bottom:6px; }
+  .neg-comment { font-size:12px; color:#880e4f; line-height:1.8; white-space:pre-line; }
   .hint { font-size:11px; color:var(--text-sub); margin-bottom:6px; }
   /* 案内 */
   .plan-feature-list { text-align:left; background:var(--surface); border-radius:10px; border:1px solid var(--border); padding:12px; margin-bottom:16px; }
@@ -96,21 +96,21 @@
   .already-use-title { font-size:14px; font-weight:700; color:var(--success); margin-bottom:14px; text-align:center; }
   /* 初速UI */
   .sns-section { border-radius:10px; padding:12px; margin-bottom:10px; }
-  .sns-ig { background:#070E1C; border:1px solid #297A2C; }
-  .sns-fb { background:#122330; border:1px solid #7A7229; }
-  .sns-x  { background:#302E12; border:1px solid #29567A; }
-  .sns-th { background:#123015; border:1px solid #7A2944; }
+  .sns-ig { background:#fff0f5; border:1px solid #a5d6a7; }
+  .sns-fb { background:#e3f2fd; border:1px solid #fff176; }
+  .sns-x  { background:#fffde7; border:1px solid #90caf9; }
+  .sns-th { background:#e8f5e9; border:1px solid #f48fb1; }
   .sns-label { font-size:12px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
   .gauge-wrap { margin-bottom:10px; }
   .gauge-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
   .gauge-title { font-size:11px; font-weight:700; }
   .gauge-status { font-size:11px; font-weight:700; }
-  .gauge-bar { height:10px; background:#070E1C; border-radius:5px; overflow:hidden; }
+  .gauge-bar { height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden; }
   .gauge-fill { height:100%; border-radius:5px; transition:width 0.3s; }
   .gauge-good { background:linear-gradient(90deg,#43a047,#66bb6a); }
   .gauge-best { background:linear-gradient(90deg,#1b5e20,#43a047); }
   .gauge-avg  { background:linear-gradient(90deg,#fb8c00,#ffa726); }
-  .gauge-low  { background:linear-gradient(90deg,#e53935,#451817); }
+  .gauge-low  { background:linear-gradient(90deg,#e53935,#ef5350); }
   /* 今日の状況カード */
   .today-card { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
   .today-item { background:var(--bg); border-radius:8px; padding:8px; text-align:center; }
@@ -118,10 +118,10 @@
   .today-val { font-size:14px; font-weight:700; color:var(--text); }
   .today-sub { font-size:10px; color:var(--text-sub); margin-top:2px; }
   /* データ蓄積ゲージ */
-  .accum-bar { height:11px; background:#070E1C; border-radius:5px; overflow:hidden; margin:5px 0; }
-  .accum-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--primary),#0891B2); }
-  .val-up   { font-size:11px; font-weight:700; color:#7BB4F4;        text-align:center; white-space:nowrap; }
-  .val-stay { font-size:11px; font-weight:700; color:#8FA0BF;        text-align:center; white-space:nowrap; }
+  .accum-bar { height:11px; background:#e0e0e0; border-radius:5px; overflow:hidden; margin:5px 0; }
+  .accum-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--primary),#5c6bc0); }
+  .val-up   { font-size:11px; font-weight:700; color:#1565c0;        text-align:center; white-space:nowrap; }
+  .val-stay { font-size:11px; font-weight:700; color:#9e9e9e;        text-align:center; white-space:nowrap; }
   .val-down { font-size:11px; font-weight:700; color:var(--danger);  text-align:center; white-space:nowrap; }
   .post-text { font-size:11px; color:var(--text); line-height:1.6; }
   /* 次回おすすめ */
@@ -135,16 +135,16 @@
   .growth-time { font-size:11px; font-weight:700; color:var(--text-sub); width:52px; flex-shrink:0; }
   .growth-vals { flex:1; font-size:11px; font-weight:700; display:flex; gap:8px; }
   .growth-diff { font-size:11px; font-weight:700; color:var(--success); }
-  .action-box { background:#123015; border:1px solid #297A2C; border-radius:8px; padding:10px; margin-top:8px; }
-  .action-box.warn { background:#302912; border-color:#7A6629; }
-  .action-box.done { background:#122330; border-color:#29567A; }
-  .action-text { font-size:11px; color:#7BF484; font-weight:600; }
-  .action-text.warn { color:#F4A67B; }
-  .action-text.done { color:#67E8F9; }
+  .action-box { background:#e8f5e9; border:1px solid #a5d6a7; border-radius:8px; padding:10px; margin-top:8px; }
+  .action-box.warn { background:#fff8e1; border-color:#ffe082; }
+  .action-box.done { background:#e3f2fd; border-color:#90caf9; }
+  .action-text { font-size:11px; color:#1b5e20; font-weight:600; }
+  .action-text.warn { color:#e65100; }
+  .action-text.done { color:#0d47a1; }
   /* ナビ */
-  .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#0A1222; border-top:1px solid #1B2A4A; display:flex; align-items:center; justify-content:space-around; z-index:1000; box-shadow:0 -2px 8px rgba(0,0,0,0.08); }
-  .nav-item { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; height:100%; cursor:pointer; color:#8FA0BF; background:none; border:none; padding:0; font-family:inherit; }
-  .nav-item.active { color:#67E8F9; }
+  .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#fff; border-top:1px solid #e0e0e0; display:flex; align-items:center; justify-content:space-around; z-index:1000; box-shadow:0 -2px 8px rgba(0,0,0,0.08); }
+  .nav-item { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; height:100%; cursor:pointer; color:#9e9e9e; background:none; border:none; padding:0; font-family:inherit; }
+  .nav-item.active { color:#1a237e; }
   .nav-icon { font-size:18px; line-height:1; margin-bottom:2px; }
   .nav-label { font-size:9px; font-weight:600; letter-spacing:-0.3px; }
 
@@ -154,73 +154,16 @@
   }
   .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); display:flex; justify-content:center; z-index:2000; }
   /* ★liff_analytics.html38：保存済み情報の更新ボタン */
-  .header-refresh { background: rgba(10,18,34,0.15); color: #fff; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; padding: 3px 9px; line-height: 1.4; cursor: pointer; white-space: nowrap; }
-  .header-refresh:active { background: rgba(10,18,34,0.3); }
-
-/* ============================================================
-   ★ネオン・コックピットデザイン（全画面共通の見た目。2026年10月）
-   既存のクラス名・idはそのままに、色・枠・光り方だけを上書きする
-   ============================================================ */
-:root{
-  color-scheme:dark;
-  --primary:#0891B2; --primary-light:#22D3EE; --accent:#22D3EE;
-  --success:#34D399; --warning:#FBBF24; --danger:#F87171;
-  --bg:#050912; --surface:#0A1222; --border:#1B2A4A;
-  --text:#E6EDF7; --text-sub:#8FA0BF; --text-light:#6B7A99; --white:#0A1222;
-  --neon:#22D3EE; --neon-soft:rgba(34,211,238,.12); --panel:#070E1C;
-}
-html{background:#050912}
-body{background-color:#050912 !important;color:var(--text);
-  background-image:linear-gradient(#0B1324 1px,transparent 1px),linear-gradient(90deg,#0B1324 1px,transparent 1px) !important;
-  background-size:26px 26px !important;background-attachment:fixed}
-.header{background:rgba(5,9,18,.94) !important;color:var(--text) !important;border-bottom:1px solid var(--border);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);min-height:52px}
-.neon-mark{width:32px;height:32px;border-radius:9px;border:1px solid var(--neon);color:var(--neon);display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:0 0 14px rgba(34,211,238,.35),inset 0 0 8px rgba(34,211,238,.2)}
-.neon-title{display:flex;flex-direction:column;line-height:1.25}
-.neon-tag{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:.18em;color:var(--neon);font-weight:700}
-.header-logo{color:var(--text) !important}
-.header-sub{color:var(--text-light) !important;opacity:1 !important}
-.header-refresh{background:var(--surface) !important;border:1px solid var(--border) !important;color:var(--text) !important;padding:6px 10px !important;border-radius:10px !important}
-.subbar{background:rgba(10,18,34,.95) !important;border-bottom:1px solid var(--border)}
-.tab-nav{background:var(--surface) !important;border:1px solid var(--border) !important;border-radius:12px;margin:10px 12px 0;overflow:hidden}
-.tab-btn{color:#6B7A99 !important;border-bottom:none !important;border-right:1px solid var(--border) !important}
-.tab-btn:last-child{border-right:none !important}
-.tab-btn.active{color:#050912 !important;background:var(--neon) !important;box-shadow:0 0 18px rgba(34,211,238,.55);font-weight:700}
-.card,.section{background:rgba(10,18,34,.92) !important;border:1px solid var(--border) !important;border-radius:16px !important}
-.card-title,.section-title{color:var(--text) !important}
-input,select,textarea,.form-input,.form-select{background:var(--panel) !important;color:var(--text) !important;border-color:var(--border) !important}
-input:focus,select:focus,textarea:focus{border-color:var(--neon) !important;box-shadow:0 0 0 2px rgba(34,211,238,.2);outline:none}
-input::placeholder,textarea::placeholder{color:#4E5D7C !important}
-input[type=checkbox],input[type=radio]{accent-color:var(--neon)}
-select option{background:#0A1222;color:#E6EDF7}
-.btn-primary,.modal-close,.btn-connect,.plan-guide-btn{background:var(--neon) !important;color:#050912 !important;border:none !important;font-weight:700;box-shadow:0 0 18px rgba(34,211,238,.45)}
-.btn-primary:disabled{box-shadow:none}
-.btn-outline,.compare-btn{background:transparent !important;color:#67E8F9 !important;border:1px solid var(--neon) !important}
-.modal{background:#0A1222 !important;color:var(--text);border:1px solid var(--border);box-shadow:0 -8px 40px rgba(34,211,238,.12)}
-.modal-overlay{background:rgba(2,5,12,.72)}
-.bottom-nav{background:rgba(10,18,34,.96) !important;border:1px solid var(--border) !important;border-radius:18px;left:10px !important;right:10px !important;bottom:8px !important;
-  height:62px !important;box-shadow:0 0 24px rgba(0,0,0,.6) !important;padding:4px;max-width:460px;margin:0 auto}
-.nav-item{color:#6B7A99 !important;border-radius:13px}
-.nav-item.active{color:var(--neon) !important;background:rgba(34,211,238,.1) !important;box-shadow:inset 0 0 0 1px rgba(34,211,238,.45)}
-.nav-icon svg{display:block}
-body{padding-bottom:84px}
-
-.subbar span[style*="border-radius:6px"]{border:1px solid var(--border)}
-
-.today-item,.next-item{background:var(--panel) !important;border:1px solid var(--border)}
-.tab-nav{position:sticky}
-
+  .header-refresh { background: rgba(255,255,255,0.15); color: #fff; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; padding: 3px 9px; line-height: 1.4; cursor: pointer; white-space: nowrap; }
+  .header-refresh:active { background: rgba(255,255,255,0.3); }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="header">
-  <!-- ★liff_analytics.html52：ネオン・コックピットのデザインに変更（見た目のみ。動きは変更なし） -->
-  <span class="neon-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span>
-  <span class="neon-title"><span class="neon-tag">ANALYTICS</span><span class="header-logo">分析52</span></span>
+  <span style="font-size:20px;">📊</span>
+  <span class="header-logo">分析51</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -263,23 +206,23 @@ body{padding-bottom:84px}
 
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span id="plan-badge" style="background:#302912;color:#F4A67B;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">LITE</span>
+    <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">LITE</span>
     <span id="plan-price">¥680/月</span>
     <!-- ★liff_analytics.html39：デモの固定文字「次回更新：2026年7月1日」を削除した。決済（Stripe）実装時に、有料プランのみ実際の次回請求日を表示する -->
   </div>
   <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
     <span>連携中：</span>
-    <span id="subbar-sns-x" style="background:rgba(10,18,34,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
-    <span id="subbar-sns-ig" style="background:rgba(10,18,34,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
-    <span id="subbar-sns-th" style="background:rgba(10,18,34,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+    <span id="subbar-sns-x" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
+    <span id="subbar-sns-ig" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
+    <span id="subbar-sns-th" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
     <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
 </div>
 
 <div class="modal-overlay" id="profile-loading-overlay" style="z-index:2000;align-items:center;display:none;">
-  <div style="background:#0A1222;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
-    <div style="width:32px;height:32px;border:3px solid #1B2A4A;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
-    <div style="font-size:14px;font-weight:700;color:#E6EDF7;">保存済みの情報を読み込んでいます…</div>
+  <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
+    <div style="font-size:14px;font-weight:700;color:#333;">保存済みの情報を読み込んでいます…</div>
   </div>
 </div>
 
@@ -337,7 +280,7 @@ body{padding-bottom:84px}
       </div>
       <div class="today-item">
         <div class="today-label">総合EG率</div>
-        <div class="today-val" style="color:#7BF481;" id="lite-eg-rate">-%</div>
+        <div class="today-val" style="color:#2e7d32;" id="lite-eg-rate">-%</div>
         <div class="today-sub" style="color:var(--success);">今月の平均</div>
       </div>
     </div>
@@ -395,7 +338,7 @@ body{padding-bottom:84px}
       <div id="cal-lite-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-lite-sns"></div>
     </div>
-    <p style="font-size:9px;color:#F4A67B;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
   </div>
 
   <!-- ④ フォロワー推移 -->
@@ -430,11 +373,11 @@ body{padding-bottom:84px}
         </div>
         <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
           <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div>
-          <div style="font-size:16px;font-weight:700;color:#7BF481;">842</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div>
         </div>
         <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
           <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div>
-          <div style="font-size:16px;font-weight:700;color:#7BF481;">8.4%</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
@@ -451,8 +394,8 @@ body{padding-bottom:84px}
           <span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span>
         </div>
       </div>
-      <div style="margin-top:8px;padding:8px;background:#12301B;border-radius:8px;border-left:3px solid #2e7d32;">
-        <div style="font-size:10px;color:#7BF4A9;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">
+        <div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div>
       </div>
     </div>
 
@@ -466,11 +409,11 @@ body{padding-bottom:84px}
         </div>
         <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
           <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div>
-          <div style="font-size:16px;font-weight:700;color:#7BF481;">3,842</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div>
         </div>
         <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
           <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div>
-          <div style="font-size:16px;font-weight:700;color:#7BF481;">9.1%</div>
+          <div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
@@ -487,8 +430,8 @@ body{padding-bottom:84px}
           <span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span>
         </div>
       </div>
-      <div style="margin-top:8px;padding:8px;background:#12301B;border-radius:8px;border-left:3px solid #2e7d32;">
-        <div style="font-size:10px;color:#7BF4A9;">📈 先月は前月比+8%。Instagramの反応が最も好調でした。</div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">
+        <div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。Instagramの反応が最も好調でした。</div>
       </div>
     </div>
   </div>
@@ -556,7 +499,7 @@ body{padding-bottom:84px}
       </div>
       <div class="today-item">
         <div class="today-label">総合EG率</div>
-        <div class="today-val" style="color:#7BF481;" id="standard-eg-rate">-%</div>
+        <div class="today-val" style="color:#2e7d32;" id="standard-eg-rate">-%</div>
         <div class="today-sub" style="color:var(--success);">今月の平均</div>
       </div>
     </div>
@@ -593,7 +536,7 @@ body{padding-bottom:84px}
       </div>
       <div id="std-p1-detail" style="display:none;padding:10px;">
         <div id="standard-latest-detail"></div>
-        <p style="font-size:9px;color:#F4A67B;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
         <p style="font-size:9px;color:var(--text-light);margin-top:4px;">↑上昇　※ K=1,000</p>
       </div>
     </div>
@@ -615,7 +558,7 @@ body{padding-bottom:84px}
       <div id="cal-std-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-std-sns"></div>
     </div>
-    <p style="font-size:9px;color:#F4A67B;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
   </div>
 
   <!-- ④ フォロワー推移 -->
@@ -640,7 +583,7 @@ body{padding-bottom:84px}
       <div id="std-compare-body"></div>
       <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています</p>
       <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
-      <p style="font-size:9px;color:#F4A67B;font-weight:700;margin-top:4px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+      <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
     </div>
   </div>
 
@@ -656,29 +599,29 @@ body{padding-bottom:84px}
       <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
         <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#7BF481;">842</div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#7BF481;">8.4%</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">X</span><span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">IG</span><span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">TH</span><span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span></div>
       </div>
-      <div style="margin-top:8px;padding:8px;background:#12301B;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#7BF4A9;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
     </div>
     <div id="summary-monthly-2" style="display:none;">
       <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
         <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#7BF481;">3,842</div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#7BF481;">9.1%</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">X</span><span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">IG</span><span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">TH</span><span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span></div>
       </div>
-      <div style="margin-top:8px;padding:8px;background:#12301B;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#7BF4A9;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
     </div>
   </div>
 
@@ -797,7 +740,7 @@ body{padding-bottom:84px}
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
         <!-- ★liff_analytics.html41：ダミー表示をやめ、getAnalyticsSummary()のdataAccumulationを表示する（applyDataAccumulation） -->
         <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📈 データ蓄積率</div>
-        <div style="font-size:14px;font-weight:700;color:#7BF481;" id="pro-accum-rate">-</div>
+        <div style="font-size:14px;font-weight:700;color:#2e7d32;" id="pro-accum-rate">-</div>
         <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="pro-accum-count">- / 30投稿</div>
         <div style="font-size:8px;color:var(--text-light);margin-top:2px;">直近60日以内の投稿が対象です</div>
       </div>
@@ -877,8 +820,8 @@ body{padding-bottom:84px}
        コメントの本文は保存していないため表示しない。投稿を開くリンクから、SNS上で確認してもらう -->
   <div class="card">
     <div class="card-title">⚠️ ネガティブコメント検知</div>
-    <div style="background:#123012;border:1px solid #297A2C;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
-      <div style="font-size:11px;color:#7BF481;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の大切なヒントです。早めに気づいて対応することで、お客様との信頼関係を深めるチャンスに変えましょう。</div>
+    <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の大切なヒントです。早めに気づいて対応することで、お客様との信頼関係を深めるチャンスに変えましょう。</div>
     </div>
     <div id="pro-neg-body"><div style="font-size:10px;color:var(--text-light);">-</div></div>
     <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 投稿の1時間後・3時間後・24時間後にコメントを確認し、AIが判定しています。1投稿あたり新しい順にXは10件・Instagram・Threadsは50件まで判定します。返信の件数はSNSの数値です</p>
@@ -897,29 +840,29 @@ body{padding-bottom:84px}
       <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
         <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#7BF481;">842</div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#7BF481;">8.4%</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">X</span><span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">IG</span><span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">TH</span><span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span></div>
       </div>
-      <div style="margin-top:8px;padding:8px;background:#12301B;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#7BF4A9;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
     </div>
     <div id="summary-monthly-3" style="display:none;">
       <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
         <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#7BF481;">3,842</div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#7BF481;">9.1%</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:5px;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">X</span><span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">IG</span><span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span></div>
         <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">TH</span><span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span></div>
       </div>
-      <div style="margin-top:8px;padding:8px;background:#12301B;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#7BF4A9;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
+      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
     </div>
   </div>
 
@@ -959,17 +902,17 @@ body{padding-bottom:84px}
     <div class="accordion-body" id="acc-1">
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">多くのSNSでは、投稿直後のユーザーの反応がその後の表示機会に影響すると考えられています。投稿後の短い時間帯に反応が集まるほど、フォロワー以外のより多くのユーザーに投稿が表示されやすくなる傾向があります。</div>
     <div style="display:flex;flex-direction:column;gap:6px;">
-      <div style="background:#302E12;border-radius:8px;padding:8px 10px;">
-        <div style="font-size:11px;font-weight:700;color:#8FA0BF;margin-bottom:3px;">X</div>
-        <div style="font-size:11px;color:#8FA0BF;line-height:1.7;">投稿後30分〜1時間以内（リポスト・リプライが広がりに影響すると考えられています）</div>
+      <div style="background:#fffde7;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:3px;">X</div>
+        <div style="font-size:11px;color:#555555;line-height:1.7;">投稿後30分〜1時間以内（リポスト・リプライが広がりに影響すると考えられています）</div>
       </div>
-      <div style="background:#070E1C;border-radius:8px;padding:8px 10px;">
-        <div style="font-size:11px;font-weight:700;color:#F47BA4;margin-bottom:3px;">Instagram</div>
-        <div style="font-size:11px;color:#F47BA4;line-height:1.7;">投稿後1〜2時間以内（保存・シェアが拡散に影響すると考えられています）</div>
+      <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">Instagram</div>
+        <div style="font-size:11px;color:#e1306c;line-height:1.7;">投稿後1〜2時間以内（保存・シェアが拡散に影響すると考えられています）</div>
       </div>
-      <div style="background:#123015;border-radius:8px;padding:8px 10px;">
-        <div style="font-size:11px;font-weight:700;color:#8FA0BF;margin-bottom:3px;">Threads</div>
-        <div style="font-size:11px;color:#8FA0BF;line-height:1.7;">投稿後1〜3時間以内（返信・リポストが露出に影響すると考えられています）</div>
+      <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+        <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:3px;">Threads</div>
+        <div style="font-size:11px;color:#555555;line-height:1.7;">投稿後1〜3時間以内（返信・リポストが露出に影響すると考えられています）</div>
       </div>
     </div>
   </div>
@@ -1001,9 +944,9 @@ body{padding-bottom:84px}
     <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">スコアの判定基準</div>
       <div style="display:flex;flex-direction:column;gap:4px;">
-        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#7BB4F4;">🔵 90〜100点</span><span style="font-size:11px;color:var(--text);">最高！</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#7BF481;">🟢 70〜89点</span><span style="font-size:11px;color:var(--text);">好調</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#F4BF7B;">🟡 50〜69点</span><span style="font-size:11px;color:var(--text);">平均的</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#1565c0;">🔵 90〜100点</span><span style="font-size:11px;color:var(--text);">最高！</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#2e7d32;">🟢 70〜89点</span><span style="font-size:11px;color:var(--text);">好調</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#fb8c00;">🟡 50〜69点</span><span style="font-size:11px;color:var(--text);">平均的</span></div>
         <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#e53935;">🔴 49点以下</span><span style="font-size:11px;color:var(--text);">伸び悩み</span></div>
       </div>
     </div>
@@ -1026,7 +969,7 @@ body{padding-bottom:84px}
       </div>
 
       <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">④ 時間重みによる最終スコア</div>
-      <div style="background:#0A1222;border-radius:6px;padding:8px;font-size:11px;color:var(--text);line-height:1.9;">
+      <div style="background:white;border-radius:6px;padding:8px;font-size:11px;color:var(--text);line-height:1.9;">
         最終スコア ＝<br>
         　（1時間スコア × <strong>50%</strong>）<br>
         ＋（3時間スコア × <strong>30%</strong>）<br>
@@ -1036,7 +979,7 @@ body{padding-bottom:84px}
 
       <div style="font-size:11px;font-weight:700;color:var(--primary);margin-top:10px;margin-bottom:4px;">⑤ 総合初速スコアの算出方法</div>
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">複数SNSを利用している場合、各SNSの初速スコアを投稿割合で重み付けして合算します。単純平均ではなく、よく使うSNSほど重みが大きくなります。</div>
-      <div style="background:#0A1222;border-radius:6px;padding:8px;font-size:10px;color:var(--text);line-height:1.9;margin-bottom:6px;">
+      <div style="background:white;border-radius:6px;padding:8px;font-size:10px;color:var(--text);line-height:1.9;margin-bottom:6px;">
         総合初速スコア ＝<br>
         　（IG初速 × IG投稿割合）<br>
         ＋（X初速 × X投稿割合）<br>
@@ -1053,8 +996,8 @@ body{padding-bottom:84px}
     </div>
 
     <!-- 注記 -->
-    <div style="background:#302912;border:1px solid #7A6629;border-radius:8px;padding:8px 10px;">
-      <div style="font-size:10px;color:#F4A67B;line-height:1.7;">※初速スコアは各SNSの公式評価を示すものではなく、AiPost独自の分析指標です。SNS各社のアルゴリズムを再現・保証するものではありません。分析結果は投稿づくりや運用改善の参考情報としてご利用ください。</div>
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;">
+      <div style="font-size:10px;color:#e65100;line-height:1.7;">※初速スコアは各SNSの公式評価を示すものではなく、AiPost独自の分析指標です。SNS各社のアルゴリズムを再現・保証するものではありません。分析結果は投稿づくりや運用改善の参考情報としてご利用ください。</div>
     </div>
   </div>
 
@@ -1065,7 +1008,7 @@ body{padding-bottom:84px}
     <div class="accordion-body" id="acc-4">
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">初速スコアはあなた自身の過去30投稿の平均データとの比較で算出されます。直近の投稿傾向を反映しやすくするため、比較対象は最新30投稿を基準としています。投稿数が増えるほど・継続期間が長いほど比較データが充実し、スコアの精度が高まります。</div>
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">AiPostはデータを蓄積するほど、あなた専用の分析に近づいていきます。投稿データが蓄積されることで、あなたが反応を得やすい曜日・時間帯などをより高い精度で分析できるようになります。</div>
-    <div style="background:linear-gradient(135deg,#0891B2,#0891B2);border-radius:10px;padding:12px;">
+    <div style="background:linear-gradient(135deg,#1a237e,#283593);border-radius:10px;padding:12px;">
       <div style="font-size:11px;color:rgba(255,255,255,0.9);line-height:1.8;">利用開始直後は比較データが少ないため、初速スコアは参考値として表示されます。<strong style="color:#fff9c4;">投稿数が増えるほど比較データが充実し、より精度の高い初速スコアと分析結果を提供できるようになります。</strong>PROプランを継続することが、より正確な分析への近道です。</div>
     </div>
   </div>
@@ -1114,19 +1057,19 @@ body{padding-bottom:84px}
     <div class="accordion-body" id="acc-7">
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">各SNSはそれぞれ独自のAPI（データ取得の仕組み）を持っており、公開している指標の種類が異なります。また技術的な制約により取得できない指標もあります。さらにSNSによってユーザーの行動特性が異なるため、投稿の拡散に影響する重要な指標も変わります。</div>
     <div style="display:flex;flex-direction:column;gap:8px;">
-      <div style="background:#302E12;border-radius:8px;padding:10px;">
-        <div style="font-size:12px;font-weight:700;color:#8FA0BF;margin-bottom:4px;">X</div>
+      <div style="background:#fffde7;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#555555;margin-bottom:4px;">X</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　🔁リポスト　↩️リプライ　👁️インプレッション　📊EG率</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：リポスト数（拡散力の核心。投稿後30分〜1時間のリポストの勢いがアルゴリズムの評価を左右すると考えられています）</div>
       </div>
-      <div style="background:#070E1C;border-radius:8px;padding:10px;">
-        <div style="font-size:12px;font-weight:700;color:#F47BA4;margin-bottom:4px;">Instagram</div>
+      <div style="background:#fff0f5;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#e1306c;margin-bottom:4px;">Instagram</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　💬コメント　📊EG率</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;"><strong>特に重要：</strong>コメント数（エンゲージメントの深さを示す）</div>
         <div style="font-size:10px;color:var(--text-sub);line-height:1.7;">※ インプレッションはAPIの仕様上48時間の遅延があるため初速画面では非表示。保存数・シェア数はAPIで取得できません。</div>
       </div>
-      <div style="background:#123015;border-radius:8px;padding:10px;">
-        <div style="font-size:12px;font-weight:700;color:#8FA0BF;margin-bottom:4px;">Threads</div>
+      <div style="background:#e8f5e9;border-radius:8px;padding:10px;">
+        <div style="font-size:12px;font-weight:700;color:#555555;margin-bottom:4px;">Threads</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　🔁リポスト　↩️返信　🗨️引用　👁️インプレッション　📊EG率</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：返信数・引用数（会話を重視するThreadsの特性上、返信や引用が露出増加に影響すると考えられています）</div>
       </div>
@@ -1165,7 +1108,7 @@ body{padding-bottom:84px}
     <div class="accordion-body" id="acc-9">
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
-        <div style="font-size:12px;font-weight:700;color:#7BF480;margin-bottom:4px;">🟢 初速が好調だった場合</div>
+        <div style="font-size:12px;font-weight:700;color:#43a047;margin-bottom:4px;">🟢 初速が好調だった場合</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;">投稿時間帯・内容・ハッシュタグなどが効果的だった可能性があります。同じパターンを次の投稿でも活用しましょう。「おすすめの投稿時間帯」と組み合わせると効果的です。</div>
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
@@ -1199,8 +1142,8 @@ body{padding-bottom:84px}
       <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔒 プライバシーについて</div>
       <div style="font-size:11px;color:var(--text);line-height:1.8;">比較データは完全に匿名で集計されています。個人・店舗を特定できる情報は一切含まれません。PROプランに加入した時点で自動的にデータ提供に参加となります。</div>
     </div>
-    <div style="background:#302912;border:1px solid #7A6629;border-radius:8px;padding:8px 10px;">
-      <div style="font-size:10px;color:#F4A67B;line-height:1.7;">※ 同業種・同エリアのPROプラン利用者が5店舗以上集まると比較データが表示されます。5店舗未満の場合は「データ収集中」と表示されます。</div>
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:8px 10px;">
+      <div style="font-size:10px;color:#e65100;line-height:1.7;">※ 同業種・同エリアのPROプラン利用者が5店舗以上集まると比較データが表示されます。5店舗未満の場合は「データ収集中」と表示されます。</div>
     </div>
     </div>
   </div>
@@ -1214,9 +1157,9 @@ body{padding-bottom:84px}
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">しかし、忙しい毎日の中で、すべてのコメントを確認し続けるのは簡単ではありません。気付くのが遅れると、同じ不満を持つお客様が増えたり、お店の信頼に影響したりする可能性があります。</div>
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AiPostは、AIがネガティブなコメントを自動で検知し、できるだけ早くお知らせします。早期に気付き、誠実に対応することで、お客様との信頼関係を深め、サービス品質の向上にもつながります。</div>
     <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:12px;">高評価のコメントは励みになりますが、お店をさらに成長させてくれるのは、改善点を教えてくれるお客様の声です。その貴重な一件を見逃さず、お店の成長につなげることができるのが、AiPost PROプランの大きな特長です。</div>
-    <div style="background:#123015;border:1px solid #297A2C;border-radius:8px;padding:10px;">
-      <div style="font-size:11px;font-weight:700;color:#7BF484;margin-bottom:4px;">⭐ PROプランなら</div>
-      <div style="font-size:11px;color:#7BF481;line-height:1.7;">AIが全SNSのネガティブコメントを自動検知し、LINEでいち早くお知らせします。忙しい店舗運営の中でも、お客様の声を見逃しません。小さな不満が大きなトラブルになる前に対応でき、サービス改善のヒントを経営に活かせます。</div>
+    <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:10px;">
+      <div style="font-size:11px;font-weight:700;color:#1b5e20;margin-bottom:4px;">⭐ PROプランなら</div>
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">AIが全SNSのネガティブコメントを自動検知し、LINEでいち早くお知らせします。忙しい店舗運営の中でも、お客様の声を見逃しません。小さな不満が大きなトラブルになる前に対応でき、サービス改善のヒントを経営に活かせます。</div>
     </div>
     </div>
   </div>
@@ -1250,12 +1193,12 @@ body{padding-bottom:84px}
 </div><!-- /content -->
 
 <nav class="bottom-nav">
-  <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg></span><span class="nav-label">投稿文作成</span></button>
-  <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span><span class="nav-label">予約確認</span></button>
-  <button class="nav-item active"><span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span><span class="nav-label">分析</span></button>
-  <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span><span class="nav-label">設定</span></button>
-  <button class="nav-item" onclick="navigateTo('support')"><span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5z"/></svg></span><span class="nav-label">AIサポート</span></button>
-  <button class="nav-item" onclick="navigateTo('plan')"><span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12l3 5-9 11L3 9l3-5z"/></svg></span><span class="nav-label">プラン</span></button>
+  <button class="nav-item" onclick="navigateTo('textgen')"><span class="nav-icon">📝</span><span class="nav-label">投稿文作成</span></button>
+  <button class="nav-item" onclick="navigateTo('reservation')"><span class="nav-icon">📅</span><span class="nav-label">予約確認</span></button>
+  <button class="nav-item active"><span class="nav-icon">📊</span><span class="nav-label">分析</span></button>
+  <button class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">設定</span></button>
+  <button class="nav-item" onclick="navigateTo('support')"><span class="nav-icon">🤖</span><span class="nav-label">AIサポート</span></button>
+  <button class="nav-item" onclick="navigateTo('plan')"><span class="nav-icon">💎</span><span class="nav-label">プラン</span></button>
 </nav>
 
 <script>
@@ -1351,8 +1294,8 @@ function updatePlanRelationBanners() {
 
 function bannerHtml(type, text) {
   const style = type === 'ok'
-    ? 'background:#123015;color:#7BF481;'
-    : 'background:#302512;color:#F4A67B;';
+    ? 'background:#e8f5e9;color:#2e7d32;'
+    : 'background:#fff3e0;color:#e65100;';
   return `<div style="${style}border-radius:8px;padding:8px 10px;font-size:11px;font-weight:700;margin-bottom:10px;">${text}</div>`;
 }
 
@@ -1837,7 +1780,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析52';
+const TRACE_SCREEN = '分析51';
 
 function traceLog(msg) {
   try {
@@ -2586,7 +2529,7 @@ function applyFollowers(data) {
         label(up, 'var(--success)') +
         '<div style="height:' + MAX_H + 'px;display:flex;align-items:flex-end;">' + (up ? '<div style="width:8px;height:' + h + 'px;background:#43a047;border-radius:2px 2px 0 0;"></div>' : '') + '</div>' +
         '<div style="width:100%;height:1px;background:' + (d.diff === null ? 'transparent' : '#cfcfcf') + ';"></div>' +
-        '<div style="height:' + MAX_H + 'px;display:flex;align-items:flex-start;">' + (down ? '<div style="width:8px;height:' + h + 'px;background:#451717;border-radius:0 0 2px 2px;"></div>' : '') + '</div>' +
+        '<div style="height:' + MAX_H + 'px;display:flex;align-items:flex-start;">' + (down ? '<div style="width:8px;height:' + h + 'px;background:#bdbdbd;border-radius:0 0 2px 2px;"></div>' : '') + '</div>' +
         label(down, 'var(--text-sub)') + '</div>';
     }).join('');
     return { html: '<div style="flex:1;display:flex;">' + cells + '</div>', dates: days, hasBars: true };
@@ -2650,9 +2593,9 @@ function renderIndustryItem(title, item, unit, digits, avgDigits) {
   const body = item.average === null
     ? '<div style="font-size:10px;color:var(--text-light);">比較できる店舗が少ないため表示できません</div>'
     : '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">' +
-      '<div style="background:#123015;border-radius:6px;padding:6px;text-align:center;border:1px solid #297A2C;">' +
-      '<div style="font-size:9px;color:#7BF481;margin-bottom:2px;">あなたのお店</div>' +
-      '<div style="font-size:13px;font-weight:700;color:#7BF484;">' + fmt(item.mine) + '</div></div>' +
+      '<div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">' +
+      '<div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>' +
+      '<div style="font-size:13px;font-weight:700;color:#1b5e20;">' + fmt(item.mine) + '</div></div>' +
       '<div style="background:var(--surface);border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">' +
       '<div style="font-size:9px;color:var(--text-sub);margin-bottom:2px;">平均（' + item.peerCount + '店舗）</div>' +
       '<div style="font-size:13px;font-weight:700;color:var(--text-sub);">' + fmtWith(item.average, avgDigits) + '</div></div></div>';
@@ -2725,7 +2668,7 @@ function applySentiment(data) {
       sentEl.innerHTML = note('今月はまだ判定したコメントがありません') + xLimitNote;
     } else {
       const pct = function (n) { return Math.round((n / total) * 100); };
-      const dot = function (color, border) { return '<span style="width:8px;height:8px;border-radius:50%;background:' + color + ';' + (border ? 'border:1px solid #1B2A4A;' : '') + 'display:inline-block;"></span>'; };
+      const dot = function (color, border) { return '<span style="width:8px;height:8px;border-radius:50%;background:' + color + ';' + (border ? 'border:1px solid #ccc;' : '') + 'display:inline-block;"></span>'; };
       const item = function (color, border, label, n) {
         return '<div style="font-size:9px;color:var(--text-sub);display:flex;align-items:center;gap:3px;">' + dot(color, border) + label + ' ' + pct(n) + '%（' + n + '件）</div>';
       };
@@ -2748,8 +2691,8 @@ function applySentiment(data) {
     if (!st.negative && posts.length === 0) {
       negEl.innerHTML = '<div style="padding:8px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--text-sub);">今月のネガティブなコメントはありません</div>' + xLimitNote;
     } else {
-      const summary = '<div style="display:flex;align-items:center;gap:10px;padding:8px;background:#070E1C;border-radius:8px;border-left:3px solid var(--danger);margin-bottom:8px;">' +
-        '<span style="font-size:22px;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#F47B7B;">今月 ' + (st.negative || 0) + '件 検知</div>' +
+      const summary = '<div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);margin-bottom:8px;">' +
+        '<span style="font-size:22px;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#b71c1c;">今月 ' + (st.negative || 0) + '件 検知</div>' +
         '<div style="font-size:10px;color:var(--text-sub);margin-top:2px;">ネガティブが付いた新しい投稿10件までを表示しています</div></div></div>';
       const linkBtn = function (u) {
         return '<span style="display:inline-block;font-size:10px;color:var(--primary);font-weight:700;border:1px solid var(--primary);border-radius:12px;padding:2px 8px;margin:0 4px 4px 0;cursor:pointer;" onclick="openPostUrl(\'' +
@@ -2763,11 +2706,11 @@ function applySentiment(data) {
             '<div style="font-size:9px;color:var(--text-light);margin-bottom:2px;">' + escapeHtmlText(SENT_SNS_LABEL[c.sns] || c.sns) + '　' + escapeHtmlText(c.date) + '</div>' +
             '<div style="font-size:11px;color:var(--text);line-height:1.6;word-break:break-word;">' + escapeHtmlText(c.text) + '</div></div>';
         }).join('');
-        return '<div style="border:1px solid #7A2929;border-radius:8px;padding:8px 10px;margin-bottom:8px;background:var(--surface);">' +
+        return '<div style="border:1px solid #f3c6c6;border-radius:8px;padding:8px 10px;margin-bottom:8px;background:var(--surface);">' +
           '<div style="font-size:10px;color:var(--text-sub);margin-bottom:3px;">' + escapeHtmlText(p.postedAt || '') + ' 投稿' + (snsNames ? '　' + escapeHtmlText(snsNames) : '') + '</div>' +
           '<div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' +
           escapeHtmlText(p.postText || '（投稿文なし）') + '</div>' +
-          '<div style="font-size:10px;color:var(--text-sub);margin-bottom:6px;">返信 ' + total + '（うち判定 ' + p.judgedCount + '件・<span style="color:#F47B7B;font-weight:700;">ネガティブ ' + p.negativeCount + '件</span>）</div>' +
+          '<div style="font-size:10px;color:var(--text-sub);margin-bottom:6px;">返信 ' + total + '（うち判定 ' + p.judgedCount + '件・<span style="color:#b71c1c;font-weight:700;">ネガティブ ' + p.negativeCount + '件</span>）</div>' +
           '<div>' + (p.postUrls || []).map(linkBtn).join('') + '</div>' +
           '<div style="font-size:9px;color:var(--text-sub);margin-top:4px;">主なネガティブコメント（最大10件・日時はコメントが書き込まれた日時）</div>' +
           comments + '</div>';
@@ -2845,8 +2788,8 @@ function renderPeriodBlock(p) {
     periodStatCell('平均EG率', (p.avgEgRate === null || p.avgEgRate === undefined) ? '-' : p.avgEgRate + '%', '#2e7d32') +
     '</div>' +
     '<div style="display:flex;flex-direction:column;gap:5px;">' + snsRows + '</div>' +
-    '<div style="margin-top:8px;padding:8px;background:#12301B;border-radius:8px;border-left:3px solid #2e7d32;">' +
-    '<div style="font-size:10px;color:#7BF4A9;">📈 ' + highlightInner + '</div></div>';
+    '<div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">' +
+    '<div style="font-size:10px;color:#166534;">📈 ' + highlightInner + '</div></div>';
 }
 
 // 「先週・先月のまとめ」を3タブ分反映する（IDの接尾辞：LITE=''／STANDARD='-2'／PRO='-3'）
