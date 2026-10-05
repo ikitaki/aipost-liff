@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AiPostとは5 - AiPost</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root {
+      --primary: #1a237e;
+      --primary-light: #f0f2ff;
+      --accent: #1565c0;
+      --text: #212121;
+      --text-sub: #757575;
+      --border: #e0e0e0;
+      --bg: #f8f9fa;
+      --white: #ffffff;
+      --plan-free: #f1f5f9;
+      --plan-free-text: #64748b;
+      --plan-personal: #e3f2fd;
+      --plan-personal-text: #1565c0;
+      --plan-lite: #e8f5e9;
+      --plan-lite-text: #2e7d32;
+      --plan-standard: #fff8e1;
+      --plan-standard-text: #e65100;
+      --plan-pro: #f3e5f5;
+      --plan-pro-text: #6a1b9a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Yu Gothic", "Hiragino Sans", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      padding-bottom: 70px;
+    }
+
+    /* ヘッダー */
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 20px 16px 16px;
+      text-align: center;
+    }
+    .header-logo {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+    .header-tagline {
+      font-size: 12px;
+      opacity: 0.85;
+      line-height: 1.6;
+    }
+
+    /* セクション */
+    .section {
+      padding: 16px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+      padding-left: 10px;
+      border-left: 4px solid var(--primary);
+    }
+
+    /* カード */
+    .card {
+      background: var(--#0A1222);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .card-text {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.8;
+    }
+
+    /* 機能カード */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .feature-card {
+      background: var(--#0A1222);
+      border-radius: 12px;
+      padding: 14px 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .feature-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .feature-desc {
+      font-size: 11px;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    /* 使い方ステップ */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--#0A1222);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid var(--border);
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-content { flex: 1; }
+    .step-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .step-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+
+    /* プラン比較テーブル */
+    .plan-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .plan-table th {
+      padding: 8px 4px;
+      text-align: center;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+    }
+    .plan-table td {
+      padding: 8px 4px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-sub);
+    }
+    .plan-table tr:last-child td { border-bottom: none; }
+    .plan-table .feature-name-col {
+      text-align: left;
+      color: var(--text);
+      font-weight: 600;
+      padding-left: 6px;
+    }
+    .plan-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .plan-FREE     { background: var(--plan-free);     color: var(--plan-free-text); }
+    .plan-PERSONAL { background: var(--plan-personal); color: var(--plan-personal-text); }
+    .plan-LITE     { background: var(--plan-lite);     color: var(--plan-lite-text); }
+    .plan-STANDARD { background: var(--plan-standard); color: var(--plan-standard-text); }
+    .plan-PRO      { background: var(--plan-pro);      color: var(--plan-pro-text); }
+    .plan-table .section-row td {
+      background: #070E1C;
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 6px 6px;
+      text-align: left;
+      letter-spacing: 0.05em;
+    }
+    .check { color: #7BF481; font-size: 14px; }
+    .cross { color: #8FA0BF; font-size: 14px; }
+    .price-row td { font-weight: 700; color: var(--text); font-size: 12px; }
+
+    /* FAQ */
+    .faq-item {
+      background: var(--#0A1222);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+    }
+    .faq-q {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+    }
+    .faq-q-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .faq-a {
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.8;
+      padding-left: 28px;
+    }
+
+    /* ボトムナビゲーションバー */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #0A1222;
+      border-top: 1px solid #1B2A4A;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 1000;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      height: 100%;
+      cursor: pointer;
+      color: #8FA0BF;
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+      font-size: inherit;
+      outline: none;
+    }
+    .nav-item.active { color: #67E8F9; }
+    .nav-item:active { opacity: 0.7; }
+    .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
+    .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
+  
+/* ============================================================
+   ★ネオン・コックピットデザイン（全画面共通の見た目。2026年10月）
+   既存のクラス名・idはそのままに、色・枠・光り方だけを上書きする
+   ============================================================ */
+:root{
+  color-scheme:dark;
+  --primary:#0891B2; --primary-light:#22D3EE; --accent:#22D3EE;
+  --success:#34D399; --warning:#FBBF24; --danger:#F87171;
+  --bg:#050912; --surface:#0A1222; --border:#1B2A4A;
+  --text:#E6EDF7; --text-sub:#8FA0BF; --text-light:#6B7A99; --white:#0A1222;
+  --neon:#22D3EE; --neon-soft:rgba(34,211,238,.12); --panel:#070E1C;
+}
+html{background:#050912}
+body{background-color:#050912 !important;color:var(--text);
+  background-image:linear-gradient(#0B1324 1px,transparent 1px),linear-gradient(90deg,#0B1324 1px,transparent 1px) !important;
+  background-size:26px 26px !important;background-attachment:fixed}
+.header{background:rgba(5,9,18,.94) !important;color:var(--text) !important;border-bottom:1px solid var(--border);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);min-height:52px}
+.neon-mark{width:32px;height:32px;border-radius:9px;border:1px solid var(--neon);color:var(--neon);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 0 14px rgba(34,211,238,.35),inset 0 0 8px rgba(34,211,238,.2)}
+.neon-title{display:flex;flex-direction:column;line-height:1.25}
+.neon-tag{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:.18em;color:var(--neon);font-weight:700}
+.header-logo{color:var(--text) !important}
+.header-sub{color:var(--text-light) !important;opacity:1 !important}
+.header-refresh{background:var(--surface) !important;border:1px solid var(--border) !important;color:var(--text) !important;padding:6px 10px !important;border-radius:10px !important}
+.subbar{background:rgba(10,18,34,.95) !important;border-bottom:1px solid var(--border)}
+.tab-nav{background:var(--surface) !important;border:1px solid var(--border) !important;border-radius:12px;margin:10px 12px 0;overflow:hidden}
+.tab-btn{color:#6B7A99 !important;border-bottom:none !important;border-right:1px solid var(--border) !important}
+.tab-btn:last-child{border-right:none !important}
+.tab-btn.active{color:#050912 !important;background:var(--neon) !important;box-shadow:0 0 18px rgba(34,211,238,.55);font-weight:700}
+.card,.section{background:rgba(10,18,34,.92) !important;border:1px solid var(--border) !important;border-radius:16px !important}
+.card-title,.section-title{color:var(--text) !important}
+input,select,textarea,.form-input,.form-select{background:var(--panel) !important;color:var(--text) !important;border-color:var(--border) !important}
+input:focus,select:focus,textarea:focus{border-color:var(--neon) !important;box-shadow:0 0 0 2px rgba(34,211,238,.2);outline:none}
+input::placeholder,textarea::placeholder{color:#4E5D7C !important}
+input[type=checkbox],input[type=radio]{accent-color:var(--neon)}
+select option{background:#0A1222;color:#E6EDF7}
+.btn-primary,.modal-close,.btn-connect,.plan-guide-btn{background:var(--neon) !important;color:#050912 !important;border:none !important;font-weight:700;box-shadow:0 0 18px rgba(34,211,238,.45)}
+.btn-primary:disabled{box-shadow:none}
+.btn-outline,.compare-btn{background:transparent !important;color:#67E8F9 !important;border:1px solid var(--neon) !important}
+.modal{background:#0A1222 !important;color:var(--text);border:1px solid var(--border);box-shadow:0 -8px 40px rgba(34,211,238,.12)}
+.modal-overlay{background:rgba(2,5,12,.72)}
+.bottom-nav{background:rgba(10,18,34,.96) !important;border:1px solid var(--border) !important;border-radius:18px;left:10px !important;right:10px !important;bottom:8px !important;
+  height:62px !important;box-shadow:0 0 24px rgba(0,0,0,.6) !important;padding:4px;max-width:460px;margin:0 auto}
+.nav-item{color:#6B7A99 !important;border-radius:13px}
+.nav-item.active{color:var(--neon) !important;background:rgba(34,211,238,.1) !important;box-shadow:inset 0 0 0 1px rgba(34,211,238,.45)}
+.nav-icon svg{display:block}
+body{padding-bottom:84px}
+
+.subbar span[style*="border-radius:6px"]{border:1px solid var(--border)}
+
+:root{--primary-light:rgba(34,211,238,.08);--plan-free:#151C2B;--plan-free-text:#B6C2D9;--plan-personal:#0E2238;--plan-personal-text:#93C5FD;--plan-lite:#0F2A1F;--plan-lite-text:#6EE7B7;--plan-standard:#2A220E;--plan-standard-text:#FCD34D;--plan-pro:#251536;--plan-pro-text:#D8B4FE}
+.header{display:block !important}
+.header-tagline{color:#C3CDE0 !important}
+
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <!-- ★liff_about.html5：ネオン・コックピットのデザインに変更（見た目のみ） -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span class="neon-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></span><span class="neon-title"><span class="neon-tag">ABOUT</span><span class="header-logo">AiPostとは5</span></span></div>
+    <div class="header-tagline">AIが文章を作り、SNSへ自動投稿。<br>忙しい店舗オーナーのためのSNS運用サービス</div>
+  </div>
+
+  <!-- AiPostとは -->
+  <div class="section">
+    <div class="section-title">AiPostとは</div>
+    <div class="card">
+      <div class="card-text">
+        AiPostは、日々の業務に追われながらもSNSへの頻繁な投稿が欠かせない店舗オーナーのために作られたサービスです。<br><br>
+        キーワードを入力するだけでAIが投稿文を自動生成し、Instagram・Facebook・Threads・Xの4つのSNSに一括で予約投稿できます。<br><br>
+        「少ない文字でいかに刺さる文章を作るか」をテーマに、あなたのSNSをAIがサポートします。
+      </div>
+    </div>
+  </div>
+
+  <!-- 機能一覧 -->
+  <div class="section">
+    <div class="section-title">できること</div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">✏️</div>
+        <div class="feature-name">AI文章生成</div>
+        <div class="feature-desc">キーワードを入力するだけでAIが投稿文とハッシュタグを自動生成</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <div class="feature-name">予約投稿</div>
+        <div class="feature-desc">投稿日時を指定して自動投稿。複数のSNSに一括で予約可能</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-name">AI分析</div>
+        <div class="feature-desc">投稿の反応やフォロワー推移を分析。次の投稿のヒントを確認できます</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🖼️</div>
+        <div class="feature-name">画像アップロード</div>
+        <div class="feature-desc">ご自身の画像をアップロードし、SNSごとに最適な比率へ自動トリミング</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 使い方 -->
+  <div class="section">
+    <div class="section-title">使い方</div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">まずは文章生成を試してみる（登録不要）</div>
+          <div class="step-desc">LINE友達登録だけで文章生成がすぐに使えます。SNS連携もプラン選択も不要です。何度でも作り直せます。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">気に入ったらSNSを連携する</div>
+          <div class="step-desc">投稿予約・画像アップロード・履歴保存を使うにはSNS連携が必要です。連携するとFREEプランが自動適用されます。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">画像をアップロードして投稿を予約する</div>
+          <div class="step-desc">ご自身の画像をアップロードし、SNSごとに最適な比率でトリミングします（トリミングせずそのまま使うことも可能）。画像なしでも投稿できます。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">投稿結果を分析で確認する（LITEプラン以上）</div>
+          <div class="step-desc">今日の状況・直近投稿の反応・フォロワー推移・人気投稿ランキングなどを確認できます。次に投稿すべき内容の目安も表示されます。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">必要に応じてプランを変更する</div>
+          <div class="step-desc">もっと多くのSNSに投稿したい・分析機能を使いたい場合はプランを変更できます。いつでもダウングレード可能です。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- プランの違い -->
+  <div class="section">
+    <div class="section-title">プランの違い</div>
+
+    <!-- 同時投稿の説明 -->
+    <div class="card">
+      <div class="card-title">💡 同時投稿で実質の投稿数が増える</div>
+      <div class="card-text">
+        AiPostでは同じ内容を複数のSNSに同時投稿した場合、<strong style="color:var(--primary);">1件としてカウント</strong>されます。<br><br>
+        例えばSTANDARDプラン（予約可能20件・SNS3つ）の場合、毎回3つのSNSに同時投稿すれば実質<strong style="color:var(--primary);">最大60回分</strong>の投稿が可能です。<br><br>
+        ただし同時投稿扱いになるのは<strong style="color:var(--primary);">同一テキスト・同一の元画像・同時刻</strong>の3条件が揃った場合のみです。テキストや元の画像を変えた場合は別々にカウントされます。画像はSNSごとに最適な比率へトリミングされますが、<strong style="color:var(--primary);">元の画像が同じであれば同一投稿として扱われます</strong>（トリミングの見た目の違いは同一投稿の判定に影響しません）。
+      </div>
+    </div>
+
+    <!-- XのURL投稿不可の説明 -->
+    <div class="card">
+      <div class="card-title">⚠️ Xへの投稿について（文字数・URL）</div>
+      <div class="card-text">
+        投稿文は全SNS共通で全角140字（半角280字）以内です。これは4SNSの中で最も文字数制限が厳しいXの基準に合わせたもので、複数SNSへ同じ投稿文をまとめて予約できる仕組みを成立させるための共通ルールです。<br><br>
+        また、当サービスでは<strong style="color:#F47B7B;">XへのURL付き投稿に対応していません。</strong>投稿文にURL（http:// または https:// から始まるリンク）が含まれている場合、Xは自動的に同時投稿の対象から除外されます。Instagram・Facebook・Threadsへの投稿は通常通り行われます。<br><br>
+        理由は、XのAPI利用料が通常のテキスト投稿（1件0.015ドル）に対し、URLを含む投稿は1件0.20ドルと13倍以上になるためです。<br><br>
+        なお、ハッシュタグを多く付けるなどして本文とハッシュタグの合計文字数がXの上限を超えた場合も、同様にXだけが自動的に除外されます（他のSNSには通常通り投稿されます）。具体的な動作は以下の通りです。
+      </div>
+      <div class="step-list" style="margin-top:12px;">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">入力中にリアルタイムで警告を表示</div>
+            <div class="step-desc">Xが選択されている状態でURLを入力した瞬間、または文字数がXの上限を超えた瞬間に、画面上に警告が表示されます。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">予約時にXを自動除外</div>
+            <div class="step-desc">そのまま投稿を予約した場合、Xは自動的に除外されて他のSNSのみに投稿されます。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Xのみに投稿しようとした場合はエラー</div>
+            <div class="step-desc">投稿先がXだけの場合、URLを含む投稿・文字数オーバーの投稿は予約できません。内容を調整するか、他のSNSを追加してください。</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text-sub);margin-top:12px;line-height:1.7;">※ AIによる文章生成ではURLを含む文章は生成されません。ユーザーご自身が入力した文章にURLが含まれる場合に上記の動作が発生します。</p>
+      <div style="background:#301217;border-radius:8px;padding:12px;margin-top:12px;border-left:4px solid #c62828;">
+        <div style="font-size:13px;font-weight:700;color:#F47B7B;margin-bottom:6px;">⚠️ 迂回行為について</div>
+        <div style="font-size:12px;color:#F4987B;line-height:1.8;">
+          「http://～」の形式以外にも、URLを日本語や記号で表現したもの・短縮URL・QRコードへの誘導テキストなどをXに投稿した場合、X側でURL付き投稿と判定されるリスクがあります。<br><br>
+          このような迂回行為は当サービスの利用規約違反となります。意図的な行為が確認された場合は、アカウントの利用停止・登録解除の対象となる場合があります。<br><br>
+          投稿内容について不明な点がある場合は、事前に運営までお問い合わせください。
+        </div>
+      </div>
+    </div>
+
+    <!-- プラン比較表 -->
+    <div class="card">
+      <div class="card-title">プラン比較表</div>
+      <table class="plan-table">
+        <thead>
+          <tr>
+            <th class="feature-name-col"></th>
+            <th><span class="plan-badge plan-FREE">FREE</span></th>
+            <th><span class="plan-badge plan-PERSONAL">PER</span></th>
+            <th><span class="plan-badge plan-LITE">LITE</span></th>
+            <th><span class="plan-badge plan-STANDARD">STD</span></th>
+            <th><span class="plan-badge plan-PRO">PRO</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="price-row">
+            <td class="feature-name-col">月額（税抜）</td>
+            <td>¥0</td>
+            <td>¥300</td>
+            <td>¥680</td>
+            <td>¥1,280</td>
+            <td>¥1,980</td>
+          </tr>
+          <tr class="section-row"><td colspan="6">■ 投稿機能</td></tr>
+          <tr>
+            <td class="feature-name-col">利用できるSNS数</td>
+            <td>1つ<br><span style="font-size:9px;color:#8FA0BF;">(Xを除く)</span></td>
+            <td>2つ</td>
+            <td>2つ</td>
+            <td>3つ</td>
+            <td>4つ</td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">予約可能件数（件）</td>
+            <td>4件</td>
+            <td>8件</td>
+            <td>10件</td>
+            <td>20件</td>
+            <td>40件</td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">実質最大投稿回数</td>
+            <td>4回</td>
+            <td>16回</td>
+            <td>20回</td>
+            <td>60回</td>
+            <td>160回</td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">文字数上限</td>
+            <td>70字<br><span style="font-size:10px;color:#8FA0BF;">(半角140字)</span></td>
+            <td>140字<br><span style="font-size:10px;color:#8FA0BF;">(半角280字)</span></td>
+            <td>140字<br><span style="font-size:10px;color:#8FA0BF;">(半角280字)</span></td>
+            <td>140字<br><span style="font-size:10px;color:#8FA0BF;">(半角280字)</span></td>
+            <td>140字<br><span style="font-size:10px;color:#8FA0BF;">(半角280字)</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">複数SNS同時投稿</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr class="section-row"><td colspan="6">■ AI文章生成</td></tr>
+          <tr>
+            <td class="feature-name-col">AI文章生成</td>
+            <td>∞</td>
+            <td>∞</td>
+            <td>∞</td>
+            <td>∞</td>
+            <td>∞</td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">ハッシュタグ提案</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr class="section-row"><td colspan="6">■ 画像</td></tr>
+          <tr>
+            <td class="feature-name-col">自分でアップロード</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr class="section-row"><td colspan="6">■ 分析レポート（LITE以上）</td></tr>
+          <tr>
+            <td class="feature-name-col">今日の状況</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">直近投稿と24時間後の状況</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">投稿日別データ</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">フォロワー数の推移</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">今月の人気投稿ランキング</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">先週・先月のまとめ</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">次回の投稿おすすめ</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">あなたの投稿平均との比較</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr class="section-row"><td colspan="6">■ PRO限定機能</td></tr>
+          <tr>
+            <td class="feature-name-col">投稿後の初速状況（1h/3h/24h）</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">いいね・コメント・インプレッション・EG率</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">コメントの感情分析</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">同業種・同エリア平均との比較</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">おすすめの投稿時間帯</td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td class="feature-name-col">ネガティブコメント検知<br><span style="font-size:9px;color:#8FA0BF;">(分析画面表示のみ)</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="cross">－</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:11px;color:var(--text-sub);margin-top:12px;line-height:1.7;">※ 実質最大投稿回数は全SNSに同時投稿した場合の目安です。<br>※ AI文章生成は全プラン無制限・LINE友達登録のみで利用可能・やり直しも何度でも可能です。<br>※ 分析データの更新頻度：LITE・STANDARDは投稿後24時間に1回、PROは投稿後1時間・3時間・24時間の3回です。<br>※ ネガティブコメント検知はLIFF画面への表示のみで、LINE通知は行いません。<br>※ プランの変更・申し込みはリッチメニューの「プラン・料金」からどうぞ。</p>
+    </div>
+
+    <!-- 分析レポートの段階説明 -->
+    <div class="card">
+
+      <!-- 分析項目の説明一覧 -->
+      <div style="margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">各分析項目について</div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">📊</span>今日の状況</div>
+          <div class="faq-a">本日の投稿数や反応の概況を一目で確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">📊</span>直近投稿と24時間後の状況</div>
+          <div class="faq-a">直近の投稿について、24時間後の反応（いいね・コメント等）を確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">📅</span>投稿日別データ</div>
+          <div class="faq-a">カレンダー形式で、日付ごとの投稿内容と反応データを確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">👥</span>フォロワー数の推移</div>
+          <div class="faq-a">SNSごとのフォロワー数の推移をグラフで確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">🏆</span>今月の人気投稿ランキング</div>
+          <div class="faq-a">今月の投稿を反応の良かった順にランキング表示します。「どんな内容が受けるか」のヒントを見つけるのに役立ちます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">📅</span>先週・先月のまとめ</div>
+          <div class="faq-a">直近1週間・1ヶ月の投稿実績をまとめて振り返ることができます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#2e7d32;">🎯</span>次回の投稿おすすめ</div>
+          <div class="faq-a">これまでのデータをもとに、次に投稿すべき内容やタイミングの目安を確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#e65100;">📊</span>あなたの投稿平均との比較（STANDARD以上）</div>
+          <div class="faq-a">今回の投稿を、自分自身の過去投稿の平均値と比較して確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">⚡</span>投稿後の初速状況（PRO限定）</div>
+          <div class="faq-a">投稿後1時間・3時間・24時間の3段階で反応の伸びをリアルタイムに確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">❤️</span>いいね・コメント・インプレッション・EG率（PRO限定）</div>
+          <div class="faq-a">投稿ごとの詳細な反応データを、指標別に確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">😊</span>コメントの感情分析（PRO限定）</div>
+          <div class="faq-a">投稿に寄せられたコメントの傾向（好意的か否かなど）を確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">🏙️</span>同業種・同エリア平均との比較（PRO限定）</div>
+          <div class="faq-a">同じ業種・同じエリアの店舗と自分の反応データを匿名で比較できます。個人情報は一切含まれません。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:8px;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">⏰</span>おすすめの投稿時間帯（PRO限定）</div>
+          <div class="faq-a">これまでの反応データをもとに、投稿に適した時間帯の目安を確認できます。</div>
+        </div>
+        <div class="faq-item" style="margin-bottom:0;">
+          <div class="faq-q"><span class="faq-q-icon" style="background:#6a1b9a;">⚠️</span>ネガティブコメント検知（PRO限定）</div>
+          <div class="faq-a">投稿に寄せられたコメントの中にネガティブな内容がないかを検知し、分析画面に表示します。LINEでの通知は行っていません。</div>
+        </div>
+      </div>
+
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num" style="background:#2e7d32;font-size:10px;">LITE</div>
+          <div class="step-content">
+            <div class="step-title">基本の分析機能</div>
+            <div class="step-desc">
+              今日の状況・直近投稿と24時間後の状況・投稿日別データ・フォロワー数の推移・今月の人気投稿ランキング・先週先月のまとめ・次回の投稿おすすめを確認できます。
+            </div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num" style="background:#e65100;font-size:10px;">STD</div>
+          <div class="step-content">
+            <div class="step-title">基本の分析機能＋自己比較</div>
+            <div class="step-desc">
+              LITEの内容に加えて、あなたの投稿平均との比較ができます。
+            </div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num" style="background:#6a1b9a;font-size:10px;">PRO</div>
+          <div class="step-content">
+            <div class="step-title">全機能＋詳細分析</div>
+            <div class="step-desc">
+              STANDARDの内容に加えて、投稿後の初速状況（1h/3h/24h）・詳細な反応指標・コメントの感情分析・同業種同エリア比較・おすすめ投稿時間帯・ネガティブコメント検知（表示のみ）が使えます。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- よくある質問 -->
+  <div class="section">
+    <div class="section-title">よくある質問</div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="faq-q-icon">Q</span>文章生成は何回まで使えますか？</div>
+      <div class="faq-a">全プラン無制限でご利用いただけます。何度でも作り直せます。カウントされるのは実際に予約した投稿のみです。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="faq-q-icon">Q</span>複数のSNSに同時投稿できますか？</div>
+      <div class="faq-a">はい、できます。同じ内容を複数のSNSに同時投稿した場合は1件としてカウントされます。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="faq-q-icon">Q</span>無料プランからいつでも変更できますか？</div>
+      <div class="faq-a">はい、いつでもプランの変更が可能です。リッチメニューの「プラン・料金」からお手続きください。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="faq-q-icon">Q</span>解約はいつでもできますか？</div>
+      <div class="faq-a">はい、いつでも解約できます。解約後は当月末まで引き続きご利用いただけます。日割り返金はございません。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="faq-q-icon">Q</span>登録しなくても使えますか？</div>
+      <div class="faq-a">はい、LINE友達登録だけでAI文章生成をすぐにお試しいただけます。SNS連携・プラン選択は投稿予約を使いたいタイミングで行えます。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span class="faq-q-icon">Q</span>SNS連携はいつ必要になりますか？</div>
+      <div class="faq-a">投稿予約・画像アップロード・投稿履歴の保存を使う際にSNS連携が必要になります。投稿文作成だけなら連携は不要です。</div>
+    </div>
+  </div>
+
+  <!-- 利用規約・プライバシーポリシー -->
+  <div class="section">
+    <div class="card" style="text-align:center;padding:20px;">
+      <div style="font-size:12px;color:var(--text-sub);line-height:2.0;margin-bottom:12px;">
+        当サービスをご利用いただくことで、以下の規約・ポリシーに同意したものとみなします。
+      </div>
+      <div style="display:flex;justify-content:center;gap:24px;">
+        <button onclick="navigateTo('terms')" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;">利用規約</button>
+        <button onclick="navigateTo('privacy')" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;">プライバシーポリシー</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-sub);margin-top:12px;">
+        【会社名】　【メールアドレス】
+      </div>
+    </div>
+  </div>
+
+  <!-- ナビゲーションバー -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="nav-item" onclick="navigateTo('textgen')">
+      <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg></span>
+      <span class="nav-label">投稿文作成</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('reservation')">
+      <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span>
+      <span class="nav-label">予約確認</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('analytics')">
+      <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span>
+      <span class="nav-label">分析</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('settings')">
+      <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span>
+      <span class="nav-label">設定</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('support')">
+      <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5z"/></svg></span>
+      <span class="nav-label">AIサポート</span>
+    </button>
+    <button class="nav-item active" onclick="navigateTo('plan')">
+      <span class="nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12l3 5-9 11L3 9l3-5z"/></svg></span>
+      <span class="nav-label">プラン</span>
+    </button>
+  </nav>
+
+<script>
+  const LIFF_URLS = {
+    textgen:     'https://liff.line.me/2010401177-OpvemMmh',
+    reservation: 'https://liff.line.me/2010401177-dM8eNjUM',
+    analytics:   'https://liff.line.me/2010401177-qKtfKWP0',
+    image:       'https://liff.line.me/2010401177-3pV56kDU',
+    settings:    'https://liff.line.me/2010401177-XJw2kDQV',
+    about:       'https://liff.line.me/2010401177-PtX79ibV',
+    terms:       'https://ikitaki.github.io/aipost-liff/liff_terms.html',
+    privacy:     'https://ikitaki.github.io/aipost-liff/liff_privacy.html',
+    plan:        'https://liff.line.me/2010401177-IstPDnls',
+    support:     'https://liff.line.me/2010401177-vwzTH30h',
+  };
+
+  function navigateTo(page) {
+    if (LIFF_URLS[page]) {
+      window.location.href = LIFF_URLS[page];
+    }
+  }
+</script>
+</body>
+</html>

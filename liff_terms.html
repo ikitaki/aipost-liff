@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>利用規約3 - AiPost</title>
+  <style>
+    :root {
+      --primary: #1a237e;
+      --text: #212121;
+      --text-sub: #757575;
+      --border: #e0e0e0;
+      --bg: #f8f9fa;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Yu Gothic", "Hiragino Sans", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.8;
+      padding-bottom: 40px;
+    }
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo { font-size: 15px; font-weight: 700; }
+    .header-sub { font-size: 10px; opacity: 0.75; margin-left: auto; }
+
+    .content { padding: 16px; }
+
+    .doc-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .doc-date {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 20px;
+    }
+
+    .section {
+      background: var(--#0A1222);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section p {
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.9;
+    }
+    .section p:last-child { margin-bottom: 0; }
+
+    ol, ul {
+      padding-left: 18px;
+      margin-bottom: 8px;
+    }
+    li {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.9;
+      margin-bottom: 4px;
+    }
+    li:last-child { margin-bottom: 0; }
+
+    .warn-box {
+      background: #302912;
+      border-left: 4px solid #e65100;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 12px;
+      margin: 10px 0;
+      font-size: 12px;
+      color: #F4987B;
+      line-height: 1.8;
+    }
+
+    .info-box {
+      background: #070E1C;
+      border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 12px;
+      margin: 10px 0;
+      font-size: 12px;
+      color: #67E8F9;
+      line-height: 1.8;
+    }
+
+    .placeholder {
+      background: #302512;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-weight: 700;
+      color: #F4A67B;
+    }
+
+    .company-info {
+      background: var(--#0A1222);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .company-row {
+      display: flex;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      gap: 12px;
+    }
+    .company-row:last-child { border-bottom: none; }
+    .company-key { color: var(--text-sub); width: 80px; flex-shrink: 0; }
+    .company-val { color: var(--text); font-weight: 600; }
+  
+/* ============================================================
+   ★ネオン・コックピットデザイン（全画面共通の見た目。2026年10月）
+   既存のクラス名・idはそのままに、色・枠・光り方だけを上書きする
+   ============================================================ */
+:root{
+  color-scheme:dark;
+  --primary:#0891B2; --primary-light:#22D3EE; --accent:#22D3EE;
+  --success:#34D399; --warning:#FBBF24; --danger:#F87171;
+  --bg:#050912; --surface:#0A1222; --border:#1B2A4A;
+  --text:#E6EDF7; --text-sub:#8FA0BF; --text-light:#6B7A99; --white:#0A1222;
+  --neon:#22D3EE; --neon-soft:rgba(34,211,238,.12); --panel:#070E1C;
+}
+html{background:#050912}
+body{background-color:#050912 !important;color:var(--text);
+  background-image:linear-gradient(#0B1324 1px,transparent 1px),linear-gradient(90deg,#0B1324 1px,transparent 1px) !important;
+  background-size:26px 26px !important;background-attachment:fixed}
+.header{background:rgba(5,9,18,.94) !important;color:var(--text) !important;border-bottom:1px solid var(--border);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);min-height:52px}
+.neon-mark{width:32px;height:32px;border-radius:9px;border:1px solid var(--neon);color:var(--neon);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 0 14px rgba(34,211,238,.35),inset 0 0 8px rgba(34,211,238,.2)}
+.neon-title{display:flex;flex-direction:column;line-height:1.25}
+.neon-tag{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:.18em;color:var(--neon);font-weight:700}
+.header-logo{color:var(--text) !important}
+.header-sub{color:var(--text-light) !important;opacity:1 !important}
+.header-refresh{background:var(--surface) !important;border:1px solid var(--border) !important;color:var(--text) !important;padding:6px 10px !important;border-radius:10px !important}
+.subbar{background:rgba(10,18,34,.95) !important;border-bottom:1px solid var(--border)}
+.tab-nav{background:var(--surface) !important;border:1px solid var(--border) !important;border-radius:12px;margin:10px 12px 0;overflow:hidden}
+.tab-btn{color:#6B7A99 !important;border-bottom:none !important;border-right:1px solid var(--border) !important}
+.tab-btn:last-child{border-right:none !important}
+.tab-btn.active{color:#050912 !important;background:var(--neon) !important;box-shadow:0 0 18px rgba(34,211,238,.55);font-weight:700}
+.card,.section{background:rgba(10,18,34,.92) !important;border:1px solid var(--border) !important;border-radius:16px !important}
+.card-title,.section-title{color:var(--text) !important}
+input,select,textarea,.form-input,.form-select{background:var(--panel) !important;color:var(--text) !important;border-color:var(--border) !important}
+input:focus,select:focus,textarea:focus{border-color:var(--neon) !important;box-shadow:0 0 0 2px rgba(34,211,238,.2);outline:none}
+input::placeholder,textarea::placeholder{color:#4E5D7C !important}
+input[type=checkbox],input[type=radio]{accent-color:var(--neon)}
+select option{background:#0A1222;color:#E6EDF7}
+.btn-primary,.modal-close,.btn-connect,.plan-guide-btn{background:var(--neon) !important;color:#050912 !important;border:none !important;font-weight:700;box-shadow:0 0 18px rgba(34,211,238,.45)}
+.btn-primary:disabled{box-shadow:none}
+.btn-outline,.compare-btn{background:transparent !important;color:#67E8F9 !important;border:1px solid var(--neon) !important}
+.modal{background:#0A1222 !important;color:var(--text);border:1px solid var(--border);box-shadow:0 -8px 40px rgba(34,211,238,.12)}
+.modal-overlay{background:rgba(2,5,12,.72)}
+.bottom-nav{background:rgba(10,18,34,.96) !important;border:1px solid var(--border) !important;border-radius:18px;left:10px !important;right:10px !important;bottom:8px !important;
+  height:62px !important;box-shadow:0 0 24px rgba(0,0,0,.6) !important;padding:4px;max-width:460px;margin:0 auto}
+.nav-item{color:#6B7A99 !important;border-radius:13px}
+.nav-item.active{color:var(--neon) !important;background:rgba(34,211,238,.1) !important;box-shadow:inset 0 0 0 1px rgba(34,211,238,.45)}
+.nav-icon svg{display:block}
+body{padding-bottom:84px}
+
+.doc-title{color:var(--text) !important}.doc-date{color:var(--text-sub) !important}
+.section-title{border-bottom-color:#22D3EE55 !important}
+.info-box{background:rgba(34,211,238,.06) !important;border-left-color:var(--neon) !important;color:#C3CDE0 !important}
+.placeholder{background:rgba(251,146,60,.12) !important;color:#FDBA74 !important}
+th{background:rgba(34,211,238,.08) !important;color:#67E8F9 !important}
+
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="header">
+    <button onclick="history.back()" class="neon-back" style="background:#0A1222;border:1px solid #1B2A4A;color:#E6EDF7;font-size:12px;cursor:pointer;padding:8px 10px;border-radius:10px;margin-right:4px;">◀ 戻る</button>
+    <!-- ★liff_terms.html3：ネオン・コックピットのデザインに変更（見た目のみ） -->
+    <span class="neon-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h7"/></svg></span>
+    <span class="neon-title"><span class="neon-tag">TERMS</span><span class="header-logo">利用規約3</span></span>
+    <span class="header-sub">AiPost</span>
+  </div>
+
+  <div class="content">
+
+    <div class="doc-title">AiPost 利用規約</div>
+    <div class="doc-date">制定日：<span class="placeholder">【制定日】</span>　最終更新：<span class="placeholder">【最終更新日】</span></div>
+
+    <!-- 第1条 -->
+    <div class="section">
+      <div class="section-title">第1条（適用）</div>
+      <p>本規約は、<span class="placeholder">【会社名】</span>（以下「当社」）が提供するSNS自動投稿サービス「AiPost」（以下「本サービス」）の利用に関する条件を定めるものです。</p>
+      <p>本サービスをご利用いただいた時点で、本規約に同意したものとみなします。</p>
+    </div>
+
+    <!-- 第2条 -->
+    <div class="section">
+      <div class="section-title">第2条（サービスの内容）</div>
+      <p>本サービスは、LINEを通じて以下の機能を提供します。</p>
+      <ol>
+        <li>AI文章生成機能（投稿文・ハッシュタグの自動生成）</li>
+        <li>SNS予約投稿機能（Instagram・Facebook・Threads・X）</li>
+        <li>投稿分析機能（LITEプラン以上）</li>
+        <li>素材画像の提供（LITEプラン以上）</li>
+        <li>その他当社が定める機能</li>
+      </ol>
+    </div>
+
+    <!-- 第3条 -->
+    <div class="section">
+      <div class="section-title">第3条（プランと料金）</div>
+      <p>本サービスは以下のプランを提供します。料金は全て税別です。</p>
+      <ol>
+        <li>FREEプラン：無料 / SNS1つ / 月4件</li>
+        <li>PERSONALプラン：月額300円 / SNS1つ / 月8件</li>
+        <li>LITEプラン：月額680円 / SNS2つ / 月15件</li>
+        <li>STANDARDプラン：月額1,280円 / SNS3つ / 月30件</li>
+        <li>PROプラン：月額1,980円 / SNS4つ / 月60件</li>
+      </ol>
+      <p>各プランの詳細な機能は、プラン・料金画面をご確認ください。</p>
+      <div class="info-box">同じ内容を複数のSNSに同時投稿した場合は1件としてカウントします。同時投稿扱いの条件は「同一テキスト・同一画像・同時刻」の3条件が全て一致する場合に限ります。</div>
+    </div>
+
+    <!-- 第4条 -->
+    <div class="section">
+      <div class="section-title">第4条（決済・解約）</div>
+      <ol>
+        <li>有料プランの料金はStripeを通じてクレジットカードにて月払いで決済します。</li>
+        <li>プランのアップグレードは即時反映されます。</li>
+        <li>ダウングレードは当月末に反映され、それまでは現在のプランをご利用いただけます。</li>
+        <li>解約は当月末に反映され、それまでは現在のプランをご利用いただけます。</li>
+        <li>日割り返金は行いません。</li>
+        <li>解約手続きは設定画面の「登録」タブから行えます。</li>
+      </ol>
+    </div>
+
+    <!-- 第5条 -->
+    <div class="section">
+      <div class="section-title">第5条（投稿機能の利用）</div>
+      <ol>
+        <li>利用者は、本サービスを通じて投稿する内容について全責任を負います。</li>
+        <li>各SNSの利用規約に違反する内容の投稿は禁止します。</li>
+        <li>当社は、投稿内容の正確性・適法性について保証しません。</li>
+        <li>SNS側の仕様変更・API変更・障害等により投稿が失敗した場合、当社は責任を負いません。</li>
+      </ol>
+    </div>
+
+    <!-- 第6条 -->
+    <div class="section">
+      <div class="section-title">第6条（XへのURL付き投稿の禁止）</div>
+      <p>当サービスでは、XへのURL付き投稿に対応していません。</p>
+      <ol>
+        <li>投稿文にURLが含まれる場合、Xは自動的に投稿先から除外されます。</li>
+        <li>URLの直接記述以外にも、日本語・記号・短縮URL・QRコード誘導テキスト等によるURL表現（以下「迂回行為」）も同様に禁止します。</li>
+        <li>迂回行為が確認された場合は、本規約違反として利用停止・登録解除の対象となる場合があります。</li>
+      </ol>
+      <div class="warn-box">⚠️ 迂回行為とはURLを直接記述せず、他の方法でリンク先を示す行為を指します。意図的な迂回行為が確認された場合はアカウントを停止する場合があります。不明な点は事前に運営までお問い合わせください。</div>
+    </div>
+
+    <!-- 第7条 -->
+    <div class="section">
+      <div class="section-title">第7条（AI文章生成機能）</div>
+      <ol>
+        <li>AI文章生成は全プランで無制限にご利用いただけます。</li>
+        <li>生成された文章の著作権は利用者に帰属します。</li>
+        <li>当社は生成文章の品質・正確性・適法性を保証しません。</li>
+        <li>生成文章を投稿する前に必ず内容をご確認ください。</li>
+        <li>生成文章を利用したことによる損害について当社は責任を負いません。</li>
+      </ol>
+    </div>
+
+    <!-- 第8条 -->
+    <div class="section">
+      <div class="section-title">第8条（SNSアカウントの連携と安全管理）</div>
+
+      <p>本サービスでは、自動投稿を行うために各SNSが発行する「アクセストークン」をお預かりします。</p>
+
+      <div class="info-box" style="margin:10px 0;">
+        <strong>アクセストークンとは？</strong><br>
+        各SNSが発行する「投稿専用の許可証」です。通常のパスワードとは全く異なるもので、以下の性質があります。<br>
+        ・投稿する権限のみを持ちます<br>
+        ・ログインや個人情報の閲覧には使えません<br>
+        ・利用者がいつでも無効にできます
+      </div>
+
+      <ol>
+        <li>
+          <strong>暗号化による安全管理</strong><br>
+          お預かりするアクセストークンはAES-256という業界標準の暗号化方式で保存されます。保存されたデータは意味不明な文字列に変換されるため、運営者を含む第三者が直接内容を読むことは技術的にできません。
+        </li>
+        <li>
+          <strong>当社が預かるもの・預からないもの</strong><br>
+          【預かるもの】投稿専用のアクセストークン（暗号化済み）<br>
+          【預からないもの】SNSのパスワード・個人情報・金融情報
+        </li>
+        <li>
+          <strong>パスワードについて</strong><br>
+          当社はSNSのパスワードを一切保持していません。パスワードを忘れた場合は各SNSのサポートにお問い合わせください。当社では対応できません。
+        </li>
+        <li>
+          <strong>アクセストークンの取り消し</strong><br>
+          各SNSの設定画面からいつでも連携を解除・アクセストークンを無効にすることができます。
+        </li>
+        <li>
+          <strong>免責</strong><br>
+          当社は適切なセキュリティ管理を行いますが、各SNS側のシステム障害・仕様変更、または利用者自身のアカウント管理に起因する問題については対応できない場合があります。
+        </li>
+      </ol>
+    </div>
+
+    <!-- 第9条 -->
+    <div class="section">
+      <div class="section-title">第9条（利用者アップロード画像の取り扱い）</div>
+      <ol>
+        <li>利用者は、本サービスにアップロードする画像について、自らが著作権・肖像権その他の権利を有すること、または当該権利者から適法な使用許諾を得ていることを保証するものとします。</li>
+        <li>前項の保証に反し、利用者がアップロードした画像が第三者の著作権・肖像権その他の権利を侵害していることが判明した場合、利用者は自己の責任と費用負担において解決するものとし、当社が損害を被った場合はこれを賠償するものとします。</li>
+        <li>当社は、権利者その他の第三者から権利侵害の申立てを受けた場合、利用者への事前通知を要せず、当該画像を含む投稿の停止・画像の削除を行うことができます。</li>
+        <li>当社は、アップロードされた画像について投稿前に個別の審査を行う義務を負いません。ただし、明らかに不適切と判断される画像については、投稿前であっても利用を停止する場合があります。</li>
+      </ol>
+      <div class="warn-box">⚠️ 他人が撮影した写真、インターネット上で見つけた画像、著名なキャラクター・ロゴ等、ご自身が権利を持たない画像のアップロードはお控えください。権利侵害が疑われる画像は、運営にて予告なく利用を停止する場合があります。</div>
+    </div>
+
+    <!-- 第10条 -->
+    <div class="section">
+      <div class="section-title">第10条（匿名統計データの利用）</div>
+      <p>本サービスでは、PROプランの競合比較機能のために、利用者の投稿分析データを匿名化した上で統計処理に使用します。個人を特定できる情報は一切含まれません。詳細はプライバシーポリシーをご確認ください。</p>
+    </div>
+
+    <!-- 第11条 -->
+    <div class="section">
+      <div class="section-title">第11条（禁止事項）</div>
+      <p>利用者は以下の行為を行ってはなりません。</p>
+      <ol>
+        <li>法令または公序良俗に違反する行為</li>
+        <li>各SNSの利用規約に違反する投稿</li>
+        <li>XへのURL付き投稿の迂回行為</li>
+        <li>当社または第三者の知的財産権を侵害する行為</li>
+        <li>本サービスの運営を妨害する行為</li>
+        <li>不正アクセスその他のセキュリティに反する行為</li>
+        <li>複数アカウントの作成・譲渡</li>
+        <li>その他当社が不適切と判断する行為</li>
+      </ol>
+    </div>
+
+    <!-- 第12条 -->
+    <div class="section">
+      <div class="section-title">第12条（利用停止・登録解除）</div>
+      <ol>
+        <li>当社は、利用者が禁止事項に違反した場合、事前通知なくサービスの利用停止・登録解除を行うことができます。</li>
+        <li>登録解除された場合、投稿予約・分析データ等は削除されます。</li>
+        <li>登録解除に伴う返金は行いません。</li>
+      </ol>
+    </div>
+
+    <!-- 第13条 -->
+    <div class="section">
+      <div class="section-title">第13条（免責事項）</div>
+      <ol>
+        <li>当社は、本サービスの中断・停止・終了について責任を負いません。</li>
+        <li>SNS側のAPI変更・仕様変更・障害により投稿が失敗した場合、当社は責任を負いません。</li>
+        <li>AI生成文章の内容・品質について保証しません。</li>
+        <li>本サービスの利用により生じた損害について、当社の故意または重大な過失がある場合を除き、責任を負いません。</li>
+        <li>利用者がアップロードした画像に起因して第三者との間に紛争が生じた場合、当社は一切の責任を負わず、利用者の責任と負担において解決するものとします。</li>
+        <li>本サービスの利用に関して当社が損害賠償責任を負う場合であっても、その賠償額は、請求原因発生月からさかのぼる直近3ヶ月間に利用者が当社に支払った利用料金の合計額を上限とします。</li>
+      </ol>
+    </div>
+
+    <!-- 第14条 -->
+    <div class="section">
+      <div class="section-title">第14条（規約の変更）</div>
+      <p>当社は必要に応じて本規約を変更することができます。変更後の規約は本サービス内に掲載した時点で効力を生じます。変更後も本サービスをご利用いただいた場合、変更後の規約に同意したものとみなします。</p>
+    </div>
+
+    <!-- 第15条 -->
+    <div class="section">
+      <div class="section-title">第15条（準拠法・管轄裁判所）</div>
+      <p>本規約の解釈・適用は日本法に準拠します。本サービスに関する紛争については、<span class="placeholder">【管轄裁判所】</span>を専属的合意管轄裁判所とします。</p>
+    </div>
+
+    <!-- 事業者情報 -->
+    <div class="section">
+      <div class="section-title">事業者情報</div>
+      <div class="company-row"><span class="company-key">会社名</span><span class="company-val placeholder">【会社名】</span></div>
+      <div class="company-row"><span class="company-key">代表者名</span><span class="company-val placeholder">【代表者名】</span></div>
+      <div class="company-row"><span class="company-key">所在地</span><span class="company-val placeholder">【所在地】</span></div>
+      <div class="company-row"><span class="company-key">メール</span><span class="company-val placeholder">【メールアドレス】</span></div>
+    </div>
+
+    <!-- 申し込み用：同意チェックとボタン（プラン申し込み時のみ表示） -->
+    <div id="agreement-section" style="display:none;">
+      <div style="background:#0A1222;border-radius:10px;border:2px solid var(--primary);padding:16px;margin-bottom:12px;">
+        <div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:12px;text-align:center;">
+          申し込み確認
+        </div>
+        <div style="background:#070E1C;border-radius:8px;padding:12px;margin-bottom:14px;font-size:13px;color:var(--primary);text-align:center;">
+          選択プラン：<strong id="selected-plan-name">-</strong>
+        </div>
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:14px;">
+          <input type="checkbox" id="agree-terms-check" onchange="toggleAgreeBtn()" style="width:20px;height:20px;margin-top:2px;flex-shrink:0;accent-color:var(--primary);">
+          <span style="font-size:13px;color:var(--text);line-height:1.8;">利用規約の内容を読み、同意します</span>
+        </label>
+        <button id="agree-btn" disabled onclick="proceedToPayment()"
+          style="width:100%;padding:14px;border-radius:10px;border:none;background:#451717;color:white;font-size:15px;font-weight:700;cursor:not-allowed;transition:all 0.2s;">
+          申し込みを完了する
+        </button>
+        <p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:8px;line-height:1.7;">
+          ※ チェックを入れると申し込みボタンが有効になります<br>
+          ※ 申し込み後はStripe決済画面に進みます
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+// URLパラメータを確認してプラン申し込み時は同意セクションを表示
+(function() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const from = params.get('from');
+    const plan = params.get('plan');
+    if (from === 'plan' && plan) {
+      document.getElementById('agreement-section').style.display = 'block';
+      document.getElementById('selected-plan-name').textContent = plan + 'プラン';
+      // プラン名をグローバル変数に保存
+      window._selectedPlan = plan;
+    }
+  } catch(e) {}
+})();
+
+function toggleAgreeBtn() {
+  const checked = document.getElementById('agree-terms-check').checked;
+  const btn = document.getElementById('agree-btn');
+  if (checked) {
+    btn.disabled = false;
+    btn.style.background = '#0891B2';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.background = '#451717';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+
+function proceedToPayment() {
+  const plan = window._selectedPlan || '選択したプラン';
+  alert(plan + 'プランへの申し込みを受け付けました。決済画面に進みます。（実装後はStripe決済画面が開きます）');
+}
+</script>
+</body>
+</html>
