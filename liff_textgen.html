@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成129 - AiPost</title>
+<title>投稿文作成130 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -612,7 +612,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成129</span>
+  <span class="header-logo">投稿文作成130</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
@@ -899,7 +899,8 @@
       </div>
       <div id="trim-status-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
       <button onclick="startTrimFlow()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">✂️ SNSごとにトリミングする</button>
-      <button onclick="selectMyImageWithoutTrim()" style="width:100%;padding:8px;background:transparent;color:var(--text-sub);border:1px solid var(--border);border-radius:10px;font-size:12px;cursor:pointer;margin-top:6px;">トリミングせずにそのまま使う</button>
+      <!-- ★liff_textgen.html130：「そのまま使う」「画像なしで投稿する」の枠線・文字を「画像を選び直す」と同じにした（ボタンだと分かりやすくするため。Kenさん指示） -->
+      <button onclick="selectMyImageWithoutTrim()" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;">トリミングせずにそのまま使う</button>
       <!-- ★liff_textgen.html129：画像を選んだ直後に、すぐ選び直せるボタンを追加（以前は画像右上の小さな×か、
            「画像なしで投稿する」を経由するしかなかった）。まだ確定前のため、確認なしで選び直しの画面に戻る -->
       <button onclick="reselectImage()" id="img-reselect-btn" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;">📁 画像を選び直す</button>
@@ -907,7 +908,7 @@
 
     <!-- 画像なし選択肢 -->
     <div style="padding:0 16px 12px;">
-      <button onclick="selectNoImage()" id="no-image-btn" style="width:100%;padding:8px;background:transparent;color:var(--text-sub);border:1px solid var(--border);border-radius:10px;font-size:12px;cursor:pointer;">🚫 画像なしで投稿する</button>
+      <button onclick="selectNoImage()" id="no-image-btn" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">🚫 画像なしで投稿する</button>
     </div>
 
   </div>
@@ -1393,7 +1394,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成129';
+const TRACE_SCREEN = '投稿文作成130';
 
 function traceLog(msg) {
   try {

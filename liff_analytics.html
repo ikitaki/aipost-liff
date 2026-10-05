@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析50 - AiPost</title>
+<title>分析51 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -163,7 +163,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析50</span>
+  <span class="header-logo">分析51</span>
   <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -1780,7 +1780,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析50';
+const TRACE_SCREEN = '分析51';
 
 function traceLog(msg) {
   try {
@@ -2716,7 +2716,8 @@ function applySentiment(data) {
           comments + '</div>';
       }).join('');
       const list = posts.length
-        ? '<div style="max-height:420px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:2px;">' + cards + '</div>'
+        // ★liff_analytics.html51：スクロールする枠の境界が分かるよう、「今日の状況」と同じ太さ・色の枠線（2px・メインの色）を付けた（Kenさん指示）
+        ? '<div style="max-height:420px;overflow-y:auto;-webkit-overflow-scrolling:touch;border:2px solid var(--primary);border-radius:12px;padding:8px;">' + cards + '</div>'
         : '<div style="font-size:10px;color:var(--text-light);">コメントの内容を表示できる投稿がありません（古い投稿の内容は表示されません）</div>';
       negEl.innerHTML = summary + list + xLimitNote;
     }
