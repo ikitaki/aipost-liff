@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録61 - AiPost</title>
+<title>設定・登録62 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -389,7 +389,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録61</span>
+  <span class="header-logo">設定・登録62</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -875,7 +875,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定61';
+const TRACE_SCREEN = '設定62';
 
 function traceLog(msg) {
   try {
@@ -981,7 +981,8 @@ function writeAnalyticsCache(part, data) {
 }
 
 async function fetchAnalyticsPartToCache(action, part) {
-  const label = part === 'summary' ? '分析(今日の状況)' : '分析(カレンダー)';
+  // ★liff_settings.html62：履歴の表示名で、先週・先月のまとめ（periodSummary）も「分析(カレンダー)」と出ていたのを直した
+  const label = part === 'summary' ? '分析(今日の状況)' : (part === 'periodSummary' ? '分析(先週・先月のまとめ)' : '分析(カレンダー)');
   const result = await postToGas({ action: action, lineUid: LINE_UID, params: {} }, label, function (r) { return r && r.success && r.data && !r.data.error; });
   if (result) writeAnalyticsCache(part, result.data);
 }
