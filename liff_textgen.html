@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成135 - AiPost</title>
+<title>投稿文作成136 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -92,6 +92,14 @@
   }
   .keyword-input:focus { border-color: var(--primary); }
   .keyword-hint { font-size: 11px; color: var(--text-light); line-height: 1.6; }
+  /* ★liff_textgen.html136：画面の案内（この画面でできること・各項目の説明・注意書き）。
+     言葉の途中で改行しないよう、投稿作成タブは区切り（<wbr>）の位置でだけ改行する（Kenさん指示） */
+  #tab-form { word-break: keep-all; overflow-wrap: anywhere; }
+  .page-intro { background: #e3f2fd; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px; font-size: 12px; line-height: 1.7; color: #0d47a1; }
+  .page-intro-title { font-size: 13px; font-weight: 700; }
+  .page-intro-sub { font-size: 11px; }
+  .step-hint { font-size: 11.5px; color: var(--text-sub); line-height: 1.6; margin: -6px 0 10px; }
+  .caution-box { background: #fff3e0; color: #e65100; border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.6; }
   .keyword-guide { border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; font-size: 12px; line-height: 1.6; }
   .keyword-guide.registered { background: #e8f5e9; color: #2e7d32; }
   .keyword-guide.unregistered { background: #fff3e0; color: #e65100; }
@@ -612,7 +620,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成135</span>
+  <span class="header-logo">投稿文作成136</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
@@ -681,9 +689,17 @@
 
   <div class="section-title">投稿文作成</div>
 
+  <!-- ★liff_textgen.html136：この画面でできることの案内（Kenさん指示） -->
+  <div class="page-intro">
+    <div class="page-intro-title">📝 この<wbr>画面で<wbr>できる<wbr>こと</div>
+    <div>キーワードや<wbr>要望を<wbr>もとに、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>予約すると、<wbr>指定した<wbr>日時に<wbr>SNSへ<wbr>自動で<wbr>投稿されます。</div>
+    <div class="page-intro-sub">くわしくは、<wbr>上の<wbr>「📖 ガイド」を<wbr>ご覧ください。</div>
+  </div>
+
   <!-- ① 投稿先SNS選択 -->
   <div class="card">
-    <div class="card-title">① 投稿先のSNSを選ぶ</div>
+    <div class="card-title">① 投稿先の<wbr>SNSを<wbr>選ぶ</div>
+    <p class="step-hint">連携済みの<wbr>SNSから<wbr>選んでください<wbr>（<wbr>選べる<wbr>数は<wbr>プランに<wbr>よって<wbr>異なります）。</p>
     <div class="sns-check-list">
       <div class="sns-check-item checked" id="sns-item-x" onclick="toggleSns(this)">
         <div class="sns-icon-sm sns-x">X</div>
@@ -705,32 +721,32 @@
     <p class="sns-plan-note" id="sns-unconnected-note" style="display:none;"></p>
   </div>
 
-  <!-- ② キーワードから文章を生成する -->
+  <!-- ② キーワードから投稿文を作成する（★liff_textgen.html136：見出しの「文章・生成」を「投稿文・作成」に統一） -->
   <div class="card">
-    <div class="card-title">② キーワードから文章を生成する</div>
+    <div class="card-title">② キーワードから<wbr>投稿文を<wbr>作成する</div>
     <div class="keyword-guide" id="keyword-guide"></div>
     <div class="keyword-input-grid">
       <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" placeholder="キーワード1">
       <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" placeholder="キーワード2">
       <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" placeholder="キーワード3">
     </div>
-    <div class="keyword-hint">💡 最大3個・1個15文字まで（商品名・特徴・季節など）</div>
+    <div class="keyword-hint">💡 最大3個・1個15文字まで<wbr>（商品名・特徴・季節など）</div>
   </div>
 
-  <!-- ③ 要望から文章を生成する -->
+  <!-- ③ 要望から投稿文を作成する（★liff_textgen.html136：見出しの「（任意）」をすべて外した。Kenさん指示） -->
   <div class="card">
-    <div class="card-title">③ 要望から文章を生成する（任意）</div>
+    <div class="card-title">③ 要望から<wbr>投稿文を<wbr>作成する</div>
     <textarea id="free-text-input" maxlength="150" placeholder="例：新商品の告知をしたい" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
-    <div class="keyword-hint" style="margin-top:4px;">②と両方入力すると、両方を考慮して生成します</div>
-    <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で書く場合は⑦に直接入力できます</div>
+    <div class="keyword-hint" style="margin-top:4px;color:var(--text-sub);">どんな<wbr>投稿に<wbr>したいかを、<wbr>自由に<wbr>書いてください。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。</div>
+    <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で<wbr>書く<wbr>場合は、<wbr>⑦に<wbr>直接入力できます。</div>
   </div>
 
   <!-- ④ 訴求パターン -->
   <div class="card">
-    <div class="card-title">④ 訴求パターンを選ぶ（任意）</div>
-    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">どんな雰囲気で伝えたいですか？</p>
+    <div class="card-title">④ 訴求パターンを<wbr>選ぶ</div>
+    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">投稿の<wbr>伝え方を<wbr>選んでください。<wbr>迷った<wbr>ときは<wbr>「AIに任せる」のままで<wbr>大丈夫です。</p>
     <div class="pattern-grid">
-      <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">🤖</span>AIに任せる</button>
+      <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">🤖</span>AIに<wbr>任せる</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💰</span>お得</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💡</span>悩み解決</button>
@@ -742,68 +758,72 @@
     </div>
   </div>
 
-  <!-- ⑤ エリアを含める -->
+  <!-- ★liff_textgen.html136：⑤⑥の分け方を変えた（Kenさん指示）。
+       ⑤＝AIが投稿文の中に入れる項目（エリア・店名。GASの includeArea・includeShopName）。
+       ⑥＝AIを使わず、投稿文の最後に「🏠店名」「📍所在地」の行をそのまま付ける項目（オン・オフで行を付け外しする。toggleEndLine()）。
+       それまでの⑥「店名・所在地を含める」の店名（AI）は⑤へ移し、⑦の「＋店名を入れる」「＋所在地を入れる」ボタンは⑥にまとめて外した。 -->
+  <!-- ⑤ エリア・店名を含めて投稿文を作成する -->
   <div class="card">
-    <div class="card-title">⑤ エリアを含める（任意）</div>
+    <div class="card-title">⑤ エリア・店名を<wbr>含めて<wbr>投稿文を<wbr>作成する</div>
+    <p class="step-hint">オンに<wbr>した<wbr>項目を<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。</p>
     <div class="sns-check-list">
       <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
-        <div class="sns-check-name">エリアを含める</div>
+        <div class="sns-check-name">エリアを<wbr>含める</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="include-check-item" id="include-shopname-item" onclick="toggleInclude(this)">
+        <div class="sns-check-name">店名を<wbr>含める</div>
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
   </div>
 
-  <!-- ⑥ 店名・所在地を含める -->
-  <!-- ★liff_textgen.html126：所在地を含める（AIには書かせず、生成後の本文末尾に「📍所在地」として
-       登録内容をそのまま付け足す。付け足す分の文字数はGAS〔TextGenerationgs_08c〕が差し引いて生成する） -->
+  <!-- ⑥ 投稿文の最後に店名・所在地を付ける -->
   <div class="card">
-    <div class="card-title">⑥ 店名・所在地を含める（任意）</div>
+    <div class="card-title">⑥ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける</div>
+    <p class="step-hint">オンに<wbr>すると、<wbr>登録済みの<wbr>店名・所在地を、<wbr>投稿文の<wbr>最後に<wbr>そのまま<wbr>付けます<wbr>（AIは<wbr>使いません）。</p>
     <div class="sns-check-list">
-      <div class="include-check-item" id="include-shopname-item" onclick="toggleInclude(this)">
-        <div class="sns-check-name">店名を含める</div>
+      <div class="include-check-item" id="include-shopend-item" onclick="toggleEndLine(this, 'shop')">
+        <div class="sns-check-name">店名を<wbr>付ける</div>
         <div class="sns-checkbox">✓</div>
       </div>
-      <div class="include-check-item" id="include-address-item" onclick="toggleIncludeAddress(this)">
-        <div class="sns-check-name">所在地を含める</div>
+      <div class="include-check-item" id="include-address-item" onclick="toggleEndLine(this, 'address')">
+        <div class="sns-check-name">所在地を<wbr>付ける</div>
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
-    <div class="keyword-hint" style="margin-top:6px;">📍 所在地はAIに書かせず、本文の最後に登録内容をそのまま付けます</div>
-    <div class="keyword-hint" style="margin-top:4px;">店名・エリア・所在地は設定画面で登録が必要です</div>
+    <div class="caution-box" style="margin-top:10px;">⚠️ 付けると<wbr>文字数の<wbr>上限を<wbr>超える<wbr>場合は、<wbr>投稿文を<wbr>短くしてから<wbr>付けてください。</div>
+    <div class="keyword-hint" style="margin-top:6px;">店名・エリア・所在地は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
   </div>
 
   <!-- AI生成ボタン -->
   <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
-    <span style="font-size:20px;">✨</span>投稿文・ハッシュタグを作成
+    <span style="font-size:20px;">✨</span>投稿文・ハッシュタグを<wbr>作成
   </button>
 
   <!-- ローディング -->
   <div class="loading" id="loading">
     <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-    <div class="loading-text">AIが投稿文を考えています…<br>少々お待ちください</div>
+    <div class="loading-text">AIが<wbr>投稿文を<wbr>考えています…<br>少々<wbr>お待ちください</div>
   </div>
 
   <!-- ⑦ 文章確認・編集 -->
   <div class="card">
-    <div class="card-title">⑦ 文章を確認・編集する</div>
-    <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで作成した文章が表示されます。自由に編集できます。直接入力することもできます。</p>
-    <div class="genre-notice" id="genre-notice">📍 登録業種（<span id="genre-label"></span>）をもとに文章を生成しました。</div>
+    <div class="card-title">⑦ 投稿文を<wbr>確認・編集する</div>
+    <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集できます。<wbr>直接入力する<wbr>ことも<wbr>できます。</p>
+    <!-- ★liff_textgen.html136：投稿文の中のハッシュタグの注意（予約の時に止めるため、先に知らせる。Kenさん指示） -->
+    <div class="caution-box" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑧の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
+    <div class="genre-notice" id="genre-notice">📍 登録業種<wbr>（<span id="genre-label"></span>）を<wbr>もとに<wbr>投稿文を<wbr>作成しました。</div>
     <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount()"
-      placeholder="AIで生成した文章がここに表示されます。直接入力することもできます。"></textarea>
+      placeholder="AIで作成した投稿文がここに表示されます。直接入力することもできます。"></textarea>
     <div class="char-counter">
       <span class="char-count" id="char-count">0文字</span>
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
-      <span style="font-size:11px;color:var(--text-light);" id="char-limit-label">上限140字（半角280字）</span>
+      <span style="font-size:11px;color:var(--text-light);" id="char-limit-label">上限140字<wbr>（半角280字）</span>
     </div>
-    <!-- ★liff_textgen.html128：手で書いた文章にも店名・所在地を入れられるよう、文章の最後に入れるボタンを追加
-         （AIで作った文章にも使える。⑥の「店名・所在地を含める」の動きは変えない） -->
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <button type="button" onclick="appendProfileLine('shop')" style="flex:1;padding:8px 6px;font-size:12px;font-weight:700;color:var(--primary);background:var(--surface);border:1px solid var(--primary);border-radius:8px;cursor:pointer;font-family:inherit;">＋ 🏠店名を入れる</button>
-      <button type="button" onclick="appendProfileLine('address')" style="flex:1;padding:8px 6px;font-size:12px;font-weight:700;color:var(--primary);background:var(--surface);border:1px solid var(--primary);border-radius:8px;cursor:pointer;font-family:inherit;">＋ 📍所在地を入れる</button>
-    </div>
-    <div class="keyword-hint" style="margin-top:4px;">登録済みの店名・所在地を、文章の最後に改行して入れます。不要な場合は、入れた後に消せます</div>
+    <!-- ★liff_textgen.html136：「＋ 🏠店名を入れる」「＋ 📍所在地を入れる」ボタンは、⑥「投稿文の最後に店名・所在地を付ける」にまとめて外した -->
     <div class="url-warning" id="url-warning">
-      🔗 <strong>投稿文にURLが含まれています。</strong><br>当サービスではXへのURL付き投稿に対応していないため、Xは自動的に除外されます。
+      🔗 <strong>投稿文に<wbr>URLが<wbr>含まれています。</strong><br>当サービスでは<wbr>Xへの<wbr>URL付き投稿に<wbr>対応していないため、<wbr>Xは<wbr>自動的に<wbr>除外されます。
     </div>
     <div class="x-warning" id="x-warning"></div>
   </div>
@@ -813,13 +833,13 @@
   <!-- ⑧ ハッシュタグ -->
   <div class="card">
     <div class="card-title">⑧ ハッシュタグ</div>
-    <p class="hashtag-desc">AIで作成したハッシュタグが表示されます。文章と同様、自由に編集できます。チェックしたSNSにだけ付与されます。「#」は自動で挿入されるため入力不要です。</p>
+    <p class="hashtag-desc">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>投稿文と<wbr>同様、<wbr>自由に<wbr>編集できます。<wbr>チェックした<wbr>SNSにだけ付与されます。<wbr>「#」は<wbr>自動で<wbr>付きます。</p>
     <div class="hashtag-x-status" id="hashtag-x-status"></div>
     <div class="hashtag-header">
       <div class="hashtag-header-spacer"></div>
       <div class="hashtag-checks">
         <span class="hashtag-col hashtag-col-X"><span class="hashtag-col-icon sns-icon-sm sns-x">X</span><span class="hashtag-col-limit">3個まで</span></span>
-        <span class="hashtag-col hashtag-col-IG"><span class="hashtag-col-icon sns-icon-sm sns-ig">IG</span><span class="hashtag-col-limit">制限なし</span></span>
+        <span class="hashtag-col hashtag-col-IG"><span class="hashtag-col-icon sns-icon-sm sns-ig">IG</span><span class="hashtag-col-limit">5個まで</span></span>
         <span class="hashtag-col hashtag-col-TH"><span class="hashtag-col-icon sns-icon-sm sns-th">@</span><span class="hashtag-col-limit">1個のみ</span></span>
       </div>
     </div>
@@ -860,7 +880,7 @@
         </div>
       </div>
     </div>
-    <div class="keyword-hint" style="margin-top:6px;">💡 ハッシュタグは1個15文字までです</div>
+    <div class="keyword-hint" style="margin-top:6px;">💡 ハッシュタグは<wbr>1個15文字までです。</div>
   </div>
 
   <!-- ⑨ 画像アップロード（インライン） -->
@@ -880,13 +900,13 @@
     <div id="img-upload-area" style="padding:20px 16px 12px;">
       <div style="text-align:center;color:var(--text-sub);margin-bottom:14px;">
         <div style="font-size:36px;margin-bottom:8px;">🖼️</div>
-        <div style="font-size:11px;line-height:1.7;">アップロード後にSNSごとの最適な比率にトリミングできます。</div>
+        <div style="font-size:11px;line-height:1.7;text-align:left;">画像を<wbr>1枚選ぶと、<wbr>SNSごとに<wbr>合う形に<wbr>切り抜けます。<wbr>Instagramへの<wbr>投稿には<wbr>画像が<wbr>必要です。</div>
       </div>
       <input type="file" id="my-img-input" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
       <input type="file" id="my-cam-input" accept="image/*" capture="environment" style="display:none;" onchange="handleImageUpload(event)">
       <div style="display:flex;gap:8px;">
-        <button onclick="document.getElementById('my-img-input').click()" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 フォルダから選ぶ</button>
-        <button onclick="document.getElementById('my-cam-input').click()" style="flex:1;padding:10px;background:#2e7d32;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📷 写真を撮る</button>
+        <button onclick="document.getElementById('my-img-input').click()" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 フォルダから<wbr>選ぶ</button>
+        <button onclick="document.getElementById('my-cam-input').click()" style="flex:1;padding:10px;background:#2e7d32;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📷 写真を<wbr>撮る</button>
       </div>
       <p style="font-size:10px;color:var(--text-light);text-align:center;margin-top:8px;">JPG・PNG対応　推奨：2MB以下</p>
     </div>
@@ -898,17 +918,17 @@
         <button onclick="resetImagePreview()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:12px;cursor:pointer;line-height:24px;text-align:center;">×</button>
       </div>
       <div id="trim-status-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
-      <button onclick="startTrimFlow()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">✂️ SNSごとにトリミングする</button>
+      <button onclick="startTrimFlow()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">✂️ SNSごとに<wbr>トリミングする</button>
       <!-- ★liff_textgen.html130：「そのまま使う」「画像なしで投稿する」の枠線・文字を「画像を選び直す」と同じにした（ボタンだと分かりやすくするため。Kenさん指示） -->
-      <button onclick="selectMyImageWithoutTrim()" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;">トリミングせずにそのまま使う</button>
+      <button onclick="selectMyImageWithoutTrim()" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;">トリミングせずに<wbr>そのまま<wbr>使う</button>
       <!-- ★liff_textgen.html129：画像を選んだ直後に、すぐ選び直せるボタンを追加（以前は画像右上の小さな×か、
            「画像なしで投稿する」を経由するしかなかった）。まだ確定前のため、確認なしで選び直しの画面に戻る -->
-      <button onclick="reselectImage()" id="img-reselect-btn" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;">📁 画像を選び直す</button>
+      <button onclick="reselectImage()" id="img-reselect-btn" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;">📁 画像を<wbr>選び直す</button>
     </div>
 
     <!-- 画像なし選択肢 -->
     <div style="padding:0 16px 12px;">
-      <button onclick="selectNoImage()" id="no-image-btn" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">🚫 画像なしで投稿する</button>
+      <button onclick="selectNoImage()" id="no-image-btn" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">🚫 画像なしで<wbr>投稿する</button>
     </div>
 
   </div>
@@ -916,7 +936,8 @@
   <!-- ⑩ 投稿日時：カレンダー -->
   <div class="card" style="padding:0;overflow:hidden;">
     <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);">
-      <div class="card-title" style="margin-bottom:0;">⑩ 投稿日を選ぶ</div>
+      <div class="card-title" style="margin-bottom:0;">⑩ 投稿日を<wbr>選ぶ</div>
+      <p class="step-hint" style="margin:6px 0 0;">予約できるのは<wbr>翌月末までです。</p>
     </div>
     <div class="calendar-wrap">
       <div class="cal-header">
@@ -935,10 +956,10 @@
       </div>
     </div>
     <div class="selected-date-bar" id="selected-date-bar">
-      📌 <span id="selected-date-label">日付を選んでください</span>
+      📌 <span id="selected-date-label">日付を<wbr>選んでください</span>
     </div>
     <div class="time-select-row">
-      <div class="time-select-label">投稿時間を選ぶ</div>
+      <div class="time-select-label">投稿時間を<wbr>選ぶ</div>
       <select class="datetime-select" id="post-time">
         <option value="8">8時ごろ</option><option value="9">9時ごろ</option><option value="10">10時ごろ</option>
         <option value="11">11時ごろ</option><option value="12">12時ごろ</option><option value="13" selected>13時ごろ</option>
@@ -946,14 +967,16 @@
         <option value="17">17時ごろ</option><option value="18">18時ごろ</option><option value="19">19時ごろ</option>
         <option value="20">20時ごろ</option><option value="21">21時ごろ</option>
       </select>
-      <p id="time-past-hint" style="font-size:11px;color:var(--danger);margin-top:6px;display:none;">⚠️ 本日は現在時刻より前の時間帯は選べません</p>
-      <p style="font-size:11px;color:var(--text-sub);margin-top:6px;">💡 指定した時間帯に自動で投稿されます</p>
+      <p id="time-past-hint" style="font-size:11px;color:var(--danger);margin-top:6px;display:none;">⚠️ 本日は<wbr>現在時刻より<wbr>前の<wbr>時間帯は<wbr>選べません</p>
+      <p style="font-size:11px;color:var(--text-sub);margin-top:6px;">💡 指定した<wbr>時間帯に<wbr>自動で<wbr>投稿されます。</p>
     </div>
   </div>
 
+  <!-- ★liff_textgen.html136：このボタンではまだ予約されないことの案内 -->
+  <p class="step-hint" style="margin:4px 2px 8px;">次の<wbr>確認画面で<wbr>「予約を<wbr>確定する」を<wbr>押すと、<wbr>予約が<wbr>完了します。</p>
   <!-- 予約ボタン -->
   <button class="reserve-btn" onclick="showConfirm()">
-    <span style="font-size:20px;">✅</span>内容を確認する
+    <span style="font-size:20px;">✅</span>内容を<wbr>確認する
   </button>
 
   </div><!-- /tab-form -->
@@ -980,18 +1003,18 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② キーワードを入力する<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
     <div class="accordion-body" id="acc-t2">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">入力したキーワードをもとに、AIが投稿文とハッシュタグを作成します。未入力のまま生成すると、業種登録がある場合は登録業種をもとに、業種登録がない場合はキーワードの入力が必須になります。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">入力したキーワードをもとに、AIが投稿文とハッシュタグを作成します。未入力のまま作成すると、業種登録がある場合は登録業種をもとに作成します。業種登録がない場合は、キーワードか要望のどちらかの入力が必要です。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 最大3個までの理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文は全角140文字という限られた文字数（詳しくは⑤）で作成するため、キーワードが多すぎるとAIが全てを詰め込もうとして不自然な文章になりがちです。3個程度に絞ることで、本文には核となる要素だけを残し、細かい要素は③ハッシュタグ側で補うという役割分担にしています。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文は全角140文字という限られた文字数（詳しくは⑤）で作成するため、キーワードが多すぎるとAIが全てを詰め込もうとして不自然な投稿文になりがちです。3個程度に絞ることで、投稿文には核となる要素だけを残し、細かい要素は③ハッシュタグ側で補うという役割分担にしています。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 1個15文字までの理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">こちらも外部の調査・研究による数値ではなく、当サービス独自の設計です。短い単語・フレーズでの入力を想定しており、長い文章をそのまま入力できてしまうと「AIが文章を組み立てる」という本来の使い方から外れてしまうため、15文字を上限としています。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">こちらも外部の調査・研究による数値ではなく、当サービス独自の設計です。短い単語・フレーズでの入力を想定しており、長い文をそのまま入力できてしまうと「AIが投稿文を組み立てる」という本来の使い方から外れてしまうため、15文字を上限としています。</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t3')">③ 訴求パターンを選ぶ<span class="accordion-arrow" id="arr-acc-t3">▶</span></div>
     <div class="accordion-body" id="acc-t3">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の雰囲気（限定感・お得感など）を選ぶ任意の項目です。「🤖 AIに任せる」を選んでおけば、AIが投稿内容に合った雰囲気を自動で判断して文章を作成するため、特にこだわりがなければこのままで問題ありません。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の雰囲気（限定感・お得感など）を選ぶ任意の項目です。「🤖 AIに任せる」を選んでおけば、AIが投稿内容に合った雰囲気を自動で判断して投稿文を作成するため、特にこだわりがなければこのままで問題ありません。</div>
     </div>
   </div>
 
@@ -1013,18 +1036,18 @@
           <div style="font-size:11px;color:#555;line-height:1.7;">本来の上限は500文字ですが、Xに合わせて140文字までとしています。</div>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">Xを選択していない場合でも、投稿文の上限は140文字のままです。SNSの選び方によって上限が変わってしまうと、本文を書いている途中でSNS選択を変えた際に「さっきまで書けていたのに急にオーバー扱いになった」といった混乱が起きやすくなります。Xを利用しない場合であっても、システム全体の一貫性を保つためにこの基準を採用しています。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">Xを選択していない場合でも、投稿文の上限は140文字のままです。SNSの選び方によって上限が変わってしまうと、投稿文を書いている途中でSNS選択を変えた際に「さっきまで書けていたのに急にオーバー扱いになった」といった混乱が起きやすくなります。Xを利用しない場合であっても、システム全体の一貫性を保つためにこの基準を採用しています。</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">⑤ 投稿文にURLを入れられない理由<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
     <div class="accordion-body" id="acc-t5">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、<strong>Xへの投稿文にURL（http://・https://から始まるリンク）を含めることができません</strong>。Instagram・ThreadsはURLを含めても通常通り投稿できます。AIによる文章生成ではURLを含む文章は作られませんが、利用者ご自身が本文に直接URLを入力した場合に、以下の動作が発生します。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、<strong>Xへの投稿文にURL（http://・https://から始まるリンク）を含めることができません</strong>。Instagram・ThreadsはURLを含めても通常通り投稿できます。AIによる投稿文の作成ではURLを含む投稿文は作られませんが、利用者ご自身が投稿文に直接URLを入力した場合に、以下の動作が発生します。</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
         <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
           <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">① 入力中にリアルタイムで警告</div>
-          <div style="font-size:11px;color:#5d4037;line-height:1.7;">本文にURLを入力した瞬間、画面上に「Xは自動的に除外されます」という警告が表示されます。</div>
+          <div style="font-size:11px;color:#5d4037;line-height:1.7;">投稿文にURLを入力した瞬間、画面上に「Xは自動的に除外されます」という警告が表示されます。</div>
         </div>
         <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
           <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">② 予約時：Xだけ自動的に除外</div>
@@ -1163,9 +1186,9 @@
 <div class="modal-overlay" id="overwrite-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title">⚠️ 入力中の文章があります</div>
-    <div class="modal-desc">AIが生成した文章で上書きされます。現在入力中の文章は消えますがよろしいですか？</div>
-    <button class="modal-btn modal-btn-primary" onclick="executeGenerate()">上書きして生成する</button>
+    <div class="modal-title">⚠️ 入力中の投稿文があります</div>
+    <div class="modal-desc">AIが作成した投稿文で上書きされます。現在入力中の投稿文は消えますがよろしいですか？</div>
+    <button class="modal-btn modal-btn-primary" onclick="executeGenerate()">上書きして作成する</button>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('overwrite-modal')">キャンセル</button>
   </div>
 </div>
@@ -1394,7 +1417,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成135';
+const TRACE_SCREEN = '投稿文作成136';
 
 function traceLog(msg) {
   try {
@@ -1666,10 +1689,11 @@ function renderKeywordGuide() {
   // 　必須に見える表現は使わない。注意ではないため、業種未登録でも同じ緑の表示にする。
   if (USER_GENRE) {
     el.className = 'keyword-guide registered';
-    el.innerHTML = `<p>ここに入れた言葉は、投稿文に必ず含めます。空欄の場合は登録業種〈${USER_GENRE.main}・${USER_GENRE.sub}〉をもとに作成します</p>`;
+    // ★liff_textgen.html136：案内を「キーワードを含めてAIが作成する」に直した（Kenさん指示）。<wbr>は改行してよい位置
+    el.innerHTML = `<p>入力した<wbr>キーワードを<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>空欄の<wbr>場合は、<wbr>登録業種〈${USER_GENRE.main}・${USER_GENRE.sub}〉を<wbr>もとに<wbr>作成します。</p>`;
   } else {
     el.className = 'keyword-guide registered';
-    el.innerHTML = `<p>ここに入れた言葉は、投稿文に必ず含めます</p>`;
+    el.innerHTML = `<p>入力した<wbr>キーワードを<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>業種が<wbr>未登録の<wbr>場合は、<wbr>②か<wbr>③の<wbr>どちらかを<wbr>入力してください。</p>`;
   }
 }
 
@@ -1898,35 +1922,88 @@ function updateUserGenreFromProfile(profile) {
   // 所在地が未登録と分かった場合、「所在地を含める」がONなら外す
   const addrItem = document.getElementById('include-address-item');
   if (USER_ADDRESS === '' && addrItem && addrItem.classList.contains('checked')) toggleInclude(addrItem);
+  // ★liff_textgen.html136：⑥「店名を付ける」も、店名が未登録と分かったら外す
+  const shopEndItem = document.getElementById('include-shopend-item');
+  if (USER_SHOP_NAME === '' && shopEndItem && shopEndItem.classList.contains('checked')) toggleInclude(shopEndItem);
   renderKeywordGuide();
 }
 
-// ★liff_textgen.html128：⑦の文章の最後に、改行して「🏠店名」または「📍所在地」を入れる
-// 　（所在地の形は、AIで作った時に付け足す「📍所在地」と同じ）。
-// 　未登録・不明の場合は案内を出して入れない。同じ行がすでに入っていれば二重に入れない。
-// 　入れた後は input イベントを起こし、文字数などの表示を更新する。
-function appendProfileLine(kind) {
+// ★liff_textgen.html136：⑥「投稿文の最後に店名・所在地を付ける」（AIを使わず、登録内容をそのまま行として付ける。Kenさん指示）
+// 　・オン・オフの状態と、投稿文の最後の「🏠店名」「📍所在地」の行を一致させる。並びは常に 🏠店名 → 📍所在地。
+// 　・付けると文字数の上限を超える時は付けない（以前の⑦のボタンは、上限を超えると後ろから文字が削られていた）。
+// 　・投稿文が空の時はオンにするだけで、AIで作成した時・「内容を確認する」を押した時に付ける。
+// 　・所在地はGASにも includeAddress として送り、AIが所在地の分の文字数を空けて作成する（店名の分は空けない。GASの変更待ち）。
+function endLineText(kind) {
   const value = kind === 'shop' ? USER_SHOP_NAME : USER_ADDRESS;
+  return value ? (kind === 'shop' ? '🏠' : '📍') + value : '';
+}
+function isEndLineOn(kind) {
+  const el = document.getElementById(kind === 'shop' ? 'include-shopend-item' : 'include-address-item');
+  return !!(el && el.classList.contains('checked'));
+}
+// 投稿文から⑥の行を取り除き、指定した状態（{shop, address}）の行を最後に付け直した文字列を返す
+function rebuildEndLines(text, want) {
+  const shopLine = endLineText('shop');
+  const addrLine = endLineText('address');
+  const lines = String(text || '').split('\n').filter(function (l) {
+    const t = l.trim();
+    return !((shopLine && t === shopLine) || (addrLine && t === addrLine));
+  });
+  const body = lines.join('\n').replace(/\s+$/, '');
+  const add = [];
+  if (want.shop && shopLine) add.push(shopLine);
+  if (want.address && addrLine) add.push(addrLine);
+  if (add.length === 0) return body;
+  return body === '' ? add.join('\n') : body + '\n' + add.join('\n');
+}
+function setEndLineChecked(kind, on) {
+  const el = document.getElementById(kind === 'shop' ? 'include-shopend-item' : 'include-address-item');
+  if (el && el.classList.contains('checked') !== on) toggleInclude(el);
+}
+function toggleEndLine(el, kind) {
   const label = kind === 'shop' ? '店名' : '所在地';
-  if (value === null) {
-    alert(label + 'を確認できませんでした。画面を開き直してから、もう一度お試しください。');
-    return;
-  }
-  if (value === '') {
-    alert(label + 'が未登録です。設定画面から登録してください。');
-    return;
-  }
-  const line = (kind === 'shop' ? '🏠' : '📍') + value;
+  const turningOn = !el.classList.contains('checked');
   const ta = document.getElementById('post-textarea');
-  if (!ta) return;
-  if (ta.value.split('\n').some(function (l) { return l.trim() === line; })) {
-    alert(label + 'はすでに文章に入っています。');
-    return;
+  if (turningOn) {
+    const value = kind === 'shop' ? USER_SHOP_NAME : USER_ADDRESS;
+    // 所在地は、不明（null）でもオンにできる（従来どおり。未登録ならAIで作成した時にGASがエラーを返す）
+    if (value === null && kind === 'shop') {
+      alert(label + 'を確認できませんでした。画面を開き直してから、もう一度お試しください。');
+      return;
+    }
+    if (value === '') {
+      alert(label + 'が未登録です。設定画面から登録してください。');
+      return;
+    }
   }
-  const body = ta.value.replace(/\s+$/, '');
-  ta.value = body === '' ? line : body + '\n' + line;
+  const want = { shop: isEndLineOn('shop'), address: isEndLineOn('address') };
+  want[kind] = turningOn;
+  if (ta && ta.value.trim() !== '') {
+    const next = rebuildEndLines(ta.value, want);
+    if (turningOn && countCharsX(next) > CHAR_LIMIT) {
+      alert(label + 'を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くしてから、もう一度オンにしてください。');
+      return;
+    }
+    ta.value = next;
+    ta.dispatchEvent(new Event('input'));
+  }
+  toggleInclude(el);
+}
+// 「内容を確認する」の時、オンの行が投稿文に無ければ付ける。付けると上限を超える時は false（確認に進まない）
+function ensureEndLines() {
+  const ta = document.getElementById('post-textarea');
+  if (!ta) return true;
+  const want = { shop: isEndLineOn('shop'), address: isEndLineOn('address') };
+  if (!want.shop && !want.address) return true;
+  const next = rebuildEndLines(ta.value, want);
+  if (next === ta.value) return true;
+  if (countCharsX(next) > CHAR_LIMIT) {
+    alert('⑥の店名・所在地を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くするか、⑥をオフにしてください。');
+    return false;
+  }
+  ta.value = next;
   ta.dispatchEvent(new Event('input'));
-  ta.focus();
+  return true;
 }
 
 function confirmAndGenerate() {
@@ -1995,7 +2072,7 @@ async function executeGenerate() {
     const result = await response.json();
 
     if (!result.success) {
-      alert('生成に失敗しました：' + result.error);
+      alert('作成に失敗しました：' + result.error);
       setStep(2);
       return;
     }
@@ -2004,6 +2081,17 @@ async function executeGenerate() {
     // ★liff_textgen.html126：所在地を含める場合、本文の最後に改行して「📍所在地」をそのまま付ける
     // 　（ハッシュタグは所在地を除いた本文から作る）
     ta.value = result.data.generatedText + (result.data.addressLine ? '\n' + result.data.addressLine : '');
+    // ★liff_textgen.html136：⑥の「店名を付ける」がオンなら、「🏠店名」の行を付ける（所在地の行の前）。
+    // 　GASは店名の分の文字数を空けないため、上限を超える時は付けずに知らせ、オフにする
+    if (isEndLineOn('shop') && endLineText('shop')) {
+      const withShop = result.data.generatedText + '\n' + endLineText('shop') + (result.data.addressLine ? '\n' + result.data.addressLine : '');
+      if (countCharsX(withShop) > CHAR_LIMIT) {
+        setEndLineChecked('shop', false);
+        alert('店名を付けると文字数の上限（' + CHAR_LIMIT + '字）を超えるため、付けませんでした。\n投稿文を短くしてから、⑥の「店名を付ける」をオンにしてください。');
+      } else {
+        ta.value = withShop;
+      }
+    }
     LAST_APPEAL_PATTERN = result.data.appealPattern;
 
     // ハッシュタグも続けて生成する
@@ -2058,7 +2146,7 @@ async function executeGenerate() {
 let draftSaved = false;
 function saveDraft() {
   const ta = document.getElementById('post-textarea');
-  if (!ta.value.trim()) { alert('文章を入力してから保存してください。'); return; }
+  if (!ta.value.trim()) { alert('投稿文を入力してから保存してください。'); return; }
   if (draftSaved && !confirm('保存済みの下書きを上書きしますか？')) return;
   window._draft = ta.value;
   draftSaved = true;
@@ -2282,6 +2370,8 @@ function toggleInclude(el) {
   el.querySelector('.sns-checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
 }
 
+// ★liff_textgen.html136：includeShopName は⑤「店名を含める」（AIが投稿文の中に入れる）。
+// 　includeAddress は⑥「所在地を付ける」（GASが所在地の分の文字数を空け、addressLine を返す）。⑥「店名を付ける」はGASに送らない
 function getIncludeFlags() {
   return {
     includeShopName: document.getElementById('include-shopname-item').classList.contains('checked'),
@@ -2527,13 +2617,15 @@ function getMonthQuota(y, m) {
 // ===== 予約確認 =====
 function showConfirm() {
   const ta = document.getElementById('post-textarea');
-  if (!ta.value.trim()) { alert('文章を入力してください。'); return; }
+  if (!ta.value.trim()) { alert('投稿文を入力してください。'); return; }
+  // ★liff_textgen.html136：⑥でオンにした店名・所在地の行が投稿文に無ければ、ここで付ける（上限を超える時は止める）
+  if (!ensureEndLines()) return;
   // ★liff_textgen.html134：ハッシュタグの確認を、日付・画像の確認より先に行う（Kenさん指示。以前は「予約を確定する」を
   // 　押すまで分からなかった）。本文の中のハッシュタグ → Instagramのタグ数（5つまで）の順。予約の確定時にも同じ確認を残す。
   const bodyTagsAtConfirm = String(ta.value || '').match(/[#＃][^\s#＃]+/g) || [];
   if (bodyTagsAtConfirm.length > 0) {
-    alert('本文の中にハッシュタグ（' + bodyTagsAtConfirm.slice(0, 3).join('、') + (bodyTagsAtConfirm.length > 3 ? ' など' : '') + '）があります。\n' +
-      'ハッシュタグは本文から消して、下の「ハッシュタグ」の入力欄に入れてください。');
+    alert('投稿文の中にハッシュタグ（' + bodyTagsAtConfirm.slice(0, 3).join('、') + (bodyTagsAtConfirm.length > 3 ? ' など' : '') + '）があります。\n' +
+      'ハッシュタグは投稿文から消して、下の「ハッシュタグ」の入力欄に入れてください。');
     return;
   }
   if (document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-ig')) {
@@ -2596,7 +2688,7 @@ function showConfirm() {
     if (xTotal > CHAR_LIMIT) {
       if (checkedItems.length === 1) {
         // Xのみ選択している場合は予約自体をブロック
-        alert('本文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nXのみが選択されているため、このままでは予約できません。\n本文またはハッシュタグを短くしてください。');
+        alert('投稿文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nXのみが選択されているため、このままでは予約できません。\n投稿文またはハッシュタグを短くしてください。');
         return;
       }
       xExcluded = true;
@@ -2626,7 +2718,7 @@ function showConfirm() {
   if (remainingSnsNames.length === 0) {
     const reasons = [];
     if (xExcludeReason === 'url') reasons.push('・Xは、投稿文にURLが含まれているため投稿できません');
-    if (xExcludeReason === 'char') reasons.push('・Xは、本文＋ハッシュタグの文字数が上限を超えているため投稿できません');
+    if (xExcludeReason === 'char') reasons.push('・Xは、投稿文＋ハッシュタグの文字数が上限を超えているため投稿できません');
     if (igExcluded) reasons.push(igExcludeReason === 'skip'
       ? '・Instagramは、「画像なし」を選んだため投稿できません'
       : '・Instagramは、画像が無いと投稿できません');
@@ -2666,7 +2758,7 @@ function showConfirm() {
   if (xExcludeReason === 'url') {
     excludeNotes.push('🐦 投稿文にURLが含まれているため、Xは自動的に除外されました。');
   } else if (xExcludeReason === 'char') {
-    excludeNotes.push('🐦 本文＋ハッシュタグの文字数がXの上限を超えているため、Xは自動的に除外されました。');
+    excludeNotes.push('🐦 投稿文＋ハッシュタグの文字数がXの上限を超えているため、Xは自動的に除外されました。');
   }
   if (igExcludeReason === 'noimage') {
     excludeNotes.push('📱 画像が選択されていないため、Instagramは自動的に除外されました。');
@@ -2702,7 +2794,7 @@ function showConfirm() {
     const tags = getHashtagsForSns(code);
     // ★liff_textgen.html121：実際の投稿と同じく、本文の後に改行2つを入れてハッシュタグを並べる
     const tagText = tags.length ? '\n\n' + tags.map(t => '#' + t).join(' ') : '';
-    const bodyText = (ta.value + tagText) || '（本文なし）';
+    const bodyText = (ta.value + tagText) || '（投稿文なし）';
     return `<div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:6px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">${SNS_ICON_MAP[code] || ''} ${name}</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.7;white-space:pre-wrap;">${bodyText.replace(/</g,'&lt;')}</div>
@@ -2884,8 +2976,8 @@ async function executeReserve() {
   // 　（Kenさん決定）。ハッシュタグはハッシュタグ欄に入れてもらう（SNSごとの数の上限を正しく守るため）。
   const bodyTags = String(document.getElementById('post-textarea').value || '').match(/[#＃][^\s#＃]+/g) || [];
   if (bodyTags.length > 0) {
-    alert('本文の中にハッシュタグ（' + bodyTags.slice(0, 3).join('、') + (bodyTags.length > 3 ? ' など' : '') + '）があります。\n' +
-      'ハッシュタグは本文から消して、下の「ハッシュタグ」の入力欄に入れてください。');
+    alert('投稿文の中にハッシュタグ（' + bodyTags.slice(0, 3).join('、') + (bodyTags.length > 3 ? ' など' : '') + '）があります。\n' +
+      'ハッシュタグは投稿文から消して、下の「ハッシュタグ」の入力欄に入れてください。');
     hideReserveLoadingOverlay();
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
     return;
@@ -3226,7 +3318,7 @@ function loadEditModeFromUrl() {
   if (reserveBtn) reserveBtn.innerHTML = '<span style="font-size:20px;">✅</span>この内容で予約を更新する';
   const banner = document.createElement('div');
   banner.style.cssText = 'background:#fff8e1;color:#e65100;font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:12px;line-height:1.7;';
-  banner.textContent = '📝 既存の予約を編集中です。文章の修正・再生成、SNSの選択、ハッシュタグの変更、画像の再トリミングが行えます。';
+  banner.textContent = '📝 既存の予約を編集中です。投稿文の修正・再作成、SNSの選択、ハッシュタグの変更、画像の再トリミングが行えます。';
   document.getElementById('tab-form').insertBefore(banner, document.getElementById('tab-form').firstChild);
 
   // SNS選択：渡されたSNSのみチェックを入れる
