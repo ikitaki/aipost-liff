@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更48 - AiPost</title>
+<title>予約確認・変更49 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -671,6 +671,10 @@
   .del-sns-chip.on { border-color: var(--danger); color: var(--danger); font-weight: 700; }
   .del-ig-note { font-size: 11px; color: var(--text-sub); padding: 5px 0; }
   .del-actions { display: flex; gap: 8px; margin-top: 12px; }
+  /* ★liff_reservation.html49：表示中のSNSの投稿の件数 */
+  .del-total { font-size: 13px; color: var(--text); background: var(--bg); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; line-height: 1.6; }
+  .del-total b { font-size: 16px; color: var(--primary); }
+  .del-total-sub { font-size: 11px; color: var(--text-sub); }
 
   /* ============================================ */
   /* ボトムナビゲーションバー（全画面共通） */
@@ -728,7 +732,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更48</span>
+  <span class="header-logo">予約確認・変更49</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
@@ -925,6 +929,8 @@
     <div id="del-status" class="empty-list-note" style="display:none;"></div>
 
     <div id="del-body" style="display:none;">
+      <!-- ★liff_reservation.html49：表示中のSNSの投稿が全部で何件あるか（Kenさん指示） -->
+      <div class="del-total" id="del-total"></div>
       <div id="del-unlinked" class="del-note-ng" style="display:none;"></div>
       <div class="del-toolbar">
         <button class="cal-nav" id="del-prev-month" onclick="changeDeleteMonth(-1)">‹</button>
@@ -1312,7 +1318,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認48';
+  const TRACE_SCREEN = '予約確認49';
 
   function traceLog(msg) {
     try {
@@ -3205,6 +3211,19 @@ function _dataUrlToBase64(dataUrl) {
     document.getElementById('del-month-title').textContent = delViewYear + '年' + (delViewMonth + 1) + '月';
     document.getElementById('del-prev-month').disabled = current <= range.min;
     document.getElementById('del-next-month').disabled = current >= range.max;
+
+    // ★liff_reservation.html49：表示中のSNSの投稿が全部で何件あるか（今月と過去12か月。削除済みは数えない）。
+    // 　投稿IDの記録が無く削除できない投稿があれば、その件数も添える
+    // 　（月送りで見られる範囲＝historyMonthRange() の中だけを数え、一覧で見られる投稿の数と合わせる）
+    const allItems = deleteCandidates().filter(function (item) {
+      const m = item.postedAt.getFullYear() * 12 + item.postedAt.getMonth();
+      return m >= range.min && m <= range.max;
+    });
+    const noIdCount = allItems.filter(function (item) { return !(item.deletable && item.deletable[deleteSns]); }).length;
+    document.getElementById('del-total').innerHTML =
+      escapeHtml(deleteSns) + 'の投稿：全部で <b>' + allItems.length + '</b> 件' +
+      (noIdCount > 0 ? '（うち削除できない投稿 ' + noIdCount + '件）' : '') +
+      '<div class="del-total-sub">AiPostから投稿したもの（今月と過去12か月）</div>';
 
     const unlinked = isDeleteSnsUnlinked();
     const unlinkedEl = document.getElementById('del-unlinked');
