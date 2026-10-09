@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成137 - AiPost</title>
+<title>投稿文作成138 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -415,6 +415,10 @@
   .accordion-arrow { font-size: 10px; color: var(--text-sub); transition: transform 0.2s; margin-left: 8px; }
   .accordion-body { display: none; margin-top: 8px; }
   .accordion-body.open { display: block; }
+  /* ★liff_textgen.html138：予約内容の確認の「SNSごとの投稿文を見る」ボタン */
+  .preview-toggle { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 11px 12px; margin-bottom: 10px; border: 1.5px solid var(--primary); border-radius: 10px; background: var(--surface); color: var(--primary); font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; box-sizing: border-box; }
+  .preview-toggle .pt-arrow { font-size: 12px; }
+  .preview-toggle.open { background: var(--bg); }
 
   /* 確認モーダル */
   .modal-overlay {
@@ -620,7 +624,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成137</span>
+  <span class="header-logo">投稿文作成138</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
@@ -1208,7 +1212,8 @@
       <div class="confirm-row"><span class="confirm-key">画像</span><span class="confirm-val" id="confirm-image">抹茶ラテ</span></div>
       <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain"></span></div>
     </div>
-    <div class="accordion-title" style="font-size:12px;color:var(--primary);font-weight:600;margin-bottom:10px;" onclick="toggleAcc('confirm-preview')">▼ SNSごとの投稿文を見る<span class="accordion-arrow" id="arr-confirm-preview">▶</span></div>
+    <!-- ★liff_textgen.html138：押せる所だと分かりにくかったため、枠付きのボタンにした（Kenさん指示・A案）。押すと開き、文字が「閉じる ▲」に変わる -->
+    <button type="button" class="preview-toggle" id="confirm-preview-toggle" onclick="toggleConfirmPreview()">📄 SNSごとの投稿文を見る <span class="pt-arrow">▼</span></button>
     <div class="accordion-body" id="confirm-preview" style="margin-bottom:10px;"></div>
     <button class="modal-btn modal-btn-success" onclick="executeReserve()">予約を確定する</button>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('confirm-modal')">修正する</button>
@@ -1420,7 +1425,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成137';
+const TRACE_SCREEN = '投稿文作成138';
 
 function traceLog(msg) {
   try {
@@ -2779,10 +2784,8 @@ function showConfirm() {
   document.getElementById('confirm-date').textContent = selectedMonth + '月' + selectedDay + '日 ' + time;
 
   // モーダルを開くたびにプレビューの開閉状態をリセット（閉じた状態から開始）
-  const previewBody = document.getElementById('confirm-preview');
-  const previewArr = document.getElementById('arr-confirm-preview');
-  previewBody.classList.remove('open');
-  if (previewArr) previewArr.style.transform = '';
+  // ★liff_textgen.html138：ボタンの文字も「見る ▼」に戻す
+  setConfirmPreviewOpen(false);
 
   // SNSごとの投稿文プレビューを生成
   const SNS_CODE_MAP = { 'sns-x': 'X', 'sns-ig': 'IG', 'sns-th': 'TH' };
@@ -3258,6 +3261,23 @@ function switchMainTab(id) {
 }
 
 // ===== ガイド（アコーディオン） =====
+// ★liff_textgen.html138：予約内容の確認の「SNSごとの投稿文を見る／閉じる」ボタン
+function setConfirmPreviewOpen(open) {
+  const body = document.getElementById('confirm-preview');
+  const btn = document.getElementById('confirm-preview-toggle');
+  if (body) body.classList.toggle('open', open);
+  if (btn) {
+    btn.classList.toggle('open', open);
+    btn.innerHTML = open
+      ? '📄 SNSごとの投稿文を閉じる <span class="pt-arrow">▲</span>'
+      : '📄 SNSごとの投稿文を見る <span class="pt-arrow">▼</span>';
+  }
+}
+function toggleConfirmPreview() {
+  const body = document.getElementById('confirm-preview');
+  setConfirmPreviewOpen(!(body && body.classList.contains('open')));
+}
+
 function toggleAcc(id) {
   const body = document.getElementById(id);
   const arr = document.getElementById('arr-' + id);
