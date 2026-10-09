@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成139 - AiPost</title>
+<title>投稿文作成141 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -95,6 +95,11 @@
   /* ★liff_textgen.html136：画面の案内（この画面でできること・各項目の説明・注意書き）。
      言葉の途中で改行しないよう、投稿作成タブは区切り（<wbr>）の位置でだけ改行する（Kenさん指示） */
   #tab-form { word-break: keep-all; overflow-wrap: anywhere; }
+  /* ★liff_textgen.html141：ガイドタブの説明文も、言葉の途中で改行しないようにした */
+  #tab-guide { word-break: keep-all; overflow-wrap: anywhere; }
+  /* ★liff_textgen.html140：入力欄（投稿文・要望・キーワード・ハッシュタグ等）は説明文と分け、普通の折り返しに戻す。
+     上の設定が入力欄にも効き、投稿文が「、」「。」の位置でしか折り返さず、改行が入っているように見えていた（Kenさん指摘） */
+  #tab-form textarea, #tab-form input, #tab-form select { word-break: normal; overflow-wrap: break-word; }
   .page-intro { background: #e3f2fd; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px; font-size: 12px; line-height: 1.7; color: #0d47a1; }
   .page-intro-title { font-size: 13px; font-weight: 700; }
   .page-intro-sub { font-size: 11px; }
@@ -624,7 +629,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成139</span>
+  <span class="header-logo">投稿文作成141</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
@@ -992,135 +997,186 @@
   <div id="tab-guide" class="tab-panel">
 
   <!-- ===== ガイド（アコーディオン） ===== -->
+  <!-- ★liff_textgen.html141：今の画面の仕様に合わせて書き直した（Kenさん指示）。番号は投稿作成タブの番号と同じにした -->
   <div class="card">
     <div class="card-title" style="font-size:14px;">📖 投稿文作成ガイド</div>
-    <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿作成画面の各項目について、仕様と理由をまとめています。上から投稿作成画面と同じ順番で並んでいます。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿作成タブの<wbr>各項目に<wbr>ついて、<wbr>仕様と<wbr>その<wbr>理由を<wbr>まとめています。<wbr>番号は<wbr>投稿作成タブの<wbr>番号と<wbr>同じです。</div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t1')">① 投稿先のSNSを選ぶ<span class="accordion-arrow" id="arr-acc-t1">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t1')">① 投稿先の<wbr>SNSを<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t1">▶</span></div>
     <div class="accordion-body" id="acc-t1">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">連携済みのSNSの中から、今回投稿したいSNSを選びます。ここで選んだSNSに応じて、⑥ハッシュタグのチェック欄や⑦画像トリミングの比率の選択肢が自動的に切り替わります。1つも選ばずに予約を進めることはできません。</div>
-      <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
-        <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">💡 FREEプランはXを選択できません</div>
-        <div style="font-size:11px;color:#5d4037;line-height:1.7;">FREEプランでは、Xを投稿先として選択できない仕様になっています。</div>
-      </div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">連携済みの<wbr>SNSの<wbr>中から、<wbr>今回投稿する<wbr>SNSを<wbr>選びます。<wbr>連携していない<wbr>SNSは<wbr>選べません<wbr>（設定画面で<wbr>連携できます）。<wbr>ここで<wbr>選んだ<wbr>SNSに<wbr>合わせて、<wbr>⑧ハッシュタグの<wbr>チェック欄と、<wbr>⑨画像の<wbr>トリミングの<wbr>対象が<wbr>切り<wbr>替わります。<wbr>1つも<wbr>選ばずに<wbr>予約する<wbr>ことは<wbr>できません。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 プランごとに<wbr>選べる<wbr>数</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">FREEプランは<wbr>1つ<wbr>（Xは<wbr>選べません）、<wbr>PERSONAL・LITEプランは<wbr>2つ、<wbr>STANDARD・PROプランは<wbr>3つまで<wbr>選べます。<wbr>上限まで<wbr>選んでいる<wbr>時に<wbr>別の<wbr>SNSに<wbr>したい<wbr>場合は、<wbr>先に<wbr>チェックを<wbr>外してください。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② キーワードを入力する<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② キーワードから<wbr>投稿文を<wbr>作成する<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
     <div class="accordion-body" id="acc-t2">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">入力したキーワードをもとに、AIが投稿文とハッシュタグを作成します。未入力のまま作成すると、業種登録がある場合は登録業種をもとに作成します。業種登録がない場合は、キーワードか要望のどちらかの入力が必要です。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 最大3個までの理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文は全角140文字という限られた文字数（詳しくは⑤）で作成するため、キーワードが多すぎるとAIが全てを詰め込もうとして不自然な投稿文になりがちです。3個程度に絞ることで、投稿文には核となる要素だけを残し、細かい要素は③ハッシュタグ側で補うという役割分担にしています。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 1個15文字までの理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">こちらも外部の調査・研究による数値ではなく、当サービス独自の設計です。短い単語・フレーズでの入力を想定しており、長い文をそのまま入力できてしまうと「AIが投稿文を組み立てる」という本来の使い方から外れてしまうため、15文字を上限としています。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">入力した<wbr>キーワードを<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>キーワードが<wbr>空欄の<wbr>場合は、<wbr>設定画面で<wbr>登録した<wbr>業種を<wbr>もとに<wbr>作成します。<wbr>業種を<wbr>登録していない<wbr>場合は、<wbr>②の<wbr>キーワードか③の<wbr>要望の<wbr>どちらかを<wbr>入力してください。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 最大3個までの<wbr>理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文は<wbr>限られた<wbr>文字数<wbr>（⑥を<wbr>参照）で<wbr>作成する<wbr>ため、<wbr>キーワードが<wbr>多すぎると、<wbr>AIが<wbr>すべてを<wbr>詰め込もうと<wbr>して<wbr>不自然な<wbr>投稿文に<wbr>なりがちです。<wbr>3個程度に<wbr>絞って<wbr>投稿文には<wbr>中心となる<wbr>言葉だけを<wbr>入れ、<wbr>細かい<wbr>言葉は<wbr>⑧ハッシュタグで<wbr>補う、と<wbr>いう<wbr>役割分担に<wbr>しています。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 1個15文字までの<wbr>理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">キーワードは<wbr>短い<wbr>言葉での<wbr>入力を<wbr>想定しています。<wbr>長い文を<wbr>そのまま<wbr>入力できると、<wbr>「AIが投稿文を組み立てる」と<wbr>いう<wbr>本来の<wbr>使い方から<wbr>外れてしまう<wbr>ため、<wbr>15文字を<wbr>上限に<wbr>しています<wbr>（外部の<wbr>調査の<wbr>数値ではなく、<wbr>AiPost独自の<wbr>設計です）。<wbr>どのような<wbr>投稿に<wbr>したいかを<wbr>文章で<wbr>伝えたい<wbr>場合は、<wbr>③の<wbr>要望に<wbr>書いてください。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t3')">③ 訴求パターンを選ぶ<span class="accordion-arrow" id="arr-acc-t3">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t3')">③ 要望から<wbr>投稿文を<wbr>作成する<span class="accordion-arrow" id="arr-acc-t3">▶</span></div>
     <div class="accordion-body" id="acc-t3">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の雰囲気（限定感・お得感など）を選ぶ任意の項目です。「🤖 AIに任せる」を選んでおけば、AIが投稿内容に合った雰囲気を自動で判断して投稿文を作成するため、特にこだわりがなければこのままで問題ありません。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">どのような<wbr>投稿に<wbr>したいかを、<wbr>150文字まで<wbr>自由に<wbr>書けます<wbr>（例：新商品の<wbr>告知を<wbr>したい）。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>②に<wbr>キーワードを<wbr>入力した<wbr>場合は、<wbr>キーワードも<wbr>含めて<wbr>作成します。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 書き方の<wbr>コツ</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「いつ」<wbr>「何を」<wbr>「誰に向けて」などを<wbr>具体的に<wbr>書く<wbr>ほど、<wbr>思いどおりの<wbr>投稿文に<wbr>なりやすくなります。<wbr>投稿文を<wbr>自分で<wbr>書く<wbr>場合は、<wbr>②③を<wbr>使わずに<wbr>⑥に<wbr>直接入力できます。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ 投稿文が全角140文字である理由<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ 訴求パターンを<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
     <div class="accordion-body" id="acc-t4">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、同じ投稿文・同じ画像であれば複数SNSへの同時投稿を「1投稿」としてカウントする仕様になっています。この「同一投稿」という条件を成立させるには投稿文は全SNS共通で1つだけでなければならないため、最も文字数制限が厳しいX（全角140文字＝半角280文字）に合わせることで、どのSNSを選んでも確実に投稿できるようにしています。「複数SNSに同じ内容をまとめて予約できる」利便性と引き換えに、投稿文の文字数はXの基準に統一している、というのが正確な理由です。</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">全角140文字（半角280文字）が上限。これが投稿文共通の基準になっています。</div>
-        </div>
-        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
-          <div style="font-size:11px;color:#e1306c;line-height:1.7;">本来の上限は全角2,200文字ですが、Xに合わせて140文字までとしています。</div>
-        </div>
-        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">本来の上限は500文字ですが、Xに合わせて140文字までとしています。</div>
-        </div>
-      </div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-top:10px;">Xを選択していない場合でも、投稿文の上限は140文字のままです。SNSの選び方によって上限が変わってしまうと、投稿文を書いている途中でSNS選択を変えた際に「さっきまで書けていたのに急にオーバー扱いになった」といった混乱が起きやすくなります。Xを利用しない場合であっても、システム全体の一貫性を保つためにこの基準を採用しています。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の<wbr>伝え方<wbr>（限定感・<wbr>お得感など）を<wbr>選びます。<wbr>「🤖&nbsp;AIに任せる」のままに<wbr>すると、<wbr>AIが<wbr>キーワードなどから<wbr>合う<wbr>伝え方を<wbr>判断して<wbr>投稿文を<wbr>作成します。<wbr>特に<wbr>こだわりが<wbr>なければ、<wbr>そのままで<wbr>大丈夫です。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">⑤ 投稿文にURLを入れられない理由<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">⑤ エリア・店名を<wbr>含めて<wbr>投稿文を<wbr>作成する<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
     <div class="accordion-body" id="acc-t5">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">当サービスでは、<strong>Xへの投稿文にURL（http://・https://から始まるリンク）を含めることができません</strong>。Instagram・ThreadsはURLを含めても通常通り投稿できます。AIによる投稿文の作成ではURLを含む投稿文は作られませんが、利用者ご自身が投稿文に直接URLを入力した場合に、以下の動作が発生します。</div>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
-        <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">① 入力中にリアルタイムで警告</div>
-          <div style="font-size:11px;color:#5d4037;line-height:1.7;">投稿文にURLを入力した瞬間、画面上に「Xは自動的に除外されます」という警告が表示されます。</div>
-        </div>
-        <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">② 予約時：Xだけ自動的に除外</div>
-          <div style="font-size:11px;color:#5d4037;line-height:1.7;">Instagram・Threadsを含めて予約した場合、Xだけが対象から自動的に除外され、他のSNSへは通常通り投稿されます。</div>
-        </div>
-        <div style="background:#ffebee;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:var(--danger);margin-bottom:3px;">③ Xのみを選んでいる場合：予約不可</div>
-          <div style="font-size:11px;color:var(--danger);line-height:1.7;">投稿先がXだけの場合、URLを含む投稿はそもそも予約できません。URLを削除するか、他のSNSも選択してください。</div>
-        </div>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 なぜXだけURL付き投稿に対応していないのか</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xの投稿API（外部連携の仕組み）は、通常のテキストのみの投稿が1件あたり0.015ドルなのに対し、URLを含む投稿は1件あたり0.20ドルと、<strong>13倍以上のコストがかかります</strong>。この費用差が大きいため、当サービスではXへのURL付き投稿には対応せず、URLを使いたい場合はInstagram・Threadsをご利用いただく仕様にしています。</div>
-      <div style="background:#ffebee;border-radius:8px;padding:10px 12px;border-left:4px solid var(--danger);">
-        <div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:4px;">⚠️ 迂回行為について</div>
-        <div style="font-size:11px;color:#5d4037;line-height:1.8;">「http://〜」の形式以外にも、URLを日本語や記号で表現したもの・短縮URL・QRコードへの誘導テキストなどをXに投稿した場合、X側でURL付き投稿と判定されるリスクがあります。このような迂回行為は利用規約違反にあたり、意図的な行為が確認された場合はアカウントの利用停止・登録解除の対象となります。</div>
-      </div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">チェックした<wbr>項目を、<wbr>AIが<wbr>投稿文の<wbr>中に<wbr>自然な<wbr>形で<wbr>入れて<wbr>作成します。<wbr>エリアは<wbr>設定画面で<wbr>登録した<wbr>都道府県、<wbr>店名は<wbr>登録した<wbr>店名を<wbr>使います。<wbr>登録していない<wbr>項目は<wbr>使えないため、<wbr>先に<wbr>設定画面で<wbr>登録してください。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ⑦との<wbr>違い</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">⑤は、<wbr>AIが<wbr>文章の<wbr>流れに<wbr>合わせて<wbr>投稿文の<wbr>中に<wbr>入れます。<wbr>⑦は、<wbr>AIを<wbr>使わずに、<wbr>登録した<wbr>店名・所在地を<wbr>そのまま<wbr>投稿文の<wbr>最後に<wbr>付けます。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t6')">⑥ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t6">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t6')">⑥ 投稿文を<wbr>確認・編集する<span class="accordion-arrow" id="arr-acc-t6">▶</span></div>
     <div class="accordion-body" id="acc-t6">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 「#」の自動挿入について</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入力欄に「#」を入力する必要はありません。利用者が自分で「#」を入力すると、全角記号になっていたり、スペースが抜けていたりといった入力ミスでハッシュタグとして機能しなくなる場合があるため、システム側で自動的に半角の「#」を付与する仕様にしています。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数のカウントについて</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xの文字数計算では、日本語などの全角文字を全角1文字、半角の英数字・記号・スペースは全角0.5文字として数えます。自動挿入される「#」や、投稿文とハッシュタグの間の区切りスペースも半角扱い（全角0.5文字）になるため、入力した文字数より実際のカウントが多くなります（例：本文が空の状態で、全角15文字のハッシュタグを1個だけXに付けた場合、区切りスペース0.5字＋「#」0.5字＋ハッシュタグ本体15字＝合計16文字扱いになります）。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとの推奨個数</div>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
-        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X（推奨1〜2個・最大3個）</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">4個以上付けると、Xのシステムに「インプレッションを稼ごうとしているスパム」と判定され、表示されにくくなるリスクがあるためです。</div>
-        </div>
-        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram（推奨3〜5個）</div>
-          <div style="font-size:11px;color:#e1306c;line-height:1.7;">Meta社は「ハッシュタグの量は検索順位に影響しない」と明言しており、量より投稿文の内容が重視される流れのためです。</div>
-        </div>
-        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
-          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads（1個のみ）</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">仕様上、2個目以降はリンク化されずただの文字列になってしまうためです。</div>
-        </div>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xだけ文字数オーバーの警告が出る理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">Xだけは投稿文とハッシュタグが同じ140文字の枠を共有するため、ハッシュタグを付けた分だけ投稿文を圧迫し、合計が140文字を超えるとXだけ投稿できなくなります。Instagram・Threadsは文字数の上限に大きな余裕があるため、この影響を受けません。この警告が対象にするのは、ハッシュタグ欄でXにチェックを入れたハッシュタグだけです。Xにチェックを入れていない場合や、ハッシュタグを使っていない場合は表示されません。</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑦ SNSごとの画像トリミング比率<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
-    <div class="accordion-body" id="acc-t7">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:6px;">画像は同じ元写真から、SNSごとに最適な比率でトリミングできます。⭐が付いている比率が特におすすめです。決まった比率以外にも「自由」を選べば、縦横比を固定せずに自由な形でトリミングすることもできます。「SNSごとにトリミングする」では、SNSごとに「✂️ 切り抜く」「🖼️ 元画像」（切り抜かずに載せる）「🚫 画像なし」の3つから選べます（Instagramは画像が無いと投稿できないため、画像なしを選ぶとInstagramには投稿されません）。</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">アップロードする<strong>元の画像は1枚だけ</strong>で、⑤で説明した「同一投稿」の条件（投稿文・画像が同じであること）はこの元画像を指します。トリミングでSNSごとに見た目（比率）を変えても、画像そのものは変わらないため、同一投稿の扱いには影響しません。</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>自分で<wbr>直接入力する<wbr>ことも<wbr>できます。<wbr>すでに<wbr>投稿文が<wbr>ある<wbr>時に<wbr>もう<wbr>一度<wbr>作成すると、<wbr>上書きして<wbr>よいかの<wbr>確認が<wbr>出ます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限と<wbr>数え方</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文の<wbr>上限は<wbr>全角<wbr>140文字です<wbr>（FREEプランは<wbr>70文字）。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5文字、<wbr>絵文字は<wbr>1文字と<wbr>して<wbr>数えます。<wbr>上限を<wbr>超える<wbr>分は<wbr>入力できません。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文が<wbr>全角140文字である<wbr>理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AiPostでは、<wbr>同じ<wbr>投稿文・<wbr>同じ<wbr>画像で<wbr>あれば、<wbr>複数の<wbr>SNSへの<wbr>同時投稿を<wbr>「1投稿」と<wbr>して<wbr>数えます。<wbr>その<wbr>ためには<wbr>投稿文が<wbr>すべての<wbr>SNSで<wbr>共通の<wbr>1つである<wbr>必要が<wbr>あり、<wbr>文字数の<wbr>制限が<wbr>最も<wbr>厳しい<wbr>X<wbr>（全角<wbr>140文字＝半角280文字）に<wbr>合わせる<wbr>ことで、<wbr>どの<wbr>SNSを<wbr>選んでも<wbr>確実に<wbr>投稿できるように<wbr>しています。</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
         <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
           <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">⭐16:9（横長）／1:1（正方形）／3:4（縦長）。16:9はタイムラインで最も美しく収まる標準サイズです。</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">全角<wbr>140文字<wbr>（半角280文字）が<wbr>上限です。<wbr>これが<wbr>投稿文の<wbr>共通の<wbr>基準に<wbr>なっています。</div>
         </div>
         <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
           <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
-          <div style="font-size:11px;color:#e1306c;line-height:1.7;">⭐4:5（縦長）／1:1（正方形）／1.91:1（横長）。2025年のグリッド仕様変更以降、縦長が最も目立ちやすくなっています。</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">本来の<wbr>上限は<wbr>2,200文字ですが、<wbr>Xに<wbr>合わせて<wbr>140文字までに<wbr>しています。</div>
         </div>
         <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
           <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
-          <div style="font-size:11px;color:#555;line-height:1.7;">⭐4:5（縦長）／1:1（正方形）／16:9（横長）。Instagramと同じMeta基盤のため、縦長が最も見え方が良くなります。</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">本来の<wbr>上限は<wbr>500文字ですが、<wbr>Xに<wbr>合わせて<wbr>140文字までに<wbr>しています。</div>
         </div>
       </div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xを<wbr>選んでいない<wbr>場合も、<wbr>上限は<wbr>140文字のままです。<wbr>SNSの<wbr>選び方で<wbr>上限が<wbr>変わると、<wbr>投稿文を<wbr>書いている<wbr>途中で<wbr>SNSを<wbr>選び直した<wbr>時に、<wbr>急に<wbr>文字数オーバーに<wbr>なると<wbr>いった<wbr>混乱が<wbr>起きやす<wbr>いためです。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文に<wbr>ハッシュタグは<wbr>入れられません</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文の<wbr>中に<wbr>「#」で<wbr>始まる<wbr>ハッシュタグが<wbr>あると、<wbr>予約できません。<wbr>ハッシュタグは<wbr>⑧の<wbr>欄に<wbr>入力してください。<wbr>SNSごとの<wbr>ハッシュタグの<wbr>数の<wbr>上限を<wbr>正しく<wbr>守る<wbr>ためです。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xへの<wbr>投稿文に<wbr>URLは<wbr>入れられません</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xへの<wbr>投稿文には、<wbr>URL<wbr>（http://・https://で<wbr>始まるリンク）を<wbr>含められません。<wbr>Instagram・Threadsは、<wbr>URLを<wbr>含めても<wbr>通常どおり投稿できます。<wbr>AIが<wbr>作成する<wbr>投稿文に<wbr>URLは<wbr>入りませんが、<wbr>自分で<wbr>URLを<wbr>入力した<wbr>場合は、<wbr>次のようになります。</div>
+      <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">入力した<wbr>時</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">投稿文の<wbr>下に<wbr>「Xは自動的に除外されます」と<wbr>表示されます。</div>
+      </div>
+      <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">予約する<wbr>時</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">Instagram・Threadsも<wbr>選んでいる<wbr>場合は、<wbr>Xだけが<wbr>投稿先から<wbr>外れ、<wbr>ほかの<wbr>SNSには<wbr>通常どおり投稿されます。<wbr>投稿先が<wbr>Xだけの<wbr>場合は<wbr>予約できません。<wbr>URLを<wbr>消すか、<wbr>ほかの<wbr>SNSも<wbr>選んでください。</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 XだけURLに<wbr>対応していない<wbr>理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xの<wbr>投稿の<wbr>費用は、<wbr>文章だけの<wbr>投稿が<wbr>1件約0.015ドルなのに<wbr>対し、<wbr>URLを<wbr>含む投稿は<wbr>1件0.20ドルと、<wbr>13倍以上<wbr>かかります<wbr>（調査時点）。<wbr>この<wbr>差が<wbr>大きいため、<wbr>Xへの<wbr>URL付きの<wbr>投稿には<wbr>対応せず、<wbr>URLを<wbr>載せたい<wbr>場合は<wbr>Instagram・Threadsを<wbr>使っていただく<wbr>仕様に<wbr>しています。</div>
+      <div style="background:#ffebee;border-radius:8px;padding:10px 12px;border-left:4px solid var(--danger);">
+        <div style="font-size:12px;font-weight:700;color:var(--danger);margin-bottom:4px;">⚠️ 迂回行為に<wbr>ついて</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.8;">「http://〜」の<wbr>形以外でも、<wbr>URLを<wbr>日本語や<wbr>記号で<wbr>表した<wbr>もの<wbr>・短縮URL・QRコードへの<wbr>誘導などを<wbr>Xに<wbr>投稿すると、<wbr>X側で<wbr>URL付きの<wbr>投稿と<wbr>判定される<wbr>おそれが<wbr>あります。<wbr>このような<wbr>迂回行為は<wbr>利用規約違反に<wbr>あたり、<wbr>意図的な<wbr>行為が<wbr>確認された<wbr>場合は、<wbr>アカウントの<wbr>利用停止・登録解除の<wbr>対象に<wbr>なります。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑦ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
+    <div class="accordion-body" id="acc-t7">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">チェックすると、<wbr>設定画面で<wbr>登録した<wbr>店名・所在地を、<wbr>投稿文の<wbr>最後の<wbr>行に<wbr>そのまま<wbr>付けます<wbr>（AIは<wbr>使いません）。<wbr>「🏠店名」<wbr>「📍所在地」の<wbr>順で<wbr>付き、<wbr>チェックを<wbr>外すと<wbr>その<wbr>行が<wbr>消えます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 チェックできる<wbr>時</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文が<wbr>空の<wbr>時は<wbr>チェックできません。<wbr>先に<wbr>投稿文を<wbr>作成するか、<wbr>⑥に<wbr>入力してください。<wbr>投稿文を<wbr>すべて<wbr>消すと、<wbr>チェックも<wbr>外れます。<wbr>チェックした<wbr>後に<wbr>AIで<wbr>作成し直した<wbr>場合も、<wbr>作成した<wbr>投稿文の<wbr>最後に<wbr>付きます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限を<wbr>超える<wbr>場合</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">付けると<wbr>文字数の<wbr>上限を<wbr>超える<wbr>場合は、<wbr>付けずに<wbr>お知らせします。<wbr>投稿文を<wbr>短くしてから、<wbr>もう<wbr>一度<wbr>チェックしてください。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 AIを<wbr>使わない<wbr>理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">所在地を<wbr>AIに<wbr>書かせると、<wbr>番地や<wbr>ビル名を<wbr>省略したり<wbr>書き換えたりする<wbr>おそれが<wbr>ある<wbr>ためです。<wbr>登録した<wbr>とおりの<wbr>表記で<wbr>載せたい<wbr>店名・所在地は、<wbr>⑦で<wbr>付けてください。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t8')">⑧ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t8">▶</span></div>
+    <div class="accordion-body" id="acc-t8">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>チェックした<wbr>SNSにだけ<wbr>付きます。<wbr>1個15文字まで、<wbr>5個まで<wbr>入力できます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 <wbr>「#」は<wbr>自動で<wbr>付きます</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入力欄に<wbr>「#」を<wbr>入力する<wbr>必要は<wbr>ありません。<wbr>自分で<wbr>「#」を<wbr>入力すると、<wbr>全角の<wbr>「＃」に<wbr>なったりスペースが<wbr>抜けたりして、<wbr>ハッシュタグと<wbr>して<wbr>働かなくなる<wbr>ことがある<wbr>ため、<wbr>AiPostが<wbr>半角の<wbr>「#」を<wbr>自動で<wbr>付けます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとの<wbr>上限とおすすめの<wbr>数</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X<wbr>（3個まで<wbr>・おすすめ1〜2個）</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">多く<wbr>付けすぎると、<wbr>Xに<wbr>宣伝目的の<wbr>投稿と<wbr>判断され、<wbr>表示されにくくなる<wbr>おそれが<wbr>ある<wbr>ためです。</div>
+        </div>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram<wbr>（5個まで）</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">Instagramの<wbr>決まりで、<wbr>1つの<wbr>投稿に<wbr>付けられる<wbr>ハッシュタグは<wbr>5個までです<wbr>（2025年12月から）。</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads<wbr>（1個のみ）</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">Threadsでは、<wbr>2個目以降の<wbr>ハッシュタグは<wbr>リンクにならず、<wbr>ただの<wbr>文字に<wbr>なってしまう<wbr>ためです。</div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xの<wbr>文字数の<wbr>数え方</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xでは、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて<wbr>140文字以内に<wbr>する<wbr>必要が<wbr>あります。<wbr>投稿文と<wbr>ハッシュタグの<wbr>間には<wbr>改行が<wbr>2つ<wbr>入り、<wbr>各ハッシュタグには<wbr>半角の<wbr>「#」が<wbr>付く<wbr>ため、<wbr>入力した<wbr>文字数より<wbr>少し<wbr>多く<wbr>数えられます<wbr>（半角は<wbr>0.5文字）。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xだけ文字数オーバーの<wbr>お知らせが<wbr>出る<wbr>理由</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">Xだけは、<wbr>投稿文と<wbr>ハッシュタグが<wbr>同じ<wbr>140文字の<wbr>枠を<wbr>分け合う<wbr>ため、<wbr>ハッシュタグを<wbr>付けた<wbr>分だけ投稿文の<wbr>枠が<wbr>減ります。<wbr>合計が<wbr>140文字を<wbr>超えると、<wbr>Xだけ投稿できなくなります<wbr>（ほかの<wbr>SNSには<wbr>通常どおり予約できます）。<wbr>Instagram・Threadsは<wbr>上限に<wbr>十分な<wbr>余裕が<wbr>ある<wbr>ため、<wbr>影響を<wbr>受けません。<wbr>数えるのは、<wbr>Xに<wbr>チェックした<wbr>ハッシュタグだけです。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t9')">⑨ 画像アップロード<span class="accordion-arrow" id="arr-acc-t9">▶</span></div>
+    <div class="accordion-body" id="acc-t9">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">フォルダから<wbr>選ぶか、<wbr>その場で<wbr>写真を<wbr>撮って、<wbr>画像を<wbr>1枚選びます。<wbr>画像を<wbr>選ぶと、<wbr>SNSごとに<wbr>合う<wbr>比率で<wbr>切り抜けます<wbr>（トリミング）。<wbr>⭐が<wbr>付いている<wbr>比率が<wbr>おすすめです。<wbr>「自由」を<wbr>選ぶと、<wbr>縦横の<wbr>比率を<wbr>決めずに<wbr>切り抜けます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとに<wbr>選べる<wbr>こと</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">「✂️&nbsp;SNSごとにトリミングする」では、<wbr>SNSごとに<wbr>「✂️&nbsp;切り抜く」<wbr>「🖼️&nbsp;元画像」<wbr>（切り抜かずに<wbr>載せる）<wbr>「🚫&nbsp;画像なし」の<wbr>3つから<wbr>選べます。<wbr>すべての<wbr>SNSで<wbr>同じ<wbr>画像を<wbr>そのまま<wbr>使う<wbr>場合は<wbr>「トリミングせずにそのまま使う」、<wbr>画像を<wbr>付けない<wbr>場合は<wbr>「🚫&nbsp;画像なしで投稿する」を<wbr>選んでください。</div>
+      <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">💡 Instagramは<wbr>画像が<wbr>必要です</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">Instagramは<wbr>画像が<wbr>無いと<wbr>投稿できません。<wbr>画像なしを<wbr>選ぶと、<wbr>Instagramは<wbr>投稿先から<wbr>外れます。</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+        <div style="background:#f5f5f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#000;margin-bottom:3px;">🐦 X</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">⭐16:9<wbr>（横長）<wbr>／1:1<wbr>（正方<wbr>形）<wbr>／3:4<wbr>（縦長）。<wbr>16:9は<wbr>タイムラインで<wbr>最も<wbr>きれいに<wbr>収まる<wbr>標準の<wbr>サイズです。</div>
+        </div>
+        <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">📱 Instagram</div>
+          <div style="font-size:11px;color:#e1306c;line-height:1.7;">⭐4:5<wbr>（縦長）<wbr>／1:1<wbr>（正方<wbr>形）<wbr>／1.91:1<wbr>（横長）。<wbr>縦長が<wbr>最も<wbr>目立ちやすくなっています。</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
+          <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:3px;">🧵 Threads</div>
+          <div style="font-size:11px;color:#555;line-height:1.7;">⭐4:5<wbr>（縦長）<wbr>／1:1<wbr>（正方<wbr>形）<wbr>／16:9<wbr>（横長）。<wbr>Instagramと<wbr>同じ<wbr>Meta社の<wbr>サービスの<wbr>ため、<wbr>縦長が<wbr>最も<wbr>きれいに<wbr>見えます。</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">アップロードする<wbr>元の<wbr>画像は<wbr>1枚だけです。<wbr>⑥で<wbr>説明した<wbr>「同じ画像」は、<wbr>この<wbr>元の<wbr>画像の<wbr>ことです。<wbr>SNSごとに<wbr>切り<wbr>抜き方を<wbr>変えても、<wbr>元の<wbr>画像は<wbr>同じなので<wbr>「1投稿」の<wbr>数え方には<wbr>影響しません。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t10')">⑩ 投稿日を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t10">▶</span></div>
+    <div class="accordion-body" id="acc-t10">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿する<wbr>日と<wbr>時間を<wbr>選びます。<wbr>予約できるのは<wbr>今月と<wbr>翌月<wbr>（翌月末まで）です。<wbr>カレンダーの<wbr>各日には、<wbr>その<wbr>日の<wbr>予約の<wbr>件数が<wbr>表示されます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿の<wbr>時間</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">選んだ<wbr>時間に<wbr>なると、<wbr>自動で<wbr>投稿されます。<wbr>順番に<wbr>処理する<wbr>ため、<wbr>数分ほどずれる<wbr>ことがあります<wbr>（<wbr>「13時ごろ」のように<wbr>表示しているのは<wbr>その<wbr>ためです）。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 月ごとの<wbr>予約の<wbr>枠</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">予約の<wbr>枠は、<wbr>投稿する<wbr>日の<wbr>月ごとに<wbr>数えます<wbr>（FREE 4件／PERSONAL 8件／LITE 10件／STANDARD 20件／PRO 40件）。<wbr>複数の<wbr>SNSに<wbr>同時に<wbr>投稿しても、<wbr>1回の<wbr>予約で<wbr>1件です。<wbr>予約を<wbr>キャンセルすると、<wbr>その月の<wbr>枠が<wbr>戻ります。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t11')">内容を<wbr>確認して<wbr>予約する<span class="accordion-arrow" id="arr-acc-t11">▶</span></div>
+    <div class="accordion-body" id="acc-t11">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その月の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿文を見る」を<wbr>押すと、<wbr>ハッシュタグを<wbr>含めて、<wbr>SNSごとに<wbr>実際に<wbr>投稿される<wbr>文章を<wbr>確かめられます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「予約を確定する」を<wbr>押すと<wbr>予約が<wbr>完了します。<wbr>この<wbr>時点で<wbr>初めて<wbr>予約と<wbr>して<wbr>保存されます。<wbr>直したい<wbr>場合は<wbr>「修正する」を<wbr>押すと、<wbr>入力した<wbr>内容の<wbr>まま<wbr>戻れます。<wbr>予約した後は、<wbr>予約確認画面で<wbr>投稿文の<wbr>修正・画像の<wbr>差し替え・キャンセルが<wbr>できます。</div>
     </div>
   </div>
 
@@ -1426,7 +1482,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成139';
+const TRACE_SCREEN = '投稿文作成141';
 
 function traceLog(msg) {
   try {
