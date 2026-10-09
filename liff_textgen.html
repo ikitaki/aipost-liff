@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成136 - AiPost</title>
+<title>投稿文作成137 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -620,7 +620,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成136</span>
+  <span class="header-logo">投稿文作成137</span>
   <span class="header-sub">AiPost</span>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
 </div>
@@ -737,8 +737,8 @@
   <div class="card">
     <div class="card-title">③ 要望から<wbr>投稿文を<wbr>作成する</div>
     <textarea id="free-text-input" maxlength="150" placeholder="例：新商品の告知をしたい" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
-    <div class="keyword-hint" style="margin-top:4px;color:var(--text-sub);">どんな<wbr>投稿に<wbr>したいかを、<wbr>自由に<wbr>書いてください。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。</div>
-    <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で<wbr>書く<wbr>場合は、<wbr>⑦に<wbr>直接入力できます。</div>
+    <div class="keyword-hint" style="margin-top:4px;color:var(--text-sub);">どんな<wbr>投稿に<wbr>したいかを、<wbr>自由に<wbr>書いてください。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>②に<wbr>キーワードを<wbr>入力した<wbr>場合は、<wbr>キーワードも<wbr>含めて<wbr>作成します。</div>
+    <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で<wbr>書く<wbr>場合は、<wbr>⑥に<wbr>直接入力できます。</div>
   </div>
 
   <!-- ④ 訴求パターン -->
@@ -758,14 +758,16 @@
     </div>
   </div>
 
-  <!-- ★liff_textgen.html136：⑤⑥の分け方を変えた（Kenさん指示）。
+  <!-- ★liff_textgen.html136・137：⑤⑥⑦の分け方を変えた（Kenさん指示）。
        ⑤＝AIが投稿文の中に入れる項目（エリア・店名。GASの includeArea・includeShopName）。
-       ⑥＝AIを使わず、投稿文の最後に「🏠店名」「📍所在地」の行をそのまま付ける項目（オン・オフで行を付け外しする。toggleEndLine()）。
-       それまでの⑥「店名・所在地を含める」の店名（AI）は⑤へ移し、⑦の「＋店名を入れる」「＋所在地を入れる」ボタンは⑥にまとめて外した。 -->
+       ⑥＝投稿文を確認・編集する（それまでの⑦）。
+       ⑦＝AIを使わず、投稿文の最後に「🏠店名」「📍所在地」の行をそのまま付ける項目（チェックで行を付け外しする。toggleEndLine()）。
+         文字数を見ながら付け外しできるよう、⑥の文字数表示のすぐ下に置いた（Kenさん指示）。
+       それまでの⑥「店名・所在地を含める」の店名（AI）は⑤へ移し、それまでの⑦の「＋店名を入れる」「＋所在地を入れる」ボタンは⑦にまとめて外した。 -->
   <!-- ⑤ エリア・店名を含めて投稿文を作成する -->
   <div class="card">
     <div class="card-title">⑤ エリア・店名を<wbr>含めて<wbr>投稿文を<wbr>作成する</div>
-    <p class="step-hint">オンに<wbr>した<wbr>項目を<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。</p>
+    <p class="step-hint">チェックした<wbr>項目を<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。</p>
     <div class="sns-check-list">
       <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
         <div class="sns-check-name">エリアを<wbr>含める</div>
@@ -776,24 +778,7 @@
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
-  </div>
-
-  <!-- ⑥ 投稿文の最後に店名・所在地を付ける -->
-  <div class="card">
-    <div class="card-title">⑥ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける</div>
-    <p class="step-hint">オンに<wbr>すると、<wbr>登録済みの<wbr>店名・所在地を、<wbr>投稿文の<wbr>最後に<wbr>そのまま<wbr>付けます<wbr>（AIは<wbr>使いません）。</p>
-    <div class="sns-check-list">
-      <div class="include-check-item" id="include-shopend-item" onclick="toggleEndLine(this, 'shop')">
-        <div class="sns-check-name">店名を<wbr>付ける</div>
-        <div class="sns-checkbox">✓</div>
-      </div>
-      <div class="include-check-item" id="include-address-item" onclick="toggleEndLine(this, 'address')">
-        <div class="sns-check-name">所在地を<wbr>付ける</div>
-        <div class="sns-checkbox">✓</div>
-      </div>
-    </div>
-    <div class="caution-box" style="margin-top:10px;">⚠️ 付けると<wbr>文字数の<wbr>上限を<wbr>超える<wbr>場合は、<wbr>投稿文を<wbr>短くしてから<wbr>付けてください。</div>
-    <div class="keyword-hint" style="margin-top:6px;">店名・エリア・所在地は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
+    <div class="keyword-hint" style="margin-top:6px;">エリア・<wbr>店名は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
   </div>
 
   <!-- AI生成ボタン -->
@@ -807,9 +792,9 @@
     <div class="loading-text">AIが<wbr>投稿文を<wbr>考えています…<br>少々<wbr>お待ちください</div>
   </div>
 
-  <!-- ⑦ 文章確認・編集 -->
+  <!-- ⑥ 投稿文を確認・編集する（★liff_textgen.html137：それまでの⑦） -->
   <div class="card">
-    <div class="card-title">⑦ 投稿文を<wbr>確認・編集する</div>
+    <div class="card-title">⑥ 投稿文を<wbr>確認・編集する</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集できます。<wbr>直接入力する<wbr>ことも<wbr>できます。</p>
     <!-- ★liff_textgen.html136：投稿文の中のハッシュタグの注意（予約の時に止めるため、先に知らせる。Kenさん指示） -->
     <div class="caution-box" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑧の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
@@ -821,11 +806,29 @@
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
       <span style="font-size:11px;color:var(--text-light);" id="char-limit-label">上限140字<wbr>（半角280字）</span>
     </div>
-    <!-- ★liff_textgen.html136：「＋ 🏠店名を入れる」「＋ 📍所在地を入れる」ボタンは、⑥「投稿文の最後に店名・所在地を付ける」にまとめて外した -->
+    <!-- ★liff_textgen.html136：「＋ 🏠店名を入れる」「＋ 📍所在地を入れる」ボタンは、⑦「投稿文の最後に店名・所在地を付ける」にまとめて外した -->
     <div class="url-warning" id="url-warning">
       🔗 <strong>投稿文に<wbr>URLが<wbr>含まれています。</strong><br>当サービスでは<wbr>Xへの<wbr>URL付き投稿に<wbr>対応していないため、<wbr>Xは<wbr>自動的に<wbr>除外されます。
     </div>
     <div class="x-warning" id="x-warning"></div>
+  </div>
+
+  <!-- ⑦ 投稿文の最後に店名・所在地を付ける（★liff_textgen.html137：⑥の文字数表示の下に移した。Kenさん指示） -->
+  <div class="card">
+    <div class="card-title">⑦ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける</div>
+    <p class="step-hint">チェックすると、<wbr>登録済みの<wbr>店名・所在地を、<wbr>投稿文の<wbr>最後に<wbr>そのまま<wbr>付けます<wbr>（AIは<wbr>使いません）。</p>
+    <div class="sns-check-list">
+      <div class="include-check-item" id="include-shopend-item" onclick="toggleEndLine(this, 'shop')">
+        <div class="sns-check-name">店名を<wbr>付ける</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+      <div class="include-check-item" id="include-address-item" onclick="toggleEndLine(this, 'address')">
+        <div class="sns-check-name">所在地を<wbr>付ける</div>
+        <div class="sns-checkbox">✓</div>
+      </div>
+    </div>
+    <div class="caution-box" style="margin-top:10px;">⚠️ チェックを<wbr>付けて<wbr>文字数の<wbr>上限を<wbr>超えた<wbr>場合は、<wbr>投稿文を<wbr>短くしてから、<wbr>もう<wbr>一度<wbr>チェックを<wbr>付けてください。</div>
+    <div class="keyword-hint" style="margin-top:6px;">店名・所在地は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
   </div>
 
 
@@ -1417,7 +1420,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成136';
+const TRACE_SCREEN = '投稿文作成137';
 
 function traceLog(msg) {
   try {
@@ -1922,13 +1925,13 @@ function updateUserGenreFromProfile(profile) {
   // 所在地が未登録と分かった場合、「所在地を含める」がONなら外す
   const addrItem = document.getElementById('include-address-item');
   if (USER_ADDRESS === '' && addrItem && addrItem.classList.contains('checked')) toggleInclude(addrItem);
-  // ★liff_textgen.html136：⑥「店名を付ける」も、店名が未登録と分かったら外す
+  // ★liff_textgen.html136：⑦「店名を付ける」も、店名が未登録と分かったら外す
   const shopEndItem = document.getElementById('include-shopend-item');
   if (USER_SHOP_NAME === '' && shopEndItem && shopEndItem.classList.contains('checked')) toggleInclude(shopEndItem);
   renderKeywordGuide();
 }
 
-// ★liff_textgen.html136：⑥「投稿文の最後に店名・所在地を付ける」（AIを使わず、登録内容をそのまま行として付ける。Kenさん指示）
+// ★liff_textgen.html136：⑦「投稿文の最後に店名・所在地を付ける」（⑥の文字数表示の下）（AIを使わず、登録内容をそのまま行として付ける。Kenさん指示）
 // 　・オン・オフの状態と、投稿文の最後の「🏠店名」「📍所在地」の行を一致させる。並びは常に 🏠店名 → 📍所在地。
 // 　・付けると文字数の上限を超える時は付けない（以前の⑦のボタンは、上限を超えると後ろから文字が削られていた）。
 // 　・投稿文が空の時はオンにするだけで、AIで作成した時・「内容を確認する」を押した時に付ける。
@@ -1941,7 +1944,7 @@ function isEndLineOn(kind) {
   const el = document.getElementById(kind === 'shop' ? 'include-shopend-item' : 'include-address-item');
   return !!(el && el.classList.contains('checked'));
 }
-// 投稿文から⑥の行を取り除き、指定した状態（{shop, address}）の行を最後に付け直した文字列を返す
+// 投稿文から⑦の行を取り除き、指定した状態（{shop, address}）の行を最後に付け直した文字列を返す
 function rebuildEndLines(text, want) {
   const shopLine = endLineText('shop');
   const addrLine = endLineText('address');
@@ -1981,7 +1984,7 @@ function toggleEndLine(el, kind) {
   if (ta && ta.value.trim() !== '') {
     const next = rebuildEndLines(ta.value, want);
     if (turningOn && countCharsX(next) > CHAR_LIMIT) {
-      alert(label + 'を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くしてから、もう一度オンにしてください。');
+      alert(label + 'を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くしてから、もう一度チェックを付けてください。');
       return;
     }
     ta.value = next;
@@ -1998,7 +2001,7 @@ function ensureEndLines() {
   const next = rebuildEndLines(ta.value, want);
   if (next === ta.value) return true;
   if (countCharsX(next) > CHAR_LIMIT) {
-    alert('⑥の店名・所在地を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くするか、⑥をオフにしてください。');
+    alert('⑦の店名・所在地を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くするか、⑦のチェックを外してください。');
     return false;
   }
   ta.value = next;
@@ -2081,13 +2084,13 @@ async function executeGenerate() {
     // ★liff_textgen.html126：所在地を含める場合、本文の最後に改行して「📍所在地」をそのまま付ける
     // 　（ハッシュタグは所在地を除いた本文から作る）
     ta.value = result.data.generatedText + (result.data.addressLine ? '\n' + result.data.addressLine : '');
-    // ★liff_textgen.html136：⑥の「店名を付ける」がオンなら、「🏠店名」の行を付ける（所在地の行の前）。
+    // ★liff_textgen.html136：⑦の「店名を付ける」がオンなら、「🏠店名」の行を付ける（所在地の行の前）。
     // 　GASは店名の分の文字数を空けないため、上限を超える時は付けずに知らせ、オフにする
     if (isEndLineOn('shop') && endLineText('shop')) {
       const withShop = result.data.generatedText + '\n' + endLineText('shop') + (result.data.addressLine ? '\n' + result.data.addressLine : '');
       if (countCharsX(withShop) > CHAR_LIMIT) {
         setEndLineChecked('shop', false);
-        alert('店名を付けると文字数の上限（' + CHAR_LIMIT + '字）を超えるため、付けませんでした。\n投稿文を短くしてから、⑥の「店名を付ける」をオンにしてください。');
+        alert('店名を付けると文字数の上限（' + CHAR_LIMIT + '字）を超えるため、付けませんでした。\n投稿文を短くしてから、もう一度⑦の「店名を付ける」にチェックを付けてください。');
       } else {
         ta.value = withShop;
       }
@@ -2371,7 +2374,7 @@ function toggleInclude(el) {
 }
 
 // ★liff_textgen.html136：includeShopName は⑤「店名を含める」（AIが投稿文の中に入れる）。
-// 　includeAddress は⑥「所在地を付ける」（GASが所在地の分の文字数を空け、addressLine を返す）。⑥「店名を付ける」はGASに送らない
+// 　includeAddress は⑦「所在地を付ける」（GASが所在地の分の文字数を空け、addressLine を返す）。⑦「店名を付ける」はGASに送らない
 function getIncludeFlags() {
   return {
     includeShopName: document.getElementById('include-shopname-item').classList.contains('checked'),
@@ -2618,7 +2621,7 @@ function getMonthQuota(y, m) {
 function showConfirm() {
   const ta = document.getElementById('post-textarea');
   if (!ta.value.trim()) { alert('投稿文を入力してください。'); return; }
-  // ★liff_textgen.html136：⑥でオンにした店名・所在地の行が投稿文に無ければ、ここで付ける（上限を超える時は止める）
+  // ★liff_textgen.html136：⑦でオンにした店名・所在地の行が投稿文に無ければ、ここで付ける（上限を超える時は止める）
   if (!ensureEndLines()) return;
   // ★liff_textgen.html134：ハッシュタグの確認を、日付・画像の確認より先に行う（Kenさん指示。以前は「予約を確定する」を
   // 　押すまで分からなかった）。本文の中のハッシュタグ → Instagramのタグ数（5つまで）の順。予約の確定時にも同じ確認を残す。
