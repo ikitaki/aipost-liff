@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成144 - AiPost</title>
+<title>投稿文作成145 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -658,7 +658,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成144</span>
+  <span class="header-logo">投稿文作成145</span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1007,12 +1007,14 @@
     </div>
     <div class="time-select-row">
       <div class="time-select-label">投稿時間を<wbr>選ぶ</div>
+      <!-- ★liff_textgen.html145：選べる時間を8時〜21時から6時〜23時に広げた（Kenさん決定。0時〜5時台はメンテナンス等のために空ける） -->
       <select class="datetime-select" id="post-time">
-        <option value="8">8時ごろ</option><option value="9">9時ごろ</option><option value="10">10時ごろ</option>
-        <option value="11">11時ごろ</option><option value="12">12時ごろ</option><option value="13" selected>13時ごろ</option>
-        <option value="14">14時ごろ</option><option value="15">15時ごろ</option><option value="16">16時ごろ</option>
-        <option value="17">17時ごろ</option><option value="18">18時ごろ</option><option value="19">19時ごろ</option>
-        <option value="20">20時ごろ</option><option value="21">21時ごろ</option>
+        <option value="6">6時ごろ</option><option value="7">7時ごろ</option><option value="8">8時ごろ</option>
+        <option value="9">9時ごろ</option><option value="10">10時ごろ</option><option value="11">11時ごろ</option>
+        <option value="12">12時ごろ</option><option value="13" selected>13時ごろ</option><option value="14">14時ごろ</option>
+        <option value="15">15時ごろ</option><option value="16">16時ごろ</option><option value="17">17時ごろ</option>
+        <option value="18">18時ごろ</option><option value="19">19時ごろ</option><option value="20">20時ごろ</option>
+        <option value="21">21時ごろ</option><option value="22">22時ごろ</option><option value="23">23時ごろ</option>
       </select>
       <p id="time-past-hint" style="font-size:11px;color:var(--danger);margin-top:6px;display:none;">⚠️ 本日は<wbr>現在時刻より<wbr>前の<wbr>時間帯は<wbr>選べません</p>
       <p style="font-size:11px;color:var(--text-sub);margin-top:6px;">💡 指定した<wbr>時間帯に<wbr>自動で<wbr>投稿されます。</p>
@@ -1516,7 +1518,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成144';
+const TRACE_SCREEN = '投稿文作成145';
 
 function traceLog(msg) {
   try {
