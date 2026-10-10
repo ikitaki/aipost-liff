@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録62 - AiPost</title>
+<title>設定・登録63 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -382,6 +382,35 @@
   /* ★liff_settings.html57：保存済み情報の更新ボタン */
   .header-refresh { background: rgba(255,255,255,0.15); color: #fff; border: none; border-radius: 10px; font-size: 11px; font-weight: 700; padding: 3px 9px; line-height: 1.4; cursor: pointer; white-space: nowrap; }
   .header-refresh:active { background: rgba(255,255,255,0.3); }
+
+  /* ★お知らせ（ベル・帯・一覧）。4画面（投稿文作成・予約確認・分析・設定）で同じ中身 */
+  .header-bell { position: relative; background: rgba(255,255,255,0.15); border: none; border-radius: 10px; width: 30px; height: 24px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; flex-shrink: 0; }
+  .header-bell:active { background: rgba(255,255,255,0.3); }
+  .header-bell svg { width: 16px; height: 16px; }
+  .header-bell-badge { position: absolute; top: -5px; right: -6px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #e53935; color: #fff; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; box-sizing: border-box; display: none; }
+  .header-bell-badge.show { display: block; }
+  .notice-band { display: none; align-items: center; gap: 8px; background: #fff8e1; color: #e65100; font-size: 12px; font-weight: 700; padding: 8px 14px; cursor: pointer; border-bottom: 1px solid #ffe0b2; word-break: normal; overflow-wrap: anywhere; }
+  .notice-band.show { display: flex; }
+  .notice-band-more { margin-left: auto; white-space: nowrap; }
+  .notice-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1045; align-items: flex-start; justify-content: center; padding: 8px; box-sizing: border-box; }
+  .notice-overlay.open { display: flex; }
+  .notice-panel { background: #fff; border-radius: 14px; width: 100%; max-width: 520px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,0.25); word-break: normal; overflow-wrap: anywhere; }
+  .notice-panel-head { display: flex; align-items: center; padding: 12px 14px; border-bottom: 1px solid #eee; }
+  .notice-panel-title { font-size: 15px; font-weight: 700; color: #1a237e; display: flex; align-items: center; gap: 6px; }
+  .notice-panel-title svg { width: 18px; height: 18px; }
+  .notice-panel-close { margin-left: auto; background: none; border: none; color: #757575; font-size: 13px; cursor: pointer; padding: 4px; }
+  .notice-panel-body { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .notice-item { padding: 12px 14px; border-bottom: 1px solid #f0f0f0; }
+  .notice-item.unread { background: #f3f6ff; }
+  .notice-item-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .notice-chip { font-size: 10px; font-weight: 700; border-radius: 6px; padding: 1px 6px; white-space: nowrap; }
+  .notice-chip-unread { background: #e53935; color: #fff; }
+  .notice-chip-admin { background: #e3f2fd; color: #1565c0; }
+  .notice-chip-you { background: #fce4ec; color: #c2185b; }
+  .notice-item-title { font-size: 14px; font-weight: 700; color: #212121; }
+  .notice-item-date { font-size: 11px; color: #9e9e9e; margin-top: 3px; }
+  .notice-item-body { font-size: 13px; color: #424242; line-height: 1.7; margin-top: 6px; white-space: pre-wrap; }
+  .notice-empty { padding: 28px 14px; text-align: center; font-size: 13px; color: #757575; }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -389,8 +418,10 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録62</span>
+  <span class="header-logo">設定・登録63</span>
   <span class="header-sub">AiPost</span>
+  <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
+  <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
 </div>
 <script>
@@ -400,7 +431,7 @@
 // 　　（シート側でプランを変更した場合などに、古い表示が残り続けないようにするため）。
 // 　4画面（投稿文作成・予約確認・分析・設定）で同じ処理。
 (function () {
-  var SESSION_KEYS = ['aipost_reservation_quota', 'aipost_reservation_list', 'aipost_analytics'];
+  var SESSION_KEYS = ['aipost_reservation_quota', 'aipost_reservation_list', 'aipost_analytics', 'aipost_notices']; // ★お知らせ（aipost_notices）も一緒に捨てる
   var MASTER_KEY = 'aipost_master_data_cache';
   var MAX_AGE_MS = 30 * 60 * 1000; // 30分
 
@@ -429,6 +460,9 @@
   };
 })();
 </script>
+
+<!-- ★お知らせ：未読がある時だけ出す帯。押すとお知らせの一覧を開く -->
+<div class="notice-band" id="notice-band" onclick="aipostOpenNotices()">🔔 <span id="notice-band-text">未読のお知らせがあります</span><span class="notice-band-more">見る ›</span></div>
 
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
@@ -875,7 +909,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定62';
+const TRACE_SCREEN = '設定63';
 
 function traceLog(msg) {
   try {
@@ -1921,5 +1955,192 @@ const LIFF_URLS = {
   }
 </script>
 
+
+<!-- ★お知らせの一覧（ベル・帯を押すと開く）。4画面で同じ中身 -->
+<div class="notice-overlay" id="notice-overlay" onclick="if(event.target===this)aipostCloseNotices()">
+  <div class="notice-panel" role="dialog" aria-label="お知らせ">
+    <div class="notice-panel-head">
+      <div class="notice-panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="#1a237e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>お知らせ</div>
+      <button type="button" class="notice-panel-close" onclick="aipostCloseNotices()">× 閉じる</button>
+    </div>
+    <div class="notice-panel-body" id="notice-panel-body"></div>
+  </div>
+</div>
+<script>
+// ★お知らせ（ベル・帯・一覧）。4画面（投稿文作成・予約確認・分析・設定）で同じ中身。
+// 　・LINEのユーザーIDが分かったらすぐ（最初のスピナーと並行して）getMyNotices で取得し、sessionStorage の
+// 　　aipost_notices に保存して4画面で使い回す。「🔄 更新」・30分の期限切れで捨てて取り直す。
+// 　・未読があれば、ベルに件数（10件以上は 9+）と、ヘッダーの下に帯を出す。
+// 　・一覧を開いた時に未読があれば markNoticesRead で既読にする（書き込みのため自動の再試行はしない）。
+// 　　開いている間は、どれが新しいかが分かるよう「未読」の印を残す。
+// 　・取得に失敗した時は、ベルだけ出して件数は出さない。一覧を開いた時にもう一度取りにいく。
+(function () {
+  var KEY = 'aipost_notices';
+  var MAX_AGE_MS = 30 * 60 * 1000;
+  var data = null;        // { items:[...], unreadCount }
+  var loading = null;     // 取得中の Promise
+  var failed = false;
+
+  function log(msg) { try { if (typeof traceLog === 'function') traceLog(msg); } catch (e) {} }
+  function lineUid() { try { return (typeof LINE_UID !== 'undefined' && LINE_UID) ? LINE_UID : null; } catch (e) { return null; } }
+  function webappUrl() { try { return (typeof WEBAPP_URL !== 'undefined') ? WEBAPP_URL : null; } catch (e) { return null; } }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  // 'yyyy/MM/dd HH:mm' → 'M月d日 H:mm'
+  function fmtDate(s) {
+    var m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2}) (\d{2}):(\d{2})$/);
+    if (!m) return esc(s);
+    return Number(m[2]) + '月' + Number(m[3]) + '日 ' + Number(m[4]) + ':' + m[5];
+  }
+
+  function readCache() {
+    try {
+      var c = JSON.parse(sessionStorage.getItem(KEY) || 'null');
+      if (c && Array.isArray(c.items) && c.fetchedAt && Date.now() - c.fetchedAt <= MAX_AGE_MS) return c;
+    } catch (e) {}
+    return null;
+  }
+  function writeCache() {
+    try {
+      sessionStorage.setItem(KEY, JSON.stringify({ fetchedAt: Date.now(), items: data.items, unreadCount: data.unreadCount }));
+    } catch (e) {}
+  }
+
+  async function call(action) {
+    var res = await fetch(webappUrl(), { method: 'POST', body: JSON.stringify({ action: action, lineUid: lineUid(), params: {} }) });
+    return await res.json();
+  }
+
+  function fetchNotices() {
+    if (loading) return loading;
+    loading = (async function () {
+      for (var attempt = 1; attempt <= 2; attempt++) {
+        var t0 = Date.now();
+        try {
+          var r = await call('getMyNotices');
+          if (r && r.success && r.data && Array.isArray(r.data.items)) {
+            data = { items: r.data.items, unreadCount: Number(r.data.unreadCount) || 0 };
+            failed = false;
+            writeCache();
+            log('お知らせ取得OK' + (attempt > 1 ? '（再試行）' : '') + ' ' + (Date.now() - t0) + 'ms');
+            renderBadge();
+            return true;
+          }
+          log('お知らせ取得NG(' + attempt + '回目) ' + String((r && r.error) || '') + ' ' + (Date.now() - t0) + 'ms');
+        } catch (err) {
+          log('お知らせ通信エラー(' + attempt + '回目) ' + String(err && err.message) + ' ' + (Date.now() - t0) + 'ms');
+        }
+        if (attempt < 2) await new Promise(function (resolve) { setTimeout(resolve, 1500); });
+      }
+      failed = true;
+      renderBadge();
+      return false;
+    })();
+    loading.then(function () { loading = null; });
+    return loading;
+  }
+
+  function renderBadge() {
+    var n = (data && data.unreadCount) || 0;
+    var badge = document.getElementById('header-bell-badge');
+    if (badge) {
+      badge.textContent = n >= 10 ? '9+' : String(n);
+      badge.classList.toggle('show', n > 0);
+    }
+    var band = document.getElementById('notice-band');
+    if (band) {
+      var t = document.getElementById('notice-band-text');
+      if (t) t.textContent = '未読のお知らせが' + n + '件あります';
+      band.classList.toggle('show', n > 0);
+    }
+  }
+
+  function renderList(unreadIds) {
+    var body = document.getElementById('notice-panel-body');
+    if (!body) return;
+    if (!data) {
+      body.innerHTML = '<div class="notice-empty">' + (failed ? 'お知らせを読み込めませんでした。<br>時間をおいて、もう一度お試しください。' : '読み込んでいます…') + '</div>';
+      return;
+    }
+    if (data.items.length === 0) {
+      body.innerHTML = '<div class="notice-empty">お知らせはありません</div>';
+      return;
+    }
+    body.innerHTML = data.items.map(function (n) {
+      var unread = unreadIds ? unreadIds.indexOf(n.noticeId) !== -1 : !!n.unread;
+      var chip = n.label === '運営'
+        ? '<span class="notice-chip notice-chip-admin">運営</span>'
+        : '<span class="notice-chip notice-chip-you">あなたへ</span>';
+      return '<div class="notice-item' + (unread ? ' unread' : '') + '">' +
+        '<div class="notice-item-head">' + (unread ? '<span class="notice-chip notice-chip-unread">未読</span>' : '') + chip +
+        '<span class="notice-item-title">' + esc(n.title) + '</span></div>' +
+        '<div class="notice-item-date">' + fmtDate(n.startAt) + '</div>' +
+        '<div class="notice-item-body">' + esc(n.body) + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // 開いている間だけ「未読」の印を残すため、開いた時点の未読のお知らせIDを覚えておく
+  var openedUnreadIds = null;
+
+  window.aipostOpenNotices = async function () {
+    var ov = document.getElementById('notice-overlay');
+    if (!ov) return;
+    ov.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    openedUnreadIds = null;
+    if (!data) {
+      renderList(null);
+      if (!lineUid()) { failed = true; renderList(null); return; }
+      await fetchNotices();
+      if (!ov.classList.contains('open')) return;
+    }
+    if (!data) { renderList(null); return; }
+    openedUnreadIds = data.items.filter(function (n) { return n.unread; }).map(function (n) { return n.noticeId; });
+    renderList(openedUnreadIds);
+    if (data.unreadCount > 0) {
+      // 既読にする（手元の表示はすぐ消す。書き込みのため再試行はしない。失敗しても次に取り直した時にまた未読で出る）
+      data.unreadCount = 0;
+      data.items.forEach(function (n) { n.unread = false; });
+      writeCache();
+      renderBadge();
+      try {
+        var r = await call('markNoticesRead');
+        log('お知らせ既読' + (r && r.success ? 'OK' : 'NG ' + String((r && r.error) || '')));
+      } catch (err) {
+        log('お知らせ既読 通信エラー ' + String(err && err.message));
+      }
+    }
+  };
+
+  window.aipostCloseNotices = function () {
+    var ov = document.getElementById('notice-overlay');
+    if (ov) ov.classList.remove('open');
+    document.body.style.overflow = '';
+    openedUnreadIds = null;
+  };
+
+  // 起動：保存済みがあれば表示し、無ければLINEのユーザーIDが分かり次第取得する（最大60秒待つ）
+  var cached = readCache();
+  if (cached) {
+    data = { items: cached.items, unreadCount: Number(cached.unreadCount) || 0 };
+    renderBadge();
+  } else {
+    var waited = 0;
+    var timer = setInterval(function () {
+      waited += 300;
+      if (lineUid() && webappUrl()) {
+        clearInterval(timer);
+        fetchNotices();
+      } else if (waited >= 60000) {
+        clearInterval(timer);
+      }
+    }, 300);
+  }
+})();
+</script>
 </body>
 </html>
