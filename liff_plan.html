@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金6 - AiPost</title>
+  <title>プラン・料金7 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -58,125 +58,44 @@
       z-index: 99;
     }
 
-    /* プランヘッダー行 */
-    .plan-header-row-inner {
-      display: flex;
-      width: 100%;
-      background: var(--white);
-      border-bottom: 2px solid var(--border);
-    }
-    .key-col-spacer {
-      width: 28vw;
-      min-width: 80px;
-      flex-shrink: 0;
-      border-right: 1px solid var(--border);
-    }
-    .plan-head {
-      flex: 1;
-      padding: 5px 2px;
-      text-align: center;
-      border-right: 1px solid var(--border);
-    }
-    .plan-head:last-child { border-right: none; }
-    .plan-head.current { background: #fffde7; }
-    .plan-badge {
-      display: block;
-      margin: 0 auto 2px;
-      padding: 1px 4px;
-      border-radius: 10px;
-      font-size: 8px;
-      font-weight: 700;
-      width: fit-content;
-    }
+    /* ★プラン名の行・機能の表・ボタンの行を1つの表にまとめ、列の幅と縦の線をそろえる */
+    .plan-table { width: 100%; border-collapse: collapse; table-layout: fixed; background: var(--white); }
+    .plan-table col.c-key { width: 25%; }
+    .plan-table col.c-plan { width: 15%; }
+    .plan-table th, .plan-table td { border-right: 1px solid #d5d9e6; }
+    .plan-table th:last-child, .plan-table td:last-child { border-right: none; }
+    .plan-table thead th { padding: 6px 2px; text-align: center; font-weight: 400; border-bottom: 2px solid #d5d9e6; background: var(--white);
+      position: sticky; top: var(--plan-head-top, 80px); z-index: 50; box-shadow: inset 0 -2px 0 #d5d9e6, inset -1px 0 0 #d5d9e6; }
+    .plan-table thead th:last-child { box-shadow: inset 0 -2px 0 #d5d9e6; }
+    .plan-table thead th.current { background: #fff8e1; }
+    .plan-badge { display: block; margin: 0 auto 2px; padding: 1px 4px; border-radius: 10px; font-size: 8px; font-weight: 700; width: fit-content; }
     .plan-FREE     { background: var(--b-free);     color: var(--c-free); }
     .plan-PERSONAL { background: var(--b-personal); color: var(--c-personal); }
     .plan-LITE     { background: var(--b-lite);     color: var(--c-lite); }
     .plan-STANDARD { background: var(--b-standard); color: var(--c-standard); }
     .plan-PRO      { background: var(--b-pro);      color: var(--c-pro); }
-
-    .plan-price-sm {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--text);
-      display: block;
-      text-align: center;
-    }
+    .plan-price-sm { font-size: 10px; font-weight: 700; color: var(--text); display: block; }
     .plan-price-sm span { font-size: 8px; font-weight: 400; color: var(--text-sub); }
-
-    /* テーブル本体 */
-    .feat-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    .feat-table .sec-row td {
-      background: #e8eaf6;
-      color: var(--primary);
-      font-size: 9px;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-bottom: 1px solid #c5cae9;
-      letter-spacing: 0.05em;
-    }
-    .feat-table .data-row td {
-      padding: 6px 2px;
-      border-bottom: 1px solid var(--border);
-      text-align: center;
-      font-size: 10px;
-      vertical-align: middle;
-      line-height: 1.4;
-      word-break: break-all;
-    }
-    .feat-table .data-row .key-td {
-      text-align: left;
-      color: var(--text-sub);
-      padding: 6px 6px 6px 8px;
-      border-right: 1px solid var(--border);
-      width: 28vw;
-      min-width: 80px;
-      word-break: normal;
-      overflow-wrap: anywhere;
-    }
+    .plan-table .sec-row td { background: #e8eaf6; color: var(--primary); font-size: 9px; font-weight: 700; padding: 4px 8px; border-bottom: 1px solid #c5cae9; letter-spacing: 0.05em; border-right: none; }
+    .plan-table .data-row td { padding: 6px 2px; border-bottom: 1px solid var(--border); text-align: center; font-size: 10px; vertical-align: middle; line-height: 1.4; }
+    .plan-table .data-row .key-td { text-align: left; color: var(--text-sub); padding: 6px 4px 6px 6px; font-size: 9.5px; word-break: keep-all; overflow-wrap: anywhere; }
+    .plan-table .data-row td.current { background: #fffdf3; }
     .val-sub { font-size: 9px; color: #888; }
-
-    /* 値セルの色 */
-    .col-FREE     { background: #fafbfc; }
-    .col-PERSONAL { background: #f8fbff; }
-    .col-LITE     { background: #f8fff9; }
-    .col-STANDARD { background: #fffdf5; }
-    .col-PRO      { background: #fdf8ff; }
-    .col-current  { box-shadow: inset 2px 0 0 #fbc02d, inset -2px 0 0 #fbc02d; }
-
+    .val-sub.nowrap { word-break: keep-all; overflow-wrap: normal; font-size: 8.5px; letter-spacing: -0.4px; }
     .ok { color: #2e7d32; font-weight: 700; }
     .no { color: #bdbdbd; }
-
-    .table-notes { font-size: 10px; color: var(--text-sub); padding: 8px 10px 0; line-height: 1.7; }
-
-    /* ボタン行 */
-    .btn-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      background: var(--white);
-      border-top: 2px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      margin-top: 8px;
-    }
-    .btn-table td {
-      padding: 8px 3px;
-      text-align: center;
-      border-right: 1px solid var(--border);
-    }
-    .btn-table td:first-child { width: 28vw; min-width: 80px; }
-    .btn-table td:last-child { border-right: none; }
-
-    .plan-btn {
-      width: 100%;
-      padding: 7px 2px;
-      border-radius: 6px;
-      border: none;
-      font-size: 9px;
-      font-weight: 700;
-      cursor: pointer;
-      line-height: 1.4;
-      font-family: inherit;
-    }
+    .plan-table .btn-row td { padding: 8px 3px; text-align: center; border-top: 2px solid #d5d9e6; }
+    .plan-table .btn-row .key-td { font-size: 11px; font-weight: 700; color: var(--text-sub); }
+    .sns-intro { background: var(--white); padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    .sns-intro-title { font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+    .sns-intro-chips { display: flex; gap: 6px; margin-bottom: 6px; }
+    .sns-chip { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; }
+    .sns-x  { background: #f3f4f6; color: #111827; }
+    .sns-ig { background: #fce4ec; color: #c2185b; }
+    .sns-th { background: #eceff1; color: #37474f; }
+    .sns-intro-text { font-size: 11px; color: var(--text); line-height: 1.6; }
+    .table-notes { font-size: 10px; color: var(--text-sub); padding: 8px 10px 0; line-height: 1.7; background: var(--white); padding-bottom: 8px; }
+    .plan-btn { width: 100%; padding: 7px 2px; border-radius: 6px; border: none; font-size: 9px; font-weight: 700; cursor: pointer; line-height: 1.4; font-family: inherit; }
     .btn-upgrade   { background: #2e7d32; color: white; }
     .btn-current   { background: var(--bg); color: var(--text-sub); cursor: default; border: 1px solid var(--border); }
     .btn-downgrade { background: none; border: 1px solid #e65100; color: #e65100; }
@@ -398,7 +317,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo">プラン・料金6</span>
+    <span class="topbar-logo">プラン・料金7</span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -461,20 +380,26 @@
     </div>
   </div>
 
-  <!-- プランヘッダー行（JavaScriptで作る） -->
-  <div class="plan-header-row-inner" id="plan-header-row"></div>
-
-  <!-- 機能比較テーブル（JavaScriptで作る。下の PLAN_FEATURES が元） -->
-  <table class="feat-table"><tbody id="feat-body"></tbody></table>
-  <div class="table-notes">
-    ※ FREEプランでは、Xを投稿先に選べません。Xへの投稿には運営側に費用がかかるためです。<br>
-    ※ 最大投稿回数は、予約枠 × 投稿先に選べるSNSの数です。<br>
-    ※ ネガティブコメントは、分析画面のほか、画面のベルのお知らせでもお知らせします。
+  <!-- ★対応しているSNSと、まとめて投稿できることの案内 -->
+  <div class="sns-intro">
+    <div class="sns-intro-title">📱 対応SNS</div>
+    <div class="sns-intro-chips"><span class="sns-chip sns-x">X</span><span class="sns-chip sns-ig">Instagram</span><span class="sns-chip sns-th">Threads</span></div>
+    <div class="sns-intro-text">3つのSNSと連携でき、1回の予約でまとめて投稿できます。</div>
   </div>
 
-  <!-- ボタン行（JavaScriptで作る） -->
-  <table class="btn-table"><tr id="btn-row"></tr></table>
+  <!-- ★プラン名の行・機能の表・ボタンの行は、1つの表（JavaScriptで作る。下の PLAN_FEATURES が元） -->
+  <table class="plan-table">
+    <colgroup><col class="c-key"><col class="c-plan"><col class="c-plan"><col class="c-plan"><col class="c-plan"><col class="c-plan"></colgroup>
+    <thead><tr id="plan-header-row"></tr></thead>
+    <tbody id="feat-body"></tbody>
+    <tbody><tr class="btn-row" id="btn-row"></tr></tbody>
+  </table>
   <div class="btn-status" id="btn-status"></div>
+  <div class="table-notes">
+    ※ 予約1件で、選んだSNS（投稿先SNS数まで）にまとめて投稿します。使う予約枠は1件です。実質予約枠は、予約枠 × 投稿先SNS数です。<br>
+    ※ FREEプランでは、Xを投稿先に選べません。Xへの投稿には運営側に費用がかかるためです。<br>
+    ※ ネガティブコメントは、分析画面のほか、画面のベルのお知らせでもお知らせします。
+  </div>
 
   <!-- 注意事項 -->
   <div class="notice-box">
@@ -585,6 +510,10 @@
 
 <script>
   // ============================================
+  // ★liff_plan.html7：表の見直し（Kenさん指示）。プラン名の行・表・ボタンの行を1つの表にして縦の線をそろえ、すべて同じ色の線で区切る。
+  // 　プラン名の行は下へスクロールしても止めておく。項目名を短くし（投稿先SNS数・SNS連携・本文文字数上限 など）、「AI投稿文作成」
+  // 　「ハッシュタグ作成」にそろえる。予約枠の下に実質予約枠（予約枠×投稿先SNS数）を出し、最大投稿回数・同時投稿の行は外す。
+  // 　対応SNSの案内を表の上に足す。サブバーは「残り予約枠」（予約枠に言葉をそろえる。Kenさん決定）。
   // ★liff_plan.html6：デモの画面から、実際に動くプラン画面にした（Kenさん決定）
   // ・今のプランは getUserProfile（保存済みの情報があればそれ）で知り、ボタンを出し分ける。
   // ・アップ／ダウンのボタンは、確認の後に GAS の changePlan（WebAppEndpointgs_33・UserProfilegs_15）を1回だけ送り、
@@ -611,7 +540,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'プラン6';
+  const TRACE_SCREEN = 'プラン7';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -647,20 +576,18 @@
   // 値は FREE・PERSONAL・LITE・STANDARD・PRO の順。「|」の後ろは小さな補足（2行目）
   const PLAN_FEATURES = [
     { sec: '■ 投稿' },
-    { label: '投稿先に選べるSNSの数', vals: ['1つ|Xは不可', '2つ', '2つ', '3つ', '3つ'] },
-    { label: 'SNSの連携', vals: ['3つまで', '3つまで', '3つまで', '3つまで', '3つまで'] },
-    { label: '予約枠（月ごと）', vals: ['4件', '8件', '10件', '20件', '40件'] },
-    { label: '最大投稿回数（月ごと）', vals: ['4回', '16回', '20回', '60回', '120回'] },
-    { label: '本文の文字数上限', vals: ['70字|全角', '140字|全角', '140字|全角', '140字|全角', '140字|全角'] },
-    { label: '複数のSNSへ同時に投稿', vals: [NO, OK, OK, OK, OK] },
-    { label: '予約の修正・画像の差し替え', vals: [OK, OK, OK, OK, OK] },
-    { label: '予約の一括キャンセル', vals: [OK, OK, OK, OK, OK] },
-    { label: '投稿の一括削除（X・Threads）', vals: [OK, OK, OK, OK, OK] },
-    { sec: '■ AI文章生成' },
-    { label: 'AI文章生成', vals: ['∞', '∞', '∞', '∞', '∞'] },
-    { label: 'ハッシュタグの提案', vals: [OK, OK, OK, OK, OK] },
+    { label: '投稿先SNS数', vals: ['1つ|Xは不可', '2つ', '2つ', '3つ', '3つ'] },
+    { label: 'SNS連携', vals: ['3つ', '3つ', '3つ', '3つ', '3つ'] },
+    { label: '予約枠|実質予約枠', vals: ['4件|実質4件', '8件|実質16件', '10件|実質20件', '20件|実質60件', '40件|実質120件'] },
+    { label: '本文文字数上限', vals: ['70字|全角', '140字|全角', '140字|全角', '140字|全角', '140字|全角'] },
+    { label: '予約修正・画像差し替え', vals: [OK, OK, OK, OK, OK] },
+    { label: '予約一括キャンセル', vals: [OK, OK, OK, OK, OK] },
+    { label: '投稿文一括削除|X・Threads', vals: [OK, OK, OK, OK, OK] },
+    { sec: '■ AI投稿文作成' },
+    { label: 'AI投稿文作成', vals: ['∞', '∞', '∞', '∞', '∞'] },
+    { label: 'ハッシュタグ作成', vals: [OK, OK, OK, OK, OK] },
     { sec: '■ 画像' },
-    { label: '画像のアップロード・SNSごとの切り抜き', vals: [OK, OK, OK, OK, OK] },
+    { label: '画像アップロード・SNSごとのトリミング', vals: [OK, OK, OK, OK, OK] },
     { sec: '■ 分析' },
     { label: '分析データの取得', vals: [NO, NO, '24時間後', '24時間後', '1・3・24時間後'] },
     { label: '今日の状況・直近投稿の状況', vals: [NO, NO, OK, OK, OK] },
@@ -682,7 +609,15 @@
     if (v === OK) return '<span class="ok">✓</span>';
     if (v === NO) return '<span class="no">－</span>';
     const parts = String(v).split('|');
-    return escapeHtml(parts[0]) + (parts[1] ? '<br><span class="val-sub">(' + escapeHtml(parts[1]) + ')</span>' : '');
+    return escapeHtml(parts[0]) + (parts[1] ? '<br><span class="val-sub nowrap">（' + escapeHtml(parts[1]).replace(/^実質/, '実質<wbr>') + '）</span>' : '');
+  }
+  function labelHtml(label) {
+    const parts = String(label).split('|');
+    // 「・」の後ろで折り返す（言葉の途中で折り返さないように）
+    return escapeHtml(parts[0]).replace(/・/g, '・<wbr>') + (parts[1] ? '<br><span class="val-sub">（' + escapeHtml(parts[1]) + '）</span>' : '');
+  }
+  function labelText(label) {
+    return String(label).split('|')[0];
   }
   function valText(v) {
     const parts = String(v).split('|');
@@ -696,16 +631,15 @@
   let changing = false;        // 変更の送信中
 
   function renderTable() {
-    const head = document.getElementById('plan-header-row');
-    head.innerHTML = '<div class="key-col-spacer"></div>' + PLANS.map(function (p) {
-      return '<div class="plan-head' + (p === currentPlan ? ' current' : '') + '" style="border-left:2px solid var(--c-' + p.toLowerCase() + ');">' +
+    document.getElementById('plan-header-row').innerHTML = '<th></th>' + PLANS.map(function (p) {
+      return '<th' + (p === currentPlan ? ' class="current"' : '') + '>' +
         '<span class="plan-badge plan-' + p + '">' + PLAN_SHORT[p] + '</span>' +
-        '<span class="plan-price-sm">¥' + PLAN_PRICE[p] + '<span>/月</span></span></div>';
+        '<span class="plan-price-sm">¥' + PLAN_PRICE[p] + '<span>/月</span></span></th>';
     }).join('');
     document.getElementById('feat-body').innerHTML = PLAN_FEATURES.map(function (f) {
       if (f.sec) return '<tr class="sec-row"><td colspan="6">' + escapeHtml(f.sec) + '</td></tr>';
-      return '<tr class="data-row"><td class="key-td">' + escapeHtml(f.label) + '</td>' + f.vals.map(function (v, i) {
-        return '<td class="col-' + PLANS[i] + (PLANS[i] === currentPlan ? ' col-current' : '') + '">' + valHtml(v) + '</td>';
+      return '<tr class="data-row"><td class="key-td">' + labelHtml(f.label) + '</td>' + f.vals.map(function (v, i) {
+        return '<td' + (PLANS[i] === currentPlan ? ' class="current"' : '') + '>' + valHtml(v) + '</td>';
       }).join('') + '</tr>';
     }).join('');
   }
@@ -714,7 +648,7 @@
     const row = document.getElementById('btn-row');
     const status = document.getElementById('btn-status');
     const cur = currentPlan ? PLANS.indexOf(currentPlan) : -1;
-    row.innerHTML = '<td style="font-size:11px;font-weight:700;color:var(--text-sub);">プランの変更</td>' + PLANS.map(function (p, i) {
+    row.innerHTML = '<td class="key-td">プランの変更</td>' + PLANS.map(function (p, i) {
       if (!profileReady || !profileFound || cur === -1) {
         return '<td><button class="plan-btn btn-current" disabled>－</button></td>';
       }
@@ -745,7 +679,7 @@
       document.getElementById('plan-price').textContent = '¥' + PLAN_PRICE[plan] + '/月';
     }
     if (typeof remaining === 'number') {
-      document.getElementById('reservation-quota').textContent = '残り投稿可能数' + Math.max(0, remaining) + '件';
+      document.getElementById('reservation-quota').textContent = '残り予約枠' + Math.max(0, remaining) + '件';
     }
     if (sns) {
       const ids = { x: 'subbar-sns-x', instagram: 'subbar-sns-ig', threads: 'subbar-sns-th' };
@@ -796,7 +730,7 @@
         profileReady = true; profileFound = true; currentPlan = null;
         document.getElementById('btn-status').textContent = '今のプランを読み込めませんでした。「🔄 更新」でもう一度お試しください。';
         renderTable();
-        document.getElementById('btn-row').innerHTML = '<td style="font-size:11px;font-weight:700;color:var(--text-sub);">プランの変更</td>' +
+        document.getElementById('btn-row').innerHTML = '<td class="key-td">プランの変更</td>' +
           PLANS.map(function () { return '<td><button class="plan-btn btn-current" disabled>－</button></td>'; }).join('');
         return false;
       }
@@ -842,8 +776,8 @@
       if (f.sec) return;
       const a = f.vals[fi], b = f.vals[ti];
       if (a === b) return;
-      if (b === NO) lines.push('・' + f.label + 'が使えなくなります。');
-      else lines.push('・' + f.label + '：' + valText(a) + ' → ' + valText(b));
+      if (b === NO) lines.push('・' + labelText(f.label) + 'が使えなくなります。');
+      else lines.push('・' + labelText(f.label) + '：' + valText(a) + ' → ' + valText(b));
     });
     return lines;
   }
@@ -919,6 +853,18 @@
       : 'すでに' + result.data.plan + 'プランでした。';
     document.getElementById('complete-modal').classList.add('open');
   }
+
+  // ★プラン名の行を、ヘッダーとサブバーのすぐ下に止めておく（下へスクロールしても、どの列がどのプランか分かるように）
+  function updatePlanHeadTop() {
+    const topbarH = document.querySelector('.topbar').offsetHeight;
+    document.querySelector('.subbar').style.top = topbarH + 'px';
+    const top = topbarH + document.querySelector('.subbar').offsetHeight;
+    document.documentElement.style.setProperty('--plan-head-top', top + 'px');
+  }
+  window.addEventListener('resize', updatePlanHeadTop);
+  // サブバーの中身（プラン名など）が読み込まれて高さが変わった時も、位置を取り直す
+  try { const ro = new ResizeObserver(updatePlanHeadTop); ro.observe(document.querySelector('.topbar')); ro.observe(document.querySelector('.subbar')); } catch (e) {}
+  updatePlanHeadTop();
 
   // ---- 起動 ----
   async function initLiff() {
