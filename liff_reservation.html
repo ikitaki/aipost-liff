@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更52 - AiPost</title>
+<title>予約確認・変更53 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -675,6 +675,19 @@
   .del-total { font-size: 13px; color: var(--text); background: var(--bg); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; line-height: 1.6; }
   .del-total b { font-size: 16px; color: var(--primary); }
   .del-total-sub { font-size: 11px; color: var(--text-sub); }
+  /* ★liff_reservation.html53：予約一覧の一括キャンセル（チェック欄・すべて選ぶ・下の帯）と、詳細の「予約キャンセル」ボタン */
+  .res-list-toolbar { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+  .res-list-toolbar .section-label { margin-bottom: 0; }
+  .res-row { display: flex; align-items: stretch; }
+  .res-row .reservation-card { flex: 1; min-width: 0; }
+  .res-chk { display: flex; align-items: center; justify-content: center; width: 40px; flex-shrink: 0; margin-bottom: 10px; cursor: pointer; }
+  .res-chk input { width: 20px; height: 20px; accent-color: var(--danger); margin: 0; cursor: pointer; }
+  .reservation-card.selected { border-color: var(--danger); background: #fffafa; }
+  .res-cancel-bar { display: none; position: fixed; left: 0; right: 0; bottom: 60px; z-index: 1001; background: #ffffff; border-top: 1px solid #e0e0e0; box-shadow: 0 -2px 8px rgba(0,0,0,0.08); }
+  .res-cancel-bar.show { display: block; }
+  .res-cancel-bar-inner { max-width: 480px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 8px; }
+  body.res-bar-open { padding-bottom: 140px; }
+  .btn-res-cancel { flex: 1.4; white-space: nowrap; padding-left: 6px; padding-right: 6px; }
 
   /* ============================================ */
   /* ボトムナビゲーションバー（全画面共通） */
@@ -861,7 +874,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更52</span>
+  <span class="header-logo">予約確認・変更53</span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -944,7 +957,11 @@
   <!-- 予約一覧タブ -->
   <div id="tab-list" class="tab-panel active">
 
-    <div class="section-label" id="reservation-list-label">予約中</div>
+    <!-- ★liff_reservation.html53：見出しの右に「すべて選ぶ」（予約が1件以上ある時だけ表示） -->
+    <div class="res-list-toolbar">
+      <div class="section-label" id="reservation-list-label">予約中</div>
+      <button type="button" class="del-selectall" id="res-selectall-btn" onclick="toggleReservationSelectAll()" style="display:none;">すべて選ぶ</button>
+    </div>
 
     <div id="reservation-list-container"></div>
 
@@ -1124,7 +1141,8 @@
         <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
         <!-- ★liff_reservation_html33：「修正する」ボタンを追加（投稿予定の5分前を過ぎた予約では非表示） -->
         <button class="btn btn-primary" id="detail-edit-btn" onclick="startEditReservation()">修正する</button>
-        <button class="btn btn-danger" onclick="confirmCancel()">キャンセル</button>
+        <!-- ★liff_reservation.html53：「キャンセル」→「予約キャンセル」（Kenさん指示。何のキャンセルか分かるように） -->
+        <button class="btn btn-danger btn-res-cancel" onclick="confirmCancel()">予約キャンセル</button>
       </div>
       <!-- ★liff_reservation_html35：「画像を差し替える」ボタン（投稿予定の5分前を過ぎた予約では非表示） -->
       <button class="ri-btn" id="detail-image-btn" onclick="startImageReplace()" style="background:transparent;color:var(--primary);border:1.5px solid var(--primary);">🖼️ 画像を差し替える</button>
@@ -1249,7 +1267,21 @@
     <p style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:20px;" id="cancel-modal-text"></p>
     <div class="btn-row">
       <button class="btn btn-outline" onclick="closeCancelModal()">戻る</button>
-      <button class="btn btn-danger" id="cancel-modal-btn" onclick="executeCancel()">キャンセルする</button>
+      <button class="btn btn-danger" id="cancel-modal-btn" onclick="executeCancel()">予約キャンセルする</button>
+    </div>
+  </div>
+</div>
+
+<!-- ★liff_reservation.html53：予約の一括キャンセルの確認モーダル -->
+<div class="modal-overlay" id="bulk-cancel-modal" style="z-index:1020;" onclick="if(event.target===this)closeBulkCancelConfirm()">
+  <div class="modal" style="padding:24px 16px;text-align:center;">
+    <div class="modal-handle"></div>
+    <div style="font-size:36px;margin-bottom:12px;">🗑️</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px;">予約をキャンセルしますか？</div>
+    <p style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:20px;white-space:pre-line;" id="bulk-cancel-text"></p>
+    <div class="btn-row">
+      <button class="btn btn-outline" id="bulk-cancel-back-btn" onclick="closeBulkCancelConfirm()">戻る</button>
+      <button class="btn btn-danger" id="bulk-cancel-btn" onclick="executeBulkCancel()">予約キャンセルする</button>
     </div>
   </div>
 </div>
@@ -1295,6 +1327,8 @@ function switchTab(id) {
   if (id === 'history') ensurePostHistoryLoaded();
   // ★liff_reservation.html44：投稿削除タブも同じ投稿履歴のデータを使う（取得は1回だけ）
   if (id === 'delete') { deleteTabOpened = true; ensurePostHistoryLoaded(); renderDeleteTab(); }
+  // ★liff_reservation.html53：一括キャンセルの帯は予約一覧タブの時だけ出す
+  if (typeof updateReservationSelectionUi === 'function') updateReservationSelectionUi();
 }
 
 // ★liff_reservation_html32：予約カレンダーのデモデータ（Facebookを含むダミーデータ）と
@@ -1304,6 +1338,14 @@ function switchTab(id) {
 // 　（本文の修正は、予約の詳細画面内で行う方式に決定したため）。
 
 </script>
+
+<!-- ★liff_reservation.html53：予約一覧で選んだ予約をまとめてキャンセルする帯（1件以上選んだ時だけ、予約一覧タブで表示） -->
+<div class="res-cancel-bar" id="res-cancel-bar">
+  <div class="res-cancel-bar-inner">
+    <button type="button" class="btn btn-outline" onclick="clearReservationSelection()">選択を外す</button>
+    <button type="button" class="btn btn-danger" id="res-cancel-bar-btn" onclick="openBulkCancelConfirm()">予約キャンセル</button>
+  </div>
+</div>
 
 <!-- ボトムナビゲーションバー -->
 <nav class="bottom-nav" id="bottom-nav">
@@ -1452,7 +1494,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認52';
+  const TRACE_SCREEN = '予約確認53';
 
   function traceLog(msg) {
     try {
@@ -1805,9 +1847,13 @@ function switchTab(id) {
     if (!container) return;
     currentReservationList = list;
     if (label) label.textContent = '予約中（' + list.length + '件）';
+    // ★liff_reservation.html53：予約一覧タブだけ、カードの左にチェック欄を付ける（予約カレンダーのカードは今のまま）。
+    // 　無くなった予約（キャンセル・投稿済み）は選択から外す。
+    pruneReservationSelection(list);
     container.innerHTML = list.length
-      ? list.map(renderReservationCard).join('')
-      : '<div class="empty-list-note">現在、予約中の投稿はありません</div>';
+      ? list.map(renderReservationListRow).join('')
+      : '<div class="empty-list-note">現在、予約中の投稿はありません。</div>';
+    updateReservationSelectionUi();
     // ★liff_reservation_html32：予約カレンダーも同じデータで更新する
     reservationListLoaded = true;
     setReservationCalendarStatus('');
@@ -1927,8 +1973,170 @@ function switchTab(id) {
       console.error('キャンセル処理エラー:', err);
       alert('通信エラーが発生しました。もう一度お試しください。');
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'キャンセルする'; }
+      if (btn) { btn.disabled = false; btn.textContent = '予約キャンセルする'; }
     }
+  }
+
+  // ============================================
+  // ★liff_reservation.html53：予約の一括キャンセル（予約一覧タブ。Kenさん要望）
+  // ============================================
+  // ・予約一覧タブのカードの左にチェック欄を付け、選んだ予約をまとめてキャンセルする。カードそのものを押した時は、
+  // 　今までどおり詳細を開く。予約カレンダーのカードにはチェック欄を付けない。
+  // ・1件でも選ぶと、画面の下に「選択を外す」「予約キャンセル（N件）」の帯を出す（予約一覧タブを開いている時だけ）。
+  // ・GASの cancelReservations（投稿予約gs_27）へ、50件ずつに分けて順に送る（自動の再試行はしない）。
+  // 　途中で送れなかった時は、そこで止めて、キャンセルできた件数と、残りはキャンセルできていない可能性があることを伝える。
+  // ・1件でもキャンセルできたら、1件のキャンセルと同じく、一覧・残りの件数・分析の保存済みデータを取り直す。
+  const BULK_CANCEL_CHUNK = 50;
+  let reservationSelection = {};   // 選んだ予約 { 予約ID: true }
+  let bulkCancelRunning = false;
+
+  function renderReservationListRow(r) {
+    const checked = !!reservationSelection[r.reservationId];
+    const card = renderReservationCard(r);
+    return '' +
+      '<div class="res-row">' +
+        '<label class="res-chk"><input type="checkbox" data-rid="' + escapeHtml(r.reservationId) + '"' + (checked ? ' checked' : '') +
+          ' onchange="toggleReservationSelect(this)"></label>' +
+        (checked ? card.replace('class="reservation-card"', 'class="reservation-card selected"') : card) +
+      '</div>';
+  }
+  function selectedReservationIds() {
+    return currentReservationList
+      .filter(function (r) { return !!reservationSelection[r.reservationId]; })
+      .map(function (r) { return r.reservationId; });
+  }
+  function pruneReservationSelection(list) {
+    const next = {};
+    list.forEach(function (r) { if (reservationSelection[r.reservationId]) next[r.reservationId] = true; });
+    reservationSelection = next;
+  }
+  function toggleReservationSelect(input) {
+    if (bulkCancelRunning) { input.checked = !input.checked; return; }
+    const rid = input.getAttribute('data-rid');
+    if (input.checked) reservationSelection[rid] = true; else delete reservationSelection[rid];
+    const row = input.closest('.res-row');
+    const card = row && row.querySelector('.reservation-card');
+    if (card) card.classList.toggle('selected', input.checked);
+    updateReservationSelectionUi();
+  }
+  function toggleReservationSelectAll() {
+    if (bulkCancelRunning) return;
+    const allSelected = currentReservationList.length > 0 && selectedReservationIds().length === currentReservationList.length;
+    reservationSelection = {};
+    if (!allSelected) currentReservationList.forEach(function (r) { reservationSelection[r.reservationId] = true; });
+    syncReservationCheckboxes();
+  }
+  function clearReservationSelection() {
+    if (bulkCancelRunning) return;
+    reservationSelection = {};
+    syncReservationCheckboxes();
+  }
+  function syncReservationCheckboxes() {
+    document.querySelectorAll('#reservation-list-container .res-row').forEach(function (row) {
+      const input = row.querySelector('input[type="checkbox"]');
+      const on = !!(input && reservationSelection[input.getAttribute('data-rid')]);
+      if (input) input.checked = on;
+      const card = row.querySelector('.reservation-card');
+      if (card) card.classList.toggle('selected', on);
+    });
+    updateReservationSelectionUi();
+  }
+  function updateReservationSelectionUi() {
+    const count = selectedReservationIds().length;
+    const total = currentReservationList.length;
+    const allBtn = document.getElementById('res-selectall-btn');
+    if (allBtn) {
+      allBtn.style.display = total > 0 ? '' : 'none';
+      allBtn.textContent = (total > 0 && count === total) ? 'すべて外す' : 'すべて選ぶ';
+    }
+    const listTab = document.getElementById('tab-list');
+    const show = count > 0 && !!(listTab && listTab.classList.contains('active'));
+    const bar = document.getElementById('res-cancel-bar');
+    if (bar) bar.classList.toggle('show', show);
+    document.body.classList.toggle('res-bar-open', show);
+    const barBtn = document.getElementById('res-cancel-bar-btn');
+    if (barBtn) barBtn.textContent = '予約キャンセル（' + count + '件）';
+  }
+  function openBulkCancelConfirm() {
+    if (bulkCancelRunning) return;
+    const ids = selectedReservationIds();
+    if (ids.length === 0) return;
+    document.getElementById('bulk-cancel-text').textContent =
+      '選んだ' + ids.length + '件の予約をキャンセルします。\n予約枠が' + ids.length + '件解放されます。';
+    document.getElementById('bulk-cancel-modal').classList.add('open');
+  }
+  function closeBulkCancelConfirm() {
+    if (bulkCancelRunning) return;
+    document.getElementById('bulk-cancel-modal').classList.remove('open');
+  }
+  async function executeBulkCancel() {
+    if (bulkCancelRunning) return;
+    const ids = selectedReservationIds();
+    if (ids.length === 0) { closeBulkCancelConfirm(); return; }
+    bulkCancelRunning = true;
+    const btn = document.getElementById('bulk-cancel-btn');
+    const backBtn = document.getElementById('bulk-cancel-back-btn');
+    if (btn) { btn.disabled = true; btn.textContent = '処理中…'; }
+    if (backBtn) backBtn.disabled = true;
+    let cancelledCount = 0;
+    const failedErrors = [];   // キャンセルできなかった予約の理由（GASの文）
+    let stopMessage = '';      // 途中で止めた時の理由
+    try {
+      for (let i = 0; i < ids.length; i += BULK_CANCEL_CHUNK) {
+        const chunk = ids.slice(i, i + BULK_CANCEL_CHUNK);
+        let result = null;
+        try {
+          const response = await fetch(WEBAPP_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'cancelReservations',
+              lineUid: LINE_UID,
+              params: { reservationIds: chunk }
+            })
+          });
+          result = await response.json();
+        } catch (err) {
+          console.error('一括キャンセル処理エラー:', err);
+          stopMessage = '通信エラーが発生しました。';
+          break;
+        }
+        if (!(result && result.success && result.data && result.data.success && Array.isArray(result.data.results))) {
+          stopMessage = (result && result.data && result.data.error) || (result && result.error) || 'キャンセルに失敗しました。';
+          break;
+        }
+        result.data.results.forEach(function (item) {
+          if (item && item.ok) cancelledCount++;
+          else failedErrors.push((item && item.error) || 'キャンセル処理に失敗しました。');
+        });
+      }
+    } finally {
+      bulkCancelRunning = false;
+      if (btn) { btn.disabled = false; btn.textContent = '予約キャンセルする'; }
+      if (backBtn) backBtn.disabled = false;
+    }
+    document.getElementById('bulk-cancel-modal').classList.remove('open');
+    if (cancelledCount > 0) {
+      fetchAndRenderReservationList(true);
+      fetchReservationQuota();
+      // 1件のキャンセルと同じく、今月の投稿枠が変わるため、分析の「今日の状況」の保存済みデータを取り直す
+      invalidateAnalyticsSummaryCache();
+      warmupAnalyticsCache();
+    }
+    const lines = [];
+    if (stopMessage) {
+      lines.push(stopMessage);
+      if (cancelledCount > 0) lines.push(cancelledCount + '件の予約はキャンセルしました。');
+      lines.push('残りの予約は、キャンセルできていない可能性があります。一覧を確かめてから、もう一度お試しください。');
+    } else if (failedErrors.length > 0) {
+      if (cancelledCount > 0) lines.push(cancelledCount + '件の予約をキャンセルしました。');
+      lines.push(failedErrors.length + '件はキャンセルできませんでした。');
+      failedErrors.filter(function (e, i) { return failedErrors.indexOf(e) === i; }).forEach(function (e) { lines.push(e); });
+    }
+    if (failedErrors.length > 0 && cancelledCount === 0 && !stopMessage) {
+      // キャンセルできた予約が無い時も、投稿済みなどの予約を一覧から外すため取り直す
+      fetchAndRenderReservationList(true);
+    }
+    if (lines.length > 0) alert(lines.join('\n'));
   }
 
   // ============================================
@@ -3012,7 +3220,7 @@ function _dataUrlToBase64(dataUrl) {
       Number(parts[1]) + '月' + Number(parts[2]) + '日の予約（' + list.length + '件）';
     document.getElementById('selected-day-cards').innerHTML = list.length
       ? list.map(renderReservationCard).join('')
-      : '<div class="empty-list-note">この日の予約はありません</div>';
+      : '<div class="empty-list-note">この日の予約はありません。</div>';
   }
 
   // ============================================
