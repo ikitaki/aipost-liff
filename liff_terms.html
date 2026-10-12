@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>利用規約2 - AiPost</title>
+  <title>利用規約3 - AiPost</title>
   <style>
     :root {
       --primary: #1a237e;
@@ -139,7 +139,7 @@
   <div class="header">
     <button onclick="history.back()" style="background:none;border:none;color:white;font-size:13px;cursor:pointer;padding:0;margin-right:4px;">◀ 戻る</button>
     <span style="font-size:16px;">📄</span>
-    <span class="header-logo">利用規約2</span>
+    <span class="header-logo">利用規約3</span>
     <span class="header-sub">AiPost</span>
   </div>
 
@@ -160,10 +160,12 @@
       <div class="section-title">第2条（サービスの内容）</div>
       <p>本サービスは、LINEを通じて以下の機能を提供します。</p>
       <ol>
-        <li>AI文章生成機能（投稿文・ハッシュタグの自動生成）</li>
-        <li>SNS予約投稿機能（Instagram・Facebook・Threads・X）</li>
-        <li>投稿分析機能（LITEプラン以上）</li>
-        <li>素材画像の提供（LITEプラン以上）</li>
+        <li>AI投稿文作成機能（投稿文・ハッシュタグの作成）</li>
+        <li>SNS予約投稿機能（X・Instagram・Threads）と、予約の修正・キャンセル</li>
+        <li>画像のSNSごとの切り抜き</li>
+        <li>投稿の分析機能（LITEプラン以上）</li>
+        <li>本サービスから投稿した投稿の一括削除（X・Threads）</li>
+        <li>お知らせ・問い合わせ</li>
         <li>その他当社が定める機能</li>
       </ol>
     </div>
@@ -171,28 +173,27 @@
     <!-- 第3条 -->
     <div class="section">
       <div class="section-title">第3条（プランと料金）</div>
-      <p>本サービスは以下のプランを提供します。料金は全て税別です。</p>
+      <p>本サービスは以下のプランを提供します。料金はすべて税別です。</p>
       <ol>
-        <li>FREEプラン：無料 / SNS1つ / 月4件</li>
-        <li>PERSONALプラン：月額300円 / SNS1つ / 月8件</li>
-        <li>LITEプラン：月額680円 / SNS2つ / 月15件</li>
-        <li>STANDARDプラン：月額1,280円 / SNS3つ / 月30件</li>
-        <li>PROプラン：月額1,980円 / SNS4つ / 月60件</li>
+        <li>FREEプラン：無料／投稿先1つ（Xは選べません）／予約枠 月4件／本文 全角70字まで</li>
+        <li>PERSONALプラン：月額300円／投稿先2つ／予約枠 月8件</li>
+        <li>LITEプラン：月額680円／投稿先2つ／予約枠 月10件</li>
+        <li>STANDARDプラン：月額1,280円／投稿先3つ／予約枠 月20件</li>
+        <li>PROプラン：月額1,980円／投稿先3つ／予約枠 月40件</li>
       </ol>
-      <p>各プランの詳細な機能は、プラン・料金画面をご確認ください。</p>
-      <div class="info-box">同じ内容を複数のSNSに同時投稿した場合は1件としてカウントします。同時投稿扱いの条件は「同一テキスト・同一画像・同時刻」の3条件が全て一致する場合に限ります。</div>
+      <p>FREEプラン以外の本文は、全角140字までです。各プランの詳しい機能は、プラン・料金画面をご確認ください。</p>
+      <div class="info-box">予約1件で、選んだSNSへまとめて投稿します。この時に使う予約枠は1件です。予約をキャンセルすると予約枠は戻りますが、投稿した後に削除しても予約枠は戻りません。</div>
     </div>
 
     <!-- 第4条 -->
     <div class="section">
-      <div class="section-title">第4条（決済・解約）</div>
+      <div class="section-title">第4条（決済・プランの変更・退会）</div>
       <ol>
-        <li>有料プランの料金はStripeを通じてクレジットカードにて月払いで決済します。</li>
-        <li>プランのアップグレードは即時反映されます。</li>
-        <li>ダウングレードは当月末に反映され、それまでは現在のプランをご利用いただけます。</li>
-        <li>解約は当月末に反映され、それまでは現在のプランをご利用いただけます。</li>
-        <li>日割り返金は行いません。</li>
-        <li>解約手続きは設定画面の「登録」タブから行えます。</li>
+        <li>有料プランの料金は、クレジットカードによる月払いで決済します。※ 現在は試験運用中のため、料金は発生しません。</li>
+        <li>プランの変更は、プラン・料金画面から行えます。</li>
+        <li>日割りの返金は行いません。</li>
+        <li>退会は、設定画面から行えます。退会の手続きが終わると、すぐに本サービスをご利用いただけなくなり、当社が保管する利用者のデータ（店舗情報・予約と投稿の記録・分析データ・画像・アクセストークン・問い合わせなど）を、すぐに削除します。削除したデータは元に戻せません。ただし、法令で保存が必要な記録（決済の記録など）は除きます。</li>
+        <li>退会しても、SNSに投稿済みの投稿は削除されません。必要な場合は、退会の前に、予約確認画面の「投稿削除」（X・Threads）またはInstagramのアプリから削除してください。</li>
       </ol>
     </div>
 
@@ -204,15 +205,17 @@
         <li>各SNSの利用規約に違反する内容の投稿は禁止します。</li>
         <li>当社は、投稿内容の正確性・適法性について保証しません。</li>
         <li>SNS側の仕様変更・API変更・障害等により投稿が失敗した場合、当社は責任を負いません。</li>
+        <li>SNSからスパムと判定されないよう、1つのSNSにつき、同じ時刻の投稿は1件・1日3件・1週間（月曜〜日曜）15件までとします。</li>
       </ol>
     </div>
 
     <!-- 第6条 -->
     <div class="section">
       <div class="section-title">第6条（XへのURL付き投稿の禁止）</div>
-      <p>当サービスでは、XへのURL付き投稿に対応していません。</p>
+      <p>本サービスでは、XへのURL付き投稿に対応していません。</p>
       <ol>
         <li>投稿文にURLが含まれる場合、Xは自動的に投稿先から除外されます。</li>
+        <li>ハッシュタグを含めた文字数がXの上限を超える場合も、Xは自動的に投稿先から除外されます。</li>
         <li>URLの直接記述以外にも、日本語・記号・短縮URL・QRコード誘導テキスト等によるURL表現（以下「迂回行為」）も同様に禁止します。</li>
         <li>迂回行為が確認された場合は、本規約違反として利用停止・登録解除の対象となる場合があります。</li>
       </ol>
@@ -221,13 +224,13 @@
 
     <!-- 第7条 -->
     <div class="section">
-      <div class="section-title">第7条（AI文章生成機能）</div>
+      <div class="section-title">第7条（AI投稿文作成機能）</div>
       <ol>
-        <li>AI文章生成は全プランで無制限にご利用いただけます。</li>
-        <li>生成された文章の著作権は利用者に帰属します。</li>
-        <li>当社は生成文章の品質・正確性・適法性を保証しません。</li>
-        <li>生成文章を投稿する前に必ず内容をご確認ください。</li>
-        <li>生成文章を利用したことによる損害について当社は責任を負いません。</li>
+        <li>AI投稿文作成は、全プランで回数の制限なくご利用いただけます。</li>
+        <li>AIが作成した投稿文の著作権は、利用者に帰属します。</li>
+        <li>当社は、AIが作成した投稿文の品質・正確性・適法性を保証しません。</li>
+        <li>AIが作成した投稿文を投稿する前に、必ず内容をご確認ください。</li>
+        <li>AIが作成した投稿文を利用したことによる損害について、当社は責任を負いません。</li>
       </ol>
     </div>
 
@@ -235,25 +238,26 @@
     <div class="section">
       <div class="section-title">第8条（SNSアカウントの連携と安全管理）</div>
 
-      <p>本サービスでは、自動投稿を行うために各SNSが発行する「アクセストークン」をお預かりします。</p>
+      <p>本サービスでは、投稿や分析を行うために、各SNSが発行する「アクセストークン」をお預かりします。</p>
 
       <div class="info-box" style="margin:10px 0;">
         <strong>アクセストークンとは？</strong><br>
-        各SNSが発行する「投稿専用の許可証」です。通常のパスワードとは全く異なるもので、以下の性質があります。<br>
-        ・投稿する権限のみを持ちます<br>
-        ・ログインや個人情報の閲覧には使えません<br>
+        利用者の許可にもとづいて各SNSが発行する、本サービス専用の「合鍵」のようなものです。SNSのパスワードとは別のもので、以下の性質があります。<br>
+        ・本サービスが使う権限は、投稿・投稿の反応（いいね等の数値・コメント）の取得・本サービスから投稿した投稿の削除に限ります<br>
+        ・SNSのパスワードの確認や変更には使えません<br>
         ・利用者がいつでも無効にできます
       </div>
 
       <ol>
         <li>
           <strong>暗号化による安全管理</strong><br>
-          お預かりするアクセストークンはAES-256という業界標準の暗号化方式で保存されます。保存されたデータは意味不明な文字列に変換されるため、運営者を含む第三者が直接内容を読むことは技術的にできません。
+          お預かりするアクセストークンは、暗号化したうえで保管し、そのままでは読めない形にしています。読み出して使うのは、投稿・分析・削除の処理に限ります。
         </li>
         <li>
           <strong>当社が預かるもの・預からないもの</strong><br>
-          【預かるもの】投稿専用のアクセストークン（暗号化済み）<br>
-          【預からないもの】SNSのパスワード・個人情報・金融情報
+          【預かるもの】アクセストークン（暗号化して保管）・SNSのユーザーIDとアカウント名<br>
+          【預からないもの】SNSのパスワード・クレジットカードの番号<br>
+          店舗情報など、そのほかの情報の取り扱いは、プライバシーポリシーをご確認ください。
         </li>
         <li>
           <strong>パスワードについて</strong><br>
@@ -261,7 +265,7 @@
         </li>
         <li>
           <strong>アクセストークンの取り消し</strong><br>
-          各SNSの設定画面からいつでも連携を解除・アクセストークンを無効にすることができます。
+          設定画面の「SNS」から、いつでも連携を解除できます。各SNSの設定画面から、アクセストークンを無効にすることもできます。
         </li>
         <li>
           <strong>免責</strong><br>
@@ -285,7 +289,7 @@
     <!-- 第10条 -->
     <div class="section">
       <div class="section-title">第10条（匿名統計データの利用）</div>
-      <p>本サービスでは、PROプランの競合比較機能のために、利用者の投稿分析データを匿名化した上で統計処理に使用します。個人を特定できる情報は一切含まれません。詳細はプライバシーポリシーをご確認ください。</p>
+      <p>本サービスでは、PROプランの「同業種・同エリア平均との比較」機能のために、LITEプラン以上の利用者の分析データを匿名化した上で統計処理に使用します。個人や店舗を特定できる情報は一切含まれません。詳細はプライバシーポリシーをご確認ください。</p>
     </div>
 
     <!-- 第11条 -->
@@ -309,7 +313,7 @@
       <div class="section-title">第12条（利用停止・登録解除）</div>
       <ol>
         <li>当社は、利用者が禁止事項に違反した場合、事前通知なくサービスの利用停止・登録解除を行うことができます。</li>
-        <li>登録解除された場合、投稿予約・分析データ等は削除されます。</li>
+        <li>登録解除した場合、当社が保管する利用者のデータは、退会の時と同じく、すぐに削除します（第4条）。</li>
         <li>登録解除に伴う返金は行いません。</li>
       </ol>
     </div>
@@ -320,7 +324,7 @@
       <ol>
         <li>当社は、本サービスの中断・停止・終了について責任を負いません。</li>
         <li>SNS側のAPI変更・仕様変更・障害により投稿が失敗した場合、当社は責任を負いません。</li>
-        <li>AI生成文章の内容・品質について保証しません。</li>
+        <li>AIが作成した投稿文の内容・品質について保証しません。</li>
         <li>本サービスの利用により生じた損害について、当社の故意または重大な過失がある場合を除き、責任を負いません。</li>
         <li>利用者がアップロードした画像に起因して第三者との間に紛争が生じた場合、当社は一切の責任を負わず、利用者の責任と負担において解決するものとします。</li>
         <li>本サービスの利用に関して当社が損害賠償責任を負う場合であっても、その賠償額は、請求原因発生月からさかのぼる直近3ヶ月間に利用者が当社に支払った利用料金の合計額を上限とします。</li>
@@ -348,66 +352,7 @@
       <div class="company-row"><span class="company-key">メール</span><span class="company-val placeholder">【メールアドレス】</span></div>
     </div>
 
-    <!-- 申し込み用：同意チェックとボタン（プラン申し込み時のみ表示） -->
-    <div id="agreement-section" style="display:none;">
-      <div style="background:#ffffff;border-radius:10px;border:2px solid var(--primary);padding:16px;margin-bottom:12px;">
-        <div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:12px;text-align:center;">
-          申し込み確認
-        </div>
-        <div style="background:#f0f2ff;border-radius:8px;padding:12px;margin-bottom:14px;font-size:13px;color:var(--primary);text-align:center;">
-          選択プラン：<strong id="selected-plan-name">-</strong>
-        </div>
-        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:14px;">
-          <input type="checkbox" id="agree-terms-check" onchange="toggleAgreeBtn()" style="width:20px;height:20px;margin-top:2px;flex-shrink:0;accent-color:var(--primary);">
-          <span style="font-size:13px;color:var(--text);line-height:1.8;">利用規約の内容を読み、同意します</span>
-        </label>
-        <button id="agree-btn" disabled onclick="proceedToPayment()"
-          style="width:100%;padding:14px;border-radius:10px;border:none;background:#cccccc;color:white;font-size:15px;font-weight:700;cursor:not-allowed;transition:all 0.2s;">
-          申し込みを完了する
-        </button>
-        <p style="font-size:11px;color:var(--text-sub);text-align:center;margin-top:8px;line-height:1.7;">
-          ※ チェックを入れると申し込みボタンが有効になります<br>
-          ※ 申し込み後はStripe決済画面に進みます
-        </p>
-      </div>
-    </div>
-
   </div>
 
-<script>
-// URLパラメータを確認してプラン申し込み時は同意セクションを表示
-(function() {
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const from = params.get('from');
-    const plan = params.get('plan');
-    if (from === 'plan' && plan) {
-      document.getElementById('agreement-section').style.display = 'block';
-      document.getElementById('selected-plan-name').textContent = plan + 'プラン';
-      // プラン名をグローバル変数に保存
-      window._selectedPlan = plan;
-    }
-  } catch(e) {}
-})();
-
-function toggleAgreeBtn() {
-  const checked = document.getElementById('agree-terms-check').checked;
-  const btn = document.getElementById('agree-btn');
-  if (checked) {
-    btn.disabled = false;
-    btn.style.background = '#1a237e';
-    btn.style.cursor = 'pointer';
-  } else {
-    btn.disabled = true;
-    btn.style.background = '#cccccc';
-    btn.style.cursor = 'not-allowed';
-  }
-}
-
-function proceedToPayment() {
-  const plan = window._selectedPlan || '選択したプラン';
-  alert(plan + 'プランへの申し込みを受け付けました。決済画面に進みます。（実装後はStripe決済画面が開きます）');
-}
-</script>
 </body>
 </html>
