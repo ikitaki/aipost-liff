@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金9 - AiPost</title>
+  <title>プラン・料金10 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -209,7 +209,10 @@
   .notice-item-date { font-size: 11px; color: #9e9e9e; margin-top: 3px; }
   .notice-item-body { font-size: 13px; color: #424242; line-height: 1.7; margin-top: 6px; white-space: pre-wrap; }
   .notice-empty { padding: 28px 14px; text-align: center; font-size: 13px; color: #757575; }
-  .notice-item-check { width: 18px; height: 18px; margin: 0 2px 0 0; flex-shrink: 0; accent-color: #1a237e; cursor: pointer; }
+  .notice-item-del { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #757575; white-space: nowrap; cursor: pointer; padding: 2px 0 2px 8px; }
+  .notice-item-check { width: 18px; height: 18px; margin: 0; flex-shrink: 0; accent-color: #e53935; cursor: pointer; }
+  .notice-item-head .notice-item-title { display: none; }
+  div.notice-item-title { margin-top: 4px; }
   .notice-item.checked { background: #eef1fb; }
   .notice-tools { display: none; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 14px; border-bottom: 1px solid #f0f0f0; }
   .notice-tools.show { display: flex; }
@@ -327,7 +330,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo">プラン・料金9</span>
+    <span class="topbar-logo">プラン・料金10</span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -550,7 +553,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'プラン9';
+  const TRACE_SCREEN = 'プラン10';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -898,7 +901,7 @@
   traceLog('起動');
   initLiff();
 </script>
-<!-- ★お知らせの一覧（ベル・帯を押すと開く）。ベルのある画面で同じ中身（★お知らせの削除：投稿文作成148・予約確認56・分析56・設定67・プラン8。チェックで選んで削除：プラン9〜）-->
+<!-- ★お知らせの一覧（ベル・帯を押すと開く）。ベルのある画面で同じ中身（★お知らせの削除：投稿文作成148・予約確認56・分析56・設定67・プラン8。チェックで選んで削除：プラン9〜。印の行の右端に「通知を削除 □」：プラン10〜）-->
 <div class="notice-overlay" id="notice-overlay" onclick="if(event.target===this)aipostCloseNotices()">
   <div class="notice-panel" role="dialog" aria-label="お知らせ">
     <div class="notice-panel-head">
@@ -919,7 +922,7 @@
 // 　・一覧を開いた時に未読があれば markNoticesRead で既読にする（書き込みのため自動の再試行はしない）。
 // 　　開いている間は、どれが新しいかが分かるよう「未読」の印を残す。
 // 　・取得に失敗した時は、ベルだけ出して件数は出さない。一覧を開いた時にもう一度取りにいく。
-// 　・★お知らせを消す（Kenさん決定）：各お知らせのチェックで選び、「通知を削除（N件）」で、その人の一覧から消す
+// 　・★お知らせを消す（Kenさん決定）：各お知らせの右上の「通知を削除 □」のチェックで選び、上の「通知を削除（N件）」で、その人の一覧から消す
 // 　　（hideNotices。WebAppEndpointgs_34・お知らせgs_04）。チェックを付けるたびに件数が増える。0件の時は押せない。
 // 　　「すべて選ぶ／すべて外す」もある。消す前に確認を1回出す。書き込みのため自動の再試行はしない。
 // 　　消せなかった時は一覧を元に戻し、理由を一覧の上に出す（選んだチェックは残る）。
@@ -1025,12 +1028,14 @@
         ? '<span class="notice-chip notice-chip-admin">運営</span>'
         : '<span class="notice-chip notice-chip-you">あなたへ</span>';
       var checked = selectedIds.indexOf(n.noticeId) !== -1;
+      // ★「未読」「あなたへ」などの印の行の右端に「通知を削除 □」（文字を押してもチェックが入る）。タイトルは次の行
       return '<div class="notice-item' + (unread ? ' unread' : '') + (checked ? ' checked' : '') + '">' +
         '<div class="notice-item-head">' +
-        '<input type="checkbox" class="notice-item-check" aria-label="このお知らせを選ぶ"' + (checked ? ' checked' : '') + (hiding ? ' disabled' : '') +
-        ' onchange="aipostToggleNotice(\'' + esc(n.noticeId) + '\', this.checked)">' +
         (unread ? '<span class="notice-chip notice-chip-unread">未読</span>' : '') + chip +
-        '<span class="notice-item-title">' + esc(n.title) + '</span></div>' +
+        '<label class="notice-item-del">通知を削除' +
+        '<input type="checkbox" class="notice-item-check"' + (checked ? ' checked' : '') + (hiding ? ' disabled' : '') +
+        ' onchange="aipostToggleNotice(\'' + esc(n.noticeId) + '\', this.checked)"></label></div>' +
+        '<div class="notice-item-title">' + esc(n.title) + '</div>' +
         '<div class="notice-item-date">' + fmtDate(n.startAt) + '</div>' +
         '<div class="notice-item-body">' + esc(n.body) + '</div>' +
         '</div>';
