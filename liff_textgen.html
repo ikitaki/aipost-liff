@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成149 - AiPost</title>
+<title>投稿文作成150 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -771,7 +771,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成149</span>
+  <span class="header-logo">投稿文作成150</span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1632,7 +1632,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成149';
+const TRACE_SCREEN = '投稿文作成150';
 
 function traceLog(msg) {
   try {
@@ -2840,6 +2840,61 @@ function getMonthQuota(y, m) {
   return { total: total, used: used, remaining: Math.max(0, total - used) };
 }
 
+// ===== 投稿の回数の上限（★liff_textgen.html150） =====
+// 　GAS側（投稿予約gs_28 の TEXTGEN_POST_LIMIT_PER_DAY・TEXTGEN_POST_LIMIT_PER_WEEK）と同じ数。変える時は両方を直す。
+const POST_LIMIT_PER_DAY = 3;
+const POST_LIMIT_PER_WEEK = 15;
+
+// その日の週の月曜日（日付だけ）を返す（週は月曜〜日曜）
+function weekMonday(y, m, d) {
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() - ((dt.getDay() + 6) % 7));
+  return dt;
+}
+
+// 選んだ日時・SNSで、上限を超えないかを、予約一覧の保存データ（予約中の予約）で確かめる。超える時は利用者に出す文を返す（超えなければ ''）
+function checkPostLimits(y, m, d, hour, snsNames) {
+  let list = [];
+  try {
+    list = JSON.parse(sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY) || '[]');
+    if (!Array.isArray(list)) list = [];
+  } catch (err) {
+    list = [];
+  }
+  const dayKey = calDateKey(y, m, d);
+  const mon = weekMonday(y, m, d);
+  const sun = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + 6);
+  const weekKey = calDateKey(mon.getFullYear(), mon.getMonth() + 1, mon.getDate());
+  for (const sns of snsNames) {
+    let sameHour = 0, sameDay = 0, sameWeek = 0;
+    list.forEach(r => {
+      if (!r || !Array.isArray(r.targetSns) || r.targetSns.indexOf(sns) === -1) return;
+      const dt = new Date(r.scheduledAt);
+      if (isNaN(dt.getTime())) return;
+      const rMon = weekMonday(dt.getFullYear(), dt.getMonth() + 1, dt.getDate());
+      if (calDateKey(rMon.getFullYear(), rMon.getMonth() + 1, rMon.getDate()) === weekKey) sameWeek++;
+      if (calDateKey(dt.getFullYear(), dt.getMonth() + 1, dt.getDate()) === dayKey) {
+        sameDay++;
+        if (dt.getHours() === hour) sameHour++;
+      }
+    });
+    if (sameHour >= 1) {
+      return m + '月' + d + '日' + hour + '時の枠には、すでに' + sns + 'の投稿が入っています。\n' +
+        '同じSNSへの投稿は、同じ時刻の枠に1件までです。別の時刻を選んでください。';
+    }
+    if (sameDay >= POST_LIMIT_PER_DAY) {
+      return m + '月' + d + '日の' + sns + 'の投稿は、すでに' + sameDay + '件入っています。\n' +
+        'スパムと判定されないよう、1つのSNSにつき1日' + POST_LIMIT_PER_DAY + '件までです。別の日を選ぶか、' + sns + 'を外してください。';
+    }
+    if (sameWeek >= POST_LIMIT_PER_WEEK) {
+      return (mon.getMonth() + 1) + '月' + mon.getDate() + '日〜' + (sun.getMonth() + 1) + '月' + sun.getDate() + '日の週の' + sns +
+        'の投稿は、すでに' + sameWeek + '件入っています。\n' +
+        'スパムと判定されないよう、1つのSNSにつき1週間（月曜〜日曜）' + POST_LIMIT_PER_WEEK + '件までです。別の週を選ぶか、' + sns + 'を外してください。';
+    }
+  }
+  return '';
+}
+
 // ===== 予約確認 =====
 function showConfirm() {
   const ta = document.getElementById('post-textarea');
@@ -2949,6 +3004,16 @@ function showConfirm() {
       ? '・Instagramは、「画像なし」を選んだため投稿できません'
       : '・Instagramは、画像が無いと投稿できません');
     alert('投稿できるSNSがないため、このままでは予約できません。\n' + reasons.join('\n') + '\n内容を修正するか、他のSNSも選択してください。');
+    return;
+  }
+
+  // ★liff_textgen.html150：投稿の回数の上限（スパム判定の対策。Kenさん決定）。1つのSNSにつき、同じ時刻の枠は1件まで・
+  // 　1日3件まで・1週間（月曜〜日曜）15件まで。予約一覧の保存データ（予約中の予約）で先に確かめ、画像のアップロードの前に知らせる。
+  // 　投稿済みの分は保存データに無いため、最終的な判定はGAS側（投稿予約gs_28 の createReservation）で行う。
+  const postLimitMsg = checkPostLimits(selectedYear, selectedMonth, selectedDay,
+    parseInt(document.getElementById('post-time').value, 10), remainingSnsNames);
+  if (postLimitMsg) {
+    alert(postLimitMsg);
     return;
   }
 
