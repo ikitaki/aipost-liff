@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AiPostとは5 - AiPost</title>
+  <title>AiPostとは6 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -203,6 +203,58 @@
     }
     .link-btn:active { opacity: 0.7; }
 
+    /* タブ（liff_about.html6） */
+    .tabs {
+      display: flex;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 4px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--text-sub);
+      border: none;
+      border-bottom: 3px solid transparent;
+      background: none;
+      font-family: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* 利用規約・プライバシーポリシーの本文（liff_terms.html・liff_privacy.html から読み込む。liff_about.html6） */
+    .legal { padding: 16px; font-size: 13px; line-height: 1.8; }
+    .legal .doc-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .legal .doc-date { font-size: 11px; color: var(--text-sub); margin-bottom: 20px; }
+    .legal .section { background: var(--white); border-radius: 10px; border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 12px; }
+    .legal .section-title { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 10px; padding: 0 0 8px; border-left: none; border-bottom: 1px solid var(--border); }
+    .legal .section p { margin-bottom: 8px; font-size: 12px; color: var(--text); line-height: 1.9; }
+    .legal .section p:last-child { margin-bottom: 0; }
+    .legal ol, .legal ul { padding-left: 18px; margin-bottom: 8px; }
+    .legal li { font-size: 12px; color: var(--text); line-height: 1.9; margin-bottom: 4px; }
+    .legal li:last-child { margin-bottom: 0; }
+    .legal .warn-box { background: #fff8e1; border-left: 4px solid #e65100; border-radius: 0 8px 8px 0; padding: 10px 12px; margin: 10px 0; font-size: 12px; color: #5d4037; line-height: 1.8; }
+    .legal .info-box { background: #f0f2ff; border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; padding: 10px 12px; margin: 10px 0; font-size: 12px; color: #1a237e; line-height: 1.8; }
+    .legal .placeholder { background: #fff3e0; border-radius: 4px; padding: 1px 6px; font-weight: 700; color: #e65100; }
+    .legal table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 8px 0; }
+    .legal th { background: #e8eaf6; color: var(--primary); font-weight: 700; padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+    .legal td { padding: 7px 8px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; line-height: 1.7; }
+    .legal tr:last-child td { border-bottom: none; }
+    .legal .company-row { display: flex; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; gap: 12px; }
+    .legal .company-row:last-child { border-bottom: none; }
+    .legal .company-key { color: var(--text-sub); width: 100px; flex-shrink: 0; }
+    .legal .company-val { color: var(--text); font-weight: 600; }
+    .legal-status { padding: 40px 16px; text-align: center; font-size: 13px; color: var(--text-sub); line-height: 1.8; }
+
     /* ボトムナビゲーションバー */
     .bottom-nav {
       position: fixed;
@@ -246,9 +298,18 @@
 
   <!-- ヘッダー -->
   <div class="header">
-    <div class="header-logo">AiPostとは5</div>
+    <div class="header-logo">AiPostとは6</div>
     <div class="header-tagline">AIが投稿文を作成し、SNSへ予約投稿。<br>忙しい店舗オーナーのためのSNS運用サービス</div>
   </div>
+
+  <!-- タブ（liff_about.html6） -->
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab active" id="tab-about" onclick="switchTab('about')">AiPostとは</button>
+    <button type="button" class="tab" id="tab-terms" onclick="switchTab('terms')">利用規約</button>
+    <button type="button" class="tab" id="tab-privacy" onclick="switchTab('privacy')">プライバシー<br>ポリシー</button>
+  </div>
+
+  <div class="tab-panel active" id="panel-about">
 
   <!-- AiPostとは -->
   <div class="section">
@@ -414,13 +475,25 @@
         当サービスをご利用いただくことで、以下の規約・ポリシーに同意したものとみなします。
       </div>
       <div style="display:flex;justify-content:center;gap:24px;">
-        <button onclick="navigateTo('terms')" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;">利用規約</button>
-        <button onclick="navigateTo('privacy')" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;">プライバシーポリシー</button>
+        <button onclick="switchTab('terms')" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit;">利用規約</button>
+        <button onclick="switchTab('privacy')" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit;">プライバシーポリシー</button>
       </div>
       <div style="font-size:11px;color:var(--text-sub);margin-top:12px;">
         【会社名】　【メールアドレス】
       </div>
     </div>
+  </div>
+
+  </div>
+
+  <!-- 利用規約（liff_terms.html から読み込む） -->
+  <div class="tab-panel" id="panel-terms">
+    <div class="legal" id="legal-terms"><div class="legal-status">読み込んでいます。</div></div>
+  </div>
+
+  <!-- プライバシーポリシー（liff_privacy.html から読み込む） -->
+  <div class="tab-panel" id="panel-privacy">
+    <div class="legal" id="legal-privacy"><div class="legal-status">読み込んでいます。</div></div>
   </div>
 
   <!-- ナビゲーションバー -->
@@ -464,6 +537,47 @@
     plan:        'https://liff.line.me/2010401177-IstPDnls',
     support:     'https://liff.line.me/2010401177-vwzTH30h',
   };
+
+  // ★liff_about.html6：上のタブ（AiPostとは／利用規約／プライバシーポリシー）。
+  // 　利用規約・プライバシーポリシーの本文は、liff_terms.html・liff_privacy.html の本文（.content）をそのまま読み込んで出す
+  // 　（文を二重に持たないため。直す時は liff_terms.html・liff_privacy.html だけを直せばよい）。
+  const LEGAL_SOURCES = { terms: 'liff_terms.html', privacy: 'liff_privacy.html' };
+  const legalLoaded = {};
+
+  function switchTab(name) {
+    ['about', 'terms', 'privacy'].forEach(function (n) {
+      document.getElementById('tab-' + n).classList.toggle('active', n === name);
+      document.getElementById('panel-' + n).classList.toggle('active', n === name);
+    });
+    // タブを押したら、新しい中身の始めから見せる（タブは上に止まっているため、ヘッダーの高さまで戻す）
+    const top = document.querySelector('.header').offsetHeight;
+    if (window.scrollY > top) window.scrollTo(0, top);
+    if (name !== 'about') loadLegal(name);
+  }
+
+  function loadLegal(name) {
+    if (legalLoaded[name]) return;
+    legalLoaded[name] = true;
+    const box = document.getElementById('legal-' + name);
+    box.innerHTML = '<div class="legal-status">読み込んでいます。</div>';
+    fetch(LEGAL_SOURCES[name], { cache: 'no-cache' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function (html) {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const content = doc.querySelector('.content');
+        if (!content) throw new Error('本文が見つかりません');
+        content.querySelectorAll('script').forEach(function (el) { el.remove(); });
+        box.innerHTML = content.innerHTML;
+      })
+      .catch(function (e) {
+        legalLoaded[name] = false;
+        box.innerHTML = '<div class="legal-status">読み込めませんでした。通信の状態をご確認のうえ、もう一度お試しください。<br>' +
+          '<button class="link-btn" onclick="loadLegal(\'' + name + '\')">もう一度読み込む</button></div>';
+      });
+  }
 
   function navigateTo(page) {
     if (LIFF_URLS[page]) {
