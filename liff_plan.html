@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金7 - AiPost</title>
+  <title>プラン・料金8 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -209,6 +209,14 @@
   .notice-item-date { font-size: 11px; color: #9e9e9e; margin-top: 3px; }
   .notice-item-body { font-size: 13px; color: #424242; line-height: 1.7; margin-top: 6px; white-space: pre-wrap; }
   .notice-empty { padding: 28px 14px; text-align: center; font-size: 13px; color: #757575; }
+  .notice-item-del { margin-left: auto; flex-shrink: 0; background: none; border: none; color: #9e9e9e; font-size: 18px; line-height: 1; padding: 2px 4px 2px 10px; cursor: pointer; }
+  .notice-item-del:disabled { opacity: 0.4; cursor: default; }
+  .notice-tools { display: none; justify-content: flex-end; padding: 8px 14px; border-bottom: 1px solid #f0f0f0; }
+  .notice-tools.show { display: flex; }
+  .notice-del-read { background: #fff; border: 1px solid #e0e0e0; border-radius: 16px; color: #616161; font-size: 12px; font-weight: 700; padding: 5px 12px; cursor: pointer; }
+  .notice-del-read:disabled { opacity: 0.5; cursor: default; }
+  .notice-msg { display: none; padding: 8px 14px; background: #ffebee; color: #c62828; font-size: 12px; font-weight: 700; border-bottom: 1px solid #ffcdd2; }
+  .notice-msg.show { display: block; }
 
   /* ★メンテナンス中の表示（画面全体を覆う）。4画面（投稿文作成・予約確認・分析・設定）で同じ中身 */
   .maint-overlay { display: none; position: fixed; inset: 0; background: #fff; z-index: 10000; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; }
@@ -317,7 +325,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo">プラン・料金7</span>
+    <span class="topbar-logo">プラン・料金8</span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -540,7 +548,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'プラン7';
+  const TRACE_SCREEN = 'プラン8';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -888,13 +896,16 @@
   traceLog('起動');
   initLiff();
 </script>
-<!-- ★お知らせの一覧（ベル・帯を押すと開く）。4画面で同じ中身 -->
+<!-- ★お知らせの一覧（ベル・帯を押すと開く）。ベルのある画面で同じ中身（★お知らせの削除：投稿文作成148・予約確認56・分析56・設定67・プラン8）-->
 <div class="notice-overlay" id="notice-overlay" onclick="if(event.target===this)aipostCloseNotices()">
   <div class="notice-panel" role="dialog" aria-label="お知らせ">
     <div class="notice-panel-head">
       <div class="notice-panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="#1a237e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>お知らせ</div>
       <button type="button" class="notice-panel-close" onclick="aipostCloseNotices()">× 閉じる</button>
     </div>
+    <!-- ★お知らせを消す：既読をまとめて削除（既読のお知らせがある時だけ表示）と、消せなかった時の文 -->
+    <div class="notice-tools" id="notice-tools"><button type="button" class="notice-del-read" id="notice-del-read" onclick="aipostHideReadNotices()">既読をまとめて削除</button></div>
+    <div class="notice-msg" id="notice-msg"></div>
     <div class="notice-panel-body" id="notice-panel-body"></div>
   </div>
 </div>
@@ -906,6 +917,9 @@
 // 　・一覧を開いた時に未読があれば markNoticesRead で既読にする（書き込みのため自動の再試行はしない）。
 // 　　開いている間は、どれが新しいかが分かるよう「未読」の印を残す。
 // 　・取得に失敗した時は、ベルだけ出して件数は出さない。一覧を開いた時にもう一度取りにいく。
+// 　・★お知らせを消す（Kenさん決定）：各お知らせの「×」で1件、「既読をまとめて削除」で既読のものをまとめて、その人の一覧から消す
+// 　　（hideNotices。WebAppEndpointgs_34・お知らせgs_04）。「×」は確認なしで、押したらすぐ一覧から消す。まとめての時は確認を1回出す。
+// 　　書き込みのため自動の再試行はしない。消せなかった時は一覧を元に戻し、理由を一覧の上に出す。
 (function () {
   var KEY = 'aipost_notices';
   var MAX_AGE_MS = 30 * 60 * 1000;
@@ -941,8 +955,8 @@
     } catch (e) {}
   }
 
-  async function call(action) {
-    var res = await fetch(webappUrl(), { method: 'POST', body: JSON.stringify({ action: action, lineUid: lineUid(), params: {} }) });
+  async function call(action, params) {
+    var res = await fetch(webappUrl(), { method: 'POST', body: JSON.stringify({ action: action, lineUid: lineUid(), params: params || {} }) });
     return await res.json();
   }
 
@@ -993,6 +1007,7 @@
   function renderList(unreadIds) {
     var body = document.getElementById('notice-panel-body');
     if (!body) return;
+    renderTools(unreadIds);
     if (!data) {
       body.innerHTML = '<div class="notice-empty">' + (failed ? 'お知らせを読み込めませんでした。<br>時間をおいて、もう一度お試しください。' : '読み込んでいます…') + '</div>';
       return;
@@ -1008,7 +1023,9 @@
         : '<span class="notice-chip notice-chip-you">あなたへ</span>';
       return '<div class="notice-item' + (unread ? ' unread' : '') + '">' +
         '<div class="notice-item-head">' + (unread ? '<span class="notice-chip notice-chip-unread">未読</span>' : '') + chip +
-        '<span class="notice-item-title">' + esc(n.title) + '</span></div>' +
+        '<span class="notice-item-title">' + esc(n.title) + '</span>' +
+        '<button type="button" class="notice-item-del" aria-label="このお知らせを消す" onclick="aipostHideNotice(\'' + esc(n.noticeId) + '\')"' +
+        (hiding ? ' disabled' : '') + '>×</button></div>' +
         '<div class="notice-item-date">' + fmtDate(n.startAt) + '</div>' +
         '<div class="notice-item-body">' + esc(n.body) + '</div>' +
         '</div>';
@@ -1017,6 +1034,74 @@
 
   // 開いている間だけ「未読」の印を残すため、開いた時点の未読のお知らせIDを覚えておく
   var openedUnreadIds = null;
+  var hiding = false;     // 消す処理の送信中
+
+  // 既読のお知らせ（今「未読」の印が付いていないもの）のID
+  function readIds(unreadIds) {
+    if (!data) return [];
+    return data.items.filter(function (n) {
+      return unreadIds ? unreadIds.indexOf(n.noticeId) === -1 : !n.unread;
+    }).map(function (n) { return n.noticeId; });
+  }
+  function renderTools(unreadIds) {
+    var tools = document.getElementById('notice-tools');
+    var btn = document.getElementById('notice-del-read');
+    var n = readIds(unreadIds).length;
+    if (tools) tools.classList.toggle('show', n > 0);
+    if (btn) { btn.textContent = '既読をまとめて削除（' + n + '件）'; btn.disabled = hiding; }
+  }
+  function showMsg(text) {
+    var el = document.getElementById('notice-msg');
+    if (!el) return;
+    el.textContent = text || '';
+    el.classList.toggle('show', !!text);
+  }
+
+  // お知らせを消す（ids：消すお知らせID）。押したらすぐ一覧から消し、返ってきた一覧に置き換える。
+  async function hideNotices(ids) {
+    if (hiding || !data || !ids.length || !lineUid()) return;
+    hiding = true;
+    showMsg('');
+    var before = { items: data.items.slice(), unreadCount: data.unreadCount };
+    data.items = data.items.filter(function (n) { return ids.indexOf(n.noticeId) === -1; });
+    renderList(openedUnreadIds);
+    var message = '';
+    try {
+      var r = await call('hideNotices', { noticeIds: ids });
+      if (r && r.success && r.data && Array.isArray(r.data.items)) {
+        // 一覧を開いた時に既読にしているため、未読の数は手元の値（0）のままにする
+        data.items = r.data.items.map(function (n) { n.unread = false; return n; });
+        log('お知らせ削除OK ' + ids.length + '件');
+      } else {
+        message = String((r && r.error) || 'お知らせを消せませんでした。もう一度お試しください。');
+      }
+    } catch (err) {
+      message = '通信エラーが発生しました。お知らせを消せませんでした。もう一度お試しください。';
+      log('お知らせ削除 通信エラー ' + String(err && err.message));
+    }
+    hiding = false;
+    if (message) {
+      log('お知らせ削除NG ' + message);
+      data.items = before.items;
+      data.unreadCount = before.unreadCount;
+      showMsg(message);
+    }
+    writeCache();
+    renderBadge();
+    renderList(openedUnreadIds);
+  }
+
+  // 「×」：1件消す（確認は出さない）
+  window.aipostHideNotice = function (noticeId) {
+    hideNotices([String(noticeId)]);
+  };
+  // 「既読をまとめて削除」：確認を1回出してから消す
+  window.aipostHideReadNotices = function () {
+    var ids = readIds(openedUnreadIds);
+    if (!ids.length || hiding) return;
+    if (!confirm('既読のお知らせ' + ids.length + '件を削除します。削除したお知らせは、元に戻せません。')) return;
+    hideNotices(ids);
+  };
 
   window.aipostOpenNotices = async function () {
     var ov = document.getElementById('notice-overlay');
@@ -1024,6 +1109,7 @@
     ov.classList.add('open');
     document.body.style.overflow = 'hidden';
     openedUnreadIds = null;
+    showMsg('');
     if (!data) {
       renderList(null);
       if (!lineUid()) { failed = true; renderList(null); return; }
