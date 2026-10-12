@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AIサポート11 - AiPost</title>
+  <title>AIサポート13 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -320,7 +320,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">🤖</span>
-    <span class="topbar-logo">AIサポート11</span>
+    <span class="topbar-logo">AIサポート13</span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -406,7 +406,7 @@
       <div class="inq-lbl">① 種類を選ぶ</div>
       <div class="inq-kinds">
         <button type="button" class="inq-kind" data-kind="不具合の報告" onclick="selectKind(this)">🛠 不具合の報告</button>
-        <button type="button" class="inq-kind" data-kind="使い方の質問" onclick="selectKind(this)">❔ 使い方の質問</button>
+        <button type="button" class="inq-kind" data-kind="使い方の質問" onclick="selectKind(this)">❓ 使い方の質問</button>
         <button type="button" class="inq-kind" data-kind="要望" onclick="selectKind(this)">💡 要望</button>
         <button type="button" class="inq-kind" data-kind="その他" onclick="selectKind(this)">💬 その他</button>
       </div>
@@ -460,6 +460,9 @@
   // ・タブ「問い合わせ」：種類（不具合の報告・使い方の質問・要望・その他）と内容（1000文字まで）を選んで、submitInquiry
   // 　（WebAppEndpointgs_35・問い合わせgs_01〜）に1回だけ送る（書き込みのため自動のやり直しはしない）。受け付けたら、GASが返した文と
   // 　受付番号を出し、内容の欄を空にする。受け付けなかった時（1日の上限など）は、GASが返した文を赤で出す。
+  // ★liff_support.html13：問い合わせの種類「使い方の質問」の印を、白の「❔」から赤の「❓」に変えた（白は見えにくいため。
+  // 　タブ「よくある質問」と同じ印。Kenさん指示）。
+  // ★liff_support.html12：よくある質問は、1つだけ開く（別の質問を開くと、開いていた質問は閉じる。Kenさん指示）。
   // ★liff_support.html11：送信が終わった時、受け付けた文と受付番号を、画面の真ん中の表示（閉じるボタン付き）でも出すようにした
   // 　（Kenさんの実機で、受け付けた旨が見えなかったため。内容の欄でキーボードを開いたまま送ると、上の欄まで画面が戻らないことがある）。
   // 　送る前に、内容の欄からカーソルを外して（キーボードを閉じて）から送る。上の「✅ 送信しました。」の欄も、今までどおり残す。
@@ -495,7 +498,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'AIサポート11';
+  const TRACE_SCREEN = 'AIサポート13';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -675,10 +678,17 @@
       return;
     }
     list.innerHTML = hits.map(function (it) {
-      return '<div class="faq-card"><div class="faq-q" onclick="this.parentNode.classList.toggle(\'open\')">' +
+      return '<div class="faq-card"><div class="faq-q" onclick="toggleFaq(this.parentNode)">' +
         '<span class="faq-q-icon">Q</span><span class="faq-q-text">' + escapeHtml(it.q) + '</span><span class="faq-arrow">▼</span></div>' +
         '<div class="faq-a">' + escapeHtml(it.a).replace(/\n/g, '<br>') + '</div></div>';
     }).join('');
+  }
+
+  // ★html12：押した質問だけを開く（ほかに開いている質問は閉じる）。開いている質問をもう一度押すと閉じる
+  function toggleFaq(card) {
+    const willOpen = !card.classList.contains('open');
+    document.querySelectorAll('.faq-card.open').forEach(function (c) { c.classList.remove('open'); });
+    if (willOpen) card.classList.add('open');
   }
 
   // ---- 問い合わせ ----
