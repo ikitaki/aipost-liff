@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録68 - AiPost</title>
+<title>設定・登録69 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -332,6 +332,8 @@
     border: none; background: var(--danger); color: white;
     font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 8px;
   }
+  /* ★liff_settings.html69：退会の手続き中は押せない（薄く表示） */
+  .btn-cancel-execute:disabled { opacity: 0.6; cursor: not-allowed; }
 
   /* ============================================ */
   /* ボトムナビゲーションバー（全画面共通） */
@@ -531,7 +533,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録68</span>
+  <span class="header-logo">設定・登録69</span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -709,7 +711,8 @@
       <div class="card">
         <div class="card-title">退会について</div>
         <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
-          退会すると当月末をもってサービスが終了します。退会後は投稿予約・分析データが削除されます。
+          <!-- ★liff_settings.html69：試験運用中は、申請した時点で退会・データ削除（Kenさん指示） -->
+          退会すると、AiPostのデータを消します。試験運用中は、申請した時点で退会とデータの削除をします。
         </p>
         <button class="btn btn-caution" onclick="showCancelScreen()">退会の手続きへ進む</button>
       </div>
@@ -725,9 +728,10 @@
 
       <div class="card">
         <div class="card-title">退会後に起こること</div>
-        <div class="info-row"><span class="info-key">サービス終了日</span><span class="info-val">2026年6月30日</span></div>
-        <div class="info-row"><span class="info-key">投稿予約</span><span class="info-val" style="color:var(--danger);">全て削除</span></div>
-        <div class="info-row"><span class="info-key">分析データ</span><span class="info-val" style="color:var(--danger);">30日後に削除</span></div>
+        <!-- ★liff_settings.html69：決まった日付を消し、試験運用中の内容に直した（Kenさん指示） -->
+        <div class="info-row"><span class="info-key">サービス終了日</span><span class="info-val">申請した時点（試験運用中）</span></div>
+        <div class="info-row"><span class="info-key">AiPostのデータ<br><span style="font-size:11px;">（店舗情報・予約・履歴・分析・画像）</span></span><span class="info-val" style="color:var(--danger);">すぐに全て削除</span></div>
+        <div class="info-row"><span class="info-key">SNSに投稿した投稿</span><span class="info-val">消えません（各SNSに残ります）</span></div>
         <div class="info-row"><span class="info-key">日割り返金</span><span class="info-val">なし</span></div>
       </div>
 
@@ -757,12 +761,17 @@
         <textarea id="cancel-reason-detail" placeholder="よろしければ詳しくお聞かせください（任意）" style="width:100%;min-height:70px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
       </div>
 
+      <!-- ★liff_settings.html69：注意書きを直した（Kenさん指示の文） -->
       <div class="cancel-note">
-        ⚠️ 退会申請後、当月末までは引き続きサービスをご利用いただけます。申請を取り消したい場合はサポートまでご連絡ください。
+        ⚠️ 退会すると全てのデータは消去されます。<br>
+        ・予約中の投稿<br>
+        ・投稿履歴と分析データ<br>
+        ・アップロードした画像<br>
+        本当に退会しますか？
       </div>
 
-      <button class="btn-cancel-execute" onclick="showCancelComplete()">退会を申請する</button>
-      <button class="btn btn-outline" onclick="hideCancelScreen()">キャンセル・戻る</button>
+      <button class="btn-cancel-execute" id="withdraw-btn" onclick="showCancelComplete()">退会を申請する</button>
+      <button class="btn btn-outline" id="withdraw-back-btn" onclick="hideCancelScreen()">キャンセル・戻る</button>
     </div>
 
   </div>
@@ -773,19 +782,18 @@
   <div class="modal" style="padding:28px 20px;text-align:center;">
     <div style="font-size:48px;margin-bottom:16px;">🙏</div>
     <div style="font-size:18px;font-weight:700;margin-bottom:10px;">ご利用ありがとうございました</div>
+    <!-- ★liff_settings.html69：決まった日付を消し、すぐに退会・削除した内容に直した。「閉じる」で画面を閉じる -->
     <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:20px;">
-      退会のお申し込みを受け付けました。<br>
-      <strong style="color:var(--text);">2026年6月30日</strong>をもってサービスが終了します。<br><br>
-      それまでの間は引き続きご利用いただけます。<br><br>
+      退会の手続きが終わりました。<br>
+      AiPostのデータは全て消去しました。<br><br>
       AiPostをご利用いただきありがとうございました。またのご利用を心よりお待ちしております。
     </p>
     <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:20px;text-align:left;">
       📌 <strong>退会後のご案内</strong><br>
-      ・投稿予約は自動でキャンセルされます<br>
-      ・分析データは30日後に削除されます<br>
-      ・SNS連携の許可は各SNSの設定から解除できます
+      ・SNSに投稿した投稿は、各SNSに残ります<br>
+      ・SNS連携の許可は、各SNSの設定にある「連携しているアプリ」などから、AiPostを外して解除できます
     </div>
-    <button class="modal-close" onclick="document.getElementById('cancel-complete-modal').classList.remove('open')">閉じる</button>
+    <button class="modal-close" onclick="closeAfterWithdraw()">閉じる</button>
   </div>
 </div>
 
@@ -1022,7 +1030,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定68';
+const TRACE_SCREEN = '設定69';
 
 function traceLog(msg) {
   try {
@@ -1654,28 +1662,91 @@ function hideCancelScreen() {
 }
 
 /**
- * 退会を申請する。
- * アンケート回答（任意）を取得し、退会完了モーダルを表示する。
- * 実際のGAS送信処理（退会理由をユーザー管理シートの
- * 「退会理由（選択式）」「退会理由（自由記述）」列へ書き込む処理）は
- * 別途バックエンド実装で対応する。ここではフロント側の値取得のみ
- * 行い、送信ペイロードをコンソールに出力する形にしている。
+ * ★liff_settings.html69：退会を申請する（GASの action:'withdraw' に送る）。
+ * 　・確認を1回だけ出し、「OK」なら退会理由（任意）を付けて1回だけ送る。うまくいかなくても自動ではもう一度送らない
+ * 　　（postToGas は自動で再試行するため使わない）。
+ * 　・送っている間はボタンを押せなくし、「退会の手続き中です…」と出す。
+ * 　・うまくいった時：画面に保存した情報を消し、LINEのユーザーIDを忘れ（お知らせなどの問い合わせを止める）、完了画面を出す。
+ * 　・うまくいかなかった時：GASから返ってきた文を出し、ボタンを元に戻す。
+ * 　・試験運用中は、申請した時点で退会とデータの削除をする（GAS側の withdrawUser_）。
  */
-function showCancelComplete() {
+const WITHDRAW_CONFIRM_TEXT = '退会すると全てのデータは消去されます。\n・予約中の投稿\n・投稿履歴と分析データ\n・アップロードした画像\n本当に退会しますか？';
+const WITHDRAW_FAILED_TEXT = '退会の手続きができませんでした。もう一度お試しください。';
+let WITHDRAW_SENDING = false;
+
+async function showCancelComplete() {
+  if (WITHDRAW_SENDING) return;
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
+    return;
+  }
+  if (!confirm(WITHDRAW_CONFIRM_TEXT)) return;
+
   const selectedReason = document.querySelector('input[name="cancel-reason"]:checked');
-  const cancelReason = selectedReason ? selectedReason.value : '';
-  const cancelReasonDetail = document.getElementById('cancel-reason-detail').value.trim();
+  const cancelReason = selectedReason ? selectedReason.value : '';                                  // 未回答の場合は空文字列
+  const cancelReasonDetail = document.getElementById('cancel-reason-detail').value.trim();          // 未回答の場合は空文字列
 
-  // TODO: 本番実装時、以下のペイロードをGAS（forceWithdrawUser相当の
-  // ユーザー自身による退会申請処理）に送信し、ユーザー管理シートの
-  // 「退会理由（選択式）」「退会理由（自由記述）」列へ反映する。
-  const cancelPayload = {
-    reason: cancelReason,       // 未回答の場合は空文字列
-    reasonDetail: cancelReasonDetail // 未回答の場合は空文字列
-  };
-  console.log('退会アンケート回答（送信予定）:', cancelPayload);
+  const btn = document.getElementById('withdraw-btn');
+  const backBtn = document.getElementById('withdraw-back-btn');
+  const originalText = btn.textContent;
+  WITHDRAW_SENDING = true;
+  btn.disabled = true;
+  btn.textContent = '退会の手続き中です…';
+  backBtn.disabled = true;
 
+  let message = WITHDRAW_FAILED_TEXT;
+  const t0 = Date.now();
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'withdraw', lineUid: LINE_UID, params: { reason: cancelReason, reasonDetail: cancelReasonDetail } })
+    });
+    const result = await response.json();
+    if (result && result.success && result.data && result.data.withdrawn === true) {
+      traceLog('退会OK ' + (Date.now() - t0) + 'ms');
+      finishWithdraw();
+      return;
+    }
+    if (result && result.data && typeof result.data.message === 'string' && result.data.message) {
+      message = result.data.message;
+    } else if (result && typeof result.error === 'string' && result.error) {
+      // すでに退会の手続きが終わっている時は、ユーザーが見つからない（LINEのユーザーIDは出さない）
+      message = result.error.indexOf('ユーザーが登録されていません') === 0
+        ? 'すでに退会の手続きが終わっている可能性があります。画面を閉じて、開き直してください。'
+        : result.error;
+    }
+    traceLog('退会NG ' + message + ' ' + (Date.now() - t0) + 'ms');
+  } catch (err) {
+    traceLog('退会通信エラー ' + String(err && err.message) + ' ' + (Date.now() - t0) + 'ms');
+  }
+
+  WITHDRAW_SENDING = false;
+  btn.disabled = false;
+  btn.textContent = originalText;
+  backBtn.disabled = false;
+  alert(message);
+}
+
+/**
+ * ★liff_settings.html69：退会がうまくいった後の片付け。
+ * 　画面に保存した情報（予約の残り件数・予約一覧・分析・お知らせ・マスターデータの控え）を消し、
+ * 　LINEのユーザーIDを忘れてから、完了画面を出す。
+ */
+function finishWithdraw() {
+  ['aipost_reservation_quota', 'aipost_reservation_list', 'aipost_analytics', 'aipost_notices'].forEach(function (k) {
+    try { sessionStorage.removeItem(k); } catch (e) {}
+  });
+  try { localStorage.removeItem('aipost_master_data_cache'); } catch (e) {}
+  LINE_UID = null;
   document.getElementById('cancel-complete-modal').classList.add('open');
+}
+
+/**
+ * ★liff_settings.html69：退会の完了画面の「閉じる」。LINEの画面を閉じる。
+ */
+function closeAfterWithdraw() {
+  try { liff.closeWindow(); } catch (e) {}
 }
 
 // ===== マスタデータ取得・フォーム反映・保存処理 =====
