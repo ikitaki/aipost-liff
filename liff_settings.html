@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録69 - AiPost</title>
+<title>設定・登録70 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -185,6 +185,12 @@
   }
   .btn-connect { background: var(--primary); color: white; }
   .btn-disconnect { background: #fee2e2; color: var(--danger); }
+  /* ★liff_settings.html70：確認中・お試し中・登録が無い時は、連携ボタンを押せない（薄く表示） */
+  .sns-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  /* ★liff_settings.html70：お試し中の案内・登録が無い時の案内 */
+  .trial-card { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #1b5e20; line-height: 1.7; }
+  .trial-card .btn { margin: 10px 0 0; padding: 10px; font-size: 13px; }
+  .unregistered-card { background: #fff8e1; border: 1px solid #ffe082; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #5d4037; line-height: 1.7; }
 
   /* プラン比較 */
   .plan-current-card {
@@ -533,7 +539,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録69</span>
+  <span class="header-logo">設定・登録70</span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -582,8 +588,9 @@
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
-    <span id="plan-price">¥1,280/月</span>
+    <!-- ★liff_settings.html70：仮の表示（STANDARD ¥1,280/月）をやめ、「確認中」から始める -->
+    <span id="plan-badge" style="background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">確認中</span>
+    <span id="plan-price"></span>
     <!-- ★liff_settings.html59：デモの固定文字「次回更新：2026年7月1日」を削除した。決済（Stripe）実装時に、有料プランのみ実際の次回請求日を表示する -->
   </div>
   <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
@@ -601,41 +608,52 @@
 
 <div class="content">
 
+  <!-- ★liff_settings.html70：登録が見つからない時の案内（店舗情報を保存すると登録される） -->
+  <div class="unregistered-card" id="unregistered-card" style="display:none;">
+    ご利用の登録が見つかりませんでした。「登録」タブで店舗情報を保存すると、ご利用を始められます。
+  </div>
+
   <!-- SNSタブ -->
   <div id="tab-sns" class="tab-panel active">
+    <!-- ★liff_settings.html70：お試し中（プラン未申し込み）の案内 -->
+    <div class="trial-card" id="trial-card" style="display:none;">
+      SNSの連携は、プランをお申し込みいただくとご利用いただけます。
+      <button class="btn btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
+    </div>
     <div class="notice">
       <span>💡</span>
       <span>SNSへ自動投稿するには、各SNSでの承認が必要です。パスワードはお預かりしません。</span><!-- ★liff_settings.html61：文言変更（Kenさん指示） -->
     </div>
     <div class="card">
-      <div class="card-title" id="sns-connected-title">連携状況（3/3）</div>
+      <div class="card-title" id="sns-connected-title">連携状況</div>
       <p id="sns-post-limit-note" style="display:none;font-size:11px;color:#e65100;margin:-4px 0 8px;"></p>
-      <div class="sns-item connected" id="sns-item-x">
+      <!-- ★liff_settings.html70：仮の表示（X・Instagramが連携済み）をやめ、3つとも「確認中」から始める。ボタンは状態が分かるまで押せない -->
+      <div class="sns-item" id="sns-item-x">
         <div class="sns-icon sns-x">X</div>
         <div class="sns-info">
           <div class="sns-name">X（Twitter）</div>
-          <div class="sns-status ok" id="sns-status-x">✓ 連携済み</div>
+          <div class="sns-status" id="sns-status-x">確認中</div>
           <div class="sns-account" id="sns-account-x"></div>
         </div>
-        <button class="sns-btn btn-disconnect" id="sns-btn-x" onclick="toggleSnsConnection('x')">解除</button>
+        <button class="sns-btn btn-connect" id="sns-btn-x" onclick="toggleSnsConnection('x')" disabled>連携</button>
       </div>
-      <div class="sns-item connected" id="sns-item-ig">
+      <div class="sns-item" id="sns-item-ig">
         <div class="sns-icon sns-ig">IG</div>
         <div class="sns-info">
           <div class="sns-name">Instagram</div>
-          <div class="sns-status ok" id="sns-status-ig">✓ 連携済み</div>
+          <div class="sns-status" id="sns-status-ig">確認中</div>
           <div class="sns-account" id="sns-account-ig"></div>
         </div>
-        <button class="sns-btn btn-disconnect" id="sns-btn-ig" onclick="toggleSnsConnection('ig')">解除</button>
+        <button class="sns-btn btn-connect" id="sns-btn-ig" onclick="toggleSnsConnection('ig')" disabled>連携</button>
       </div>
       <div class="sns-item" id="sns-item-th">
         <div class="sns-icon sns-th">@</div>
         <div class="sns-info">
           <div class="sns-name">Threads</div>
-          <div class="sns-status" id="sns-status-th">未連携</div>
+          <div class="sns-status" id="sns-status-th">確認中</div>
           <div class="sns-account" id="sns-account-th"></div>
         </div>
-        <button class="sns-btn btn-connect" id="sns-btn-th" onclick="toggleSnsConnection('th')">連携</button>
+        <button class="sns-btn btn-connect" id="sns-btn-th" onclick="toggleSnsConnection('th')" disabled>連携</button>
       </div>
       <div style="font-size:11px;color:var(--text-sub);margin:4px 0 0;line-height:1.6;padding:0 4px;">
         ※連携がうまく進まない場合は、もう一度「連携」ボタンを押し直してください。
@@ -687,9 +705,9 @@
       <!-- アカウント情報 -->
       <div class="card">
         <div class="card-title">アカウント情報</div>
-        <div class="info-row"><span class="info-key">ユーザーID</span><span class="info-val" style="font-size:12px;color:var(--text-sub);">USR-000001</span></div>
-        <div class="info-row"><span class="info-key">登録日</span><span class="info-val">2026年6月1日</span></div>
-        <div class="info-row"><span class="info-key">最終アクセス</span><span class="info-val">本日</span></div>
+        <!-- ★liff_settings.html70：見本の値（USR-000001・2026年6月1日・本日）をやめ、本物のユーザーIDと登録日を出す（最終アクセスは出さない。Kenさん決定） -->
+        <div class="info-row"><span class="info-key">ユーザーID</span><span class="info-val" id="account-user-id" style="font-size:12px;color:var(--text-sub);">確認中</span></div>
+        <div class="info-row"><span class="info-key">登録日</span><span class="info-val" id="account-registered-at">確認中</span></div>
       </div>
 
       <!-- 連絡先メール -->
@@ -708,7 +726,7 @@
 
       <!-- ★liff_settings.html61：「SNSトークンについて」カードを削除（Kenさん指示） -->
 
-      <div class="card">
+      <div class="card" id="withdraw-card">
         <div class="card-title">退会について</div>
         <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
           <!-- ★liff_settings.html69：試験運用中は、申請した時点で退会・データ削除（Kenさん指示） -->
@@ -786,7 +804,9 @@
     <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:20px;">
       退会の手続きが終わりました。<br>
       AiPostのデータは全て消去しました。<br><br>
-      AiPostをご利用いただきありがとうございました。またのご利用を心よりお待ちしております。
+      AiPostをご利用いただきありがとうございました。またのご利用を心よりお待ちしております。<br><br>
+      <!-- ★liff_settings.html70：退会した後は、同じLINEアカウントでお試し中として使える -->
+      このLINEアカウントでは、引き続き投稿文の作成をお試しいただけます。
     </p>
     <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:20px;text-align:left;">
       📌 <strong>退会後のご案内</strong><br>
@@ -862,6 +882,7 @@ function writeSharedCache(fields) {
 
 function applySnsFromCache(sns) {
   if (!sns) return;
+  SNS_KNOWN = true; // ★liff_settings.html70
   if (sns.x) { connectSns('x', sns.xAccount); } else { disconnectSns('x'); }
   if (sns.instagram) { connectSns('ig', sns.instagramAccount); } else { disconnectSns('ig'); }
   if (sns.threads) { connectSns('th', sns.threadsAccount); } else { disconnectSns('th'); }
@@ -871,6 +892,7 @@ function applySnsFromCache(sns) {
   // 　その時点ではまだ実際の連携状況が反映されていなかった）。
   // 　実データを反映した直後に必ず再計算する。
   updateSnsSummary();
+  applySnsButtonLock(); // ★liff_settings.html70
 }
 
 // 店舗情報・SNS連携状況をまとめて取得し、画面表示と共有キャッシュを
@@ -884,6 +906,11 @@ async function loadProfileAndSnsFresh() {
 
     if (profileResult && profileResult.data && profileResult.data.found) {
       applyProfileToForm(profileResult.data);
+    } else if (profileResult && profileResult.data && profileResult.data.found === false) {
+      // ★liff_settings.html70：登録が見つからない時は案内を出し、SNSの状態は反映しない
+      applyNotRegistered();
+      writeSharedCache({ found: false });
+      return;
     }
 
     const sns = (snsResult && snsResult.data) ? {
@@ -928,7 +955,8 @@ async function initLiff() {
     const shared = readSharedCache();
     const needsMasterFetch = !cachedMaster;
     // ★liff_settings.html60：所在地（address）を含まない古い保存済み情報は使わず、取り直す
-    const needsProfileFetch = !(shared && shared.found !== false && shared.address !== undefined);
+    // ★liff_settings.html70：ユーザーID（userId）を含まない古い保存済み情報も使わず、取り直す
+    const needsProfileFetch = !(shared && shared.found !== false && shared.address !== undefined && shared.userId !== undefined);
 
     // ★liff_settings.html43：予約一覧も「最初に開いた画面での一括
     // 　取得」の対象に加えた（設定画面自体は表示しないが、次に予約
@@ -975,8 +1003,11 @@ async function initLiff() {
       setFormLoadingState(false);
       traceLog('スピナー終了（設定画面）');
     }
+    // ★liff_settings.html70：SNSの連携状態がまだ分からない時（保存済みの情報に無い時など）は、取り直す
+    if (!SNS_KNOWN && !NOT_REGISTERED) loadSnsConnectionStatus();
     // スピナーが終わってから（出していない場合は直後に）、裏側で分析データを取得する（保存済みなら何もしない）
-    warmupAnalyticsCache();
+    // ★liff_settings.html70：お試し中・登録が無い人は、分析データを使えないので取りに行かない
+    if (!IS_TRIAL && !NOT_REGISTERED) warmupAnalyticsCache();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -1030,7 +1061,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定69';
+const TRACE_SCREEN = '設定70';
 
 function traceLog(msg) {
   try {
@@ -1219,8 +1250,12 @@ const SNS_LABEL = { ig: 'Instagram', x: 'X', th: 'Threads' };
 const SNS_CONNECT_MAX = 3;
 const PLAN_POST_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
-let currentDemoPlan = 'STANDARD';
+let currentDemoPlan = '';  // ★liff_settings.html70：仮の値（STANDARD）をやめた。プランが分かるまでは空
 let currentRemainingReservable = null;
+// ★liff_settings.html70：お試し中（契約プラン「未入会」）・登録が無い・SNSの連携状態が分かったか
+let IS_TRIAL = false;
+let NOT_REGISTERED = false;
+let SNS_KNOWN = false;
 // ★liff_settings.html33：外部ブラウザから戻ってきた直後、複数の
 // 　loadSnsConnectionStatus()呼び出しが重なった際、古いリクエスト
 // 　の結果が新しいリクエストの結果を上書きしてしまう競合状態を
@@ -1233,11 +1268,64 @@ let snsStatusRequestSeq = 0;
 // 　した（実際の連携解除を伴う操作をクライアント側の表示更新から
 // 　自動的に行うのは危険なため。必要であれば別途サーバー側の仕様
 // 　として検討する）。
-function applyPlan(plan) {
+function applyPlan(plan, trial) {
   currentDemoPlan = plan;
-  document.getElementById('plan-badge').textContent = plan;
-  document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
+  const badge = document.getElementById('plan-badge');
+  const price = document.getElementById('plan-price');
+  // ★liff_settings.html70：「確認中」の色から、プランの色に戻す
+  badge.style.background = '#fff8e1';
+  badge.style.color = '#e65100';
+  if (plan === '未入会') {
+    // ★liff_settings.html70：お試し中（プラン未申し込み）。今日あと何回作成できるかを出す
+    badge.textContent = 'お試し中';
+    price.textContent = (trial && typeof trial.remainingToday === 'number') ? '今日あと' + trial.remainingToday + '回作成できます' : '';
+  } else {
+    badge.textContent = plan;
+    price.textContent = PLAN_PRICE[plan] || '';
+  }
   updateSnsSummary();
+}
+
+// ★liff_settings.html70：SNSの連携ボタンを押せるかどうかをそろえる（状態が分かるまで・お試し中・登録が無い時は押せない）
+function applySnsButtonLock() {
+  const locked = !SNS_KNOWN || IS_TRIAL || NOT_REGISTERED;
+  ['x', 'ig', 'th'].forEach(function (s) {
+    const btn = document.getElementById('sns-btn-' + s);
+    if (btn) btn.disabled = locked;
+  });
+}
+
+// ★liff_settings.html70：お試し中の表示（連携の案内を出し、連携ボタンを押せなくし、退会のカードを出さない）
+function applyTrialMode() {
+  IS_TRIAL = true;
+  document.getElementById('trial-card').style.display = 'block';
+  document.getElementById('withdraw-card').style.display = 'none';
+  applySnsButtonLock();
+}
+
+// ★liff_settings.html70：登録が見つからない時の表示（案内を出し、SNSは未連携・ボタンは押せない・退会のカードを出さない）
+function applyNotRegistered() {
+  NOT_REGISTERED = true;
+  document.getElementById('unregistered-card').style.display = 'block';
+  document.getElementById('withdraw-card').style.display = 'none';
+  const badge = document.getElementById('plan-badge');
+  badge.textContent = '未登録';
+  document.getElementById('plan-price').textContent = '';
+  ['x', 'ig', 'th'].forEach(function (s) { disconnectSns(s); });
+  SNS_KNOWN = true;
+  document.getElementById('account-user-id').textContent = '-';
+  document.getElementById('account-registered-at').textContent = '-';
+  updateSnsSummary();
+  applySnsButtonLock();
+}
+
+// ★liff_settings.html70：保存で新しく登録された時は、保存済みの情報を捨てて画面を読み込み直す（登録した後の表示にするため）
+function reloadIfNewUser(result) {
+  if (!(result && result.data && result.data.isNewUser === true)) return;
+  ['aipost_reservation_quota', 'aipost_reservation_list', 'aipost_analytics', 'aipost_notices'].forEach(function (k) {
+    try { sessionStorage.removeItem(k); } catch (e) {}
+  });
+  setTimeout(function () { location.reload(); }, 1200);
 }
 
 function isConnected(sns) {
@@ -1281,6 +1369,8 @@ function disconnectSns(sns) {
 let pendingDisconnectSns = null;
 
 function toggleSnsConnection(sns) {
+  // ★liff_settings.html70：状態が分からない・お試し中・登録が無い時は何もしない（ボタンも押せない）
+  if (!SNS_KNOWN || IS_TRIAL || NOT_REGISTERED) return;
   if (isConnected(sns)) {
     pendingDisconnectSns = sns;
     const label = SNS_LABEL[sns];
@@ -1400,7 +1490,8 @@ async function startThreadsConnection() {
 // サブバー「連携中：」表示・カード見出しの件数表示を更新
 function updateSnsSummary() {
   const connectedList = SNS_ORDER.filter(isConnected);
-  document.getElementById('sns-connected-title').textContent = `連携状況（${connectedList.length}/${SNS_CONNECT_MAX}）`;
+  // ★liff_settings.html70：連携の状態が分かるまでは件数を出さない（仮の件数を出さないため）
+  document.getElementById('sns-connected-title').textContent = SNS_KNOWN ? `連携状況（${connectedList.length}/${SNS_CONNECT_MAX}）` : '連携状況';
   // ★liff_settings.html58：プランごとの投稿先の数を案内する（STANDARD・PROは3つとも選べるため表示しない）
   const postLimit = PLAN_POST_SNS_LIMIT[currentDemoPlan];
   const postNote = document.getElementById('sns-post-limit-note');
@@ -1421,6 +1512,10 @@ function updateSnsSummary() {
     ? `<span style="margin-left:auto;font-weight:700;">残り予約枠${Math.max(0, currentRemainingReservable)}件</span>`
     : '';
   const planSns = document.getElementById('plan-sns');
+  if (!SNS_KNOWN) {
+    planSns.innerHTML = '<span>連携中：確認中</span>' + quotaHtml;
+    return;
+  }
   planSns.innerHTML = '<span>連携中：</span>' + connectedList.map(s =>
     `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${SNS_LABEL[s]}</span>`
   ).join('') + quotaHtml;
@@ -1476,6 +1571,7 @@ async function loadSnsConnectionStatus() {
     if (result.data.x === '連携中') { connectSns('x', result.data.xAccount); } else { disconnectSns('x'); }
     if (result.data.instagram === '連携中') { connectSns('ig', result.data.instagramAccount); } else { disconnectSns('ig'); }
     if (result.data.threads === '連携中') { connectSns('th', result.data.threadsAccount); } else { disconnectSns('th'); }
+    SNS_KNOWN = true; // ★liff_settings.html70
     updateSnsSummary();
     // ★liff_settings.html36：連携状況が変わった可能性があるタイミング
     // 　（接続・解除操作後）なので、共有キャッシュのsns部分も更新する
@@ -1505,6 +1601,7 @@ async function loadSnsConnectionStatus() {
       if (btnX) btnX.disabled = false;
       if (btnIg) btnIg.disabled = false;
       if (btnTh) btnTh.disabled = false;
+      applySnsButtonLock(); // ★liff_settings.html70：状態が分からない・お試し中・登録が無い時は押せないままにする
     }
   }
 }
@@ -1710,11 +1807,11 @@ async function showCancelComplete() {
     }
     if (result && result.data && typeof result.data.message === 'string' && result.data.message) {
       message = result.data.message;
+    } else if (result && result.notRegistered === true) {
+      // ★liff_settings.html70：すでに退会の手続きが終わっている時は、登録が見つからない（GASの notRegistered の印で見分ける）
+      message = 'すでに退会の手続きが終わっている可能性があります。画面を閉じて、開き直してください。';
     } else if (result && typeof result.error === 'string' && result.error) {
-      // すでに退会の手続きが終わっている時は、ユーザーが見つからない（LINEのユーザーIDは出さない）
-      message = result.error.indexOf('ユーザーが登録されていません') === 0
-        ? 'すでに退会の手続きが終わっている可能性があります。画面を閉じて、開き直してください。'
-        : result.error;
+      message = result.error;
     }
     traceLog('退会NG ' + message + ' ' + (Date.now() - t0) + 'ms');
   } catch (err) {
@@ -1747,6 +1844,8 @@ function finishWithdraw() {
  */
 function closeAfterWithdraw() {
   try { liff.closeWindow(); } catch (e) {}
+  // ★liff_settings.html70：画面が閉じない時（LINEの外で開いている時など）は、読み込み直してお試し中の表示にする
+  setTimeout(function () { location.reload(); }, 800);
 }
 
 // ===== マスタデータ取得・フォーム反映・保存処理 =====
@@ -1828,8 +1927,16 @@ function applyProfileToForm(profile) {
     currentRemainingReservable = profile.remainingReservable;
   }
   if (profile.plan) {
-    applyPlan(profile.plan);
+    applyPlan(profile.plan, profile.trial);
   }
+  // ★liff_settings.html70：お試し中（プラン未申し込み）の表示
+  if (profile.plan === '未入会') {
+    applyTrialMode();
+  }
+  // ★liff_settings.html70：アカウント情報（本物のユーザーIDと登録日。無い時は「-」）
+  document.getElementById('account-user-id').textContent = profile.userId ? profile.userId : '-';
+  const reg = String(profile.registeredAt || '').match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
+  document.getElementById('account-registered-at').textContent = reg ? (Number(reg[1]) + '年' + Number(reg[2]) + '月' + Number(reg[3]) + '日') : '-';
   if (profile.shopName) {
     document.getElementById('shop-name-input').value = profile.shopName;
   }
@@ -1975,6 +2082,7 @@ async function saveShopInfo() {
       return;
     }
     showToast('店舗情報を保存しました');
+    reloadIfNewUser(result); // ★liff_settings.html70
     writeSharedCache({
       found: true,
       shopName: shopName,
@@ -2043,6 +2151,7 @@ async function saveEmail() {
       return;
     }
     showToast('メールアドレスを保存しました');
+    reloadIfNewUser(result); // ★liff_settings.html70
     writeSharedCache({ found: true, email: email });
     SAVED_EMAIL = email; // ★liff_settings.html60
     if (btn) btn.textContent = '変更する';
@@ -2071,7 +2180,7 @@ document.addEventListener('visibilitychange', function () {
   }
 });
 
-// 初期表示（IG・FB・Xが連携済みの状態）を整える
+// 初期表示（★liff_settings.html70：連携の状態は「確認中」）を整える
 updateSnsSummary();
 
 </script>
