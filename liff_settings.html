@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録70 - AiPost</title>
+<title>設定・登録71 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -539,7 +539,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録70</span>
+  <span class="header-logo">設定・登録71</span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -956,12 +956,16 @@ async function initLiff() {
     const needsMasterFetch = !cachedMaster;
     // ★liff_settings.html60：所在地（address）を含まない古い保存済み情報は使わず、取り直す
     // ★liff_settings.html70：ユーザーID（userId）を含まない古い保存済み情報も使わず、取り直す
-    const needsProfileFetch = !(shared && shared.found !== false && shared.address !== undefined && shared.userId !== undefined);
+    // ★liff_settings.html71：「登録が無い」と保存済みの時は、取り直さずにその表示にする（他の画面と行き来するたびに待たされないため。
+    // 　保存済みの情報は30分・「🔄 更新」・店舗情報の保存で捨てる）
+    const cachedNotRegistered = !!(shared && shared.found === false);
+    const needsProfileFetch = !cachedNotRegistered && !(shared && shared.found !== false && shared.address !== undefined && shared.userId !== undefined);
 
     // ★liff_settings.html43：予約一覧も「最初に開いた画面での一括
     // 　取得」の対象に加えた（設定画面自体は表示しないが、次に予約
     // 　確認画面を開いた時に即表示できるようキャッシュだけしておく）。
-    const needsReservationList = !sessionStorage.getItem('aipost_reservation_list');
+    // ★liff_settings.html71：登録が無い人は予約一覧を取れないので、取りに行かない
+    const needsReservationList = !cachedNotRegistered && !sessionStorage.getItem('aipost_reservation_list');
 
     // ★liff_settings.html49：スピナーを出すのは、この画面で表示するデータ
     // 　（マスタデータ・プロフィール）を新規取得する場合だけにした。
@@ -991,7 +995,9 @@ async function initLiff() {
       await loadMasterDataAndPopulateForm();
     }
 
-    if (!needsProfileFetch) {
+    if (cachedNotRegistered) {
+      applyNotRegistered(); // ★liff_settings.html71
+    } else if (!needsProfileFetch) {
       applyProfileToForm(shared);
       applySnsFromCache(shared.sns);
     } else {
@@ -999,7 +1005,8 @@ async function initLiff() {
     }
 
     if (needsAnyFetch) {
-      await Promise.all(warmTasks);
+      // ★liff_settings.html71：登録が無いと分かった時は、予約一覧の取得（失敗する）を待たずにスピナーを止める
+      if (!NOT_REGISTERED) await Promise.all(warmTasks);
       setFormLoadingState(false);
       traceLog('スピナー終了（設定画面）');
     }
@@ -1047,6 +1054,8 @@ async function postToGas(payload, label, isOk) {
       }
       lastGasError = String((result && (result.error || (result.data && result.data.error))) || '');
       traceLog(label + '取得NG(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
+      // ★liff_settings.html71：登録が無い・プランの申し込みが要る、という返事は、もう一度送っても同じなので再試行しない（待ち時間を減らすため）
+      if (result && (result.notRegistered === true || result.needsPlan === true)) return null;
     } catch (err) {
       lastGasError = String(err && err.message);
       traceLog(label + '通信エラー(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
@@ -1061,7 +1070,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定70';
+const TRACE_SCREEN = '設定71';
 
 function traceLog(msg) {
   try {
