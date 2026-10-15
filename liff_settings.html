@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録72 - AiPost</title>
+<title>設定・登録73 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -365,6 +365,7 @@
   .sheet-btn:disabled { opacity: 0.5; cursor: default; }
   .sheet-btn-primary { background: var(--primary); color: white; }
   .sheet-btn-cancel { background: var(--bg); color: var(--text-sub); border: 1px solid var(--border); }
+  .sheet-btn-danger { background: var(--danger); color: white; }
 
   /* ============================================ */
   /* ボトムナビゲーションバー（全画面共通） */
@@ -564,7 +565,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録72</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録73</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -841,18 +842,14 @@
 </div>
 
 <!-- SNS連携解除の確認モーダル -->
+<!-- ★liff_settings.html73：退会の窓と同じ形（下から出る・見出しは左寄せ・ボタンは縦に「連携を解除する」「やめる」）にし、文を直した（Kenさん承認：settings73_sample.png） -->
 <div class="modal-overlay" id="sns-disconnect-modal" style="z-index:1030;">
-  <div class="modal" style="padding:24px 20px;text-align:center;">
-    <div style="font-size:40px;margin-bottom:12px;">⚠️</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:10px;" id="sns-disconnect-title">Instagramとの連携を解除しますか？</div>
-    <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:20px;text-align:left;background:var(--bg);border-radius:10px;padding:12px;">
-      解除すると、このSNSへの投稿予約・分析データの取得ができなくなります。<br><br>
-      再度連携するには、もう一度<span id="sns-disconnect-label">Instagram</span>での認可手続きが必要です。
-    </p>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-outline" style="flex:1;" onclick="closeSnsDisconnectModal()">キャンセル</button>
-      <button class="btn" style="flex:1;background:var(--danger);color:#fff;" onclick="confirmSnsDisconnect()">解除する</button>
-    </div>
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="sns-disconnect-title">Instagramとの連携を解除しますか？</div>
+    <div class="sheet-note" id="sns-disconnect-note">解除すると、Instagramへの投稿の予約と、分析データの取り込みができなくなります。もう一度連携する時は、Instagramでの承認が必要です。</div>
+    <button class="sheet-btn sheet-btn-danger" id="sns-disconnect-btn" onclick="confirmSnsDisconnect()">連携を解除する</button>
+    <button class="sheet-btn sheet-btn-cancel" id="sns-disconnect-back-btn" onclick="closeSnsDisconnectModal()">やめる</button>
   </div>
 </div>
 
@@ -1094,7 +1091,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定72';
+const TRACE_SCREEN = '設定73';
 
 function traceLog(msg) {
   try {
@@ -1410,7 +1407,8 @@ function toggleSnsConnection(sns) {
     pendingDisconnectSns = sns;
     const label = SNS_LABEL[sns];
     document.getElementById('sns-disconnect-title').textContent = label + 'との連携を解除しますか？';
-    document.getElementById('sns-disconnect-label').textContent = label;
+    // ★liff_settings.html73：文を直した（SNS名を入れる）
+    document.getElementById('sns-disconnect-note').textContent = '解除すると、' + label + 'への投稿の予約と、分析データの取り込みができなくなります。もう一度連携する時は、' + label + 'での承認が必要です。';
     document.getElementById('sns-disconnect-modal').classList.add('open');
     return;
   }
@@ -1641,39 +1639,45 @@ async function loadSnsConnectionStatus() {
   }
 }
 
+let SNS_DISCONNECTING = false;
 function closeSnsDisconnectModal() {
+  if (SNS_DISCONNECTING) return; // ★liff_settings.html73：送っている間は閉じない
   document.getElementById('sns-disconnect-modal').classList.remove('open');
   pendingDisconnectSns = null;
 }
 
+// ★liff_settings.html73：送っている間はボタンを押せなくし（2回押し防止）、解除できたら完了の窓を出す（退会の窓と共用）
 async function confirmSnsDisconnect() {
+  if (SNS_DISCONNECTING) return;
   if (!pendingDisconnectSns) {
     closeSnsDisconnectModal();
     return;
   }
+  const sns = pendingDisconnectSns;
+  const btn = document.getElementById('sns-disconnect-btn');
+  const backBtn = document.getElementById('sns-disconnect-back-btn');
+  const originalText = btn.textContent;
+  SNS_DISCONNECTING = true;
+  btn.disabled = true;
+  btn.textContent = '送信しています…';
+  backBtn.disabled = true;
 
   // X・Instagram・Threadsは実際のバックエンド解除処理を呼ぶ
-  if (pendingDisconnectSns === 'x') {
-    const ok = await disconnectXOnBackend();
-    if (!ok) {
-      closeSnsDisconnectModal();
-      return;
-    }
-  } else if (pendingDisconnectSns === 'ig') {
-    const ok = await disconnectInstagramOnBackend();
-    if (!ok) {
-      closeSnsDisconnectModal();
-      return;
-    }
-  } else if (pendingDisconnectSns === 'th') {
-    const ok = await disconnectThreadsOnBackend();
-    if (!ok) {
-      closeSnsDisconnectModal();
-      return;
-    }
+  let ok = false;
+  if (sns === 'x') ok = await disconnectXOnBackend();
+  else if (sns === 'ig') ok = await disconnectInstagramOnBackend();
+  else if (sns === 'th') ok = await disconnectThreadsOnBackend();
+
+  SNS_DISCONNECTING = false;
+  btn.disabled = false;
+  btn.textContent = originalText;
+  backBtn.disabled = false;
+  if (!ok) {
+    closeSnsDisconnectModal();
+    return;
   }
 
-  disconnectSns(pendingDisconnectSns);
+  disconnectSns(sns);
   updateSnsSummary();
 
   // ★liff_settings.html48：連携解除時にキャッシュへ反映していな
@@ -1682,7 +1686,7 @@ async function confirmSnsDisconnect() {
   // 　解除したはずのSNSが連携中に見えてしまう（実際のユーザー管理
   // 　シート上は正しく解除されているにもかかわらず）。
   const backendKeyMap = { x: 'x', ig: 'instagram', th: 'threads' };
-  const backendKey = backendKeyMap[pendingDisconnectSns];
+  const backendKey = backendKeyMap[sns];
   const cachedRaw = sessionStorage.getItem(QUOTA_CACHE_KEY);
   const cachedSns = Object.assign({}, (cachedRaw ? JSON.parse(cachedRaw) : {}).sns);
   cachedSns[backendKey] = false;
@@ -1690,6 +1694,7 @@ async function confirmSnsDisconnect() {
   writeSharedCache({ sns: cachedSns });
 
   closeSnsDisconnectModal();
+  openWithdrawDone(SNS_LABEL[sns] + 'との連携を解除しました。', 'もう一度連携する時は、「連携」ボタンを押してください。');
 }
 
 /**
