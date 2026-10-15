@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更58 - AiPost</title>
+<title>予約確認・変更59 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -907,7 +907,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更58</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更59</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -956,15 +956,18 @@
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span class="plan-badge" id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">STANDARD</span>
-    <span id="plan-price">¥1,280/月</span>
+    <!-- ★liff_reservation.html59：仮の表示（STANDARD ¥1,280/月）をやめ、「確認中」から始める（設定画面と同じ。プランが分かったら色を付ける） -->
+    <span class="plan-badge" id="plan-badge" style="background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">確認中</span>
+    <span id="plan-price"></span>
     <!-- ★liff_reservation.html42：デモの固定文字「次回更新：2026年7月1日」を削除した。決済（Stripe）実装時に、有料プランのみ実際の次回請求日を表示する -->
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;white-space:nowrap;">
     <span>連携中：</span>
-    <span id="subbar-sns-x" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
-    <span id="subbar-sns-ig" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
-    <span id="subbar-sns-th" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+    <!-- ★liff_reservation.html59：連携の状態が分かるまでは「確認中」と出し、SNSの名前は出さない -->
+    <span id="subbar-sns-checking">確認中</span>
+    <span id="subbar-sns-x" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
+    <span id="subbar-sns-ig" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
+    <span id="subbar-sns-th" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
     <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
 </div>
@@ -1356,9 +1359,17 @@
 let currentDemoPlan = 'STANDARD';
 const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
 
+
+// ★liff_reservation.html59：プランが分かったら、プランの印をいつもの色にする（読み込み中は白っぽい「確認中」）
+function markPlanBadgeKnown() {
+  const badge = document.getElementById('plan-badge');
+  badge.style.background = '#fff8e1';
+  badge.style.color = '#e65100';
+}
 function applyPlan(plan) {
   currentDemoPlan = plan;
   document.getElementById('plan-badge').textContent = plan;
+  markPlanBadgeKnown(); // ★liff_reservation.html59
   document.getElementById('plan-price').textContent = PLAN_PRICE[plan];
 }
 
@@ -1492,6 +1503,9 @@ function switchTab(id) {
       const el = document.getElementById(subbarIds[key]);
       if (el) el.style.display = sns[key] ? '' : 'none';
     });
+  // ★liff_reservation.html59：連携の状態が分かったので「確認中」を消す
+  const snsChecking = document.getElementById('subbar-sns-checking');
+  if (snsChecking) snsChecking.style.display = 'none';
   }
 
   // ★liff_reservation.html58：お試し中・登録が見つからない時の表示に対応し、残り予約枠に期間の終了日を付けた
@@ -1526,12 +1540,14 @@ function switchTab(id) {
     IS_TRIAL = true;
     currentDemoPlan = '未入会';
     document.getElementById('plan-badge').textContent = 'お試し中';
+    markPlanBadgeKnown(); // ★liff_reservation.html59
     document.getElementById('plan-price').textContent = (trial && typeof trial.remainingToday === 'number') ? '今日あと' + trial.remainingToday + '回作成できます' : '';
     document.getElementById('trial-card').style.display = 'block';
   }
   function applyNotRegistered() {
     NOT_REGISTERED = true;
     document.getElementById('plan-badge').textContent = '未登録';
+  markPlanBadgeKnown(); // ★liff_reservation.html59
     document.getElementById('plan-price').textContent = '';
     const el = document.getElementById('reservation-quota');
     if (el) el.textContent = '';
@@ -1589,7 +1605,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認58';
+  const TRACE_SCREEN = '予約確認59';
 
   function traceLog(msg) {
     try {
