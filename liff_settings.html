@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録71 - AiPost</title>
+<title>設定・登録72 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -41,7 +41,7 @@
     top: 0;
     z-index: 100;
   }
-  .header-logo { font-size: 15px; font-weight: 700; }
+  .header-logo { font-size: 15px; font-weight: 700; min-width: 0; }
   .subbar {
     background: #13195f;
     padding: 6px 14px;
@@ -51,7 +51,9 @@
     top: 40px;
     z-index: 99;
   }
-  .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
+  .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; white-space: nowrap; overflow: hidden; min-width: 0; }
+  /* ★liff_settings.html72：言葉の途中で折り返さない */
+  .nowrap { white-space: nowrap; }
 
   /* タブ */
   .tab-nav {
@@ -341,6 +343,29 @@
   /* ★liff_settings.html69：退会の手続き中は押せない（薄く表示） */
   .btn-cancel-execute:disabled { opacity: 0.6; cursor: not-allowed; }
 
+  /* ★liff_settings.html72：退会のお申し込み（期間の終了日まで使える）。窓はプラン画面（liff_plan.html13）と同じ作り・同じ見た目 */
+  .info-row { gap: 10px; }
+  .info-key { white-space: nowrap; flex-shrink: 0; }
+  .info-val { text-align: right; min-width: 0; }
+  .wd-status { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin-bottom: 8px; }
+  .wd-badge { background: #ffebee; color: #c62828; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .wd-date { font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .wd-text { font-size: 12px; color: var(--text-sub); line-height: 1.8; margin-bottom: 12px; }
+  .wd-list { font-size: 12px; color: var(--text); line-height: 1.8; margin: 0; padding-left: 1.2em; }
+  .wd-list li { margin-bottom: 4px; }
+  .sheet { background: white; border-radius: 16px 16px 0 0; padding: 20px 16px 32px; width: 100%; max-width: 520px; margin: 0 auto; max-height: 85vh; overflow-y: auto; }
+  .sheet-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 14px; }
+  .sheet-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; text-align: left; }
+  .sheet-note { font-size: 12px; color: var(--text-sub); line-height: 1.8; margin-bottom: 14px; }
+  .sheet-done { text-align: center; }
+  .sheet-done-icon { font-size: 48px; margin-bottom: 12px; }
+  .sheet-done-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .sheet-done-text { font-size: 13px; color: var(--text-sub); line-height: 1.9; margin-bottom: 16px; }
+  .sheet-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
+  .sheet-btn:disabled { opacity: 0.5; cursor: default; }
+  .sheet-btn-primary { background: var(--primary); color: white; }
+  .sheet-btn-cancel { background: var(--bg); color: var(--text-sub); border: 1px solid var(--border); }
+
   /* ============================================ */
   /* ボトムナビゲーションバー（全画面共通） */
   /* ============================================ */
@@ -539,7 +564,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo">設定・登録71</span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録72</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -708,6 +733,9 @@
         <!-- ★liff_settings.html70：見本の値（USR-000001・2026年6月1日・本日）をやめ、本物のユーザーIDと登録日を出す（最終アクセスは出さない。Kenさん決定） -->
         <div class="info-row"><span class="info-key">ユーザーID</span><span class="info-val" id="account-user-id" style="font-size:12px;color:var(--text-sub);">確認中</span></div>
         <div class="info-row"><span class="info-key">登録日</span><span class="info-val" id="account-registered-at">確認中</span></div>
+        <!-- ★liff_settings.html72：ご利用期間・次回更新日（お試し中・分からない時は「-」） -->
+        <div class="info-row"><span class="info-key">ご利用期間</span><span class="info-val" id="account-period">確認中</span></div>
+        <div class="info-row"><span class="info-key">次回更新日</span><span class="info-val" id="account-next">確認中</span></div>
       </div>
 
       <!-- 連絡先メール -->
@@ -726,31 +754,33 @@
 
       <!-- ★liff_settings.html61：「SNSトークンについて」カードを削除（Kenさん指示） -->
 
+      <!-- ★liff_settings.html72：退会はお申し込み制（ご利用期間の終了日まで使え、翌日に退会）。お申し込み中は「退会予定」と取り消しボタンを出す -->
       <div class="card" id="withdraw-card">
-        <div class="card-title">退会について</div>
-        <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
-          <!-- ★liff_settings.html69：試験運用中は、申請した時点で退会・データ削除（Kenさん指示） -->
-          退会すると、AiPostのデータを消します。試験運用中は、申請した時点で退会とデータの削除をします。
-        </p>
-        <button class="btn btn-caution" onclick="showCancelScreen()">退会の手続きへ進む</button>
+        <div class="card-title">退会</div>
+        <div id="wd-normal">
+          <p class="wd-text" id="wd-normal-text">退会をお申し込みいただいた後も、ご利用期間の終了日まで、引き続きご利用いただけます。</p>
+          <button class="btn btn-caution" onclick="showCancelScreen()">退会の手続きへ進む</button>
+        </div>
+        <div id="wd-pending" style="display:none;">
+          <div class="wd-status"><span class="wd-badge">退会予定</span><span class="wd-date" id="wd-pending-date"></span></div>
+          <p class="wd-text" id="wd-pending-text"></p>
+          <button class="btn btn-outline" onclick="openWithdrawUndo()">退会を取り消す</button>
+        </div>
       </div>
     </div>
 
     <!-- 解約確認画面 -->
     <div class="cancel-screen" id="cancel-screen">
+      <!-- ★liff_settings.html72：見出しと文を、大手サブスクの書き方（「〜まで、引き続きご利用いただけます」）に合わせて直した（Kenさん承認）。
+           「退会後に起こること」「日割り返金」の表はやめ、「ご確認ください」の箇条書きにした。日付・プラン名は showCancelScreen() で入れる -->
       <div class="cancel-header">
-        <div class="cancel-icon">📋</div>
-        <div class="cancel-title">退会の確認</div>
-        <div class="cancel-sub">退会申請の前にご確認ください。</div>
+        <div class="cancel-title">退会のお申し込み</div>
+        <div class="cancel-sub" id="wd-confirm-sub">ご利用期間の終了日まで、今のプランを引き続きご利用いただけます。</div>
       </div>
 
       <div class="card">
-        <div class="card-title">退会後に起こること</div>
-        <!-- ★liff_settings.html69：決まった日付を消し、試験運用中の内容に直した（Kenさん指示） -->
-        <div class="info-row"><span class="info-key">サービス終了日</span><span class="info-val">申請した時点（試験運用中）</span></div>
-        <div class="info-row"><span class="info-key">AiPostのデータ<br><span style="font-size:11px;">（店舗情報・予約・履歴・分析・画像）</span></span><span class="info-val" style="color:var(--danger);">すぐに全て削除</span></div>
-        <div class="info-row"><span class="info-key">SNSに投稿した投稿</span><span class="info-val">消えません（各SNSに残ります）</span></div>
-        <div class="info-row"><span class="info-key">日割り返金</span><span class="info-val">なし</span></div>
+        <div class="card-title">ご確認ください</div>
+        <ul class="wd-list" id="wd-confirm-list"></ul>
       </div>
 
       <div class="card">
@@ -779,41 +809,34 @@
         <textarea id="cancel-reason-detail" placeholder="よろしければ詳しくお聞かせください（任意）" style="width:100%;min-height:70px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
       </div>
 
-      <!-- ★liff_settings.html69：注意書きを直した（Kenさん指示の文） -->
-      <div class="cancel-note">
-        ⚠️ 退会すると全てのデータは消去されます。<br>
-        ・予約中の投稿<br>
-        ・投稿履歴と分析データ<br>
-        ・アップロードした画像<br>
-        本当に退会しますか？
-      </div>
-
-      <button class="btn-cancel-execute" id="withdraw-btn" onclick="showCancelComplete()">退会を申請する</button>
-      <button class="btn btn-outline" id="withdraw-back-btn" onclick="hideCancelScreen()">キャンセル・戻る</button>
+      <!-- ★liff_settings.html72：注意書きは「ご確認ください」にまとめたので外した。ボタンは「退会を申し込む」「やめる」 -->
+      <button class="btn-cancel-execute" id="withdraw-btn" onclick="showCancelComplete()">退会を申し込む</button>
+      <button class="sheet-btn sheet-btn-cancel" id="withdraw-back-btn" onclick="hideCancelScreen()">やめる</button>
     </div>
 
   </div>
 </div>
 
-<!-- 退会完了モーダル -->
-<div class="modal-overlay" id="cancel-complete-modal" style="z-index:1030;">
-  <div class="modal" style="padding:28px 20px;text-align:center;">
-    <div style="font-size:48px;margin-bottom:16px;">🙏</div>
-    <div style="font-size:18px;font-weight:700;margin-bottom:10px;">ご利用ありがとうございました</div>
-    <!-- ★liff_settings.html69：決まった日付を消し、すぐに退会・削除した内容に直した。「閉じる」で画面を閉じる -->
-    <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:20px;">
-      退会の手続きが終わりました。<br>
-      AiPostのデータは全て消去しました。<br><br>
-      AiPostをご利用いただきありがとうございました。またのご利用を心よりお待ちしております。<br><br>
-      <!-- ★liff_settings.html70：退会した後は、同じLINEアカウントでお試し中として使える -->
-      このLINEアカウントでは、引き続き投稿文の作成をお試しいただけます。
-    </p>
-    <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:20px;text-align:left;">
-      📌 <strong>退会後のご案内</strong><br>
-      ・SNSに投稿した投稿は、各SNSに残ります<br>
-      ・SNS連携の許可は、各SNSの設定にある「連携しているアプリ」などから、AiPostを外して解除できます
-    </div>
-    <button class="modal-close" onclick="closeAfterWithdraw()">閉じる</button>
+<!-- ★liff_settings.html72：退会の窓（下から出る。プラン画面と同じ見た目）。
+     完了の窓は、受付の完了・取り消しの完了で共用（見出しと文は JS で入れる）。「閉じる」で設定画面に戻る -->
+<div class="modal-overlay" id="wd-done-modal" style="z-index:1030;">
+  <div class="sheet sheet-done">
+    <div class="sheet-handle"></div>
+    <div class="sheet-done-icon">✅</div>
+    <div class="sheet-done-title" id="wd-done-title"></div>
+    <p class="sheet-done-text" id="wd-done-text"></p>
+    <button class="sheet-btn sheet-btn-cancel" onclick="closeWithdrawDone()">閉じる</button>
+  </div>
+</div>
+
+<!-- ★liff_settings.html72：退会の取り消しの確認 -->
+<div class="modal-overlay" id="wd-undo-modal" style="z-index:1030;">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">退会を取り消しますか？</div>
+    <div class="sheet-note" id="wd-undo-note"></div>
+    <button class="sheet-btn sheet-btn-primary" id="wd-undo-btn" onclick="executeWithdrawUndo()">退会を取り消す</button>
+    <button class="sheet-btn sheet-btn-cancel" id="wd-undo-back-btn" onclick="closeWithdrawUndo()">やめる</button>
   </div>
 </div>
 
@@ -959,7 +982,8 @@ async function initLiff() {
     // ★liff_settings.html71：「登録が無い」と保存済みの時は、取り直さずにその表示にする（他の画面と行き来するたびに待たされないため。
     // 　保存済みの情報は30分・「🔄 更新」・店舗情報の保存で捨てる）
     const cachedNotRegistered = !!(shared && shared.found === false);
-    const needsProfileFetch = !cachedNotRegistered && !(shared && shared.found !== false && shared.address !== undefined && shared.userId !== undefined);
+    // ★liff_settings.html72：期間・退会のお申し込み（withdrawal）を含まない古い保存済み情報も使わず、取り直す
+    const needsProfileFetch = !cachedNotRegistered && !(shared && shared.found !== false && shared.address !== undefined && shared.userId !== undefined && shared.withdrawal !== undefined);
 
     // ★liff_settings.html43：予約一覧も「最初に開いた画面での一括
     // 　取得」の対象に加えた（設定画面自体は表示しないが、次に予約
@@ -1070,7 +1094,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定71';
+const TRACE_SCREEN = '設定72';
 
 function traceLog(msg) {
   try {
@@ -1324,6 +1348,8 @@ function applyNotRegistered() {
   SNS_KNOWN = true;
   document.getElementById('account-user-id').textContent = '-';
   document.getElementById('account-registered-at').textContent = '-';
+  document.getElementById('account-period').textContent = '-'; // ★liff_settings.html72
+  document.getElementById('account-next').textContent = '-';
   updateSnsSummary();
   applySnsButtonLock();
 }
@@ -1518,15 +1544,15 @@ function updateSnsSummary() {
 
   const quotaHtml = (typeof currentRemainingReservable === 'number')
     // ★liff_settings.html57：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
-    ? `<span style="margin-left:auto;font-weight:700;">残り予約枠${Math.max(0, currentRemainingReservable)}件</span>`
+    ? `<span style="margin-left:auto;font-weight:700;white-space:nowrap;">残り予約枠${Math.max(0, currentRemainingReservable)}件${WD_PERIOD ? '（' + slashMd(WD_PERIOD.end) + 'まで）' : ''}</span>`
     : '';
   const planSns = document.getElementById('plan-sns');
   if (!SNS_KNOWN) {
-    planSns.innerHTML = '<span>連携中：確認中</span>' + quotaHtml;
+    planSns.innerHTML = '<span style="white-space:nowrap;">連携中：確認中</span>' + quotaHtml;
     return;
   }
-  planSns.innerHTML = '<span>連携中：</span>' + connectedList.map(s =>
-    `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">${SNS_LABEL[s]}</span>`
+  planSns.innerHTML = '<span style="white-space:nowrap;">連携中：</span>' + connectedList.map(s =>
+    `<span style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;white-space:nowrap;">${SNS_LABEL[s]}</span>`
   ).join('') + quotaHtml;
 }
 
@@ -1754,11 +1780,91 @@ async function disconnectThreadsOnBackend() {
   }
 }
 
+// ============================================
+// ★liff_settings.html72：退会はお申し込み制にした（GAS：退会gs_05・WebAppEndpointgs_41・UserProfilegs_18）。
+// 　・お申し込みの後も、ご利用期間の終了日まで使える。翌日（次回更新日）に退会となり、データを消す（夜中の自動処理）。
+// 　・終了日までは取り消せる（action:'cancelWithdrawal'）。
+// 　・getUserProfile の period（今の期間）・nextPeriod（次の期間）・nextPlan（変更予定のプラン）・withdrawal（お申し込み中か）を使う。
+// 　・端末の確認の窓（confirm）はやめ、確認画面だけにした。窓はプラン画面と同じ、下から出る形。
+// ============================================
+let WD_PERIOD = null;        // { start, end }（yyyy/MM/dd）。お試し中・分からない時は null
+let WD_NEXT_START = '';      // 次回更新日（yyyy/MM/dd）＝退会の日
+let WD_NEXT_PLAN = '';       // 変更予定のプラン
+let WD_REQUESTED = false;    // 退会のお申し込み中か
+let WD_UNDOING = false;
+
+// 'yyyy/MM/dd' → 'M月d日'
+function wdMd(s) {
+  const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+  return m ? Number(m[2]) + '月' + Number(m[3]) + '日' : '';
+}
+// 'yyyy/MM/dd' → 'yyyy年M月d日'
+function wdYmd(s) {
+  const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+  return m ? Number(m[1]) + '年' + Number(m[2]) + '月' + Number(m[3]) + '日' : '';
+}
+// 'yyyy/MM/dd' → 'M/d'（サブバー用）
+function slashMd(s) {
+  const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+  return m ? Number(m[2]) + '/' + Number(m[3]) : '';
+}
+function wdEscape(t) {
+  return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+}
+
+// プロフィールから、期間と退会のお申し込みの状態を覚え、アカウント情報と退会のカードを出し直す
+function applyWithdrawState(profile) {
+  const trial = profile.plan === '未入会';
+  WD_PERIOD = (!trial && profile.period && profile.period.start && profile.period.end) ? profile.period : null;
+  WD_NEXT_START = (!trial && profile.nextPeriod && profile.nextPeriod.start) ? profile.nextPeriod.start : '';
+  WD_NEXT_PLAN = trial ? '' : String(profile.nextPlan || '');
+  WD_REQUESTED = !!(!trial && profile.withdrawal && profile.withdrawal.requested === true);
+  renderWithdrawState();
+}
+
+function renderWithdrawState() {
+  // アカウント情報（期間の日付は「〜」の後でだけ行を分ける）
+  const periodEl = document.getElementById('account-period');
+  if (WD_PERIOD) {
+    const sameYear = WD_PERIOD.start.slice(0, 4) === WD_PERIOD.end.slice(0, 4);
+    periodEl.innerHTML = '<span class="nowrap">' + wdEscape(wdYmd(WD_PERIOD.start) + '〜') + '</span><span class="nowrap">' + wdEscape(sameYear ? wdMd(WD_PERIOD.end) : wdYmd(WD_PERIOD.end)) + '</span>';
+  } else {
+    periodEl.textContent = '-';
+  }
+  document.getElementById('account-next').textContent = WD_NEXT_START ? wdYmd(WD_NEXT_START) : '-';
+
+  // 退会のカード
+  const endMd = WD_PERIOD ? wdMd(WD_PERIOD.end) : '';
+  const nextMd = WD_NEXT_START ? wdMd(WD_NEXT_START) : '';
+  document.getElementById('wd-normal').style.display = WD_REQUESTED ? 'none' : 'block';
+  document.getElementById('wd-pending').style.display = WD_REQUESTED ? 'block' : 'none';
+  document.getElementById('wd-normal-text').textContent = endMd
+    ? '退会をお申し込みいただいた後も、ご利用期間の終了日（' + endMd + '）まで、引き続きご利用いただけます。'
+    : '退会をお申し込みいただいた後も、ご利用期間の終了日まで、引き続きご利用いただけます。';
+  document.getElementById('wd-pending-date').textContent = endMd ? 'ご利用終了日：' + endMd : '';
+  document.getElementById('wd-pending-text').textContent =
+    (nextMd ? nextMd + 'に退会となります。' : '次回更新日に退会となります。') +
+    (endMd ? endMd + 'までは取り消せます。' : 'ご利用期間の終了日までは取り消せます。');
+  updateSnsSummary();
+}
+
 function showCancelScreen() {
+  const endMd = WD_PERIOD ? wdMd(WD_PERIOD.end) : '';
+  const nextMd = WD_NEXT_START ? wdMd(WD_NEXT_START) : '';
+  const planName = currentDemoPlan && currentDemoPlan !== '未入会' ? '今の' + currentDemoPlan + 'プラン' : '今のプラン';
+  document.getElementById('wd-confirm-sub').textContent = (endMd ? endMd : 'ご利用期間の終了日') + 'まで、' + planName + 'を引き続きご利用いただけます。';
+  const items = [
+    (nextMd ? nextMd : '次回更新日') + 'に退会となります。',
+    '退会の日に、店舗情報・予約・投稿履歴・分析データ・画像は全て削除され、元に戻せません。',
+    (nextMd ? nextMd + '以降' : '退会の日以降') + 'の予約は取り消されます。',
+    'SNSに投稿済みの投稿は、そのまま残ります。'
+  ];
+  if (WD_NEXT_PLAN) items.push('予定していたプラン変更は取り消されます。');
+  items.push((endMd ? endMd : 'ご利用期間の終了日') + 'までは、お申し込みを取り消せます。');
+  document.getElementById('wd-confirm-list').innerHTML = items.map(function (t) { return '<li>' + wdEscape(t) + '</li>'; }).join('');
   document.getElementById('main-account').classList.add('hidden');
   document.getElementById('cancel-screen').classList.add('open');
-  // 「退会について」カードは画面下部にあるため、切り替え後は
-  // 必ず先頭（アンケートが見える位置）までスクロールを戻す
+  // 「退会」カードは画面下部にあるため、切り替え後は必ず先頭までスクロールを戻す
   window.scrollTo(0, 0);
 }
 function hideCancelScreen() {
@@ -1768,16 +1874,14 @@ function hideCancelScreen() {
 }
 
 /**
- * ★liff_settings.html69：退会を申請する（GASの action:'withdraw' に送る）。
- * 　・確認を1回だけ出し、「OK」なら退会理由（任意）を付けて1回だけ送る。うまくいかなくても自動ではもう一度送らない
- * 　　（postToGas は自動で再試行するため使わない）。
- * 　・送っている間はボタンを押せなくし、「退会の手続き中です…」と出す。
- * 　・うまくいった時：画面に保存した情報を消し、LINEのユーザーIDを忘れ（お知らせなどの問い合わせを止める）、完了画面を出す。
+ * ★liff_settings.html72：退会を申し込む（GASの action:'withdraw'。退会gs_05 の withdrawUser_()）。
+ * 　・退会理由（任意）を付けて1回だけ送る。うまくいかなくても自動ではもう一度送らない（postToGas は自動で再試行するため使わない）。
+ * 　・送っている間はボタンを押せなくする。
+ * 　・うまくいった時（requested:true）：お申し込み中の表示にし、保存済みの情報も直し、受付の完了の窓を出す。
+ * 　　（GAS側で変更予定のプランも取り消されるので、保存済みの情報の nextPlan も空にする）
  * 　・うまくいかなかった時：GASから返ってきた文を出し、ボタンを元に戻す。
- * 　・試験運用中は、申請した時点で退会とデータの削除をする（GAS側の withdrawUser_）。
  */
-const WITHDRAW_CONFIRM_TEXT = '退会すると全てのデータは消去されます。\n・予約中の投稿\n・投稿履歴と分析データ\n・アップロードした画像\n本当に退会しますか？';
-const WITHDRAW_FAILED_TEXT = '退会の手続きができませんでした。もう一度お試しください。';
+const WITHDRAW_FAILED_TEXT = '退会のお申し込みができませんでした。もう一度お試しください。';
 let WITHDRAW_SENDING = false;
 
 async function showCancelComplete() {
@@ -1786,7 +1890,6 @@ async function showCancelComplete() {
     alert('LINEアプリ内でこの画面を開いてください。');
     return;
   }
-  if (!confirm(WITHDRAW_CONFIRM_TEXT)) return;
 
   const selectedReason = document.querySelector('input[name="cancel-reason"]:checked');
   const cancelReason = selectedReason ? selectedReason.value : '';                                  // 未回答の場合は空文字列
@@ -1797,7 +1900,7 @@ async function showCancelComplete() {
   const originalText = btn.textContent;
   WITHDRAW_SENDING = true;
   btn.disabled = true;
-  btn.textContent = '退会の手続き中です…';
+  btn.textContent = '送信しています…';
   backBtn.disabled = true;
 
   let message = WITHDRAW_FAILED_TEXT;
@@ -1809,22 +1912,25 @@ async function showCancelComplete() {
       body: JSON.stringify({ action: 'withdraw', lineUid: LINE_UID, params: { reason: cancelReason, reasonDetail: cancelReasonDetail } })
     });
     const result = await response.json();
-    if (result && result.success && result.data && result.data.withdrawn === true) {
-      traceLog('退会OK ' + (Date.now() - t0) + 'ms');
-      finishWithdraw();
+    if (result && result.success && result.data && result.data.requested === true) {
+      traceLog('退会のお申し込みOK ' + (Date.now() - t0) + 'ms');
+      WITHDRAW_SENDING = false;
+      btn.disabled = false;
+      btn.textContent = originalText;
+      backBtn.disabled = false;
+      finishWithdraw(result.data.lastDay);
       return;
     }
     if (result && result.data && typeof result.data.message === 'string' && result.data.message) {
       message = result.data.message;
     } else if (result && result.notRegistered === true) {
-      // ★liff_settings.html70：すでに退会の手続きが終わっている時は、登録が見つからない（GASの notRegistered の印で見分ける）
-      message = 'すでに退会の手続きが終わっている可能性があります。画面を閉じて、開き直してください。';
+      message = 'ご利用の登録が見つかりませんでした。画面を閉じて、開き直してください。';
     } else if (result && typeof result.error === 'string' && result.error) {
       message = result.error;
     }
-    traceLog('退会NG ' + message + ' ' + (Date.now() - t0) + 'ms');
+    traceLog('退会のお申し込みNG ' + message + ' ' + (Date.now() - t0) + 'ms');
   } catch (err) {
-    traceLog('退会通信エラー ' + String(err && err.message) + ' ' + (Date.now() - t0) + 'ms');
+    traceLog('退会のお申し込み通信エラー ' + String(err && err.message) + ' ' + (Date.now() - t0) + 'ms');
   }
 
   WITHDRAW_SENDING = false;
@@ -1834,28 +1940,112 @@ async function showCancelComplete() {
   alert(message);
 }
 
-/**
- * ★liff_settings.html69：退会がうまくいった後の片付け。
- * 　画面に保存した情報（予約の残り件数・予約一覧・分析・お知らせ・マスターデータの控え）を消し、
- * 　LINEのユーザーIDを忘れてから、完了画面を出す。
- */
-function finishWithdraw() {
-  ['aipost_reservation_quota', 'aipost_reservation_list', 'aipost_analytics', 'aipost_notices'].forEach(function (k) {
-    try { sessionStorage.removeItem(k); } catch (e) {}
-  });
-  try { localStorage.removeItem('aipost_master_data_cache'); } catch (e) {}
-  LINE_UID = null;
-  document.getElementById('cancel-complete-modal').classList.add('open');
+// 受付の後：お申し込み中の表示にし、保存済みの情報を直し、完了の窓を出す
+function finishWithdraw(lastDay) {
+  WD_REQUESTED = true;
+  WD_NEXT_PLAN = '';
+  if (!WD_PERIOD && /^\d{4}\/\d{2}\/\d{2}$/.test(String(lastDay || ''))) WD_PERIOD = { start: '', end: lastDay };
+  writeSharedCache({ withdrawal: { requested: true, requestedAt: '' }, nextPlan: '' });
+  renderWithdrawState();
+  hideCancelScreen();
+  const endMd = WD_PERIOD ? wdMd(WD_PERIOD.end) : '';
+  const nextMd = WD_NEXT_START ? wdMd(WD_NEXT_START) : '';
+  openWithdrawDone('退会のお申し込みを受け付けました。',
+    (endMd ? endMd + 'まで、' : 'ご利用期間の終了日まで、') + '引き続きご利用いただけます。' +
+    (nextMd ? nextMd + 'に退会となります。' : '') +
+    '取り消す場合は、' + (endMd ? endMd + 'までに' : 'ご利用期間の終了日までに') + 'この画面から手続きしてください。');
 }
 
-/**
- * ★liff_settings.html69：退会の完了画面の「閉じる」。LINEの画面を閉じる。
- */
-function closeAfterWithdraw() {
-  try { liff.closeWindow(); } catch (e) {}
-  // ★liff_settings.html70：画面が閉じない時（LINEの外で開いている時など）は、読み込み直してお試し中の表示にする
-  setTimeout(function () { location.reload(); }, 800);
+function openWithdrawDone(title, text) {
+  document.getElementById('wd-done-title').textContent = title;
+  document.getElementById('wd-done-text').textContent = text;
+  document.getElementById('wd-done-modal').classList.add('open');
 }
+function closeWithdrawDone() {
+  document.getElementById('wd-done-modal').classList.remove('open');
+}
+
+// 退会の取り消し：確認の窓
+function openWithdrawUndo() {
+  if (WD_UNDOING) return;
+  const nextMd = WD_NEXT_START ? wdMd(WD_NEXT_START) : '';
+  const planName = currentDemoPlan && currentDemoPlan !== '未入会' ? '今の' + currentDemoPlan + 'プラン' : '今のプラン';
+  document.getElementById('wd-undo-note').textContent = (nextMd ? nextMd + '以降も、' : 'これからも、') + planName + 'を引き続きご利用いただけます。';
+  document.getElementById('wd-undo-modal').classList.add('open');
+}
+function closeWithdrawUndo() {
+  if (WD_UNDOING) return;
+  document.getElementById('wd-undo-modal').classList.remove('open');
+}
+
+// 退会の取り消し：送る（GASの action:'cancelWithdrawal'。1回だけ送る）
+async function executeWithdrawUndo() {
+  if (WD_UNDOING) return;
+  if (!LINE_UID) {
+    alert('LINEアプリ内でこの画面を開いてください。');
+    return;
+  }
+  const btn = document.getElementById('wd-undo-btn');
+  const backBtn = document.getElementById('wd-undo-back-btn');
+  const originalText = btn.textContent;
+  WD_UNDOING = true;
+  btn.disabled = true;
+  btn.textContent = '送信しています…';
+  backBtn.disabled = true;
+
+  let message = '取り消しができませんでした。もう一度お試しください。';
+  let done = false;
+  const t0 = Date.now();
+  try {
+    const response = await fetch(WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'cancelWithdrawal', lineUid: LINE_UID, params: {} })
+    });
+    const result = await response.json();
+    if (result && result.success && result.data && result.data.cancelled === true) {
+      done = true;
+      traceLog('退会の取り消しOK ' + (Date.now() - t0) + 'ms');
+    } else {
+      if (result && result.data && typeof result.data.message === 'string' && result.data.message) {
+        message = result.data.message;
+      } else if (result && typeof result.error === 'string' && result.error) {
+        message = result.error;
+      }
+      traceLog('退会の取り消しNG ' + message + ' ' + (Date.now() - t0) + 'ms');
+    }
+  } catch (err) {
+    traceLog('退会の取り消し通信エラー ' + String(err && err.message) + ' ' + (Date.now() - t0) + 'ms');
+  }
+
+  WD_UNDOING = false;
+  btn.disabled = false;
+  btn.textContent = originalText;
+  backBtn.disabled = false;
+  document.getElementById('wd-undo-modal').classList.remove('open');
+  if (!done) {
+    alert(message);
+    return;
+  }
+  WD_REQUESTED = false;
+  writeSharedCache({ withdrawal: { requested: false, requestedAt: '' } });
+  renderWithdrawState();
+  const nextMd = WD_NEXT_START ? wdMd(WD_NEXT_START) : '';
+  const planName = currentDemoPlan && currentDemoPlan !== '未入会' ? '今の' + currentDemoPlan + 'プラン' : '今のプラン';
+  openWithdrawDone('退会のお申し込みを取り消しました。', (nextMd ? nextMd + '以降も、' : 'これからも、') + planName + 'を引き続きご利用いただけます。');
+}
+
+// ★liff_settings.html72：ヘッダーの「AiPost」が入りきらない時はまるごと隠し、サブバーをヘッダーのすぐ下に止める（文字の大きい端末で、ヘッダーが2行になった時のため）
+function updateHeaderLayout() {
+  const sub = document.querySelector('.header-sub');
+  if (sub) { sub.style.visibility = ''; if (sub.scrollWidth > sub.clientWidth + 1) sub.style.visibility = 'hidden'; }
+  const header = document.querySelector('.header');
+  const subbar = document.querySelector('.subbar');
+  if (header && subbar) subbar.style.top = header.offsetHeight + 'px';
+}
+window.addEventListener('resize', updateHeaderLayout);
+try { new ResizeObserver(updateHeaderLayout).observe(document.querySelector('.header')); } catch (e) {}
+updateHeaderLayout();
 
 // ===== マスタデータ取得・フォーム反映・保存処理 =====
 // ★liff_settings.html55：業種大分類・業種小分類・都道府県の3つの選択欄に
@@ -1946,6 +2136,7 @@ function applyProfileToForm(profile) {
   document.getElementById('account-user-id').textContent = profile.userId ? profile.userId : '-';
   const reg = String(profile.registeredAt || '').match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
   document.getElementById('account-registered-at').textContent = reg ? (Number(reg[1]) + '年' + Number(reg[2]) + '月' + Number(reg[3]) + '日') : '-';
+  applyWithdrawState(profile); // ★liff_settings.html72
   if (profile.shopName) {
     document.getElementById('shop-name-input').value = profile.shopName;
   }
