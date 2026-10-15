@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更57 - AiPost</title>
+<title>予約確認・変更58 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -48,7 +48,7 @@
     top: 0;
     z-index: 100;
   }
-  .header-logo { font-size: 15px; font-weight: 700; }
+  .header-logo { font-size: 15px; font-weight: 700; min-width: 0; }
   .subbar {
     background: #13195f;
     padding: 6px 14px;
@@ -58,7 +58,9 @@
     top: 40px;
     z-index: 99;
   }
-  .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
+  .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; white-space: nowrap; overflow: hidden; min-width: 0; }
+  /* ★liff_reservation.html58：言葉の途中で折り返さない */
+  .nowrap { white-space: nowrap; }
 
   /* タブ */
   .tab-nav {
@@ -390,6 +392,26 @@
   .btn-primary { background: var(--primary); color: white; }
   .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
   .btn-danger { background: #fee2e2; color: var(--danger); }
+  /* ★liff_reservation.html58：ほかの画面と同じ窓（下から出る・見出しは左寄せ・赤い実行ボタン・灰色の「やめる」・完了は✅） */
+  .btn-gray { background: var(--bg); color: var(--text-sub); border: 1px solid var(--border); }
+  .sheet { background: white; border-radius: 16px 16px 0 0; padding: 20px 16px 32px; width: 100%; max-width: 520px; margin: 0 auto; max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
+  .sheet-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 14px; }
+  .sheet-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; text-align: left; }
+  .sheet-note { font-size: 12px; color: var(--text-sub); line-height: 1.8; margin-bottom: 14px; white-space: pre-line; }
+  .sheet-done { text-align: center; }
+  .sheet-done-icon { font-size: 48px; margin-bottom: 12px; }
+  .sheet-done-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .sheet-done-text { font-size: 13px; color: var(--text-sub); line-height: 1.9; margin-bottom: 16px; white-space: pre-line; }
+  .sheet-btn { display: block; width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
+  .sheet-btn:disabled { opacity: 0.5; cursor: default; }
+  .sheet-btn-danger { background: var(--danger); color: white; }
+  .sheet-btn-cancel { background: var(--bg); color: var(--text-sub); border: 1px solid var(--border); }
+  .post-total { font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 8px; display: flex; flex-wrap: wrap; }
+  .post-total.ok { background: #e8f5e9; color: #2e7d32; }
+  .post-total.ng { background: #ffebee; color: var(--danger); }
+  .trial-card { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #1b5e20; line-height: 1.7; }
+  .trial-card .sheet-btn { margin: 10px 0 0; padding: 10px; font-size: 13px; background: var(--primary); color: white; }
+  .unregistered-card { background: #fff3e0; border: 1px solid #ffcc80; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #e65100; line-height: 1.7; }
 
   /* 空状態 */
   .empty-state {
@@ -885,7 +907,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo">予約確認・変更57</span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更58</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -938,7 +960,7 @@
     <span id="plan-price">¥1,280/月</span>
     <!-- ★liff_reservation.html42：デモの固定文字「次回更新：2026年7月1日」を削除した。決済（Stripe）実装時に、有料プランのみ実際の次回請求日を表示する -->
   </div>
-  <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
+  <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;white-space:nowrap;">
     <span>連携中：</span>
     <span id="subbar-sns-x" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span id="subbar-sns-ig" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
@@ -964,6 +986,15 @@
 </div>
 
 <div class="content">
+
+  <!-- ★liff_reservation.html58：お試し中（プラン未申し込み）の案内・登録が見つからない時の案内（どのタブでも出す） -->
+  <div class="trial-card" id="trial-card" style="display:none;">
+    予約の<wbr>確認・<wbr>投稿履歴は、<wbr>プランを<wbr>お申し込みいただくと<wbr>ご利用いただけます。
+    <button type="button" class="sheet-btn" onclick="navigateTo('plan')">プランを申し込む</button>
+  </div>
+  <div class="unregistered-card" id="unregistered-card" style="display:none;">
+    ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr>「登録」タブで<wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
+  </div>
 
   <!-- 予約一覧タブ -->
   <div id="tab-list" class="tab-panel active">
@@ -1199,11 +1230,11 @@
     <div id="detail-edit" style="display:none;">
       <textarea class="edit-textarea" id="detail-edit-text" oninput="editServerError = ''; updateEditCounts()"></textarea>
       <div class="edit-counts" id="detail-edit-counts"></div>
-      <div class="edit-note">修正できるのは本文のみです。ハッシュタグ・投稿日時・投稿先は変わりません。文字数はハッシュタグ込みで数えています。</div>
+      <div class="edit-note">修正できるのは本文のみです。ハッシュタグ・投稿日時・投稿先は変わりません。本文とハッシュタグを合わせて140字までです。</div>
       <div class="edit-error" id="detail-edit-error"></div>
 
       <div class="btn-row">
-        <button class="btn btn-outline" id="detail-edit-cancel-btn" onclick="cancelEditReservation()">やめる</button>
+        <button class="btn btn-gray" id="detail-edit-cancel-btn" onclick="cancelEditReservation()">やめる</button>
         <button class="btn btn-primary" id="detail-edit-save-btn" onclick="saveEditReservation()">保存する</button>
       </div>
     </div>
@@ -1270,44 +1301,47 @@
 </div>
 
 <!-- キャンセル確認モーダル -->
+<!-- ★liff_reservation.html58：ほかの画面と同じ形の窓にした（見出しは左寄せ・🗑️を外した・「戻る」→「やめる」） -->
 <div class="modal-overlay" id="cancel-modal" style="z-index:1020;" onclick="if(event.target===this)closeCancelModal()">
-  <div class="modal" style="padding:24px 16px;text-align:center;">
-    <div class="modal-handle"></div>
-    <div style="font-size:36px;margin-bottom:12px;">🗑️</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:8px;">予約をキャンセルしますか？</div>
-    <p style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:20px;" id="cancel-modal-text"></p>
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="closeCancelModal()">戻る</button>
-      <button class="btn btn-danger" id="cancel-modal-btn" onclick="executeCancel()">予約キャンセルする</button>
-    </div>
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">予約をキャンセルしますか？</div>
+    <div class="sheet-note" id="cancel-modal-text"></div>
+    <button class="sheet-btn sheet-btn-danger" id="cancel-modal-btn" onclick="executeCancel()">予約をキャンセルする</button>
+    <button class="sheet-btn sheet-btn-cancel" id="cancel-modal-back-btn" onclick="closeCancelModal()">やめる</button>
   </div>
 </div>
 
 <!-- ★liff_reservation.html53：予約の一括キャンセルの確認モーダル -->
 <div class="modal-overlay" id="bulk-cancel-modal" style="z-index:1020;" onclick="if(event.target===this)closeBulkCancelConfirm()">
-  <div class="modal" style="padding:24px 16px;text-align:center;">
-    <div class="modal-handle"></div>
-    <div style="font-size:36px;margin-bottom:12px;">🗑️</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:8px;">予約をキャンセルしますか？</div>
-    <p style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:20px;white-space:pre-line;" id="bulk-cancel-text"></p>
-    <div class="btn-row">
-      <button class="btn btn-outline" id="bulk-cancel-back-btn" onclick="closeBulkCancelConfirm()">戻る</button>
-      <button class="btn btn-danger" id="bulk-cancel-btn" onclick="executeBulkCancel()">予約キャンセルする</button>
-    </div>
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">予約をキャンセルしますか？</div>
+    <div class="sheet-note" id="bulk-cancel-text"></div>
+    <button class="sheet-btn sheet-btn-danger" id="bulk-cancel-btn" onclick="executeBulkCancel()">予約をキャンセルする</button>
+    <button class="sheet-btn sheet-btn-cancel" id="bulk-cancel-back-btn" onclick="closeBulkCancelConfirm()">やめる</button>
   </div>
 </div>
 
 <!-- ★liff_reservation.html44：投稿の削除の確認モーダル -->
 <div class="modal-overlay" id="del-confirm-modal" style="z-index:1020;" onclick="if(event.target===this)closeDeleteConfirm()">
-  <div class="modal" style="padding:24px 16px;text-align:center;">
-    <div class="modal-handle"></div>
-    <div style="font-size:36px;margin-bottom:12px;">🗑️</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:8px;" id="del-confirm-title">投稿を削除しますか？</div>
-    <p style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:20px;white-space:pre-line;" id="del-confirm-text"></p>
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="closeDeleteConfirm()">戻る</button>
-      <button class="btn btn-danger" id="del-confirm-btn" onclick="executeDeletePosts()">削除する</button>
-    </div>
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="del-confirm-title">投稿を削除しますか？</div>
+    <div class="sheet-note" id="del-confirm-text"></div>
+    <button class="sheet-btn sheet-btn-danger" id="del-confirm-btn" onclick="executeDeletePosts()">削除する</button>
+    <button class="sheet-btn sheet-btn-cancel" onclick="closeDeleteConfirm()">やめる</button>
+  </div>
+</div>
+
+<!-- ★liff_reservation.html58：完了の窓（予約のキャンセル・投稿の削除で共用。見出しと文は JS で入れる） -->
+<div class="modal-overlay" id="res-done-modal" style="z-index:1030;" onclick="if(event.target===this)closeResDone()">
+  <div class="sheet sheet-done">
+    <div class="sheet-handle"></div>
+    <div class="sheet-done-icon">✅</div>
+    <div class="sheet-done-title" id="res-done-title"></div>
+    <div class="sheet-done-text" id="res-done-text"></div>
+    <button class="sheet-btn sheet-btn-cancel" onclick="closeResDone()">閉じる</button>
   </div>
 </div>
 
@@ -1460,18 +1494,65 @@ function switchTab(id) {
     });
   }
 
-  function applyQuotaValues(plan, remainingReservable, sns) {
+  // ★liff_reservation.html58：お試し中・登録が見つからない時の表示に対応し、残り予約枠に期間の終了日を付けた
+  let IS_TRIAL = false;
+  let NOT_REGISTERED = false;
+  function applyQuotaValues(plan, remainingReservable, sns, profile) {
+    profile = profile || {};
+    if (profile.found === false) {
+      applyNotRegistered();
+      return;
+    }
     const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
-    if (validPlans.includes(plan)) {
+    if (plan === '未入会') {
+      applyTrial(profile.trial);
+    } else if (validPlans.includes(plan)) {
       applyPlan(plan);
     }
     const el = document.getElementById('reservation-quota');
-    if (el && typeof remainingReservable === 'number') {
-      // ★liff_reservation_html39：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
-      // ★liff_reservation.html55：「残り投稿可能数」→「残り予約枠」（予約枠に言葉をそろえる。Kenさん決定）
-      el.textContent = '残り予約枠' + Math.max(0, remainingReservable) + '件';
+    if (el) {
+      if (IS_TRIAL) {
+        el.textContent = '';
+      } else if (typeof remainingReservable === 'number') {
+        // ★liff_reservation_html39：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
+        // ★liff_reservation.html55：「残り投稿可能数」→「残り予約枠」（予約枠に言葉をそろえる。Kenさん決定）
+        const m = String((profile.period && profile.period.end) || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+        el.textContent = '残り予約枠' + Math.max(0, remainingReservable) + '件' + (m ? '（' + Number(m[2]) + '/' + Number(m[3]) + 'まで）' : '');
+      }
     }
     applySubbarSnsTags(sns);
+  }
+  function applyTrial(trial) {
+    IS_TRIAL = true;
+    currentDemoPlan = '未入会';
+    document.getElementById('plan-badge').textContent = 'お試し中';
+    document.getElementById('plan-price').textContent = (trial && typeof trial.remainingToday === 'number') ? '今日あと' + trial.remainingToday + '回作成できます' : '';
+    document.getElementById('trial-card').style.display = 'block';
+  }
+  function applyNotRegistered() {
+    NOT_REGISTERED = true;
+    document.getElementById('plan-badge').textContent = '未登録';
+    document.getElementById('plan-price').textContent = '';
+    const el = document.getElementById('reservation-quota');
+    if (el) el.textContent = '';
+    applySubbarSnsTags({ x: false, instagram: false, threads: false });
+    document.getElementById('unregistered-card').style.display = 'block';
+  }
+  // ★liff_reservation.html58：予約一覧・投稿履歴はプランの利用者だけ、分析はLITE・STANDARD・PROだけ取る（使わないデータは取りに行かない。Kenさん決定）
+  function canUseReservations() {
+    return !IS_TRIAL && !NOT_REGISTERED;
+  }
+  function canUseAnalytics() {
+    return canUseReservations() && ['LITE', 'STANDARD', 'PRO'].indexOf(currentDemoPlan) !== -1;
+  }
+  // お試し中・登録が無い時は、一覧・カレンダー・履歴を空の案内にする（取りに行かない）
+  function showNoReservationAccess() {
+    const container = document.getElementById('reservation-list-container');
+    if (container) container.innerHTML = '';
+    const toolbar = document.querySelector('.res-list-toolbar');
+    if (toolbar) toolbar.style.display = 'none';
+    setReservationCalendarStatus('');
+    setHistoryStatus('');
   }
 
   // ★通信の一時的な失敗（GAS・スプレッドシート側の一時的な不調、想定外の応答など）に
@@ -1492,6 +1573,8 @@ function switchTab(id) {
         }
         lastGasError = String((result && (result.error || (result.data && result.data.error))) || '');
         traceLog(label + '取得NG(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
+        // ★liff_reservation.html58：登録が無い・プランの申し込みが要る、という返事は、もう一度送っても同じなので再試行しない（ほかの画面と同じ）
+        if (result && (result.notRegistered === true || result.needsPlan === true)) return null;
       } catch (err) {
         lastGasError = String(err && err.message);
         traceLog(label + '通信エラー(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
@@ -1506,7 +1589,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認57';
+  const TRACE_SCREEN = '予約確認58';
 
   function traceLog(msg) {
     try {
@@ -1694,8 +1777,15 @@ function switchTab(id) {
       // 　分析データの取得は、スピナーが終わった後（下のfinally内）に開始するよう変更した。
       if (showOverlay) tasks.push(warmupMasterDataCache());
       const [profileResult, snsResult] = await Promise.all(tasks);
-      if (!profileResult || !profileResult.data || profileResult.data.found === false) {
-        traceLog('プロフィール取得NG found=' + (profileResult && profileResult.data && profileResult.data.found));
+      if (profileResult && profileResult.data && profileResult.data.found === false) {
+        // ★liff_reservation.html58：登録が見つからない時は案内を出し、保存しておく（ほかの画面と同じ）
+        traceLog('プロフィール：登録なし');
+        applyNotRegistered();
+        writeQuotaCache({ found: false }, null);
+        return;
+      }
+      if (!profileResult || !profileResult.data) {
+        traceLog('プロフィール取得NG');
         return;
       }
 
@@ -1708,7 +1798,7 @@ function switchTab(id) {
         threadsAccount: snsResult.data.threadsAccount || ''
       } : null;
 
-      applyQuotaValues(profileResult.data.plan, profileResult.data.remainingReservable, sns);
+      applyQuotaValues(profileResult.data.plan, profileResult.data.remainingReservable, sns, profileResult.data);
       writeQuotaCache(profileResult.data, sns);
     } catch (err) {
       console.error('プラン・残り予約可能件数の取得エラー:', err);
@@ -1716,21 +1806,24 @@ function switchTab(id) {
       if (showOverlay) traceLog('スピナー終了（プラン等）');
       if (showOverlay && overlay) overlay.classList.remove('open');
       // スピナーが終わってから、裏側で分析データを取得する（保存済みなら何もしない）
-      if (showOverlay) warmupAnalyticsCache();
+      // ★liff_reservation.html58：分析を使えるプラン（LITE・STANDARD・PRO）の時だけ
+      if (showOverlay && canUseAnalytics()) warmupAnalyticsCache();
     }
   }
 
   // キャッシュがあればそれを使い（通信しない）、無ければ取得する
-  function applyQuotaFromCacheOrFetch() {
+  async function applyQuotaFromCacheOrFetch() {
     const cached = readQuotaCache();
-    if (cached) {
-      applyQuotaValues(cached.plan, cached.remainingReservable, cached.sns);
+    // ★liff_reservation.html58：期間・退会のお申し込み（withdrawal）を含まない古い保存済み情報は使わず、取り直す
+    // 　（「登録が無い」と保存済みの時は、取り直さずにその表示にする）。プランが分かってから一覧を取るため、async にした
+    if (cached && (cached.found === false || cached.withdrawal !== undefined)) {
+      applyQuotaValues(cached.plan, cached.remainingReservable, cached.sns, cached);
       // ★liff_reservation_html24：この画面では使わないデータ（マスタデータ・分析データ）
       // 　が保存されていなければ、スピナーを出さずに裏側で取得する
-      warmupMasterDataCache();
-      warmupAnalyticsCache();
+      if (!NOT_REGISTERED) warmupMasterDataCache();
+      if (canUseAnalytics()) warmupAnalyticsCache();
     } else {
-      fetchReservationQuota(true);
+      await fetchReservationQuota(true);
     }
   }
 
@@ -1743,7 +1836,12 @@ function switchTab(id) {
       }
       const idToken = liff.getDecodedIDToken();
       LINE_UID = idToken.sub;
-      applyQuotaFromCacheOrFetch();
+      // ★liff_reservation.html58：プランが分かってから、予約一覧・投稿履歴を取る（お試し中・登録が無い時は取らない）
+      await applyQuotaFromCacheOrFetch();
+      if (!canUseReservations()) {
+        showNoReservationAccess();
+        return;
+      }
       fetchAndRenderReservationList();
       // ★liff_reservation_html31：LINE UIDの取得前に投稿履歴タブが開かれていた場合は、ここで取得する
       if (postHistoryRequested) ensurePostHistoryLoaded();
@@ -1948,7 +2046,7 @@ function switchTab(id) {
     if (r) {
       const time = formatScheduledAt(r.scheduledAt);
       document.getElementById('cancel-modal-text').textContent =
-        time.dateLabel + time.timeLabel + 'の予約をキャンセルします。予約枠が1件解放されます。';
+        time.dateLabel + time.timeLabel + 'の予約をキャンセルします。予約枠が1件戻ります。';
     }
     document.getElementById('cancel-modal').classList.add('open');
   }
@@ -1958,7 +2056,9 @@ function switchTab(id) {
   async function executeCancel() {
     const reservationId = currentDetailReservationId;
     const btn = document.getElementById('cancel-modal-btn');
+    const backBtn = document.getElementById('cancel-modal-back-btn');
     if (btn) { btn.disabled = true; btn.textContent = '処理中…'; }
+    if (backBtn) backBtn.disabled = true;
     try {
       const response = await fetch(WEBAPP_URL, {
         method: 'POST',
@@ -1977,7 +2077,9 @@ function switchTab(id) {
         // ★liff_reservation_html24：キャンセルで今月の投稿枠が変わるため、分析の
         // 　「今日の状況」の保存済みデータを無効にし、裏側（スピナーなし）で取得し直す
         invalidateAnalyticsSummaryCache();
-        warmupAnalyticsCache();
+        if (canUseAnalytics()) warmupAnalyticsCache(); // ★liff_reservation.html58：分析を使えるプランの時だけ
+        // ★liff_reservation.html58：完了の窓を出す（ほかの画面と同じ）
+        openResDone('予約をキャンセルしました。', '予約枠が1件戻りました。');
       } else {
         alert((result.data && result.data.error) || 'キャンセルに失敗しました。もう一度お試しください。');
       }
@@ -1985,8 +2087,19 @@ function switchTab(id) {
       console.error('キャンセル処理エラー:', err);
       alert('通信エラーが発生しました。もう一度お試しください。');
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = '予約キャンセルする'; }
+      if (btn) { btn.disabled = false; btn.textContent = '予約をキャンセルする'; }
+      if (backBtn) backBtn.disabled = false;
     }
+  }
+
+  // ★liff_reservation.html58：完了の窓
+  function openResDone(title, text) {
+    document.getElementById('res-done-title').textContent = title;
+    document.getElementById('res-done-text').textContent = text;
+    document.getElementById('res-done-modal').classList.add('open');
+  }
+  function closeResDone() {
+    document.getElementById('res-done-modal').classList.remove('open');
   }
 
   // ============================================
@@ -2074,7 +2187,7 @@ function switchTab(id) {
     const ids = selectedReservationIds();
     if (ids.length === 0) return;
     document.getElementById('bulk-cancel-text').textContent =
-      '選んだ' + ids.length + '件の予約をキャンセルします。\n予約枠が' + ids.length + '件解放されます。';
+      '選んだ' + ids.length + '件の予約をキャンセルします。予約枠が' + ids.length + '件戻ります。';
     document.getElementById('bulk-cancel-modal').classList.add('open');
   }
   function closeBulkCancelConfirm() {
@@ -2123,7 +2236,7 @@ function switchTab(id) {
       }
     } finally {
       bulkCancelRunning = false;
-      if (btn) { btn.disabled = false; btn.textContent = '予約キャンセルする'; }
+      if (btn) { btn.disabled = false; btn.textContent = '予約をキャンセルする'; }
       if (backBtn) backBtn.disabled = false;
     }
     document.getElementById('bulk-cancel-modal').classList.remove('open');
@@ -2132,7 +2245,7 @@ function switchTab(id) {
       fetchReservationQuota();
       // 1件のキャンセルと同じく、今月の投稿枠が変わるため、分析の「今日の状況」の保存済みデータを取り直す
       invalidateAnalyticsSummaryCache();
-      warmupAnalyticsCache();
+      if (canUseAnalytics()) warmupAnalyticsCache(); // ★liff_reservation.html58
     }
     const lines = [];
     if (stopMessage) {
@@ -2148,7 +2261,12 @@ function switchTab(id) {
       // キャンセルできた予約が無い時も、投稿済みなどの予約を一覧から外すため取り直す
       fetchAndRenderReservationList(true);
     }
-    if (lines.length > 0) alert(lines.join('\n'));
+    if (lines.length > 0) {
+      alert(lines.join('\n'));
+    } else if (cancelledCount > 0) {
+      // ★liff_reservation.html58：全部キャンセルできた時は、完了の窓を出す（ほかの画面と同じ）
+      openResDone('予約をキャンセルしました。', cancelledCount + '件の予約をキャンセルしました。予約枠が' + cancelledCount + '件戻りました。');
+    }
   }
 
   // ============================================
@@ -2929,7 +3047,7 @@ function _dataUrlToBase64(dataUrl) {
   // 　Xは全角2・半角1で数えて280まで、URLを含めると除外。Instagram 2,200文字・Threads 500文字まで。
   // ・保存後は通信し直さず、手元の一覧データの本文を書き換えて一覧・カレンダー・保存データを更新する。
   const EDIT_CUTOFF_MINUTES = 5;
-  const EDIT_LIMITS = { X: 280, Instagram: 2200, Threads: 500 };
+  const EDIT_TOTAL_LIMIT_WEIGHTED = 280; // ★liff_reservation.html58：本文とハッシュタグを合わせた上限（全角140字。全SNS共通）
   let editSaving = false;
   let editServerError = '';   // 保存時にGASから返されたエラー（入力し直すと消える）
 
@@ -2988,32 +3106,29 @@ function _dataUrlToBase64(dataUrl) {
 
   // SNSごとの文字数と、保存できるかどうかを表示する
   function updateEditCounts() {
+    // ★liff_reservation.html58：文字数は、全SNS共通で「本文とそのSNSのハッシュタグを合わせて140字」（Kenさん決定。GASの投稿予約gs_33と同じ）。
+    // 　SNSごとの表示をやめ、一番長いものを1行で出す。超えた時もSNS名は出さない。数え方は全角1字＝2・半角1字＝1（280まで）
     const r = getDetailReservation();
     if (!r) return;
     const raw = document.getElementById('detail-edit-text').value;
     const text = raw.trim();
     const hashtags = r.hashtags || {};
     let problem = '';
-
-    const rows = r.targetSns.map(function (sns) {
-      const postText = buildSnsPostText(text, hashtags[sns] || '');
-      const count = sns === 'X' ? xWeightedLength(postText) : Array.from(postText).length;
-      const limit = EDIT_LIMITS[sns];
-      let ng = count > limit;
-      let note = '';
-      if (sns === 'X') {
-        note = '（全角2・半角1で計算）';
-        if (/https?:\/\//.test(text)) {
-          ng = true;
-          note = '（X宛てにはURLを含められません）';
-          if (!problem) problem = 'X宛ての投稿には、URLを含めることができません';
-        }
-      }
-      if (count > limit && !problem) problem = sns + 'の文字数上限を超えています';
-      return '<div class="edit-count-row">' + snsTagHtml(sns) +
-        '<span class="' + (ng ? 'edit-count-ng' : 'edit-count-ok') + '">' + count + ' / ' + limit + note + '</span></div>';
-    }).join('');
-    document.getElementById('detail-edit-counts').innerHTML = rows;
+    let over = false;
+    const hasUrl = /https?:\/\//.test(text);
+    let maxWeighted = 0;
+    r.targetSns.forEach(function (sns) {
+      maxWeighted = Math.max(maxWeighted, xWeightedLength(buildSnsPostText(text, hashtags[sns] || '')));
+    });
+    const total = Math.ceil(maxWeighted / 2);
+    const box = document.getElementById('detail-edit-counts');
+    if (maxWeighted > EDIT_TOTAL_LIMIT_WEIGHTED) {
+      over = true;
+      box.innerHTML = '<div class="post-total ng">本文とハッシュタグを合わせると140字を超えています（' + total + '字）。本文を短くしてください。</div>';
+    } else {
+      box.innerHTML = '<div class="post-total ok"><span class="nowrap">本文とハッシュタグ：</span><span class="nowrap">' + total + '字／140字</span></div>';
+    }
+    if (hasUrl && r.targetSns.indexOf('X') !== -1) problem = 'Xへの投稿には、URLを含められません。';
 
     // ★liff_reservation.html47：本文の中にハッシュタグ（「#」「＃」のすぐ後に文字が続く語）がある時は保存できない（Kenさん決定。
     // 　ハッシュタグはSNSごとの数の上限を守るため、予約時のハッシュタグ欄で設定する）
@@ -3021,7 +3136,7 @@ function _dataUrlToBase64(dataUrl) {
     if (text === '' && !problem) problem = '本文を入力してください';
     const unchanged = text === r.honbun;
     document.getElementById('detail-edit-error').textContent = problem || editServerError;
-    document.getElementById('detail-edit-save-btn').disabled = !!problem || unchanged || editSaving;
+    document.getElementById('detail-edit-save-btn').disabled = !!problem || over || unchanged || editSaving;
   }
 
   async function saveEditReservation() {
@@ -3273,6 +3388,7 @@ function _dataUrlToBase64(dataUrl) {
 
   function ensurePostHistoryLoaded() {
     if (postHistoryItems !== null || postHistoryLoading) return;
+    if (IS_TRIAL || NOT_REGISTERED) return; // ★liff_reservation.html58：お試し中・登録が無い時は取らない
     if (!LINE_UID) {
       postHistoryRequested = true;
       setHistoryStatus('読み込み中…');
@@ -3668,9 +3784,10 @@ function _dataUrlToBase64(dataUrl) {
   function openDeleteConfirm() {
     const count = selectedDeleteIds().length;
     if (count === 0 || deleteRunning) return;
-    document.getElementById('del-confirm-title').textContent = deleteSns + 'から' + count + '件の投稿を削除しますか？';
+    // ★liff_reservation.html58：見出しは決まった文にし、件数は文の方に入れた（ほかの画面の窓と同じ形）
+    document.getElementById('del-confirm-title').textContent = '投稿を削除しますか？';
     document.getElementById('del-confirm-text').textContent =
-      '選んだ投稿を' + deleteSns + 'から削除します。\nSNSから削除した投稿は、元に戻せません。';
+      deleteSns + 'から' + count + '件の投稿を削除します。削除した投稿は、元に戻せません。';
     document.getElementById('del-confirm-modal').classList.add('open');
   }
 
@@ -3690,6 +3807,7 @@ function _dataUrlToBase64(dataUrl) {
     document.getElementById('del-saving-overlay').classList.add('open');
     traceLog('投稿削除 送信 ' + sns + ' ' + ids.length + '件');
     let message = '';
+    let doneMessage = '';
     try {
       const response = await fetch(WEBAPP_URL, {
         method: 'POST',
@@ -3724,6 +3842,8 @@ function _dataUrlToBase64(dataUrl) {
         traceLog('投稿削除OK ' + sns + ' 削除' + okCount + '件 失敗' + ngCount + '件');
         message = sns + 'から' + okCount + '件の投稿を削除しました。' +
           (ngCount > 0 ? '\n' + ngCount + '件は削除できませんでした（理由は一覧に表示しています）。' : '');
+        // ★liff_reservation.html58：全部削除できた時は、完了の窓を出す（ほかの画面と同じ）
+        if (ngCount === 0 && okCount > 0) { doneMessage = message; message = ''; }
         // 投稿履歴タブの表示も新しい結果で描き直す
         renderPostHistory();
         if (historySelectedKey) {
@@ -3741,7 +3861,23 @@ function _dataUrlToBase64(dataUrl) {
       renderDeleteList();
     }
     if (message) alert(message);
+    if (doneMessage) openResDone('投稿を削除しました。', doneMessage);
   }
+
+  // ★liff_reservation.html58：ヘッダーの「AiPost」が入りきらない時はまるごと隠し、サブバーとタブをヘッダーのすぐ下に止める
+  // 　（文字の大きい端末で、ヘッダーが2行になった時のため。ほかの画面と同じ）
+  function updateHeaderLayout() {
+    const sub = document.querySelector('.header-sub');
+    if (sub) { sub.style.visibility = ''; if (sub.scrollWidth > sub.clientWidth + 1) sub.style.visibility = 'hidden'; }
+    const header = document.querySelector('.header');
+    const subbar = document.querySelector('.subbar');
+    const tabNav = document.querySelector('.tab-nav');
+    if (header && subbar) subbar.style.top = header.offsetHeight + 'px';
+    if (header && subbar && tabNav) tabNav.style.top = (header.offsetHeight + subbar.offsetHeight) + 'px';
+  }
+  window.addEventListener('resize', updateHeaderLayout);
+  try { const ro = new ResizeObserver(updateHeaderLayout); ro.observe(document.querySelector('.header')); ro.observe(document.querySelector('.subbar')); } catch (e) {}
+  updateHeaderLayout();
 
   traceStart();
   initLiff();
