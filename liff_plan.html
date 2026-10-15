@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金10 - AiPost</title>
+  <title>プラン・料金11 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -101,6 +101,20 @@
     .btn-downgrade { background: none; border: 1px solid #e65100; color: #e65100; }
     .plan-btn:disabled { opacity: 0.5; cursor: default; }
     .btn-status { font-size: 10px; color: var(--text-sub); text-align: center; padding: 6px 10px 0; line-height: 1.6; }
+    .btn-upgrade.btn-apply { background: #1a237e; }
+    .btn-scheduled { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; cursor: default; }
+
+    /* ★liff_plan.html11：今の期間・変更の予定・退会のお申し込み・お試し中の案内 */
+    .period-card { display: none; background: var(--white); margin: 8px 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 12px; line-height: 1.7; word-break: normal; overflow-wrap: anywhere; }
+    .period-card.show { display: block; }
+    .period-card-title { font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+    .period-next { display: none; margin-top: 8px; padding: 8px 10px; background: #e3f2fd; border-radius: 8px; color: #0d47a1; font-weight: 700; }
+    .period-next.show { display: block; }
+    .period-cancel-btn { display: block; width: 100%; margin-top: 8px; padding: 9px; border-radius: 8px; border: 1px solid #1565c0; background: #fff; color: #1565c0; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .period-cancel-btn:disabled { opacity: 0.5; cursor: default; }
+    .period-withdraw { display: none; margin-top: 8px; padding: 8px 10px; background: #fff3e0; border-radius: 8px; color: #e65100; font-weight: 700; }
+    .period-withdraw.show { display: block; }
+    .period-card.trial { background: #f0f2ff; border-color: #c5cae9; }
 
     /* 注意事項 */
     .notice-box {
@@ -330,7 +344,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo">プラン・料金10</span>
+    <span class="topbar-logo">プラン・料金11</span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -393,6 +407,23 @@
     </div>
   </div>
 
+  <!-- ★liff_plan.html11：今の期間・プラン変更の予定・退会のお申し込み（プランの利用者） -->
+  <div class="period-card" id="period-card">
+    <div class="period-card-title">📅 ご利用の期間</div>
+    <div id="period-line"></div>
+    <div class="period-next" id="period-next">
+      <div id="period-next-text"></div>
+      <button type="button" class="period-cancel-btn" id="cancel-change-btn" onclick="cancelPlanChange()">プラン変更の予定を取り消す</button>
+    </div>
+    <div class="period-withdraw" id="period-withdraw"></div>
+  </div>
+  <!-- ★liff_plan.html11：お試し中（プランのお申し込み前）の案内 -->
+  <div class="period-card trial" id="trial-card">
+    <div class="period-card-title">🌱 お試し中です</div>
+    AIでの投稿文の作成をお試しいただけます。投稿の予約・SNSの連携・分析は、プランをお申し込みいただくとご利用いただけます。<br>
+    下の表の「申し込む」から、プランを選んでください。お申し込みの日から1か月ごとの期間でご利用いただけます。
+  </div>
+
   <!-- ★対応しているSNSと、まとめて投稿できることの案内 -->
   <div class="sns-intro">
     <div class="sns-intro-title">📱 対応SNS</div>
@@ -416,10 +447,12 @@
 
   <!-- 注意事項 -->
   <div class="notice-box">
-    <div class="notice-box-title">⚠️ プラン変更について</div>
-    プランを変えると、すぐに反映されます。その月にすでに入っている予約は、そのまま投稿されます。<br>
-    プランを下げた時は、その月の予約・投稿の合計が新しい予約枠を下回るまで、新しい予約はできません。<br>
-    SNSの連携はそのまま残ります。投稿先に選べるSNSの数は、新しいプランに合わせて変わります。<br>
+    <div class="notice-box-title">⚠️ ご利用の期間とプラン変更について</div>
+    ご利用の期間は、プランをお申し込みいただいた日から1か月ごとです。予約枠は、期間ごとに数えます。<br>
+    有料プランどうしの変更と、FREEプランへの変更は、次の更新日から反映されます。今の期間は、今のプランのまま使えます。<br>
+    FREEプランから有料プランへの変更は、その日から反映されます。その日から新しい期間が始まります。<br>
+    変更の予定は、次の更新日の前日まで、この画面で取り消せます。<br>
+    すでに入っている予約は、そのまま投稿されます。SNSの連携はそのまま残ります。投稿先に選べるSNSの数は、新しいプランに合わせて変わります。<br>
     ※ この画面はデモのため、支払いは行いません。
   </div>
 
@@ -443,21 +476,22 @@
   <div class="modal-overlay" id="terms-modal">
     <div class="modal" style="max-height:90vh;">
       <div class="modal-handle"></div>
-      <div class="modal-title">📄 プラン変更の確認</div>
+      <div class="modal-title" id="terms-title">📄 プラン変更の確認</div>
 
       <div style="background:#f0f2ff;border-radius:10px;padding:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
         <span class="plan-badge plan-PRO" id="terms-plan-badge" style="margin:0;">PRO</span>
         <span id="terms-plan-name" style="font-size:13px;font-weight:700;color:var(--primary);"></span>
       </div>
+      <div class="modal-note" id="up-note" style="font-weight:700;color:var(--text);"></div>
 
       <div style="height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;line-height:1.9;color:var(--text);">
         <div style="font-weight:700;font-size:13px;color:var(--primary);margin-bottom:10px;">AiPost 利用規約（抜粋）</div>
 
         <div style="font-weight:700;margin-bottom:4px;">第3条（プランと料金）</div>
-        <p style="margin-bottom:10px;">料金はすべて税別で、月払いです。</p>
+        <p style="margin-bottom:10px;">料金はすべて税別で、お申し込みの日から1か月ごとのお支払いです。</p>
 
         <div style="font-weight:700;margin-bottom:4px;">第4条（プランの変更・解約）</div>
-        <p style="margin-bottom:10px;">プランの変更は、すぐに反映されます。日割りでの返金は行いません。</p>
+        <p style="margin-bottom:10px;">プランの変更は、次の更新日から反映されます。ただし、FREEプランから有料プランへの変更は、その日から反映され、その日から新しい期間が始まります。退会は、今の期間の終わりに行います。日割りでの返金は行いません。</p>
 
         <div style="font-weight:700;margin-bottom:4px;">第8条（SNSアカウントの連携と安全管理）</div>
         <p style="margin-bottom:10px;">SNSのパスワードはお預かりしません。各SNSが発行した許可証（アクセストークン）は、暗号化して保存します。</p>
@@ -469,18 +503,18 @@
         <p style="margin-bottom:10px;">SNS側の仕様の変更や障害で投稿できなかった場合、当社は責任を負いません。</p>
 
         <div style="text-align:center;color:var(--text-sub);font-size:11px;padding-top:8px;">
-          ▼ 全文は「AiPostとは」の画面の利用規約でご確認ください。
+          ▼ 全文は「AiPostとは」の画面の利用規約・プライバシーポリシーでご確認ください。
         </div>
       </div>
 
       <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:12px;padding:12px;background:#f8f9fa;border-radius:8px;border:1px solid var(--border);">
         <input type="checkbox" id="terms-agree-check" onchange="toggleAgreeBtn()"
           style="width:20px;height:20px;margin-top:2px;flex-shrink:0;accent-color:var(--primary);">
-        <span style="font-size:13px;color:var(--text);line-height:1.8;">利用規約の内容を読み、同意します。</span>
+        <span style="font-size:13px;color:var(--text);line-height:1.8;">利用規約とプライバシーポリシーの内容を読み、同意します。</span>
       </label>
 
       <div class="modal-error" id="up-error"></div>
-      <button id="terms-agree-btn" class="modal-btn" disabled onclick="executePlanChange('up')"
+      <button id="terms-agree-btn" class="modal-btn" disabled onclick="executePlanChange(upKind)"
         style="background:#43a047;color:white;">
         プランを変更する
       </button>
@@ -496,7 +530,7 @@
   <div class="modal-overlay" id="complete-modal">
     <div class="modal" style="text-align:center;">
       <div class="modal-handle"></div>
-      <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+      <div style="font-size:48px;margin-bottom:12px;" id="complete-icon">🎉</div>
       <div style="font-size:17px;font-weight:700;margin-bottom:8px;" id="complete-title"></div>
       <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:16px;" id="complete-text"></p>
       <button onclick="closePlanModals()" class="modal-btn modal-btn-cancel" style="border:1px solid var(--border);">閉じる</button>
@@ -522,6 +556,18 @@
   </nav>
 
 <script>
+  // ============================================
+  // ★liff_plan.html11：利用者ごとの「期間」（プランを申し込んだ日から1か月ずつ）に合わせた（Kenさん決定）。
+  // ・getUserProfile の period（今の期間）・nextPeriod（次の期間）・nextPlan（変更予定のプラン）・withdrawal（退会のお申し込み）を
+  // 　使い、表の上に「ご利用の期間」のカードを出す。変更の予定があれば、その予定と「プラン変更の予定を取り消す」ボタン
+  // 　（GAS の cancelPlanChange。WebAppEndpointgs_41・UserProfilegs_18）を出す。退会のお申し込み中は、変更のボタンを押せなくする。
+  // ・有料→有料・有料→FREE は、次の更新日から変わる予定になる（GAS の changePlan は scheduled を返す）。確認の窓と完了の文を、
+  // 　その日付で出す。FREE→有料は、その日から変わり、その日から新しい期間になる（changed を返す）。
+  // ・お試し中（契約プランが「未入会」）の人は、どのプランも「申し込む」にし、利用規約・プライバシーポリシーへの同意の後に
+  // 　GAS の applyPlan（WebAppEndpointgs_40・UserProfilegs_16〜18）を1回だけ送る。サブバーは「お試し中」と今日の残りの作成回数。
+  // ・サブバーの残り予約枠は「残り予約枠N件（M/dまで）」（今の期間の終了日）。
+  // ・読み取りの問い合わせは、登録が無い（notRegistered）・プランのお申し込みが必要（needsPlan）の返事の時は、やり直さない。
+  // ・保存済みの情報に期間（period）が無い時（古い保存）は、使わずに取り直す。
   // ============================================
   // ★liff_plan.html7：表の見直し（Kenさん指示）。プラン名の行・表・ボタンの行を1つの表にして縦の線をそろえ、すべて同じ色の線で区切る。
   // 　プラン名の行は下へスクロールしても止めておく。項目名を短くし（投稿先SNS数・SNS連携・本文文字数上限 など）、「AI投稿文作成」
@@ -553,7 +599,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'プラン10';
+  const TRACE_SCREEN = 'プラン11';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -637,11 +683,38 @@
     return parts[0] + (parts[1] ? '（' + parts[1] + '）' : '');
   }
 
-  let currentPlan = null;      // 今のプラン（分からない間は null）
+  let currentPlan = null;      // 今のプラン（分からない間・お試し中は null）
   let profileReady = false;    // プロフィールを読めたか
   let profileFound = true;     // 登録済みか
   let selectedPlan = null;     // 確認中のプラン
   let changing = false;        // 変更の送信中
+  // ★liff_plan.html11
+  let isTrial = false;         // お試し中（契約プランが「未入会」）
+  let periodInfo = null;       // { start, end }（yyyy/MM/dd）。お試し中・分からない時は null
+  let nextPeriodInfo = null;   // 次の期間
+  let nextPlan = '';           // 変更予定のプラン
+  let withdrawRequested = false; // 退会のお申し込み中
+  let upKind = 'up';           // 確認の窓のボタンで送る種類（'up'：プランの変更、'apply'：お申し込み）
+
+  // 'yyyy/MM/dd' → 'M月d日'（読めない時は ''）
+  function mdText(s) {
+    const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
+    return m ? Number(m[2]) + '月' + Number(m[3]) + '日' : '';
+  }
+  // 'yyyy/MM/dd' → 'M/d'
+  function mdShort(s) {
+    const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
+    return m ? Number(m[2]) + '/' + Number(m[3]) : '';
+  }
+  // 今日から始まる新しい期間（今日〜1か月後の前の日。その日がない月は末日まで）を 'M月d日〜M月d日' で返す（GAS と同じ計算）
+  function newPeriodFromToday() {
+    const t = new Date();
+    const y = t.getFullYear(), mo = t.getMonth() + 1, d = t.getDate();
+    const last = new Date(y, mo + 1, 0).getDate();
+    const next = new Date(y, mo, Math.min(d, last));
+    const end = new Date(next.getFullYear(), next.getMonth(), next.getDate() - 1);
+    return (t.getMonth() + 1) + '月' + d + '日〜' + (end.getMonth() + 1) + '月' + end.getDate() + '日';
+  }
 
   function renderTable() {
     document.getElementById('plan-header-row').innerHTML = '<th></th>' + PLANS.map(function (p) {
@@ -661,17 +734,63 @@
     const row = document.getElementById('btn-row');
     const status = document.getElementById('btn-status');
     const cur = currentPlan ? PLANS.indexOf(currentPlan) : -1;
+    // ★liff_plan.html11：お試し中は、どのプランも「申し込む」
+    if (profileReady && profileFound && isTrial) {
+      row.innerHTML = '<td class="key-td">プランの<br>お申し込み</td>' + PLANS.map(function (p) {
+        return '<td><button class="plan-btn btn-upgrade btn-apply"' + (changing ? ' disabled' : '') + ' onclick="openApply(\'' + p + '\')">申し込む</button></td>';
+      }).join('');
+      status.textContent = '';
+      return;
+    }
     row.innerHTML = '<td class="key-td">プランの変更</td>' + PLANS.map(function (p, i) {
       if (!profileReady || !profileFound || cur === -1) {
         return '<td><button class="plan-btn btn-current" disabled>－</button></td>';
       }
       if (i === cur) return '<td><button class="plan-btn btn-current" disabled>契約中</button></td>';
-      if (i > cur) return '<td><button class="plan-btn btn-upgrade"' + (changing ? ' disabled' : '') + ' onclick="openUpgrade(\'' + p + '\')">アップ</button></td>';
-      return '<td><button class="plan-btn btn-downgrade"' + (changing ? ' disabled' : '') + ' onclick="openDowngrade(\'' + p + '\')">ダウン</button></td>';
+      // ★liff_plan.html11：変更の予定のプラン・退会のお申し込み中
+      if (p === nextPlan) return '<td><button class="plan-btn btn-scheduled" disabled>変更予定</button></td>';
+      const off = (changing || withdrawRequested) ? ' disabled' : '';
+      if (i > cur) return '<td><button class="plan-btn btn-upgrade"' + off + ' onclick="openUpgrade(\'' + p + '\')">アップ</button></td>';
+      return '<td><button class="plan-btn btn-downgrade"' + off + ' onclick="openDowngrade(\'' + p + '\')">ダウン</button></td>';
     }).join('');
     if (!profileReady) status.textContent = '今のプランを確認しています…';
     else if (!profileFound) status.textContent = 'プランを変えるには、LINEで友だち追加をしてから、もう一度この画面を開いてください。';
+    else if (withdrawRequested) status.textContent = '退会のお申し込み中は、プランを変更できません。先に、設定画面で退会のお申し込みを取り消してください。';
     else status.textContent = '';
+  }
+
+  // ★liff_plan.html11：ご利用の期間のカード（プランの利用者）・お試し中の案内
+  function renderPeriodCard() {
+    const card = document.getElementById('period-card');
+    const trialCard = document.getElementById('trial-card');
+    trialCard.classList.toggle('show', profileReady && profileFound && isTrial);
+    if (!profileReady || !profileFound || isTrial || !currentPlan) {
+      card.classList.remove('show');
+      return;
+    }
+    card.classList.add('show');
+    const nextStart = nextPeriodInfo ? mdText(nextPeriodInfo.start) : '';
+    document.getElementById('period-line').textContent = periodInfo
+      ? '今の期間：' + mdText(periodInfo.start) + '〜' + mdText(periodInfo.end) + (nextStart ? '（次の更新日：' + nextStart + '）' : '')
+      : '今の期間を確かめられませんでした。「🔄 更新」でもう一度お試しください。';
+    const next = document.getElementById('period-next');
+    if (nextPlan && PLANS.indexOf(nextPlan) !== -1) {
+      document.getElementById('period-next-text').textContent =
+        (nextStart ? nextStart + 'から' : '次の更新日から') + nextPlan + 'プランに変わる予定です。' +
+        (periodInfo ? mdText(periodInfo.end) + 'までは、今のプラン（' + currentPlan + '）のままです。' : '');
+      document.getElementById('cancel-change-btn').disabled = changing;
+      next.classList.add('show');
+    } else {
+      next.classList.remove('show');
+    }
+    const w = document.getElementById('period-withdraw');
+    if (withdrawRequested) {
+      w.textContent = '退会のお申し込み中です。' + (periodInfo ? mdText(periodInfo.end) + 'まで、今までどおりご利用いただけます。' : '') +
+        '取り消す時は、設定画面の「退会のお申し込みを取り消す」を押してください。';
+      w.classList.add('show');
+    } else {
+      w.classList.remove('show');
+    }
   }
 
   // ---- サブバー・保存済みの情報（ほかの画面と同じキー・形） ----
@@ -685,14 +804,21 @@
       sessionStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(Object.assign({}, profileData, { sns: sns || null, fetchedAt: Date.now() })));
     } catch (err) {}
   }
-  function applySubbar(plan, remaining, sns) {
-    if (PLANS.indexOf(plan) !== -1) {
+  function applySubbar(plan, remaining, sns, trial, period) {
+    if (plan === '未入会') {
+      // ★liff_plan.html11：お試し中（今日あと何回作成できるかを出す。予約枠は出さない）
+      document.getElementById('plan-badge').textContent = 'お試し中';
+      document.getElementById('plan-price').textContent = (trial && typeof trial.remainingToday === 'number') ? '今日あと' + trial.remainingToday + '回作成できます' : '';
+      document.getElementById('reservation-quota').textContent = '';
+    } else if (PLANS.indexOf(plan) !== -1) {
       const badge = document.getElementById('plan-badge');
       badge.textContent = plan;
       document.getElementById('plan-price').textContent = '¥' + PLAN_PRICE[plan] + '/月';
     }
-    if (typeof remaining === 'number') {
-      document.getElementById('reservation-quota').textContent = '残り予約枠' + Math.max(0, remaining) + '件';
+    if (plan !== '未入会' && typeof remaining === 'number') {
+      // ★liff_plan.html11：今の期間の終了日を添える
+      const until = period ? mdShort(period.end) : '';
+      document.getElementById('reservation-quota').textContent = '残り予約枠' + Math.max(0, remaining) + '件' + (until ? '（' + until + 'まで）' : '');
     }
     if (sns) {
       const ids = { x: 'subbar-sns-x', instagram: 'subbar-sns-ig', threads: 'subbar-sns-th' };
@@ -705,10 +831,17 @@
   function applyProfile(profile, sns) {
     profileReady = true;
     profileFound = !!(profile && profile.found !== false);
-    currentPlan = profileFound ? (PLANS.indexOf(String(profile.plan || '')) !== -1 ? String(profile.plan) : 'FREE') : null;
-    if (profileFound) applySubbar(currentPlan, profile.remainingReservable, sns);
+    // ★liff_plan.html11：お試し中・期間・変更の予定・退会のお申し込み
+    isTrial = profileFound && String(profile.plan || '') === '未入会';
+    currentPlan = (profileFound && !isTrial) ? (PLANS.indexOf(String(profile.plan || '')) !== -1 ? String(profile.plan) : 'FREE') : null;
+    periodInfo = (profileFound && profile.period && profile.period.start) ? profile.period : null;
+    nextPeriodInfo = (profileFound && profile.nextPeriod && profile.nextPeriod.start) ? profile.nextPeriod : null;
+    nextPlan = (profileFound && !isTrial) ? String(profile.nextPlan || '') : '';
+    withdrawRequested = !!(profileFound && !isTrial && profile.withdrawal && profile.withdrawal.requested === true);
+    if (profileFound) applySubbar(isTrial ? '未入会' : currentPlan, profile.remainingReservable, sns, profile.trial, periodInfo);
     renderTable();
     renderButtons();
+    renderPeriodCard();
   }
 
   // 読み取りの問い合わせ（失敗したら1回だけやり直す。ほかの画面と同じ）
@@ -721,6 +854,8 @@
         const result = await response.json();
         if (check(result)) { traceLog(label + '取得OK ' + (Date.now() - t0) + 'ms'); return result; }
         traceLog(label + '取得NG(' + attempt + '回目) ' + String((result && result.error) || ''));
+        // ★liff_plan.html11：登録が無い・プランのお申し込みが必要な時は、やり直しても同じなので、すぐにやめる
+        if (result && (result.notRegistered === true || result.needsPlan === true)) return null;
       } catch (err) {
         traceLog(label + '通信エラー(' + attempt + '回目) ' + String(err && err.message));
       }
@@ -764,17 +899,40 @@
   }
 
   // ---- アップグレード ----
-  function openUpgrade(plan) {
-    if (changing) return;
+  function openTermsModal(plan, kind, title, note, btnText) {
     selectedPlan = plan;
+    upKind = kind;
+    document.getElementById('terms-title').textContent = title;
     document.getElementById('terms-plan-name').textContent = plan + 'プラン（¥' + PLAN_PRICE[plan] + '/月・税別）';
     const badge = document.getElementById('terms-plan-badge');
     badge.className = 'plan-badge plan-' + plan;
     badge.textContent = plan;
+    document.getElementById('up-note').textContent = note;
+    document.getElementById('terms-agree-btn').textContent = btnText;
     document.getElementById('terms-agree-check').checked = false;
     document.getElementById('up-error').textContent = '';
     toggleAgreeBtn();
     document.getElementById('terms-modal').classList.add('open');
+  }
+  function openUpgrade(plan) {
+    if (changing || withdrawRequested || !currentPlan) return;
+    // ★liff_plan.html11：FREE→有料は今日から。有料→有料は次の更新日から
+    let note;
+    if (currentPlan === 'FREE') {
+      note = '今日から使えます。今日から新しい期間（' + newPeriodFromToday() + '）が始まります。';
+    } else {
+      const from = nextPeriodInfo ? mdText(nextPeriodInfo.start) : '';
+      note = (from ? from + 'から' : '次の更新日から') + plan + 'プランに変わります。' +
+        (periodInfo ? mdText(periodInfo.end) + 'までは、今のプラン（' + currentPlan + '）のままです。' : '今の期間は、今のプランのままです。');
+    }
+    openTermsModal(plan, 'up', '📄 プラン変更の確認', note, 'プランを変更する');
+  }
+  // ★liff_plan.html11：お試し中の人のお申し込み
+  function openApply(plan) {
+    if (changing || !isTrial) return;
+    openTermsModal(plan, 'apply', '📄 プランのお申し込み',
+      '今日から使えます。お申し込みの日から1か月ごとの期間（今の期間：' + newPeriodFromToday() + '）でご利用いただけます。',
+      'このプランを申し込む');
   }
   function toggleAgreeBtn() {
     const btn = document.getElementById('terms-agree-btn');
@@ -795,14 +953,17 @@
     return lines;
   }
   function openDowngrade(plan) {
-    if (changing || !currentPlan) return;
+    if (changing || withdrawRequested || !currentPlan) return;
     selectedPlan = plan;
     document.getElementById('down-title').textContent = currentPlan + ' → ' + plan + ' へのダウングレード';
     const lines = downgradeWarnings(currentPlan, plan);
     document.getElementById('down-warn-items').innerHTML = lines.map(escapeHtml).join('<br>');
+    // ★liff_plan.html11：ダウングレードは次の更新日から
+    const from = nextPeriodInfo ? mdText(nextPeriodInfo.start) : '';
     document.getElementById('down-note').textContent =
-      'ダウングレードは、すぐに反映されます。その月にすでに入っている予約は、そのまま投稿されます。' +
-      'その月の予約・投稿の合計が' + plan + 'プランの予約枠を下回るまで、新しい予約はできません。';
+      (from ? from + 'から' : '次の更新日から') + plan + 'プランに変わります。' +
+      (periodInfo ? mdText(periodInfo.end) + 'までは、今のプラン（' + currentPlan + '）のまま使えます。' : '今の期間は、今のプランのまま使えます。') +
+      'すでに入っている予約は、そのまま投稿されます。' + (from ? from + 'から' : '次の更新日から') + 'の期間の予約枠は、' + plan + 'プランの予約枠で数えます。';
     document.getElementById('down-error').textContent = '';
     document.getElementById('down-exec-btn').disabled = false;
     document.getElementById('downgrade-modal').classList.add('open');
@@ -819,51 +980,122 @@
   async function executePlanChange(kind) {
     if (changing || !selectedPlan || !LINE_UID) return;
     const plan = selectedPlan;
-    const errorEl = document.getElementById(kind === 'up' ? 'up-error' : 'down-error');
-    const execBtn = document.getElementById(kind === 'up' ? 'terms-agree-btn' : 'down-exec-btn');
-    const cancelBtn = document.getElementById(kind === 'up' ? 'up-cancel-btn' : 'down-cancel-btn');
+    const isApply = (kind === 'apply'); // ★liff_plan.html11：お試し中の人のお申し込み
+    const isUpModal = (kind === 'up' || isApply);
+    const errorEl = document.getElementById(isUpModal ? 'up-error' : 'down-error');
+    const execBtn = document.getElementById(isUpModal ? 'terms-agree-btn' : 'down-exec-btn');
+    const cancelBtn = document.getElementById(isUpModal ? 'up-cancel-btn' : 'down-cancel-btn');
+    const previous = currentPlan;
     errorEl.textContent = '';
     changing = true;
     execBtn.disabled = true;
     cancelBtn.disabled = true;
     const overlay = document.getElementById('loading-overlay');
-    document.getElementById('loading-text').textContent = 'プランを変更しています…';
+    document.getElementById('loading-text').textContent = isApply ? 'お申し込みをしています…' : 'プランを変更しています…';
     overlay.classList.add('open');
-    traceLog('プラン変更 送信 ' + (currentPlan || '?') + '→' + plan);
+    traceLog((isApply ? 'お申し込み 送信 ' : 'プラン変更 送信 ' + (currentPlan || '?') + '→') + plan);
     let result = null, message = '';
     try {
       const response = await fetch(WEBAPP_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'changePlan', lineUid: LINE_UID, params: { plan: plan } })
+        body: JSON.stringify(isApply
+          ? { action: 'applyPlan', lineUid: LINE_UID, params: { plan: plan, agreed: true } }
+          : { action: 'changePlan', lineUid: LINE_UID, params: { plan: plan } })
       });
       result = await response.json();
       if (!(result && result.success && result.data)) {
-        message = String((result && result.error) || 'プランを変更できませんでした。もう一度お試しください。');
+        message = String((result && result.error) || (isApply ? 'お申し込みができませんでした。もう一度お試しください。' : 'プランを変更できませんでした。もう一度お試しください。'));
       }
     } catch (err) {
-      message = '通信エラーが発生しました。プランが変わったかどうかは、「🔄 更新」で確かめてください。';
-      traceLog('プラン変更 通信エラー ' + String(err && err.message));
+      message = isApply
+        ? '通信エラーが発生しました。お申し込みができたかどうかは、「🔄 更新」で確かめてください。'
+        : '通信エラーが発生しました。プランが変わったかどうかは、「🔄 更新」で確かめてください。';
+      traceLog((isApply ? 'お申し込み' : 'プラン変更') + ' 通信エラー ' + String(err && err.message));
     } finally {
       changing = false;
       overlay.classList.remove('open');
       cancelBtn.disabled = false;
     }
     if (message) {
-      traceLog('プラン変更NG ' + message);
+      traceLog((isApply ? 'お申し込みNG ' : 'プラン変更NG ') + message);
       errorEl.textContent = message;
-      if (kind === 'up') toggleAgreeBtn(); else execBtn.disabled = false;
+      if (isUpModal) toggleAgreeBtn(); else execBtn.disabled = false;
       return;
     }
-    traceLog('プラン変更OK ' + result.data.previousPlan + '→' + result.data.plan + (result.data.changed ? '' : '（変更なし）'));
+    const d = result.data;
+    traceLog(isApply ? 'お申し込みOK ' + plan
+      : 'プラン変更OK ' + d.previousPlan + '→' + d.plan + (d.changed ? '（今日から）' : d.scheduled ? '（予定 ' + (d.effectiveFrom || '') + '）' : '（変更なし）'));
     // プランで変わる保存済みの情報を捨てる（分析は、プランで表示が変わるため取り直す）
     try { sessionStorage.removeItem(ANALYTICS_CACHE_KEY); } catch (e) {}
     try { sessionStorage.removeItem(QUOTA_CACHE_KEY); } catch (e) {}
     ['downgrade-modal', 'terms-modal'].forEach(function (id) { document.getElementById(id).classList.remove('open'); });
     await fetchProfile(true, '新しいプランを読み込んでいます…');
-    document.getElementById('complete-title').textContent = result.data.plan + 'プランに変更しました。';
-    document.getElementById('complete-text').textContent = result.data.changed
-      ? '新しいプランは、すぐに使えます。デモのため、支払いは行いません。'
-      : 'すでに' + result.data.plan + 'プランでした。';
+    // ★liff_plan.html11：お申し込み・今日から変わった・次の更新日からの予定 で文を分ける
+    const periodText = periodInfo ? mdText(periodInfo.start) + '〜' + mdText(periodInfo.end) : '';
+    let title, text, icon = '🎉';
+    if (isApply) {
+      title = plan + 'プランのお申し込みが完了しました。';
+      text = '今日から使えます。お申し込みの日から1か月ごとの期間でご利用いただけます' + (periodText ? '（今の期間：' + periodText + '）' : '') + '。デモのため、支払いは行いません。';
+    } else if (d.changed) {
+      title = d.plan + 'プランに変更しました。';
+      text = '新しいプランは、今日から使えます。今日から新しい期間' + (periodText ? '（' + periodText + '）' : '') + 'が始まります。デモのため、支払いは行いません。';
+    } else if (d.scheduled) {
+      icon = '📅';
+      const from = mdText(d.effectiveFrom);
+      title = 'プランの変更を受け付けました。';
+      text = (from ? from + 'から' : '次の更新日から') + d.plan + 'プランに変わります。それまでは、今のプラン（' + (d.previousPlan || previous) + '）のままです。予定は、この画面で取り消せます。';
+    } else {
+      icon = 'ℹ️';
+      title = 'プランは変わっていません。';
+      text = '今のプラン（' + d.plan + '）のままです。';
+    }
+    document.getElementById('complete-icon').textContent = icon;
+    document.getElementById('complete-title').textContent = title;
+    document.getElementById('complete-text').textContent = text;
+    document.getElementById('complete-modal').classList.add('open');
+  }
+
+  // ★liff_plan.html11：プラン変更の予定を取り消す（書き込みのため、自動のやり直しはせず1回だけ送る）
+  async function cancelPlanChange() {
+    if (changing || !LINE_UID || !nextPlan) return;
+    if (!confirm(nextPlan + 'プランへの変更の予定を取り消します。今のプラン（' + currentPlan + '）のまま続きます。よろしいですか？')) return;
+    changing = true;
+    renderButtons();
+    renderPeriodCard();
+    const overlay = document.getElementById('loading-overlay');
+    document.getElementById('loading-text').textContent = '予定を取り消しています…';
+    overlay.classList.add('open');
+    traceLog('プラン変更の予定の取り消し 送信 ' + nextPlan);
+    let result = null, message = '';
+    try {
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'cancelPlanChange', lineUid: LINE_UID, params: {} })
+      });
+      result = await response.json();
+      if (!(result && result.success && result.data)) {
+        message = String((result && result.error) || '取り消しができませんでした。もう一度お試しください。');
+      }
+    } catch (err) {
+      message = '通信エラーが発生しました。取り消せたかどうかは、「🔄 更新」で確かめてください。';
+      traceLog('プラン変更の予定の取り消し 通信エラー ' + String(err && err.message));
+    } finally {
+      changing = false;
+      overlay.classList.remove('open');
+    }
+    if (message) {
+      traceLog('プラン変更の予定の取り消しNG ' + message);
+      renderButtons();
+      renderPeriodCard();
+      alert(message);
+      return;
+    }
+    traceLog('プラン変更の予定の取り消しOK' + (result.data.cancelled ? '' : '（予定なし）'));
+    try { sessionStorage.removeItem(QUOTA_CACHE_KEY); } catch (e) {}
+    await fetchProfile(true, '読み込んでいます…');
+    document.getElementById('complete-icon').textContent = '✅';
+    document.getElementById('complete-title').textContent = result.data.cancelled ? 'プラン変更の予定を取り消しました。' : 'プラン変更の予定はありませんでした。';
+    document.getElementById('complete-text').textContent = '今のプラン（' + (result.data.plan || currentPlan || '') + '）のまま続きます。';
     document.getElementById('complete-modal').classList.add('open');
   }
 
@@ -888,7 +1120,8 @@
       if (!liff.isLoggedIn()) { liff.login(); return; }
       LINE_UID = liff.getDecodedIDToken().sub;
       const cached = readQuotaCache();
-      if (cached && cached.plan !== undefined) {
+      // ★liff_plan.html11：期間（period）の入っていない古い保存は使わずに取り直す
+      if (cached && cached.plan !== undefined && cached.period !== undefined) {
         applyProfile(Object.assign({ found: true }, cached), cached.sns);
       } else {
         await fetchProfile(true);
