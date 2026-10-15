@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金11 - AiPost</title>
+  <title>プラン・料金12 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -108,6 +108,9 @@
     .period-card { display: none; background: var(--white); margin: 8px 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 12px; line-height: 1.7; word-break: normal; overflow-wrap: anywhere; }
     .period-card.show { display: block; }
     .period-card-title { font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+    .period-row { display: flex; gap: 10px; }
+    .period-row-label { flex-shrink: 0; width: 5.5em; font-weight: 700; color: var(--primary); }
+    .btn-scheduled { white-space: nowrap; }
     .period-next { display: none; margin-top: 8px; padding: 8px 10px; background: #e3f2fd; border-radius: 8px; color: #0d47a1; font-weight: 700; }
     .period-next.show { display: block; }
     .period-cancel-btn { display: block; width: 100%; margin-top: 8px; padding: 9px; border-radius: 8px; border: 1px solid #1565c0; background: #fff; color: #1565c0; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
@@ -344,7 +347,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo">プラン・料金11</span>
+    <span class="topbar-logo">プラン・料金12</span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -409,11 +412,10 @@
 
   <!-- ★liff_plan.html11：今の期間・プラン変更の予定・退会のお申し込み（プランの利用者） -->
   <div class="period-card" id="period-card">
-    <div class="period-card-title">📅 ご利用の期間</div>
     <div id="period-line"></div>
     <div class="period-next" id="period-next">
       <div id="period-next-text"></div>
-      <button type="button" class="period-cancel-btn" id="cancel-change-btn" onclick="cancelPlanChange()">プラン変更の予定を取り消す</button>
+      <button type="button" class="period-cancel-btn" id="cancel-change-btn" onclick="cancelPlanChange()">プラン変更を取り消す</button>
     </div>
     <div class="period-withdraw" id="period-withdraw"></div>
   </div>
@@ -447,11 +449,11 @@
 
   <!-- 注意事項 -->
   <div class="notice-box">
-    <div class="notice-box-title">⚠️ ご利用の期間とプラン変更について</div>
-    ご利用の期間は、プランをお申し込みいただいた日から1か月ごとです。予約枠は、期間ごとに数えます。<br>
-    有料プランどうしの変更と、FREEプランへの変更は、次の更新日から反映されます。今の期間は、今のプランのまま使えます。<br>
-    FREEプランから有料プランへの変更は、その日から反映されます。その日から新しい期間が始まります。<br>
-    変更の予定は、次の更新日の前日まで、この画面で取り消せます。<br>
+    <div class="notice-box-title">⚠️ ご利用期間とプラン変更について</div>
+    ご利用期間は、プランをお申し込みいただいた日から1か月ごとです。予約枠は、ご利用期間ごとに数えます。<br>
+    有料プランどうしの変更と、FREEプランへの変更は、次回更新日から適用されます。それまでは、現在のプランをそのままご利用いただけます。<br>
+    FREEプランから有料プランへの変更は、お申し込み後すぐに適用されます。ご利用期間は、その日から1か月ごとになります。<br>
+    変更の取り消しは、次回更新日の前日まで、この画面から行えます。<br>
     すでに入っている予約は、そのまま投稿されます。SNSの連携はそのまま残ります。投稿先に選べるSNSの数は、新しいプランに合わせて変わります。<br>
     ※ この画面はデモのため、支払いは行いません。
   </div>
@@ -491,7 +493,7 @@
         <p style="margin-bottom:10px;">料金はすべて税別で、お申し込みの日から1か月ごとのお支払いです。</p>
 
         <div style="font-weight:700;margin-bottom:4px;">第4条（プランの変更・解約）</div>
-        <p style="margin-bottom:10px;">プランの変更は、次の更新日から反映されます。ただし、FREEプランから有料プランへの変更は、その日から反映され、その日から新しい期間が始まります。退会は、今の期間の終わりに行います。日割りでの返金は行いません。</p>
+        <p style="margin-bottom:10px;">プランの変更は、次回更新日から適用されます。ただし、FREEプランから有料プランへの変更は、お申し込み後すぐに適用され、ご利用期間はその日から1か月ごとになります。退会は、現在のご利用期間の終了日に行います。日割りでの返金は行いません。</p>
 
         <div style="font-weight:700;margin-bottom:4px;">第8条（SNSアカウントの連携と安全管理）</div>
         <p style="margin-bottom:10px;">SNSのパスワードはお預かりしません。各SNSが発行した許可証（アクセストークン）は、暗号化して保存します。</p>
@@ -557,6 +559,10 @@
 
 <script>
   // ============================================
+  // ★liff_plan.html12：画面の文言を見直した（Kenさん決定。大手のサブスクの案内にならい、「いつから変わるか」と「現在のプランを
+  // 　いつまで使えるか」を年月日で書く）。期間のカードは「ご利用期間」「次回更新日」の2行にし、📅のマークをやめた（端末によって
+  // 　日めくりの絵になるため）。完了の窓は✅。表の「変更予定」のボタンは「予定」にした（狭い幅で2行に折れないため）。
+  // ============================================
   // ★liff_plan.html11：利用者ごとの「期間」（プランを申し込んだ日から1か月ずつ）に合わせた（Kenさん決定）。
   // ・getUserProfile の period（今の期間）・nextPeriod（次の期間）・nextPlan（変更予定のプラン）・withdrawal（退会のお申し込み）を
   // 　使い、表の上に「ご利用の期間」のカードを出す。変更の予定があれば、その予定と「プラン変更の予定を取り消す」ボタン
@@ -599,7 +605,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'プラン11';
+  const TRACE_SCREEN = 'プラン12';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -701,19 +707,28 @@
     const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
     return m ? Number(m[2]) + '月' + Number(m[3]) + '日' : '';
   }
-  // 'yyyy/MM/dd' → 'M/d'
-  function mdShort(s) {
+  // ★liff_plan.html12：'yyyy/MM/dd' → 'yyyy年M月d日'
+  function ymdText(s) {
     const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
-    return m ? Number(m[2]) + '/' + Number(m[3]) : '';
+    return m ? Number(m[1]) + '年' + Number(m[2]) + '月' + Number(m[3]) + '日' : '';
   }
-  // 今日から始まる新しい期間（今日〜1か月後の前の日。その日がない月は末日まで）を 'M月d日〜M月d日' で返す（GAS と同じ計算）
-  function newPeriodFromToday() {
+  // ★liff_plan.html12：期間を 'yyyy年M月d日〜M月d日'（年が変わる時は終わりにも年）で返す
+  function rangeText(start, end) {
+    const sameYear = String(start).slice(0, 4) === String(end).slice(0, 4);
+    return ymdText(start) + '〜' + (sameYear ? mdText(end) : ymdText(end));
+  }
+  // ★liff_plan.html12：今日から1か月後の日（その日がない月は末日。GAS と同じ計算）を 'yyyy年M月d日' で返す（次回更新日）
+  function nextRenewalFromToday() {
     const t = new Date();
     const y = t.getFullYear(), mo = t.getMonth() + 1, d = t.getDate();
     const last = new Date(y, mo + 1, 0).getDate();
     const next = new Date(y, mo, Math.min(d, last));
-    const end = new Date(next.getFullYear(), next.getMonth(), next.getDate() - 1);
-    return (t.getMonth() + 1) + '月' + d + '日〜' + (end.getMonth() + 1) + '月' + end.getDate() + '日';
+    return next.getFullYear() + '年' + (next.getMonth() + 1) + '月' + next.getDate() + '日';
+  }
+  // 'yyyy/MM/dd' → 'M/d'
+  function mdShort(s) {
+    const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
+    return m ? Number(m[2]) + '/' + Number(m[3]) : '';
   }
 
   function renderTable() {
@@ -748,7 +763,7 @@
       }
       if (i === cur) return '<td><button class="plan-btn btn-current" disabled>契約中</button></td>';
       // ★liff_plan.html11：変更の予定のプラン・退会のお申し込み中
-      if (p === nextPlan) return '<td><button class="plan-btn btn-scheduled" disabled>変更予定</button></td>';
+      if (p === nextPlan) return '<td><button class="plan-btn btn-scheduled" disabled>予定</button></td>';
       const off = (changing || withdrawRequested) ? ' disabled' : '';
       if (i > cur) return '<td><button class="plan-btn btn-upgrade"' + off + ' onclick="openUpgrade(\'' + p + '\')">アップ</button></td>';
       return '<td><button class="plan-btn btn-downgrade"' + off + ' onclick="openDowngrade(\'' + p + '\')">ダウン</button></td>';
@@ -769,15 +784,16 @@
       return;
     }
     card.classList.add('show');
-    const nextStart = nextPeriodInfo ? mdText(nextPeriodInfo.start) : '';
-    document.getElementById('period-line').textContent = periodInfo
-      ? '今の期間：' + mdText(periodInfo.start) + '〜' + mdText(periodInfo.end) + (nextStart ? '（次の更新日：' + nextStart + '）' : '')
-      : '今の期間を確かめられませんでした。「🔄 更新」でもう一度お試しください。';
+    // ★liff_plan.html12：「ご利用期間」「次回更新日」の2行
+    const nextStartFull = nextPeriodInfo ? ymdText(nextPeriodInfo.start) : '';
+    document.getElementById('period-line').innerHTML = periodInfo
+      ? '<div class="period-row"><span class="period-row-label">ご利用期間</span><span>' + escapeHtml(rangeText(periodInfo.start, periodInfo.end)) + '</span></div>' +
+        (nextStartFull ? '<div class="period-row"><span class="period-row-label">次回更新日</span><span>' + escapeHtml(nextStartFull) + '</span></div>' : '')
+      : escapeHtml('ご利用期間を確かめられませんでした。「🔄 更新」でもう一度お試しください。');
     const next = document.getElementById('period-next');
     if (nextPlan && PLANS.indexOf(nextPlan) !== -1) {
       document.getElementById('period-next-text').textContent =
-        (nextStart ? nextStart + 'から' : '次の更新日から') + nextPlan + 'プランに変わる予定です。' +
-        (periodInfo ? mdText(periodInfo.end) + 'までは、今のプラン（' + currentPlan + '）のままです。' : '');
+        nextPlan + 'プランへの変更を受け付けています。' + (nextStartFull ? nextStartFull + 'から適用されます。' : '次回更新日から適用されます。');
       document.getElementById('cancel-change-btn').disabled = changing;
       next.classList.add('show');
     } else {
@@ -785,8 +801,9 @@
     }
     const w = document.getElementById('period-withdraw');
     if (withdrawRequested) {
-      w.textContent = '退会のお申し込み中です。' + (periodInfo ? mdText(periodInfo.end) + 'まで、今までどおりご利用いただけます。' : '') +
-        '取り消す時は、設定画面の「退会のお申し込みを取り消す」を押してください。';
+      w.textContent = '退会のお申し込みを受け付けています。' +
+        (periodInfo ? '現在のご利用期間の終了日（' + ymdText(periodInfo.end) + '）まで、今までどおりご利用いただけます。' : '') +
+        'プランを変更するには、先に設定画面で退会のお申し込みを取り消してください。';
       w.classList.add('show');
     } else {
       w.classList.remove('show');
@@ -918,21 +935,29 @@
     if (changing || withdrawRequested || !currentPlan) return;
     // ★liff_plan.html11：FREE→有料は今日から。有料→有料は次の更新日から
     let note;
+    // ★liff_plan.html12：文言の見直し
+    const today = new Date();
+    const todayMd = (today.getMonth() + 1) + '月' + today.getDate() + '日';
     if (currentPlan === 'FREE') {
-      note = '今日から使えます。今日から新しい期間（' + newPeriodFromToday() + '）が始まります。';
+      note = 'お申し込み後、すぐに' + plan + 'プランをご利用いただけます。ご利用期間は、本日（' + todayMd + '）から1か月ごとになります。';
     } else {
-      const from = nextPeriodInfo ? mdText(nextPeriodInfo.start) : '';
-      note = (from ? from + 'から' : '次の更新日から') + plan + 'プランに変わります。' +
-        (periodInfo ? mdText(periodInfo.end) + 'までは、今のプラン（' + currentPlan + '）のままです。' : '今の期間は、今のプランのままです。');
+      note = scheduledNote(plan);
     }
     openTermsModal(plan, 'up', '📄 プラン変更の確認', note, 'プランを変更する');
   }
   // ★liff_plan.html11：お試し中の人のお申し込み
   function openApply(plan) {
     if (changing || !isTrial) return;
+    const today = new Date();
     openTermsModal(plan, 'apply', '📄 プランのお申し込み',
-      '今日から使えます。お申し込みの日から1か月ごとの期間（今の期間：' + newPeriodFromToday() + '）でご利用いただけます。',
+      'お申し込み後、すぐに' + plan + 'プランをご利用いただけます。ご利用期間は、本日（' + (today.getMonth() + 1) + '月' + today.getDate() + '日）から1か月ごとになります。',
       'このプランを申し込む');
+  }
+  // ★liff_plan.html12：次回更新日から変わる時の確認の文
+  function scheduledNote(plan) {
+    const from = nextPeriodInfo ? ymdText(nextPeriodInfo.start) : '';
+    return (from ? '次回更新日（' + from + '）から、' : '次回更新日から、') + plan + 'プランが適用されます。' +
+      (periodInfo ? ymdText(periodInfo.end) + 'までは、' : 'それまでは、') + '現在の' + currentPlan + 'プランをそのままご利用いただけます。';
   }
   function toggleAgreeBtn() {
     const btn = document.getElementById('terms-agree-btn');
@@ -959,11 +984,9 @@
     const lines = downgradeWarnings(currentPlan, plan);
     document.getElementById('down-warn-items').innerHTML = lines.map(escapeHtml).join('<br>');
     // ★liff_plan.html11：ダウングレードは次の更新日から
-    const from = nextPeriodInfo ? mdText(nextPeriodInfo.start) : '';
-    document.getElementById('down-note').textContent =
-      (from ? from + 'から' : '次の更新日から') + plan + 'プランに変わります。' +
-      (periodInfo ? mdText(periodInfo.end) + 'までは、今のプラン（' + currentPlan + '）のまま使えます。' : '今の期間は、今のプランのまま使えます。') +
-      'すでに入っている予約は、そのまま投稿されます。' + (from ? from + 'から' : '次の更新日から') + 'の期間の予約枠は、' + plan + 'プランの予約枠で数えます。';
+    const from = nextPeriodInfo ? ymdText(nextPeriodInfo.start) : '';
+    document.getElementById('down-note').textContent = scheduledNote(plan) +
+      'すでに入っている予約は、そのまま投稿されます。' + (from ? from + 'から' : '次回更新日から') + 'の予約枠は、' + plan + 'プランの予約枠で数えます。';
     document.getElementById('down-error').textContent = '';
     document.getElementById('down-exec-btn').disabled = false;
     document.getElementById('downgrade-modal').classList.add('open');
@@ -1031,23 +1054,26 @@
     ['downgrade-modal', 'terms-modal'].forEach(function (id) { document.getElementById(id).classList.remove('open'); });
     await fetchProfile(true, '新しいプランを読み込んでいます…');
     // ★liff_plan.html11：お申し込み・今日から変わった・次の更新日からの予定 で文を分ける
-    const periodText = periodInfo ? mdText(periodInfo.start) + '〜' + mdText(periodInfo.end) : '';
-    let title, text, icon = '🎉';
+    // ★liff_plan.html12：文言の見直し（次回更新日は、読み直したプロフィールの次の期間の開始日）
+    const renewal = nextPeriodInfo ? ymdText(nextPeriodInfo.start) : nextRenewalFromToday();
+    let title, text, icon = '✅';
     if (isApply) {
       title = plan + 'プランのお申し込みが完了しました。';
-      text = '今日から使えます。お申し込みの日から1か月ごとの期間でご利用いただけます' + (periodText ? '（今の期間：' + periodText + '）' : '') + '。デモのため、支払いは行いません。';
+      text = '本日からご利用いただけます。次回更新日は' + renewal + 'です。';
     } else if (d.changed) {
-      title = d.plan + 'プランに変更しました。';
-      text = '新しいプランは、今日から使えます。今日から新しい期間' + (periodText ? '（' + periodText + '）' : '') + 'が始まります。デモのため、支払いは行いません。';
+      title = 'プラン変更が完了しました。';
+      text = d.plan + 'プランを、本日からご利用いただけます。次回更新日は' + renewal + 'です。';
     } else if (d.scheduled) {
-      icon = '📅';
-      const from = mdText(d.effectiveFrom);
-      title = 'プランの変更を受け付けました。';
-      text = (from ? from + 'から' : '次の更新日から') + d.plan + 'プランに変わります。それまでは、今のプラン（' + (d.previousPlan || previous) + '）のままです。予定は、この画面で取り消せます。';
+      const from = ymdText(d.effectiveFrom);
+      const lastDay = periodInfo ? periodInfo.end : '';
+      title = 'プラン変更を受け付けました。';
+      text = (from ? from + 'から、' : '次回更新日から、') + d.plan + 'プランが適用されます。' +
+        (lastDay ? ymdText(lastDay) + 'までは、' : 'それまでは、') + '現在の' + (d.previousPlan || previous) + 'プランをそのままご利用いただけます。' +
+        '変更の取り消しは、' + (lastDay ? mdText(lastDay) + 'まで、' : '次回更新日の前日まで、') + 'この画面から行えます。';
     } else {
       icon = 'ℹ️';
       title = 'プランは変わっていません。';
-      text = '今のプラン（' + d.plan + '）のままです。';
+      text = '現在の' + d.plan + 'プランを、引き続きご利用いただけます。';
     }
     document.getElementById('complete-icon').textContent = icon;
     document.getElementById('complete-title').textContent = title;
@@ -1058,7 +1084,7 @@
   // ★liff_plan.html11：プラン変更の予定を取り消す（書き込みのため、自動のやり直しはせず1回だけ送る）
   async function cancelPlanChange() {
     if (changing || !LINE_UID || !nextPlan) return;
-    if (!confirm(nextPlan + 'プランへの変更の予定を取り消します。今のプラン（' + currentPlan + '）のまま続きます。よろしいですか？')) return;
+    if (!confirm(nextPlan + 'プランへの変更を取り消します。現在の' + currentPlan + 'プランを、引き続きご利用いただけます。よろしいですか？')) return;
     changing = true;
     renderButtons();
     renderPeriodCard();
@@ -1094,8 +1120,8 @@
     try { sessionStorage.removeItem(QUOTA_CACHE_KEY); } catch (e) {}
     await fetchProfile(true, '読み込んでいます…');
     document.getElementById('complete-icon').textContent = '✅';
-    document.getElementById('complete-title').textContent = result.data.cancelled ? 'プラン変更の予定を取り消しました。' : 'プラン変更の予定はありませんでした。';
-    document.getElementById('complete-text').textContent = '今のプラン（' + (result.data.plan || currentPlan || '') + '）のまま続きます。';
+    document.getElementById('complete-title').textContent = result.data.cancelled ? 'プラン変更を取り消しました。' : 'プラン変更の予定はありませんでした。';
+    document.getElementById('complete-text').textContent = '現在の' + (result.data.plan || currentPlan || '') + 'プランを、引き続きご利用いただけます。';
     document.getElementById('complete-modal').classList.add('open');
   }
 
