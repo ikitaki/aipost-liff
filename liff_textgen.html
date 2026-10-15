@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成151 - AiPost</title>
+<title>投稿文作成152 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -41,7 +41,7 @@
     top: 0;
     z-index: 100;
   }
-  .header-logo { font-size: 15px; font-weight: 700; }
+  .header-logo { font-size: 15px; font-weight: 700; min-width: 0; }
   .subbar {
     background: #13195f;
     padding: 6px 14px;
@@ -51,7 +51,9 @@
     top: 40px;
     z-index: 99;
   }
-  .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; }
+  .header-sub { font-size: 11px; opacity: 0.75; margin-left: auto; white-space: nowrap; overflow: hidden; min-width: 0; }
+  /* ★liff_textgen.html152：言葉の途中で折り返さない */
+  .nowrap { white-space: nowrap; }
 
   /* ステップナビ */
   /* タブナビ（投稿作成／ガイド） */
@@ -125,14 +127,14 @@
   /* ハッシュタグ */
   .hashtag-desc { font-size: 12px; color: var(--text-sub); margin: -4px 0 10px; }
   .hashtag-x-status {
-    display: flex; align-items: center; gap: 6px; border-radius: 8px;
+    display: flex; align-items: center; gap: 0 2px; flex-wrap: wrap; border-radius: 8px;
     padding: 6px 10px; font-size: 11px; font-weight: 700; margin-bottom: 10px;
   }
   .hashtag-x-status.ok { background: #e8f5e9; color: #2e7d32; }
   .hashtag-x-status.error { background: #ffebee; color: var(--danger); }
   .hashtag-header { display: flex; align-items: center; margin-bottom: 4px; }
   .hashtag-header-spacer { flex: 1; }
-  .hashtag-checks { display: flex; gap: 6px; width: 150px; justify-content: space-around; flex-shrink: 0; }
+  .hashtag-checks { display: flex; gap: 6px; justify-content: space-around; flex-shrink: 0; } /* ★liff_textgen.html152：幅を決め打ちにせず、列の分だけにした（文字の大きい端末で入力欄がつぶれないように） */
   .hashtag-col { width: 30px; text-align: center; font-size: 13px; }
   .hashtag-col-icon { display: block; }
   .hashtag-col-limit { display: block; font-size: 8px; color: var(--text-light); font-weight: 400; white-space: nowrap; margin-top: 1px; }
@@ -438,7 +440,19 @@
   .modal-btn { width: 100%; padding: 13px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
   .modal-btn-primary { background: var(--primary); color: white; }
   .modal-btn-success { background: var(--success); color: white; }
-  .modal-btn-cancel { background: var(--bg); color: var(--text-sub); }
+  .modal-btn-cancel { background: var(--bg); color: var(--text-sub); border: 1px solid var(--border); }
+  /* ★liff_textgen.html152：窓をプラン画面・設定画面と同じ形にそろえた（見出しは左寄せ・完了は✅・やめるは灰色） */
+  .modal-title { text-align: left; }
+  .modal-done { text-align: center; }
+  .modal-done-icon { font-size: 48px; margin-bottom: 12px; }
+  .modal-done-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .modal-done-text { font-size: 13px; color: var(--text-sub); line-height: 1.9; margin-bottom: 16px; }
+  .modal-btn-danger { background: var(--danger); color: white; }
+  .trial-card { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #1b5e20; line-height: 1.7; }
+  .trial-card .modal-btn { margin: 10px 0 0; padding: 10px; font-size: 13px; }
+  .unregistered-card { background: #fff3e0; border: 1px solid #ffcc80; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #e65100; line-height: 1.7; }
+  .limit-toast { display: none; position: fixed; left: 16px; right: 16px; bottom: 90px; background: rgba(33,33,33,0.92); color: #fff; font-size: 13px; line-height: 1.7; padding: 12px 14px; border-radius: 10px; z-index: 3000; }
+  .limit-toast.show { display: block; }
 
   /* 予約確認モーダルの内容 */
   .confirm-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
@@ -771,7 +785,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo">投稿文作成151</span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成152</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -824,7 +838,7 @@
     <span id="plan-price">¥1,280/月</span>
     <!-- ★liff_textgen.html123：デモの固定文字「次回更新：2026年7月1日」を削除した。決済（Stripe）実装時に、有料プランのみ実際の次回請求日を表示する -->
   </div>
-  <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
+  <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;white-space:nowrap;">
     <span>連携中：</span>
     <span id="subbar-sns-x" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span id="subbar-sns-ig" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
@@ -844,6 +858,15 @@
   <div id="tab-form" class="tab-panel active">
 
   <div class="section-title">投稿文作成</div>
+
+  <!-- ★liff_textgen.html152：お試し中（プラン未申し込み）の案内・登録が見つからない時の案内 -->
+  <div class="trial-card" id="trial-card" style="display:none;">
+    お試し中は、<wbr>投稿文と<wbr>ハッシュタグの<wbr>作成を<wbr>1日<span id="trial-daily-limit">20</span>回まで<wbr>ご利用いただけます。<wbr>SNSへの<wbr>予約投稿は、<wbr>プランを<wbr>お申し込みいただくと<wbr>ご利用いただけます。
+    <button type="button" class="modal-btn modal-btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
+  </div>
+  <div class="unregistered-card" id="unregistered-card" style="display:none;">
+    ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr>「登録」タブで<wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
+  </div>
 
   <!-- ★liff_textgen.html136：この画面でできることの案内（Kenさん指示） -->
   <div class="page-intro">
@@ -1097,7 +1120,7 @@
   <div class="card" style="padding:0;overflow:hidden;">
     <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);">
       <div class="card-title" style="margin-bottom:0;">⑩ 投稿日を<wbr>選ぶ</div>
-      <p class="step-hint" style="margin:6px 0 0;">予約できるのは<wbr>翌月末までです。</p>
+      <p class="step-hint" id="cal-range-hint" style="margin:6px 0 0;">予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日までです。</p>
     </div>
     <div class="calendar-wrap">
       <div class="cal-header">
@@ -1202,7 +1225,7 @@
     <div class="accordion-body" id="acc-t6">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>自分で<wbr>直接入力する<wbr>ことも<wbr>できます。<wbr>すでに<wbr>投稿文が<wbr>ある<wbr>時に<wbr>もう<wbr>一度<wbr>作成すると、<wbr>上書きして<wbr>よいかの<wbr>確認が<wbr>出ます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限と<wbr>数え方</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文の<wbr>上限は<wbr>全角<wbr>140文字です<wbr>（FREEプランは<wbr>70文字）。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5文字、<wbr>絵文字は<wbr>1文字と<wbr>して<wbr>数えます。<wbr>上限を<wbr>超える<wbr>分は<wbr>入力できません。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文の<wbr>上限は<wbr>全角140文字で<wbr>す（FREEプランは<wbr>70文字）<wbr>。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5文字、<wbr>絵文字は<wbr>1文字と<wbr>して数えます。<wbr>上限を<wbr>超える分は<wbr>入力で<wbr>きません。<wbr>また、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて全角140文字まで<wbr>で<wbr>す（⑧を<wbr>参照）<wbr>。<wbr></div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文が<wbr>全角140文字である<wbr>理由</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AiPostでは、<wbr>同じ<wbr>投稿文・<wbr>同じ<wbr>画像で<wbr>あれば、<wbr>複数の<wbr>SNSへの<wbr>同時投稿を<wbr>「1投稿」と<wbr>して<wbr>数えます。<wbr>その<wbr>ためには<wbr>投稿文が<wbr>すべての<wbr>SNSで<wbr>共通の<wbr>1つである<wbr>必要が<wbr>あり、<wbr>文字数の<wbr>制限が<wbr>最も<wbr>厳しい<wbr>X<wbr>（全角<wbr>140文字＝半角280文字）に<wbr>合わせる<wbr>ことで、<wbr>どの<wbr>SNSを<wbr>選んでも<wbr>確実に<wbr>投稿できるように<wbr>しています。</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
@@ -1275,10 +1298,10 @@
           <div style="font-size:11px;color:#555;line-height:1.7;">Threadsでは、<wbr>2個目以降の<wbr>ハッシュタグは<wbr>リンクにならず、<wbr>ただの<wbr>文字に<wbr>なってしまう<wbr>ためです。</div>
         </div>
       </div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xの<wbr>文字数の<wbr>数え方</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xでは、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて<wbr>140文字以内に<wbr>する<wbr>必要が<wbr>あります。<wbr>投稿文と<wbr>ハッシュタグの<wbr>間には<wbr>改行が<wbr>2つ<wbr>入り、<wbr>各ハッシュタグには<wbr>半角の<wbr>「#」が<wbr>付く<wbr>ため、<wbr>入力した<wbr>文字数より<wbr>少し<wbr>多く<wbr>数えられます<wbr>（半角は<wbr>0.5文字）。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xだけ文字数オーバーの<wbr>お知らせが<wbr>出る<wbr>理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">Xだけは、<wbr>投稿文と<wbr>ハッシュタグが<wbr>同じ<wbr>140文字の<wbr>枠を<wbr>分け合う<wbr>ため、<wbr>ハッシュタグを<wbr>付けた<wbr>分だけ投稿文の<wbr>枠が<wbr>減ります。<wbr>合計が<wbr>140文字を<wbr>超えると、<wbr>Xだけ投稿できなくなります<wbr>（ほかの<wbr>SNSには<wbr>通常どおり予約できます）。<wbr>Instagram・Threadsは<wbr>上限に<wbr>十分な<wbr>余裕が<wbr>ある<wbr>ため、<wbr>影響を<wbr>受けません。<wbr>数えるのは、<wbr>Xに<wbr>チェックした<wbr>ハッシュタグだけです。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文と<wbr>合わせた<wbr>文字数の<wbr>上限</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文と<wbr>ハッシュタグを<wbr>合わせて、<wbr>全角140文字（半角280文字）<wbr>まで<wbr>で<wbr>す。<wbr>全ての<wbr>SNS・全ての<wbr>プランで<wbr>同じで<wbr>す。<wbr>投稿文と<wbr>ハッシュタグの<wbr>間の<wbr>改行2つと、<wbr>ハッシュタグに<wbr>付く半角の<wbr>「#」・空白も<wbr>数えます（半角は<wbr>0.5文字）<wbr>。<wbr></div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 AIで<wbr>作成した<wbr>時の<wbr>チェック</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">X 2つ・Instagram 5つ・Threads 1つに<wbr>チェックを<wbr>入れます。<wbr>投稿文と<wbr>合わせて140文字を<wbr>超える場合は、<wbr>下の<wbr>ハッシュタグからチェックを<wbr>外して表示します。<wbr>チェックを<wbr>足して140文字を<wbr>超える時は、<wbr>付けずに<wbr>お知らせします。<wbr></div>
     </div>
   </div>
 
@@ -1313,18 +1336,18 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t10')">⑩ 投稿日を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t10">▶</span></div>
     <div class="accordion-body" id="acc-t10">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿する<wbr>日と<wbr>時間を<wbr>選びます。<wbr>予約できるのは<wbr>今月と<wbr>翌月<wbr>（翌月末まで）です。<wbr>カレンダーの<wbr>各日には、<wbr>その<wbr>日の<wbr>予約の<wbr>件数が<wbr>表示されます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿する日と<wbr>時間を<wbr>選びます。<wbr>予約で<wbr>きるの<wbr>は、<wbr>次の<wbr>ご利用期間の<wbr>終了日まで<wbr>で<wbr>す（ご利用期間は、<wbr>プランを<wbr>お申し込みいただいた日から1か月ごと<wbr>で<wbr>す）<wbr>。<wbr>カレンダーの<wbr>各日に<wbr>は、<wbr>その<wbr>日の<wbr>予約の<wbr>件数が<wbr>表示されます。<wbr></div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿の<wbr>時間</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">選んだ<wbr>時間に<wbr>なると、<wbr>自動で<wbr>投稿されます。<wbr>順番に<wbr>処理する<wbr>ため、<wbr>数分ほどずれる<wbr>ことがあります<wbr>（<wbr>「13時ごろ」のように<wbr>表示しているのは<wbr>その<wbr>ためです）。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 月ごとの<wbr>予約の<wbr>枠</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">予約の<wbr>枠は、<wbr>投稿する<wbr>日の<wbr>月ごとに<wbr>数えます<wbr>（FREE 4件／PERSONAL 8件／LITE 10件／STANDARD 20件／PRO 40件）。<wbr>複数の<wbr>SNSに<wbr>同時に<wbr>投稿しても、<wbr>1回の<wbr>予約で<wbr>1件です。<wbr>予約を<wbr>キャンセルすると、<wbr>その月の<wbr>枠が<wbr>戻ります。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ご利用期間ごとの<wbr>予約の<wbr>枠</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">予約の<wbr>枠は、<wbr>投稿する日が<wbr>入るご利用期間ごと<wbr>に<wbr>数えます（FREE 4件／PERSONAL 8件／LITE 10件／STANDARD 20件／PRO 40件）<wbr>。<wbr>複数の<wbr>SNSに同時に<wbr>投稿しても、<wbr>1回の<wbr>予約で<wbr>1件で<wbr>す。<wbr>予約を<wbr>キャンセルすると、<wbr>その<wbr>期間の<wbr>枠が<wbr>戻ります。<wbr></div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t11')">内容を<wbr>確認して<wbr>予約する<span class="accordion-arrow" id="arr-acc-t11">▶</span></div>
     <div class="accordion-body" id="acc-t11">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その月の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿文を見る」を<wbr>押すと、<wbr>ハッシュタグを<wbr>含めて、<wbr>SNSごとに<wbr>実際に<wbr>投稿される<wbr>文章を<wbr>確かめられます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その<wbr>ご利用期間の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿文を見る」を<wbr>押すと、<wbr>ハッシュタグを<wbr>含めて、<wbr>SNSごとに<wbr>実際に<wbr>投稿される<wbr>文章を<wbr>確かめられます。</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「予約を確定する」を<wbr>押すと<wbr>予約が<wbr>完了します。<wbr>この<wbr>時点で<wbr>初めて<wbr>予約と<wbr>して<wbr>保存されます。<wbr>直したい<wbr>場合は<wbr>「修正する」を<wbr>押すと、<wbr>入力した<wbr>内容の<wbr>まま<wbr>戻れます。<wbr>予約した後は、<wbr>予約確認画面で<wbr>投稿文の<wbr>修正・画像の<wbr>差し替え・キャンセルが<wbr>できます。</div>
     </div>
   </div>
@@ -1334,15 +1357,15 @@
 </div>
 
 <!-- ===== 画像キャンセル選択モーダル ===== -->
+<!-- ★liff_textgen.html152：ほかの窓と同じ形にした（見出しは左寄せ・ボタンの絵文字を外した・「キャンセル」→「やめる」） -->
 <div id="img-cancel-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1010;align-items:flex-end;">
-  <div style="background:#fff;border-radius:16px 16px 0 0;padding:20px 16px;width:100%;box-sizing:border-box;">
-    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px;text-align:center;">画像の選択をどうしますか？</div>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <button id="img-cancel-reupload" onclick="imgCancelReupload()" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 画像を選び直す</button>
-      <button id="img-cancel-retrim" onclick="imgCancelRetrim()" style="width:100%;padding:12px;background:#f5f5f5;color:var(--text);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">✂️ トリミングをやり直す</button>
-      <button id="img-cancel-none" onclick="imgCancelNone()" style="width:100%;padding:12px;background:#fff5f5;color:#e53935;border:1px solid #ffcdd2;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">🚫 削除して画像なしにする</button>
-      <button onclick="closeImgCancelModal()" style="width:100%;padding:10px;background:transparent;color:var(--text-sub);border:none;border-radius:10px;font-size:12px;cursor:pointer;">キャンセル</button>
-    </div>
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">画像をどうしますか？</div>
+    <button id="img-cancel-reupload" class="modal-btn modal-btn-primary" onclick="imgCancelReupload()">画像を選び直す</button>
+    <button id="img-cancel-retrim" class="modal-btn modal-btn-cancel" style="color:var(--text);" onclick="imgCancelRetrim()">トリミングをやり直す</button>
+    <button id="img-cancel-none" class="modal-btn modal-btn-danger" onclick="imgCancelNone()">画像を外す</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeImgCancelModal()">やめる</button>
   </div>
 </div>
 
@@ -1399,10 +1422,10 @@
 <div class="modal-overlay" id="overwrite-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title">⚠️ 入力中の投稿文があります</div>
-    <div class="modal-desc">AIが作成した投稿文で上書きされます。現在入力中の投稿文は消えますがよろしいですか？</div>
+    <div class="modal-title">入力中の投稿文があります</div>
+    <div class="modal-desc">AIが作成した投稿文で上書きします。今入力している投稿文は消えますが、よろしいですか？</div>
     <button class="modal-btn modal-btn-primary" onclick="executeGenerate()">上書きして作成する</button>
-    <button class="modal-btn modal-btn-cancel" onclick="closeModal('overwrite-modal')">キャンセル</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeModal('overwrite-modal')">やめる</button>
   </div>
 </div>
 
@@ -1410,13 +1433,13 @@
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title">📋 予約内容の確認</div>
+    <div class="modal-title">予約内容の確認</div>
     <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:16px;">
       <div class="confirm-row"><span class="confirm-key">投稿先</span><span class="confirm-val" id="confirm-sns">Instagram・X</span></div>
       <div id="confirm-url-note" style="display:none;font-size:11px;color:#c62828;background:#ffebee;border-radius:6px;padding:6px 8px;margin:4px 0;line-height:1.6;white-space:pre-line;"></div>
       <div class="confirm-row"><span class="confirm-key">投稿日時</span><span class="confirm-val" id="confirm-date">6月17日 13時ごろ</span></div>
       <div class="confirm-row"><span class="confirm-key">画像</span><span class="confirm-val" id="confirm-image">抹茶ラテ</span></div>
-      <div class="confirm-row"><span class="confirm-key">予約残数</span><span class="confirm-val" id="confirm-remain"></span></div>
+      <div class="confirm-row"><span class="confirm-key">予約枠の残り</span><span class="confirm-val" id="confirm-remain"></span></div>
     </div>
     <!-- ★liff_textgen.html138：押せる所だと分かりにくかったため、枠付きのボタンにした（Kenさん指示・A案）。押すと開き、文字が「閉じる ▲」に変わる -->
     <button type="button" class="preview-toggle" id="confirm-preview-toggle" onclick="toggleConfirmPreview()">📄 SNSごとの投稿文を見る <span class="pt-arrow">▼</span></button>
@@ -1428,19 +1451,29 @@
 
 <!-- 予約完了モーダル -->
 <div class="modal-overlay" id="complete-modal">
-  <div class="modal" style="text-align:center;">
+  <!-- ★liff_textgen.html152：ほかの画面と同じ完了の窓（✅・改行を入れない） -->
+  <div class="modal modal-done">
     <div class="modal-handle"></div>
-    <div style="font-size:48px;margin-bottom:12px;">🎉</div>
-    <div style="font-size:18px;font-weight:700;margin-bottom:8px;">予約が完了しました！</div>
-    <p style="font-size:13px;color:var(--text-sub);line-height:1.9;margin-bottom:16px;">
-      <span id="complete-msg">6月17日（水）13時ごろに<br>Instagram・Xへ自動投稿されます。</span>
-    </p>
-    <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:12px;color:var(--text-sub);text-align:left;line-height:1.8;margin-bottom:8px;">
-      📋 予約確認から確認・編集・キャンセルができます
-    </div>
+    <div class="modal-done-icon">✅</div>
+    <div class="modal-done-title">予約が完了しました。</div>
+    <p class="modal-done-text" id="complete-msg"></p>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('complete-modal')">閉じる</button>
   </div>
 </div>
+
+<!-- ★liff_textgen.html152：お試し中に「内容を確認する」を押した時の窓 -->
+<div class="modal-overlay" id="trial-reserve-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">予約は、プランのお申し込み後にご利用いただけます</div>
+    <div class="modal-desc">作成した投稿文は、このまま画面に残ります。プランをお申し込みいただくと、SNSと連携して予約できるようになります。</div>
+    <button class="modal-btn modal-btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
+    <button class="modal-btn modal-btn-cancel" onclick="closeModal('trial-reserve-modal')">やめる</button>
+  </div>
+</div>
+
+<!-- ★liff_textgen.html152：ハッシュタグを付けると文字数の上限を超える時のお知らせ（数秒で消える） -->
+<div class="limit-toast" id="limit-toast"></div>
 
 <!-- トースト -->
 
@@ -1459,6 +1492,8 @@
 let CHAR_LIMIT = 140; // 全角換算の文字数上限（PERSONAL以上：140字＝半角280字相当）※プランにより可変
 const PLAN_CHAR_LIMIT = { FREE: 70, PERSONAL: 140, LITE: 140, STANDARD: 140, PRO: 140 };
 const X_LIMIT = 140;
+// ★liff_textgen.html152：本文とハッシュタグを合わせた上限（全SNS・全プラン共通。Kenさん決定。GASの投稿予約gs_33と同じ）
+const POST_TOTAL_LIMIT = 140;
 
 // ===== LIFF初期化 =====
 let LINE_UID = null;
@@ -1507,6 +1542,16 @@ function readQuotaCache() {
 // ★liff_textgen.html99：動作確認が取れたため、一時的な確認用
 // 　表示（showDebugCacheBadge）を削除した。
 
+// ★liff_textgen.html152：お試し中の今日の残りの回数だけを、保存済みの情報に書き足す
+function writeQuotaTrial(trial) {
+  try {
+    const cache = readQuotaCache();
+    if (!cache) return;
+    cache.trial = trial;
+    sessionStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(cache));
+  } catch (err) {}
+}
+
 function writeQuotaCache(profileData, sns) {
   try {
     const cache = Object.assign({}, profileData, { sns: sns || null, fetchedAt: Date.now() });
@@ -1545,7 +1590,10 @@ function applySnsConnectionStatus(sns) {
   const note = document.getElementById('sns-unconnected-note');
   if (note) {
     if (unconnected.length > 0) {
-      note.textContent = '⚠️ ' + unconnected.join('・') + 'は連携されていません（設定画面から連携できます）';
+      // ★liff_textgen.html152：お試し中は、プランのお申し込みでSNSを連携できることを案内する
+      note.textContent = IS_TRIAL
+        ? '⚠️ SNSの連携は、プランをお申し込みいただくとご利用いただけます'
+        : '⚠️ ' + unconnected.join('・') + 'は連携されていません（設定画面から連携できます）';
       note.style.display = 'block';
     } else {
       note.style.display = 'none';
@@ -1565,21 +1613,78 @@ function applySnsConnectionStatus(sns) {
 }
 
 function applyQuotaFromCache(cache) {
+  // ★liff_textgen.html152：登録が見つからない時・お試し中（未入会）の表示に対応した。残り予約枠に期間の終了日を付けた
+  if (cache && cache.found === false) {
+    applyNotRegistered();
+    return;
+  }
   const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
-  if (validPlans.includes(cache.plan)) {
+  if (cache.plan === '未入会') {
+    applyTrial(cache.trial);
+  } else if (validPlans.includes(cache.plan)) {
     applyPlan(cache.plan);
   }
   const el = document.getElementById('reservation-quota');
-  if (el && typeof cache.remainingReservable === 'number') {
-    // ★liff_textgen.html117：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
-    // ★liff_textgen.html147：「残り投稿可能数」→「残り予約枠」（予約枠に言葉をそろえる。Kenさん決定）
-    el.textContent = '残り予約枠' + Math.max(0, cache.remainingReservable) + '件';
+  if (el) {
+    if (IS_TRIAL) {
+      el.textContent = '';
+    } else if (typeof cache.remainingReservable === 'number') {
+      // ★liff_textgen.html117：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
+      // ★liff_textgen.html147：「残り投稿可能数」→「残り予約枠」（予約枠に言葉をそろえる。Kenさん決定）
+      const endMd = (cache.period && cache.period.end) ? tgSlashMd(cache.period.end) : '';
+      el.textContent = '残り予約枠' + Math.max(0, cache.remainingReservable) + '件' + (endMd ? '（' + endMd + 'まで）' : '');
+    }
   }
   applySnsConnectionStatus(cache.sns);
   // ★liff_textgen.html120：プランと連携状況の両方を反映した後で、投稿先の数をプランの上限に合わせる
   // 　（未連携のSNSのチェックが先に外れてから数えるため、ここで1回だけ行う）
   enforcePostSnsLimit();
   updateUserGenreFromProfile(cache);
+  // ★liff_textgen.html152：予約できる日（次のご利用期間の終了日まで）をカレンダーと案内に反映する
+  updateCalendarRangeHint();
+  buildCalendar();
+}
+
+// ★liff_textgen.html152：お試し中（プラン未申し込み）の表示。投稿文の作成だけ使える（1日の回数あり）。本文の上限は140字
+let IS_TRIAL = false;
+let NOT_REGISTERED = false;
+function applyTrial(trial) {
+  IS_TRIAL = true;
+  currentPlanName = '未入会';
+  currentPostSnsLimit = 3;
+  const badge = document.getElementById('plan-badge');
+  badge.textContent = 'お試し中';
+  updateTrialRemaining(trial);
+  document.getElementById('sns-plan-note').style.display = 'none';
+  const xItem = document.getElementById('sns-item-x');
+  xItem.classList.remove('disabled');
+  CHAR_LIMIT = 140;
+  document.getElementById('post-textarea').style.minHeight = '280px';
+  document.getElementById('char-limit-label').textContent = '上限140字（半角280字）';
+  if (trial && typeof trial.dailyLimit === 'number') document.getElementById('trial-daily-limit').textContent = String(trial.dailyLimit);
+  document.getElementById('trial-card').style.display = 'block';
+  updateHashtagColumns();
+  updateCharCount();
+}
+function updateTrialRemaining(trial) {
+  document.getElementById('plan-price').textContent = (trial && typeof trial.remainingToday === 'number') ? '今日あと' + trial.remainingToday + '回作成できます' : '';
+}
+// ★liff_textgen.html152：登録が見つからない時の表示（設定画面で店舗情報を保存すると登録される）
+function applyNotRegistered() {
+  NOT_REGISTERED = true;
+  document.getElementById('plan-badge').textContent = '未登録';
+  document.getElementById('plan-price').textContent = '';
+  const el = document.getElementById('reservation-quota');
+  if (el) el.textContent = '';
+  document.getElementById('unregistered-card').style.display = 'block';
+  applySnsConnectionStatus({ x: false, instagram: false, threads: false });
+}
+// ★liff_textgen.html152：予約一覧はプランの利用者だけ、分析はLITE・STANDARD・PROだけ取る（使わないデータは取りに行かない。Kenさん決定）
+function canUseReservations() {
+  return !IS_TRIAL && !NOT_REGISTERED;
+}
+function canUseAnalytics() {
+  return !IS_TRIAL && !NOT_REGISTERED && ['LITE', 'STANDARD', 'PRO'].indexOf(currentPlanName) !== -1;
 }
 
 const RESERVATION_LIST_CACHE_KEY = 'aipost_reservation_list';
@@ -1618,6 +1723,8 @@ async function postToGas(payload, label, isOk) {
       }
       lastGasError = String((result && (result.error || (result.data && result.data.error))) || '');
       traceLog(label + '取得NG(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
+      // ★liff_textgen.html152：登録が無い・プランの申し込みが要る、という返事は、もう一度送っても同じなので再試行しない（設定画面と同じ）
+      if (result && (result.notRegistered === true || result.needsPlan === true)) return null;
     } catch (err) {
       lastGasError = String(err && err.message);
       traceLog(label + '通信エラー(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
@@ -1632,7 +1739,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成151';
+const TRACE_SCREEN = '投稿文作成152';
 
 function traceLog(msg) {
   try {
@@ -1804,13 +1911,15 @@ async function warmupAnalyticsCache() {
 function applyQuotaFromCacheOrFetch() {
   const cached = readQuotaCache();
   const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
-  if (cached) {
+  // ★liff_textgen.html152：期間・退会のお申し込み（withdrawal）を含まない古い保存済み情報は使わず、取り直す
+  // 　（「登録が無い」と保存済みの時は、取り直さずにその表示にする）
+  if (cached && (cached.found === false || cached.withdrawal !== undefined)) {
     applyQuotaFromCache(cached);
-    if (needsReservationList) warmupReservationListCache();
+    if (needsReservationList && canUseReservations()) warmupReservationListCache();
     // ★liff_textgen.html105：この画面では使わないデータ（マスタデータ・分析データ）
     // 　が保存されていなければ、スピナーを出さずに裏側で取得する
-    warmupMasterDataCache();
-    warmupAnalyticsCache();
+    if (!NOT_REGISTERED) warmupMasterDataCache();
+    if (canUseAnalytics()) warmupAnalyticsCache();
   } else {
     refreshReservationQuota(true, needsReservationList);
   }
@@ -1837,7 +1946,7 @@ async function refreshReservationQuota(showOverlay, alsoWarmReservationList) {
       postToGas({ action: 'getUserProfile', lineUid: LINE_UID }, 'プロフィール'),
       postToGas({ action: 'getSnsStatus', lineUid: LINE_UID }, 'SNS連携状況')
     ];
-    if (alsoWarmReservationList) tasks.push(warmupReservationListCache());
+    // ★liff_textgen.html152：予約一覧は、プランが分かってから（プランの利用者だけ）取る
     // ★liff_textgen.html105：スピナーを出している間（起動後の最初の画面）に、
     // 　他画面が使うマスタデータも一緒に取得する（保存済みなら何もしない）。
     // ★liff_textgen.html107：分析データは取得に数秒〜十数秒かかるため、スピナーの
@@ -1847,8 +1956,15 @@ async function refreshReservationQuota(showOverlay, alsoWarmReservationList) {
     // 　分析データの取得は、スピナーが終わった後（下のfinally内）に開始するよう変更した。
     if (showOverlay) tasks.push(warmupMasterDataCache());
     const [profileResult, snsResult] = await Promise.all(tasks);
-    if (!profileResult || !profileResult.data || profileResult.data.found === false) {
-      traceLog('プロフィール取得NG found=' + (profileResult && profileResult.data && profileResult.data.found));
+    if (profileResult && profileResult.data && profileResult.data.found === false) {
+      // ★liff_textgen.html152：登録が見つからない時は案内を出し、保存しておく（他の画面と同じ）
+      traceLog('プロフィール：登録なし');
+      applyNotRegistered();
+      writeQuotaCache({ found: false }, null);
+      return;
+    }
+    if (!profileResult || !profileResult.data) {
+      traceLog('プロフィール取得NG');
       return;
     }
 
@@ -1865,8 +1981,10 @@ async function refreshReservationQuota(showOverlay, alsoWarmReservationList) {
     // 　渡していたため、updateUserGenreFromProfile()がbusinessMajor・businessMinorを
     // 　参照できず、業種登録済みでもセッション開始直後は必ずキーワード入力が必須になって
     // 　いた不具合を修正。profileResult.dataをそのまま渡す（sns含む完全な形に統一）。
-    applyQuotaFromCache(Object.assign({}, profileResult.data, { sns: sns }));
+    // ★liff_textgen.html152：先に保存してから表示する（期間の表示・カレンダーが保存済みの情報を読むため）
     writeQuotaCache(profileResult.data, sns);
+    applyQuotaFromCache(Object.assign({}, profileResult.data, { sns: sns }));
+    if (alsoWarmReservationList && canUseReservations()) warmupReservationListCache();
   } catch (err) {
     console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
     // 取得に失敗しても投稿文作成自体はそのまま続行できるようにする
@@ -1874,7 +1992,8 @@ async function refreshReservationQuota(showOverlay, alsoWarmReservationList) {
     if (showOverlay) traceLog('スピナー終了（プラン等）');
     if (showOverlay && overlay) overlay.classList.remove('open');
     // スピナーが終わってから、裏側で分析データを取得する（保存済みなら何もしない）
-    if (showOverlay) warmupAnalyticsCache();
+    // ★liff_textgen.html152：分析を使えるプラン（LITE・STANDARD・PRO）の時だけ
+    if (showOverlay && canUseAnalytics()) warmupAnalyticsCache();
   }
 }
 
@@ -1950,6 +2069,9 @@ function onHashtagCheckToggle(i, sns) {
   const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
   if (!cb) return;
   const order = hashtagCheckOrder[sns];
+  // ★liff_textgen.html152：付けると上限（本文とハッシュタグで140字）を超える時は、付けずに知らせる（元の状態に戻す）
+  // （このチェックは押された後なので、押す前の状態として、このチェックだけ元の値に戻して覚える）
+  const before = { order: order.slice(), checked: [1, 2, 3, 4, 5].map(n => { const c = document.getElementById(`hashtag-check-${n}-${sns}`); return n === i ? !cb.checked : !!(c && c.checked); }) };
   const idx = order.indexOf(i);
   if (cb.checked) {
     if (idx === -1) order.push(i);
@@ -1958,6 +2080,12 @@ function onHashtagCheckToggle(i, sns) {
       const oldest = order.shift();
       const oldCb = document.getElementById(`hashtag-check-${oldest}-${sns}`);
       if (oldCb) oldCb.checked = false;
+    }
+    const urlX = sns === 'X' && /https?:\/\//.test(document.getElementById('post-textarea').value);
+    if (!urlX && snsPostTotal(sns) > POST_TOTAL_LIMIT) {
+      [1, 2, 3, 4, 5].forEach((n, k) => { const c = document.getElementById(`hashtag-check-${n}-${sns}`); if (c) c.checked = before.checked[k]; });
+      hashtagCheckOrder[sns] = before.order;
+      showLimitToast('本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えるため、このハッシュタグは付けられません。');
     }
   } else if (idx !== -1) {
     order.splice(idx, 1);
@@ -2018,23 +2146,66 @@ function getXCombinedTotal() {
 
 // ⑧ハッシュタグカード内にXのリアルタイム文字数ステータスを表示
 function updateHashtagXStatus() {
+  // ★liff_textgen.html152：Xだけの表示をやめ、選んでいるSNSのうち一番長いもの（本文とハッシュタグの合計）を出す
   const el = document.getElementById('hashtag-x-status');
   if (!el) return;
-  if (!getCheckedSns().includes('X')) {
+  const list = activePostSns();
+  const text = document.getElementById('post-textarea').value;
+  if (list.length === 0 || !text.trim()) {
     el.className = 'hashtag-x-status';
     el.style.display = 'none';
     el.textContent = '';
     return;
   }
   el.style.display = 'flex';
-  const total = getXCombinedTotal();
-  if (total > X_LIMIT) {
+  const total = maxPostTotal();
+  if (total > POST_TOTAL_LIMIT) {
     el.className = 'hashtag-x-status error';
-    el.textContent = '🐦 Xだけ投稿エラー：' + total + ' / ' + X_LIMIT + '文字（' + (total - X_LIMIT) + '文字オーバー）／他のSNSは予約できます';
+    el.textContent = '本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています（' + total + '字）。本文を短くするか、ハッシュタグを減らしてください。';
   } else {
     el.className = 'hashtag-x-status ok';
-    el.textContent = '🐦 Xの上限内：' + total + ' / ' + X_LIMIT + '文字';
+    el.innerHTML = '<span class="nowrap">本文とハッシュタグ：</span><span class="nowrap">' + total + '字／' + POST_TOTAL_LIMIT + '字</span>';
   }
+}
+
+// ★liff_textgen.html152：本文とそのSNSのハッシュタグを合わせた文字数（実際の投稿と同じ組み立て。全角換算）
+function snsPostTotal(sns) {
+  const text = document.getElementById('post-textarea').value;
+  const tags = getHashtagsForSns(sns);
+  let full = text;
+  if (tags.length) full += '\n\n' + tags.map(t => '#' + t).join(' ');
+  return countCharsX(full);
+}
+// 文字数を数えるSNS（①で選んでいるSNS。URLがある時のXは投稿しないので数えない）
+function activePostSns() {
+  const hasUrl = /https?:\/\//.test(document.getElementById('post-textarea').value);
+  return getCheckedSns().filter(sns => !(sns === 'X' && hasUrl));
+}
+function maxPostTotal() {
+  return activePostSns().reduce((m, sns) => Math.max(m, snsPostTotal(sns)), 0);
+}
+// AIで作成した時：上限を超えるSNSは、下のハッシュタグからチェックを外して上限に収める
+function fitHashtagsToLimit() {
+  HASHTAG_SNS_ORDER.forEach(sns => {
+    for (let i = 5; i >= 1 && snsPostTotal(sns) > POST_TOTAL_LIMIT; i--) {
+      const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
+      if (cb && cb.checked) {
+        cb.checked = false;
+        const order = hashtagCheckOrder[sns];
+        const idx = order.indexOf(i);
+        if (idx !== -1) order.splice(idx, 1);
+      }
+    }
+  });
+}
+let limitToastTimer = null;
+function showLimitToast(message) {
+  const el = document.getElementById('limit-toast');
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add('show');
+  clearTimeout(limitToastTimer);
+  limitToastTimer = setTimeout(function () { el.classList.remove('show'); }, 3500);
 }
 
 // ハッシュタグ入力欄・チェックボックスの変更時に呼び出す
@@ -2071,6 +2242,8 @@ function setGeneratedHashtags(tags) {
       if (cb.checked) hashtagCheckOrder[sns].push(i);
     }
   });
+  // ★liff_textgen.html152：本文と合わせて上限を超えるSNSは、下のハッシュタグからチェックを外して表示する（知らせは出さない）
+  fitHashtagsToLimit();
   updateCharCount();
 }
 
@@ -2293,10 +2466,18 @@ async function executeGenerate() {
     const result = await response.json();
 
     if (!result.success) {
-      alert('作成に失敗しました：' + result.error);
+      // ★liff_textgen.html152：お試し中で今日の回数を使い切った時は、GASの文をそのまま出し、残りの回数の表示を直す
+      if (result.trialLimitReached) {
+        if (result.trial) { updateTrialRemaining(result.trial); writeQuotaTrial(result.trial); }
+        alert(result.error);
+      } else {
+        alert('作成に失敗しました：' + result.error);
+      }
       setStep(2);
       return;
     }
+    // ★liff_textgen.html152：お試し中は、今日あと何回作成できるかを直す
+    if (result.trial) { updateTrialRemaining(result.trial); writeQuotaTrial(result.trial); }
 
     const ta = document.getElementById('post-textarea');
     // ★liff_textgen.html126：所在地を含める場合、本文の最後に改行して「📍所在地」をそのまま付ける
@@ -2482,18 +2663,16 @@ function updateCharCount() {
   const hasUrl = /https?:\/\//.test(text);
   const xSelected = getCheckedSns().includes('X');
   document.getElementById('url-warning').classList.toggle('show', hasUrl && xSelected);
+  // ★liff_textgen.html152：Xだけの表示をやめた。本文とハッシュタグを合わせて上限を超えた時だけ、⑧と同じ文を赤で出す
   const xWarn = document.getElementById('x-warning');
-  const xTotal = getXCombinedTotal();
-  if (hasUrl || !xSelected) {
-    xWarn.classList.remove('show', 'ok', 'error');
-  } else if (xTotal > X_LIMIT) {
+  const postTotal = text.trim() ? maxPostTotal() : 0;
+  if (postTotal > POST_TOTAL_LIMIT) {
     xWarn.classList.add('show', 'error');
     xWarn.classList.remove('ok');
-    xWarn.innerHTML = '🐦 <strong>Xだけ投稿エラーになります</strong><br>' + xTotal + ' / ' + X_LIMIT + '文字（' + (xTotal - X_LIMIT) + '文字オーバー）。Xは予約されませんが、他のSNSは通常通り予約できます。';
+    xWarn.textContent = '本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています（' + postTotal + '字）。本文を短くするか、ハッシュタグを減らしてください。';
   } else {
-    xWarn.classList.add('show', 'ok');
-    xWarn.classList.remove('error');
-    xWarn.innerHTML = '🐦 Xの上限内におさまっています（' + xTotal + ' / ' + X_LIMIT + '文字）';
+    xWarn.classList.remove('show', 'ok', 'error');
+    xWarn.textContent = '';
   }
   updateHashtagXStatus();
   if (text.trim()) setStep(4);
@@ -2675,6 +2854,77 @@ function refreshCalendarCounts() {
   if (selectedYear && selectedMonth && selectedDay) updateSelectedDateLabel();
 }
 
+// ★liff_textgen.html152：ご利用期間（プランをお申し込みいただいた日から1か月ごと）。getUserProfile の period・nextPeriod を使う
+function tgYmdToDate(s) {
+  const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+  return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : null;
+}
+function tgMd(s) {
+  const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+  return m ? Number(m[2]) + '月' + Number(m[3]) + '日' : '';
+}
+function tgSlashMd(s) {
+  const m = String(s || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+  return m ? Number(m[2]) + '/' + Number(m[3]) : '';
+}
+function tgPeriods() {
+  const c = readQuotaCache();
+  if (!c || !c.period || !c.nextPeriod) return null;
+  const p = { cache: c, cur: c.period, next: c.nextPeriod,
+    curStart: tgYmdToDate(c.period.start), curEnd: tgYmdToDate(c.period.end),
+    nextStart: tgYmdToDate(c.nextPeriod.start), nextEnd: tgYmdToDate(c.nextPeriod.end) };
+  if (!p.curStart || !p.curEnd || !p.nextStart || !p.nextEnd) return null;
+  return p;
+}
+// 予約できる最後の日（次のご利用期間の終了日）。分からない時は null（GAS側の確かめに任せる）
+function lastReservableDate() {
+  const p = tgPeriods();
+  return p ? p.nextEnd : null;
+}
+function isAfterReservable(y, m, d) {
+  const last = lastReservableDate();
+  return !!last && new Date(y, m - 1, d).getTime() > last.getTime();
+}
+function updateCalendarRangeHint() {
+  const el = document.getElementById('cal-range-hint');
+  if (!el) return;
+  const p = tgPeriods();
+  el.innerHTML = p
+    ? '予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日<wbr>（' + tgMd(p.next.end) + '）までです。'
+    : '予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日までです。';
+}
+// 選んだ日が入るご利用期間の予約枠。分からない時は null（GAS側の確かめに任せる）
+// 　・今の期間：保存済みの「残り予約可能件数」（ユーザー管理シートの数式。投稿済みも含めて数える）
+// 　・次の期間：次の期間のプランの予約可能件数 − 予約一覧の保存データのうち次の期間の予約の件数
+function getQuotaForDate(y, m, d) {
+  const p = tgPeriods();
+  if (!p) return null;
+  const c = p.cache;
+  const t = new Date(y, m - 1, d).getTime();
+  if (t <= p.curEnd.getTime()) {
+    if (typeof c.remainingReservable !== 'number' || typeof c.totalReservable !== 'number') return null;
+    const used = (typeof c.consumedThisMonth === 'number') ? c.consumedThisMonth : c.totalReservable - c.remainingReservable;
+    return { total: c.totalReservable, used: used, remaining: Math.max(0, c.remainingReservable), start: p.cur.start, end: p.cur.end };
+  }
+  if (t > p.nextEnd.getTime()) return null;
+  const total = (typeof c.nextTotalReservable === 'number') ? c.nextTotalReservable : c.totalReservable;
+  if (typeof total !== 'number') return null;
+  let used = 0;
+  try {
+    const list = JSON.parse(sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY) || 'null');
+    if (!Array.isArray(list)) return null;
+    const from = p.nextStart.getTime();
+    const to = p.nextEnd.getTime() + 24 * 60 * 60 * 1000;
+    list.forEach(r => {
+      const dt = new Date(r && r.scheduledAt);
+      if (!isNaN(dt.getTime()) && dt.getTime() >= from && dt.getTime() < to) used++;
+    });
+  } catch (err) {
+    return null;
+  }
+  return { total: total, used: used, remaining: Math.max(0, total - used), start: p.next.start, end: p.next.end };
+}
+
 function isPastDate(y, m, d) {
   const target = new Date(y, m - 1, d);
   const now = new Date();
@@ -2721,7 +2971,8 @@ function buildCalendar() {
     const el = document.createElement('div');
     const dayOfWeek = (firstDayOfWeek + d - 1) % 7;
     let cls = 'cal-date';
-    const isPast = isPastDate(calYear, calMonth, d);
+    // ★liff_textgen.html152：次のご利用期間の終了日より後の日も選べない
+    const isPast = isPastDate(calYear, calMonth, d) || isAfterReservable(calYear, calMonth, d);
     if (isPast) cls += ' past';
     if (dayOfWeek === 0) cls += ' sunday';
     if (dayOfWeek === 6) cls += ' saturday';
@@ -2744,7 +2995,7 @@ function buildCalendar() {
 }
 
 function selectCalDay(d) {
-  if (isPastDate(calYear, calMonth, d)) return;
+  if (isPastDate(calYear, calMonth, d) || isAfterReservable(calYear, calMonth, d)) return;
   selectedDay = d;
   selectedMonth = calMonth;
   selectedYear = calYear;
@@ -2791,9 +3042,11 @@ function updateTimeOptions() {
 // 　（GAS側のcreateReservation〔TextGenerationgs_21〕でも同じ範囲を確認している）
 function calMonthIndex(y, m) { return y * 12 + (m - 1); }
 function reservableMonthRange() {
+  // ★liff_textgen.html152：今月から、次のご利用期間の終了日がある月まで（分からない時は今月と翌月）
   const now = new Date();
   const min = calMonthIndex(now.getFullYear(), now.getMonth() + 1);
-  return { min: min, max: min + 1 };
+  const last = lastReservableDate();
+  return { min: min, max: last ? Math.max(min, calMonthIndex(last.getFullYear(), last.getMonth() + 1)) : min + 1 };
 }
 
 function prevMonth() {
@@ -2808,36 +3061,6 @@ function nextMonth() {
   calMonth++;
   if (calMonth > 12) { calMonth = 1; calYear++; }
   buildCalendar();
-}
-
-// ★liff_textgen.html117：月ごとの予約枠（残り件数）
-// 　・今月：プロフィールの保存データの「残り予約可能件数」（ユーザー管理シートの数式。投稿済みも含めて数える）
-// 　・翌月：総予約可能件数 − 予約一覧の保存データのうち翌月の予約（予約中）の件数
-// 　保存データが無い・プランが未確定などで計算できない場合は null を返す（画面では止めず、GAS側の確認に任せる）
-function getMonthQuota(y, m) {
-  const cache = readQuotaCache();
-  if (!cache || typeof cache.totalReservable !== 'number') return null;
-  const total = cache.totalReservable;
-  const now = new Date();
-  const idx = calMonthIndex(y, m);
-  const thisIdx = calMonthIndex(now.getFullYear(), now.getMonth() + 1);
-  if (idx === thisIdx) {
-    if (typeof cache.remainingReservable !== 'number') return null;
-    const usedThisMonth = (typeof cache.consumedThisMonth === 'number') ? cache.consumedThisMonth : total - cache.remainingReservable;
-    return { total: total, used: usedThisMonth, remaining: Math.max(0, cache.remainingReservable) };
-  }
-  let used = 0;
-  try {
-    const list = JSON.parse(sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY) || 'null');
-    if (!Array.isArray(list)) return null;
-    list.forEach(r => {
-      const dt = new Date(r && r.scheduledAt);
-      if (!isNaN(dt.getTime()) && calMonthIndex(dt.getFullYear(), dt.getMonth() + 1) === idx) used++;
-    });
-  } catch (err) {
-    return null;
-  }
-  return { total: total, used: used, remaining: Math.max(0, total - used) };
 }
 
 // ===== 投稿の回数の上限（★liff_textgen.html151） =====
@@ -2888,6 +3111,15 @@ function hideLimitCheckOverlay() {
 let showConfirmBusy = false;
 async function showConfirm() {
   if (showConfirmBusy) return;
+  // ★liff_textgen.html152：お試し中は予約できないので、プランのお申し込みを案内する（作成した投稿文はそのまま残す）
+  if (IS_TRIAL) {
+    document.getElementById('trial-reserve-modal').classList.add('open');
+    return;
+  }
+  if (NOT_REGISTERED) {
+    alert('ご利用の登録が見つかりませんでした。\n設定画面の「登録」タブで店舗情報を保存すると、ご利用を始められます。');
+    return;
+  }
   const ta = document.getElementById('post-textarea');
   if (!ta.value.trim()) { alert('投稿文を入力してください。'); return; }
   // ★liff_textgen.html136：⑦でオンにした店名・所在地の行が投稿文に無ければ、ここで付ける（上限を超える時は止める）
@@ -2920,24 +3152,20 @@ async function showConfirm() {
     }
   }
 
-  // ★liff_textgen.html117：予約できる期間（翌月末まで）と、選んだ日の月の予約枠を確認する
-  // 　（画面を開いたまま月が変わった場合などに備えた確認。最終的な判定はGAS側でも行う）
-  const selIdx = calMonthIndex(selectedYear, selectedMonth);
-  if (selIdx > reservableMonthRange().max) {
-    alert('予約できるのは翌月末までです。\n投稿日を選び直してください。');
+  // ★liff_textgen.html152：予約できる日（次のご利用期間の終了日まで）と、選んだ日が入るご利用期間の予約枠を確かめる
+  // 　（画面を開いたまま日が変わった場合などに備えた確認。最終的な判定はGAS側でも行う）
+  if (isAfterReservable(selectedYear, selectedMonth, selectedDay)) {
+    alert('予約できるのは' + tgMd(tgPeriods().next.end) + 'までです。\n投稿日を選び直してください。');
     return;
   }
-  const selQuota = getMonthQuota(selectedYear, selectedMonth);
+  const selQuota = getQuotaForDate(selectedYear, selectedMonth, selectedDay);
   if (selQuota && selQuota.remaining <= 0) {
-    // ★liff_textgen.html118：「キャンセルすると枠が空きます」は、上限を大きく超えている場合や
-    // 　投稿済みの分（取り消せない）がある場合に不正確だったため、条件を正確に伝える文言にした
-    alert(selectedMonth + '月の予約枠（' + selQuota.total + '件）を使い切っているため、この月には予約できません。\n' +
-      '（' + selectedMonth + '月の予約・投稿：' + selQuota.used + '件）\n' +
-      '予約中の投稿をキャンセルして、' + selectedMonth + '月の予約・投稿の合計が' + selQuota.total + '件を下回ると、予約できるようになります。');
+    alert(tgMd(selQuota.start) + '〜' + tgMd(selQuota.end) + 'の予約枠（' + selQuota.total + '件）を使い切っているため、この期間には予約できません。\n' +
+      '予約中の投稿をキャンセルすると、予約できるようになります。');
     return;
   }
 
-  // URL・文字数超過：Xだけ対応不可のため、状況に応じて除外またはブロック
+  // URL：Xだけ対応不可のため、状況に応じて除外またはブロック（★liff_textgen.html152：文字数ではXを外さない）
   const hasUrl = /https?:\/\//.test(ta.value);
   const checkedItems = [...document.querySelectorAll('.sns-check-item.checked')];
   const xChecked = checkedItems.some(el => el.querySelector('.sns-icon-sm').classList.contains('sns-x'));
@@ -2954,20 +3182,6 @@ async function showConfirm() {
     xExcludeReason = 'url';
   }
 
-  // Xの文字数上限チェック（URLで既に除外が決まっている場合はスキップ）
-  if (!xExcluded && xChecked) {
-    const xTotal = getXCombinedTotal();
-    if (xTotal > CHAR_LIMIT) {
-      if (checkedItems.length === 1) {
-        // Xのみ選択している場合は予約自体をブロック
-        alert('投稿文＋ハッシュタグの合計文字数（' + xTotal + '文字）が、Xの投稿上限（全角140文字）を超えています。\nXのみが選択されているため、このままでは予約できません。\n投稿文またはハッシュタグを短くしてください。');
-        return;
-      }
-      xExcluded = true;
-      xExcludeReason = 'char';
-    }
-  }
-
   // ★liff_textgen.html113：Instagramの画像なし除外を、Xの除外と同じように
   // 　投稿先の表示・注意書き・送信する投稿対象のすべてに反映する。
   // 　Instagram用の画像が無い（画像なし／Instagram用のトリミングをスキップ）場合は
@@ -2982,6 +3196,16 @@ async function showConfirm() {
     igExcludeReason = (imageState === 'trimmed') ? 'skip' : 'noimage';
   }
 
+  // ★liff_textgen.html152：文字数の上限（全SNS共通。本文とそのSNSのハッシュタグを合わせて140字）。1つでも超えたら予約しない
+  const overSns = [];
+  if (xChecked && !xExcluded) overSns.push('X');
+  if (igChecked && !igExcluded) overSns.push('IG');
+  if (thChecked) overSns.push('TH');
+  if (overSns.some(sns => snsPostTotal(sns) > POST_TOTAL_LIMIT)) {
+    alert('本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています。\n本文を短くするか、ハッシュタグを減らしてください。');
+    return;
+  }
+
   // 除外した結果、投稿先が1つも残らない場合は予約させない
   const remainingSnsNames = [];
   if (xChecked && !xExcluded) remainingSnsNames.push('X');
@@ -2990,7 +3214,6 @@ async function showConfirm() {
   if (remainingSnsNames.length === 0) {
     const reasons = [];
     if (xExcludeReason === 'url') reasons.push('・Xは、投稿文にURLが含まれているため投稿できません');
-    if (xExcludeReason === 'char') reasons.push('・Xは、投稿文＋ハッシュタグの文字数が上限を超えているため投稿できません');
     if (igExcluded) reasons.push(igExcludeReason === 'skip'
       ? '・Instagramは、「画像なし」を選んだため投稿できません'
       : '・Instagramは、画像が無いと投稿できません');
@@ -3046,8 +3269,6 @@ async function showConfirm() {
   const excludeNotes = [];
   if (xExcludeReason === 'url') {
     excludeNotes.push('🐦 投稿文にURLが含まれているため、Xは自動的に除外されました。');
-  } else if (xExcludeReason === 'char') {
-    excludeNotes.push('🐦 投稿文＋ハッシュタグの文字数がXの上限を超えているため、Xは自動的に除外されました。');
   }
   if (igExcludeReason === 'noimage') {
     excludeNotes.push('📱 画像が選択されていないため、Instagramは自動的に除外されました。');
@@ -3099,10 +3320,10 @@ async function showConfirm() {
   else imageLabel = '未選択';
   document.getElementById('confirm-image').textContent = imageLabel;
 
-  // ★liff_textgen.html117：固定の文字だったため、選んだ日の月の実際の残り件数を表示する
-  const quotaForConfirm = getMonthQuota(selectedYear, selectedMonth);
+  // ★liff_textgen.html152：選んだ日が入るご利用期間の予約枠の残りを表示する
+  const quotaForConfirm = getQuotaForDate(selectedYear, selectedMonth, selectedDay);
   document.getElementById('confirm-remain').textContent = quotaForConfirm
-    ? selectedMonth + '月の残り ' + quotaForConfirm.remaining + '件 / ' + quotaForConfirm.total + '件'
+    ? quotaForConfirm.remaining + '件／' + quotaForConfirm.total + '件（' + tgMd(quotaForConfirm.end) + 'まで）'
     : '確認中';
   document.getElementById('confirm-modal').classList.add('open');
 }
@@ -3370,7 +3591,8 @@ async function executeReserve() {
 
     const snsNames = document.getElementById('confirm-sns').textContent;
     const dateText = document.getElementById('confirm-date').textContent;
-    document.getElementById('complete-msg').innerHTML = dateText + 'に<br>' + snsNames + 'へ自動投稿されます。';
+    // ★liff_textgen.html152：改行を入れず、予約確認の画面でできることも同じ文に入れた
+    document.getElementById('complete-msg').textContent = dateText + 'に、' + snsNames + 'へ自動で投稿されます。予約の確認・修正・キャンセルは、「予約確認」の画面からできます。';
 
     closeModal('confirm-modal');
     document.getElementById('complete-modal').classList.add('open');
@@ -3575,6 +3797,21 @@ function navigateTo(page) {
   }
   window.location.replace(LIFF_URLS[page]);
 }
+
+// ★liff_textgen.html152：ヘッダーの「AiPost」が入りきらない時はまるごと隠し、サブバーとタブをヘッダーのすぐ下に止める
+// 　（文字の大きい端末で、ヘッダーが2行になった時のため。設定画面と同じ）
+function updateHeaderLayout() {
+  const sub = document.querySelector('.header-sub');
+  if (sub) { sub.style.visibility = ''; if (sub.scrollWidth > sub.clientWidth + 1) sub.style.visibility = 'hidden'; }
+  const header = document.querySelector('.header');
+  const subbar = document.querySelector('.subbar');
+  const tabNav = document.querySelector('.tab-nav');
+  if (header && subbar) subbar.style.top = header.offsetHeight + 'px';
+  if (header && subbar && tabNav) tabNav.style.top = (header.offsetHeight + subbar.offsetHeight) + 'px';
+}
+window.addEventListener('resize', updateHeaderLayout);
+try { const ro = new ResizeObserver(updateHeaderLayout); ro.observe(document.querySelector('.header')); ro.observe(document.querySelector('.subbar')); } catch (e) {}
+updateHeaderLayout();
 
 buildCalendar();
 setTimeout(updateCharCount, 100);
