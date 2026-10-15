@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録73 - AiPost</title>
+<title>設定・登録74 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -565,7 +565,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録73</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録74</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -625,7 +625,8 @@
 </div>
 <div class="tab-nav">
   <button class="tab-btn active" onclick="switchTab('sns')">
-    <span class="tab-icon">📱</span>SNS
+    <!-- ★liff_settings.html74：タブ名を「SNS」から「SNS連携」にした（Kenさん承認：settings74_sample.png） -->
+    <span class="tab-icon">📱</span>SNS連携
   </button>
   <button class="tab-btn" onclick="switchTab('account')">
     <span class="tab-icon">👤</span>登録
@@ -1091,7 +1092,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定73';
+const TRACE_SCREEN = '設定74';
 
 function traceLog(msg) {
   try {
