@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プライバシーポリシー4 - AiPost</title>
+  <title>プライバシーポリシー5 - AiPost</title>
   <style>
     :root {
       --primary: #1a237e;
@@ -137,17 +137,27 @@
     .company-row:last-child { border-bottom: none; }
     .company-key { color: var(--text-sub); width: 100px; flex-shrink: 0; }
     .company-val { color: var(--text); font-weight: 600; }
+    /* ★liff_privacy.html5：言葉の途中で折り返さない */
+    .nowrap { white-space: nowrap; }
+    .header-logo { min-width: 0; }
   </style>
 </head>
 <body>
 
   <div class="header">
-    <button onclick="history.back()" style="background:none;border:none;color:white;font-size:13px;cursor:pointer;padding:0;margin-right:4px;">◀ 戻る</button>
+    <button onclick="history.back()" style="background:none;border:none;color:white;font-size:13px;cursor:pointer;padding:0;margin-right:4px;white-space:nowrap;">◀ 戻る</button>
     <span style="font-size:16px;">🔒</span>
-    <span class="header-logo">プライバシーポリシー4</span>
+    <span class="header-logo"><span class="nowrap">プライバシー</span><span class="nowrap">ポリシー5</span></span>
     <span class="header-sub">AiPost</span>
   </div>
 
+  <!-- ★liff_privacy.html5（2026年10月16日）：利用規約6に合わせて書き直した（Kenさん承認：おすすめでよい）。
+       ・取得する情報に、同意した日時・プランと退会の記録・作成の回数などを足した。
+       ・外国（米国）の事業者に送ること：国名・その国の制度・送り先の措置を書き、初めて開いた時の同意の画面で同意をいただく（個人情報保護法第28条）。
+       ・保存期間：退会は次回更新日に効力。退会後に残す情報（LINEのユーザーID・退会の記録・予約の件数）と、ブロックしたお試しの人の店舗情報の期間を足した。
+       ・変更：効力が生じる日を決めて前もってお知らせする。不利な変更は30日前。
+       ★同意の画面と、保存期間が来たら消す仕組みは、これから作る。できるまで、この版は公開しない。
+       ★本文（.content）は liff_about.html の「プライバシーポリシー」タブにも読み込まれる。使うクラスは liff_about.html の .legal にあるものだけにする。 -->
   <div class="content">
 
     <div class="doc-title">AiPost プライバシーポリシー</div>
@@ -155,84 +165,49 @@
 
     <!-- 第1条 -->
     <div class="section">
-      <div class="section-title">第1条（基本方針）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第1条<wbr>（基本方針）</div>
       <p><span class="placeholder">【会社名】</span>（以下「当社」）は、本サービス「AiPost」の運営において、利用者の個人情報を適切に取り扱うことを重要な責務と考え、個人情報の保護に関する法律（個人情報保護法）を遵守します。</p>
     </div>
 
     <!-- 第2条 -->
     <div class="section">
-      <div class="section-title">第2条（取得する情報）</div>
-      <p>当社は以下の情報を取得します。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第2条<wbr>（取得する情報）</div>
+      <p>当社は、次の情報を取得します。</p>
       <table>
-        <tr>
-          <th>情報の種類</th>
-          <th>取得方法</th>
-          <th>内容</th>
-        </tr>
-        <tr>
-          <td>LINEアカウント情報</td>
-          <td>友だち登録・画面の利用時に自動取得</td>
-          <td>LINEのユーザーID・表示名</td>
-        </tr>
-        <tr>
-          <td>店舗情報・連絡先</td>
-          <td>利用者が入力</td>
-          <td>店舗名・業種・エリア（都道府県）・所在地（任意）・メールアドレス（任意）</td>
-        </tr>
-        <tr>
-          <td>SNS連携情報</td>
-          <td>SNS連携時に取得</td>
-          <td>アクセストークン（暗号化して保管）・SNSのユーザーID・アカウント名（パスワードは取得しません）</td>
-        </tr>
-        <tr>
-          <td>投稿データ</td>
-          <td>利用者が作成・予約</td>
-          <td>投稿文・ハッシュタグ・投稿日時・画像・投稿の結果</td>
-        </tr>
-        <tr>
-          <td>分析データ</td>
-          <td>各SNSから自動取得</td>
-          <td>いいね数・表示数などの反応の数値・フォロワー数・コメント（PROプランは本文を含む）</td>
-        </tr>
-        <tr>
-          <td>問い合わせ</td>
-          <td>利用者が入力</td>
-          <td>問い合わせの種類・本文</td>
-        </tr>
-        <tr>
-          <td>決済情報</td>
-          <td>Stripeが取得・管理（決済の開始後）</td>
-          <td>クレジットカード情報（当社は保持しません）</td>
-        </tr>
-        <tr>
-          <td>利用の記録</td>
-          <td>自動記録</td>
-          <td>エラーの記録・お知らせを確認した日時</td>
-        </tr>
+        <tr><th style="word-break:keep-all;">情報の<wbr>種類</th><th style="word-break:keep-all;">取得方法</th><th style="word-break:keep-all;">内容</th></tr>
+        <tr><td style="word-break:keep-all;">LINE<wbr>アカウント<wbr>情報</td><td>友だち追加・画面の利用時に自動取得</td><td>LINEのユーザーID・表示名。</td></tr>
+        <tr><td style="word-break:keep-all;">店舗情報・<wbr>連絡先</td><td>利用者が入力</td><td>店舗名・業種・エリア（都道府県）・所在地（任意）・メールアドレス（任意）。</td></tr>
+        <tr><td style="word-break:keep-all;">SNS連携<wbr>情報</td><td>SNS連携時に取得</td><td>アクセストークン（暗号化して保管）・SNSのユーザーID・アカウント名。パスワードは取得しません。</td></tr>
+        <tr><td style="word-break:keep-all;">投稿データ</td><td>利用者が作成・予約</td><td>投稿文・ハッシュタグ・投稿文の作成のための要望・投稿日時・画像・投稿の結果。</td></tr>
+        <tr><td style="word-break:keep-all;">分析データ</td><td>各SNSから自動取得</td><td>いいね数・表示数などの反応の数値・フォロワー数・コメント（PROプランは本文を含む）。</td></tr>
+        <tr><td style="word-break:keep-all;">問い合わせ</td><td>利用者が入力</td><td>問い合わせの種類・本文。</td></tr>
+        <tr><td style="word-break:keep-all;">利用の記録</td><td>自動記録</td><td>規約に同意した日時・プランのお申し込みと変更と退会の記録（退会の理由を含む）・投稿文の作成の回数・使った予約の件数・お知らせを確認した日時・エラーの記録。</td></tr>
+        <tr><td style="word-break:keep-all;">決済情報</td><td>Stripeが取得・管理（決済の開始後）</td><td>クレジットカード情報（当社は保持しません）。当社は、お支払いの状況だけを受け取ります。</td></tr>
       </table>
     </div>
 
     <!-- 第3条 -->
     <div class="section">
-      <div class="section-title">第3条（情報の利用目的）</div>
-      <p>取得した情報は以下の目的で利用します。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第3条<wbr>（情報の<wbr>利用目的）</div>
+      <p>取得した情報は、次の目的で利用します。</p>
       <ol>
-        <li>本サービスの提供・運営・改善</li>
-        <li>投稿の自動実行・予約の管理・投稿の削除</li>
-        <li>分析レポートの作成・提供（コメントの感情の判定を含む）</li>
-        <li>AIによる投稿文・ハッシュタグの作成</li>
-        <li>本サービスの画面でのお知らせ（投稿の結果など）</li>
-        <li>決済処理・プラン管理</li>
-        <li>問い合わせへの対応（AIによる要約・返事の下書きを含む）</li>
-        <li>不正利用の検知・防止</li>
-        <li>匿名統計データの作成（後述）</li>
+        <li>本サービスの提供・運営・改善。</li>
+        <li>投稿の自動実行・予約の管理・投稿の削除。</li>
+        <li>分析レポートの作成・提供（コメントの感情の判定を含みます）。</li>
+        <li>AIによる投稿文・ハッシュタグの作成。</li>
+        <li>お試しの回数・プラン・ご利用期間・予約枠の管理と、プランのお申し込み・変更・退会の手続き。</li>
+        <li>本サービスの画面でのお知らせ（投稿の結果や、規約の変更などの大切なお知らせを含みます）。</li>
+        <li>決済の処理。</li>
+        <li>問い合わせへの対応（AIによる要約・返事の下書きを含みます）。</li>
+        <li>不正利用の検知・防止（退会とお申し込みを繰り返して、予約枠やお試しの回数の上限を回避する行為の防止を含みます）。</li>
+        <li>匿名統計データの作成（第4条）。</li>
       </ol>
     </div>
 
     <!-- 第4条 -->
     <div class="section">
-      <div class="section-title">第4条（匿名統計データの利用）</div>
-      <p>本サービスのPROプランが提供する「同業種・同エリア平均との比較」機能のため、以下の処理を行います。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第4条<wbr>（匿名統計データの<wbr>利用）</div>
+      <p>本サービスのPROプランが提供する「同業種・同エリア平均との比較」機能のため、次の処理を行います。</p>
       <ol>
         <li>LITEプラン以上で、業種とエリアを登録している利用者の分析データ（エンゲージメント率・フォロワー数・30日間の投稿数）を、匿名化した上で統計処理します。</li>
         <li>統計データは、同業種・同エリアの平均値と順位として集計します。比べる相手が一定の数（5店舗）に満たない時は表示しません。</li>
@@ -243,147 +218,108 @@
 
     <!-- 第5条 -->
     <div class="section">
-      <div class="section-title">第5条（第三者提供）</div>
-      <p>当社は、以下の場合を除き、利用者の個人情報を第三者に提供しません。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第5条<wbr>（第三者提供と<wbr>外国の事業者への<wbr>送信）</div>
+      <p>当社は、次の場合を除き、利用者の個人情報を第三者に提供しません。</p>
       <ol>
-        <li>利用者の同意がある場合</li>
-        <li>法令に基づく場合</li>
-        <li>人の生命・身体・財産の保護のために必要な場合</li>
-        <li>以下の業務委託先への提供（必要な範囲に限定）</li>
+        <li>利用者の同意がある場合。</li>
+        <li>法令に基づく場合。</li>
+        <li>人の生命・身体・財産の保護のために必要な場合。</li>
+        <li>次の業務委託先への提供（必要な範囲に限ります）。</li>
       </ol>
       <table>
-        <tr>
-          <th>委託先</th>
-          <th>提供する情報</th>
-          <th>目的</th>
-        </tr>
-        <tr>
-          <td>OpenAI（米国）</td>
-          <td>キーワード・ご要望・業種・店名・エリア・投稿文・SNSのコメントと元の投稿文（PROプラン）・問い合わせの本文</td>
-          <td>AIによる投稿文とハッシュタグの作成・コメントの感情の判定・問い合わせの要約と返事の下書き</td>
-        </tr>
-        <tr>
-          <td>Google（米国）</td>
-          <td>本サービスで取得したすべての情報（アクセストークンは暗号化して保管）</td>
-          <td>データの保存（Google のクラウドサービス）</td>
-        </tr>
-        <tr>
-          <td>LINE（日本）</td>
-          <td>LINEのユーザーID・表示名</td>
-          <td>友だち登録・画面の利用</td>
-        </tr>
-        <tr>
-          <td>各SNS事業者（X・Meta〔米国〕）</td>
-          <td>投稿文・画像・アクセストークン</td>
-          <td>SNSへの投稿・反応の数値とコメントの取得・投稿の削除</td>
-        </tr>
-        <tr>
-          <td>Stripe（米国）</td>
-          <td>決済に必要な情報</td>
-          <td>クレジットカード決済処理（決済の開始後）</td>
-        </tr>
+        <tr><th style="word-break:keep-all;">委託先<wbr>（所在国）</th><th style="word-break:keep-all;">提供する<wbr>情報</th><th style="word-break:keep-all;">目的</th></tr>
+        <tr><td style="word-break:keep-all;">OpenAI<wbr>（米国）</td><td>キーワード・ご要望・業種・店名・エリア・投稿文・SNSのコメントと元の投稿文（PROプラン）・問い合わせの本文。</td><td>AIによる投稿文とハッシュタグの作成・コメントの感情の判定・問い合わせの要約と返事の下書き。</td></tr>
+        <tr><td style="word-break:keep-all;">Google<wbr>（米国）</td><td>本サービスで取得したすべての情報（アクセストークンは暗号化して保管）。</td><td>データの保存（Googleのクラウドサービス）。</td></tr>
+        <tr><td style="word-break:keep-all;">LINEヤフー<wbr>（日本）</td><td>LINEのユーザーID・表示名。</td><td>友だち追加・画面の利用。</td></tr>
+        <tr><td style="word-break:keep-all;">各SNS<wbr>事業者<wbr>（X・<wbr>Meta<wbr>〔米国〕）</td><td>投稿文・画像・アクセストークン。</td><td>SNSへの投稿・反応の数値とコメントの取得・投稿の削除。</td></tr>
+        <tr><td style="word-break:keep-all;">Stripe<wbr>（米国）</td><td>決済に必要な情報。</td><td>クレジットカード決済の処理（決済の開始後）。</td></tr>
       </table>
+      <p>外国（米国）にある事業者への送信について、次のとおりお知らせします。</p>
+      <ol>
+        <li>当社は、本サービスを初めて開いた時に表示する同意の画面で、外国にある事業者に情報を送ることについて、利用者の同意をいただきます。</li>
+        <li>米国は、個人情報保護委員会が、日本と同じ水準の個人情報の保護の制度がある国として定めた国ではありません。米国の制度の概要は、個人情報保護委員会が公表している資料（<span class="placeholder">【資料のURL】</span>）をご覧ください。</li>
+        <li>各委託先が取っている個人情報の保護の措置は、各社のプライバシーポリシー（<span class="placeholder">【各社のURL】</span>）で公表されています。</li>
+        <li>OpenAIは、APIで送られた情報をAIの学習に使わないと公表しています。不正な利用を見張るための記録は、最長30日保存されます。</li>
+      </ol>
     </div>
 
     <!-- 第6条 -->
     <div class="section">
-      <div class="section-title">第6条（データの保存期間）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第6条<wbr>（データの<wbr>保存期間）</div>
       <p>利用者のデータは、次の期間を過ぎたものから、毎週まとめて自動で削除します。</p>
       <table>
-        <tr>
-          <th>データの種類</th>
-          <th>保存期間</th>
-        </tr>
-        <tr>
-          <td>予約と投稿の記録</td>
-          <td>投稿したもの：今月と過去12か月／キャンセルしたもの：1週間以内</td>
-        </tr>
-        <tr>
-          <td>投稿ごとの分析データ（反応の数値・コメントの判定結果）</td>
-          <td>投稿から70日</td>
-        </tr>
-        <tr>
-          <td>フォロワー数の記録</td>
-          <td>各月末の人数を12か月分</td>
-        </tr>
-        <tr>
-          <td>ネガティブと判定したコメントの本文（PROプラン）</td>
-          <td>新しい10投稿分まで（それより古いものは本文を削除）</td>
-        </tr>
-        <tr>
-          <td>AIで作成した投稿文の記録</td>
-          <td>作成から90日</td>
-        </tr>
-        <tr>
-          <td>画像</td>
-          <td>投稿やキャンセルで使わなくなった画像は、その翌日以降の夜間に削除（30日後に完全に削除）。画像の記録は90日</td>
-        </tr>
-        <tr>
-          <td>お知らせ</td>
-          <td>表示が終わってから90日</td>
-        </tr>
-        <tr>
-          <td>問い合わせ・エラーの記録</td>
-          <td>退会まで</td>
-        </tr>
-        <tr>
-          <td>退会した利用者のデータ</td>
-          <td>退会となった時に、すぐに削除（退会は、申請した月の末日をもって有効となります。現在は試験運用中のため、申請した時点で退会となります）</td>
-        </tr>
-        <tr>
-          <td>決済の記録</td>
-          <td>法令に基づき保存（7年。決済の開始後）</td>
-        </tr>
+        <tr><th style="word-break:keep-all;">データの種類</th><th style="word-break:keep-all;">保存期間</th></tr>
+        <tr><td style="word-break:keep-all;">予約と投稿の<wbr>記録</td><td>投稿したもの：今月と過去12か月。キャンセルしたもの：1週間以内。</td></tr>
+        <tr><td style="word-break:keep-all;">投稿ごとの<wbr>分析データ<wbr>（反応の数値・<wbr>コメントの判定結果）</td><td>投稿から70日。</td></tr>
+        <tr><td style="word-break:keep-all;">フォロワー数の<wbr>記録</td><td>各月末の人数を12か月分。</td></tr>
+        <tr><td style="word-break:keep-all;">ネガティブと<wbr>判定した<wbr>コメントの<wbr>本文<wbr>（PROプラン）</td><td>新しい10投稿分まで（それより古いものは本文を削除）。</td></tr>
+        <tr><td style="word-break:keep-all;">AIで作成した<wbr>投稿文の記録</td><td>作成から90日。</td></tr>
+        <tr><td style="word-break:keep-all;">画像</td><td>投稿やキャンセルで使わなくなった画像は、その翌日以降の夜間に削除（30日後に完全に削除）。画像の記録は90日。</td></tr>
+        <tr><td style="word-break:keep-all;">お知らせ</td><td>表示が終わってから90日。</td></tr>
+        <tr><td style="word-break:keep-all;">問い合わせ・<wbr>エラーの記録</td><td>退会まで。</td></tr>
+        <tr><td style="word-break:keep-all;">退会した<wbr>利用者の<wbr>データ</td><td>退会の効力が生じた時（次回更新日）に削除。</td></tr>
+        <tr><td style="word-break:keep-all;">決済の記録</td><td>法令に基づき保存（7年。決済の開始後）。</td></tr>
+      </table>
+      <p>退会した後や、お試しのまま友だちをやめた後も、次の情報は、それぞれの目的のために、決めた期間だけ保存します。期間を過ぎたものは削除します。</p>
+      <table>
+        <tr><th style="word-break:keep-all;">保存する<wbr>情報</th><th style="word-break:keep-all;">目的</th><th style="word-break:keep-all;">保存期間</th></tr>
+        <tr><td style="word-break:keep-all;">LINEの<wbr>ユーザーID</td><td>再びお試しとしてご利用いただくため。不正な利用を防ぐため。</td><td>LINEの友だちである間と、ブロックしてから1年。</td></tr>
+        <tr><td style="word-break:keep-all;">退会の<wbr>記録<wbr>（理由・<wbr>日時）</td><td>本サービスの改善と、問い合わせへの対応のため。</td><td>退会から1年。</td></tr>
+        <tr><td style="word-break:keep-all;">退会の直前に<wbr>使った<wbr>予約の件数</td><td>退会とお申し込みを繰り返して、予約枠を使い直す行為を防ぐため。</td><td>退会から3か月。</td></tr>
+        <tr><td style="word-break:keep-all;">お試しのまま<wbr>友だちを<wbr>やめた方の<wbr>店舗情報</td><td>再び友だち追加された時に、続けてご利用いただくため。</td><td>ブロックしてから1年。</td></tr>
       </table>
     </div>
 
     <!-- 第7条 -->
     <div class="section">
-      <div class="section-title">第7条（セキュリティ）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第7条<wbr>（セキュリティ）</div>
       <ol>
         <li>SNSのアクセストークンは、暗号化したうえで保管しています。読み出して使えるのは、投稿・分析・削除の処理と運営者に限っています。SNSのパスワードはお預かりしません。</li>
         <li>クレジットカード情報はStripeが管理し、当社は保持しません。</li>
-        <li>当社は情報漏洩を防ぐための適切な安全管理措置を講じます。</li>
-        <li>情報漏洩が発生した場合は速やかに利用者に通知します。</li>
+        <li>当社は、情報漏洩を防ぐための適切な安全管理措置を講じます。</li>
+        <li>情報漏洩が発生した場合は、速やかに利用者に通知します。</li>
       </ol>
     </div>
 
     <!-- 第8条 -->
     <div class="section">
-      <div class="section-title">第8条（利用者の権利）</div>
-      <p>利用者は以下の権利を有します。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第8条<wbr>（利用者の権利）</div>
+      <p>利用者は、次の請求をすることができます。</p>
       <ol>
-        <li>保有する個人情報の開示請求</li>
-        <li>個人情報の訂正・追加・削除の請求</li>
-        <li>個人情報の利用停止・消去の請求</li>
+        <li>保有する個人情報の開示の請求。</li>
+        <li>個人情報の訂正・追加・削除の請求。</li>
+        <li>個人情報の利用停止・消去・第三者への提供の停止の請求。</li>
       </ol>
-      <p>開示・訂正・削除の請求は、AIサポート画面の「問い合わせ」、または下記お問い合わせ先までご連絡ください。</p>
+      <p>請求は、AIサポート画面の「問い合わせ」、または下記のお問い合わせ先で受け付けます。ご本人であることは、LINEのログインで確かめます。法令で定める場合など、請求に応じられない時は、その理由をお知らせします。</p>
     </div>
 
     <!-- 第9条 -->
     <div class="section">
-      <div class="section-title">第9条（Cookieおよびアクセス解析）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第9条<wbr>（Cookieおよび<wbr>アクセス解析）</div>
       <p>本サービスはLINEのLIFF（LINE Front-end Framework）を利用しており、LINE社のCookieポリシーが適用される場合があります。当社独自のCookieは使用していません。</p>
       <p>画面の表示を速くするため、利用者の端末の中に、情報を一時的に保存します（アプリを閉じると消えるもの、30分または24時間で取り直すもの）。</p>
     </div>
 
     <!-- 第10条 -->
     <div class="section">
-      <div class="section-title">第10条（プライバシーポリシーの変更）</div>
-      <p>当社は必要に応じて本ポリシーを変更することができます。変更後のポリシーは本サービス内に掲載した時点で効力を生じます。重要な変更がある場合は、本サービスのお知らせ（画面のベル）でお知らせします。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第10条<wbr>（プライバシーポリシーの<wbr>変更）</div>
+      <ol>
+        <li>当社は、必要に応じて本ポリシーを変更することがあります。</li>
+        <li>変更する時は、効力が生じる日を定め、その日より前に、本ポリシーを変更すること、変更後の内容、効力が生じる日を、本サービスの画面のお知らせでお知らせします。</li>
+        <li>利用者に不利な変更は、効力が生じる日の30日前までにお知らせします。</li>
+      </ol>
     </div>
 
     <!-- お問い合わせ -->
     <div class="section">
-      <div class="section-title">お問い合わせ先</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">お問い合わせ先</div>
       <div class="company-row"><span class="company-key">会社名</span><span class="company-val placeholder">【会社名】</span></div>
-      <div class="company-row"><span class="company-key">個人情報取扱責任者</span><span class="company-val placeholder">【代表者名】</span></div>
+      <div class="company-row"><span class="company-key" style="word-break:keep-all;">個人情報<wbr>取扱<wbr>責任者</span><span class="company-val placeholder">【代表者名】</span></div>
       <div class="company-row"><span class="company-key">所在地</span><span class="company-val placeholder">【所在地】</span></div>
       <div class="company-row"><span class="company-key">メール</span><span class="company-val placeholder">【メールアドレス】</span></div>
       <div class="company-row"><span class="company-key">受付時間</span><span class="company-val placeholder">【受付時間】</span></div>
     </div>
 
   </div>
-
 </body>
 </html>

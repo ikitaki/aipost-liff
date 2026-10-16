@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>利用規約5 - AiPost</title>
+  <title>利用規約6 - AiPost</title>
   <style>
     :root {
       --primary: #1a237e;
@@ -132,17 +132,29 @@
     .company-row:last-child { border-bottom: none; }
     .company-key { color: var(--text-sub); width: 80px; flex-shrink: 0; }
     .company-val { color: var(--text); font-weight: 600; }
+    /* ★liff_terms.html6：プランの表（liff_privacy.html・liff_about.html の .legal と同じ見た目） */
+    table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 8px 0; }
+    th { background: #e8eaf6; color: var(--primary); font-weight: 700; padding: 6px 4px; text-align: left; border-bottom: 1px solid var(--border); word-break: keep-all; }
+    td { padding: 6px 4px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; line-height: 1.7; word-break: keep-all; }
+    tr:last-child td { border-bottom: none; }
+    .nowrap { white-space: nowrap; }
   </style>
 </head>
 <body>
 
   <div class="header">
-    <button onclick="history.back()" style="background:none;border:none;color:white;font-size:13px;cursor:pointer;padding:0;margin-right:4px;">◀ 戻る</button>
+    <button onclick="history.back()" style="background:none;border:none;color:white;font-size:13px;cursor:pointer;padding:0;margin-right:4px;white-space:nowrap;">◀ 戻る</button>
     <span style="font-size:16px;">📄</span>
-    <span class="header-logo">利用規約5</span>
+    <span class="header-logo"><span class="nowrap">利用規約6</span></span>
     <span class="header-sub">AiPost</span>
   </div>
 
+  <!-- ★liff_terms.html6（2026年10月16日）：お試し（未入会）・プランのお申し込み・ご利用期間（お申し込み日から1か月ごと）・
+       プランの変更（次回更新日から）・退会のお申し込み（期間の終了日まで使える）に合わせて書き直した。
+       大手サブスク・SaaSの規約の調査（調査報告書 3本）をもとに、同意（初めて開いた時とお申し込みの時）・返金（法令で必要な場合を除く）・
+       規約の変更（効力が生じる日を決めて前もって知らせる。不利な変更は30日前）・サービスの変更と停止を足した（Kenさん承認：おすすめでよい）。
+       ★第2条1項の「初めて開いた時の同意の画面」は、これから作る。画面ができるまで、この版は公開しない。
+       ★本文（.content）は liff_about.html の「利用規約」タブにも読み込まれる。使うクラスは liff_about.html の .legal にあるものだけにする。 -->
   <div class="content">
 
     <div class="doc-title">AiPost 利用規約</div>
@@ -150,57 +162,136 @@
 
     <!-- 第1条 -->
     <div class="section">
-      <div class="section-title">第1条（適用）</div>
-      <p>本規約は、<span class="placeholder">【会社名】</span>（以下「当社」）が提供するSNS自動投稿サービス「AiPost」（以下「本サービス」）の利用に関する条件を定めるものです。</p>
-      <p>本サービスをご利用いただいた時点で、本規約に同意したものとみなします。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第1条<wbr>（適用）</div>
+      <ol>
+        <li>本規約は、<span class="placeholder">【会社名】</span>（以下「当社」）が提供するSNS自動投稿サービス「AiPost」（以下「本サービス」）の利用に関する条件を定めるものです。</li>
+        <li>本サービスの画面に表示するご利用上の注意や料金の案内も、本規約の一部となります。</li>
+      </ol>
     </div>
 
     <!-- 第2条 -->
     <div class="section">
-      <div class="section-title">第2条（サービスの内容）</div>
-      <p>本サービスは、LINEを通じて以下の機能を提供します。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第2条<wbr>（同意）</div>
       <ol>
-        <li>AI投稿文作成機能（投稿文・ハッシュタグの作成）</li>
-        <li>SNS予約投稿機能（X・Instagram・Threads）と、予約の修正・キャンセル</li>
-        <li>画像のSNSごとの切り抜き</li>
-        <li>投稿の分析機能（LITEプラン以上）</li>
-        <li>本サービスから投稿した投稿の一括削除（X・Threads）</li>
-        <li>お知らせ・問い合わせ</li>
-        <li>その他当社が定める機能</li>
+        <li>本サービスを初めて開いた時に表示する画面で、本規約とプライバシーポリシーに同意する操作をしてから、本サービスをご利用ください。</li>
+        <li>プランをお申し込みいただく時は、プラン画面で、改めて本規約とプライバシーポリシーに同意する操作をしていただきます。</li>
+        <li>当社は、同意の操作をした日時を記録します。</li>
+        <li>本規約に同意いただけない場合は、本サービスをご利用いただけません。</li>
       </ol>
     </div>
 
     <!-- 第3条 -->
     <div class="section">
-      <div class="section-title">第3条（プランと料金）</div>
-      <p>本サービスは以下のプランを提供します。料金はすべて税別です。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第3条<wbr>（サービスの内容）</div>
+      <p>本サービスは、LINEを通じて、次の機能を提供します。</p>
       <ol>
-        <li>FREEプラン：無料／投稿先1つ（Xは選べません）／予約枠 月4件／本文 全角70字まで</li>
-        <li>PERSONALプラン：月額300円／投稿先2つ／予約枠 月8件</li>
-        <li>LITEプラン：月額680円／投稿先2つ／予約枠 月10件</li>
-        <li>STANDARDプラン：月額1,280円／投稿先3つ／予約枠 月20件</li>
-        <li>PROプラン：月額1,980円／投稿先3つ／予約枠 月40件</li>
+        <li>AIによる投稿文・ハッシュタグの作成。</li>
+        <li>SNS（X・Instagram・Threads）への予約投稿と、予約の修正・キャンセル。</li>
+        <li>画像のSNSごとの切り抜き。</li>
+        <li>投稿の分析（LITEプラン以上）。</li>
+        <li>本サービスから投稿した投稿の削除（X・Threads）。</li>
+        <li>お知らせ・よくある質問・問い合わせ。</li>
+        <li>その他、当社が定める機能。</li>
       </ol>
-      <p>FREEプラン以外の本文は、全角140字までです。各プランの詳しい機能は、プラン・料金画面をご確認ください。</p>
-      <div class="info-box">予約1件で、選んだSNSへまとめて投稿します。この時に使う予約枠は1件です。予約をキャンセルすると予約枠は戻りますが、投稿した後に削除しても予約枠は戻りません。</div>
     </div>
 
     <!-- 第4条 -->
     <div class="section">
-      <div class="section-title">第4条（決済・プランの変更・退会）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第4条<wbr>（お試し）</div>
       <ol>
-        <li>有料プランの料金は、クレジットカードによる月払いで決済します。※ 現在は試験運用中のため、料金は発生しません。</li>
-        <li>プランの変更は、プラン・料金画面から行えます。アップグレードは、すぐに反映します。</li>
-        <li>ダウングレードは、翌月1日から反映します。その月の末日までは、今のプランをご利用いただけます。※ 現在は試験運用中のため、ダウングレードもすぐに反映します。</li>
-        <li>日割りの返金は行いません。</li>
-        <li>退会は、設定画面から申請できます。申請した月の末日までは、今までどおりご利用いただけます。その月の末日をもって退会となり、その時点で、当社が保管する利用者のデータ（店舗情報・予約と投稿の記録・分析データ・画像・アクセストークン・問い合わせなど）をすぐに削除します。削除したデータは元に戻せません。ただし、法令で保存が必要な記録（決済の記録など）は除きます。※ 現在は試験運用中のため、退会を申請すると、その時点で退会となり、データを削除します。</li>
-        <li>退会しても、SNSに投稿済みの投稿は削除されません。必要な場合は、退会となる前に、予約確認画面の「投稿削除」（X・Threads）またはInstagramのアプリから削除してください。</li>
+        <li>LINEで本サービスの公式アカウントを友だち追加した方は、プランをお申し込みいただく前でも、次の機能をお試しとして無料でご利用いただけます。<br>
+          （1）投稿文とハッシュタグの作成。1日に当社が定める回数（現在は20回）までです。<br>
+          （2）店舗情報の登録。<br>
+          （3）お知らせ・よくある質問・問い合わせ。</li>
+        <li>予約投稿、SNSの連携、分析、画像の保存、投稿の削除、退会の手続きは、プラン（無料のFREEプランを含みます）をお申し込みいただくとご利用いただけます。</li>
+        <li>お試しから、有料プランに自動で切り替わることはありません。</li>
+        <li>当社は、お試しでご利用いただける機能と回数を変えることがあります。変える時は、本サービスの画面でお知らせします。</li>
       </ol>
     </div>
 
     <!-- 第5条 -->
     <div class="section">
-      <div class="section-title">第5条（投稿機能の利用）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第5条<wbr>（プランと料金）</div>
+      <p>本サービスのプランは、次のとおりです。料金は、すべて月額・税別です。</p>
+      <table>
+        <tr><th>プラン</th><th>料金</th><th>投稿先</th><th>予約枠</th></tr>
+        <tr><td>FREE</td><td>無料</td><td>1つ※</td><td>4件</td></tr>
+        <tr><td>PERSONAL</td><td>300円</td><td>2つ</td><td>8件</td></tr>
+        <tr><td>LITE</td><td>680円</td><td>2つ</td><td>10件</td></tr>
+        <tr><td>STANDARD</td><td>1,280円</td><td>3つ</td><td>20件</td></tr>
+        <tr><td>PRO</td><td>1,980円</td><td>3つ</td><td>40件</td></tr>
+      </table>
+      <p>※ FREEプランでは、投稿先にXは選べません。</p>
+      <ol>
+        <li>予約枠は、ご利用期間ごとに数えます。使わなかった予約枠は、次のご利用期間に繰り越しません。</li>
+        <li>本文とハッシュタグは、合わせて全角140字までです（全プラン・お試し共通）。半角の文字は、2字で全角1字と数えます。</li>
+        <li>各プランの詳しい機能は、プラン画面をご確認ください。</li>
+        <li>当社は、料金を上げる時や、プランの内容を利用者に不利に変える時は、効力が生じる日の30日前までに、本サービスの画面でお知らせします。</li>
+      </ol>
+      <div class="info-box">予約1件で、選んだSNSへまとめて投稿します。この時に使う予約枠は1件です。予約をキャンセルすると予約枠は戻りますが、投稿した後に削除しても予約枠は戻りません。</div>
+    </div>
+
+    <!-- 第6条 -->
+    <div class="section">
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第6条<wbr>（ご利用期間）</div>
+      <ol>
+        <li>ご利用期間は、プランをお申し込みいただいた日から1か月ごとです。例えば、10月15日にお申し込みいただいた場合、最初のご利用期間は10月15日から11月14日までで、11月15日が次回更新日です。</li>
+        <li>翌月に、お申し込みいただいた日と同じ日がない時は、その月の末日が次回更新日です。例えば、1月31日にお申し込みいただいた場合、次回更新日は2月28日（うるう年は2月29日）です。</li>
+        <li>ご利用期間は、退会のお申し込みがない限り、次回更新日に自動で更新します。</li>
+        <li>ご利用期間と次回更新日は、プラン画面と設定画面でご確認いただけます。</li>
+      </ol>
+    </div>
+
+    <!-- 第7条 -->
+    <div class="section">
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第7条<wbr>（試験運用・<wbr>料金の<wbr>お支払い）</div>
+      <ol>
+        <li>本サービスは、現在、試験運用中です。試験運用の間は、有料プランを含め、料金は発生しません。</li>
+        <li>試験運用の間は、機能や画面を変えることや、本サービスを一時的にご利用いただけなくなることがあります。</li>
+        <li>料金のお支払いを始める時は、開始日とお支払いの方法を、開始日の30日前までに、本サービスの画面でお知らせします。</li>
+        <li>料金のお支払いを始めた後は、有料プランの料金を、ご利用期間ごとにその初日に、クレジットカードでお支払いいただきます。決済は決済代行事業者（Stripe）を通じて行い、当社はクレジットカードの番号を保持しません。</li>
+      </ol>
+    </div>
+
+    <!-- 第8条 -->
+    <div class="section">
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第8条<wbr>（プランの変更）</div>
+      <ol>
+        <li>プランの変更は、プラン画面から行えます。</li>
+        <li>FREEプランから有料プランへの変更は、お申し込みの時点で適用します。ご利用期間は、その日から1か月ごとになります。</li>
+        <li>有料プランどうしの変更と、有料プランからFREEプランへの変更は、次回更新日から適用します。それまでは、変更前のプランをそのままご利用いただけます。</li>
+        <li>前項の変更は、次回更新日の前日まで、プラン画面から取り消せます。</li>
+      </ol>
+    </div>
+
+    <!-- 第9条 -->
+    <div class="section">
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第9条<wbr>（退会）</div>
+      <ol>
+        <li>プランをお申し込みいただいた方は、設定画面から退会をお申し込みいただけます。</li>
+        <li>退会をお申し込みいただいた後も、ご利用期間の終了日まで、引き続きご利用いただけます。退会は、次回更新日に効力が生じます。</li>
+        <li>退会のお申し込みは、ご利用期間の終了日まで、設定画面から取り消せます。</li>
+        <li>退会の効力が生じた時に、当社は次のことを行います。<br>
+          （1）次回更新日以降の予約を取り消します。<br>
+          （2）店舗情報・予約と投稿の記録・分析データ・画像・アクセストークン・問い合わせなど、当社が保管する利用者のデータを削除します。削除したデータは、元に戻せません。</li>
+        <li>退会しても、SNSに投稿済みの投稿は削除されません。必要な場合は、退会の効力が生じる前に、予約確認画面の「投稿削除」（X・Threads）、またはInstagramのアプリから削除してください。</li>
+        <li>退会した後も、プライバシーポリシーに定める情報は、定める期間保管します。</li>
+        <li>退会した後も、LINEの友だちのままであれば、お試しとしてご利用いただけます。</li>
+      </ol>
+    </div>
+
+    <!-- 第10条 -->
+    <div class="section">
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第10条<wbr>（返金）</div>
+      <ol>
+        <li>お支払いいただいた料金は、ご利用期間の途中で退会した場合やプランを変更した場合も、返金しません。日割りでの返金も行いません。</li>
+        <li>前項にかかわらず、法令で返金が必要な場合と、当社の責任で本サービスをご利用いただけなかった場合は、当社が定める方法で返金します。</li>
+      </ol>
+    </div>
+
+    <!-- 第11条 -->
+    <div class="section">
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第11条<wbr>（投稿機能の利用）</div>
       <ol>
         <li>利用者は、本サービスを通じて投稿する内容について全責任を負います。</li>
         <li>各SNSの利用規約に違反する内容の投稿は禁止します。</li>
@@ -210,24 +301,23 @@
       </ol>
     </div>
 
-    <!-- 第6条 -->
+    <!-- 第12条 -->
     <div class="section">
-      <div class="section-title">第6条（XへのURL付き投稿の禁止）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第12条<wbr>（XへのURL付き<wbr>投稿の禁止）</div>
       <p>本サービスでは、XへのURL付き投稿に対応していません。</p>
       <ol>
         <li>投稿文にURLが含まれる場合、Xは自動的に投稿先から除外されます。</li>
-        <li>ハッシュタグを含めた文字数がXの上限を超える場合も、Xは自動的に投稿先から除外されます。</li>
         <li>URLの直接記述以外にも、日本語・記号・短縮URL・QRコード誘導テキスト等によるURL表現（以下「迂回行為」）も同様に禁止します。</li>
         <li>迂回行為が確認された場合は、本規約違反として利用停止・登録解除の対象となる場合があります。</li>
       </ol>
       <div class="warn-box">⚠️ 迂回行為とはURLを直接記述せず、他の方法でリンク先を示す行為を指します。意図的な迂回行為が確認された場合はアカウントを停止する場合があります。不明な点は事前に運営までお問い合わせください。</div>
     </div>
 
-    <!-- 第7条 -->
+    <!-- 第13条 -->
     <div class="section">
-      <div class="section-title">第7条（AI投稿文作成機能）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第13条<wbr>（AI投稿文<wbr>作成機能）</div>
       <ol>
-        <li>AI投稿文作成は、全プランで回数の制限なくご利用いただけます。</li>
+        <li>AIによる投稿文の作成は、プランをお申し込みいただくと、回数の制限なくご利用いただけます。お試しの間は、第4条に定める回数までです。</li>
         <li>AIが作成した投稿文の著作権は、利用者に帰属します。</li>
         <li>当社は、AIが作成した投稿文の品質・正確性・適法性を保証しません。</li>
         <li>AIが作成した投稿文を投稿する前に、必ず内容をご確認ください。</li>
@@ -235,20 +325,17 @@
       </ol>
     </div>
 
-    <!-- 第8条 -->
+    <!-- 第14条 -->
     <div class="section">
-      <div class="section-title">第8条（SNSアカウントの連携と安全管理）</div>
-
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第14条<wbr>（SNSアカウントの<wbr>連携と<wbr>安全管理）</div>
       <p>本サービスでは、投稿や分析を行うために、各SNSが発行する「アクセストークン」をお預かりします。</p>
-
       <div class="info-box" style="margin:10px 0;">
         <strong>アクセストークンとは？</strong><br>
         利用者の許可にもとづいて各SNSが発行する、本サービス専用の「合鍵」のようなものです。SNSのパスワードとは別のもので、以下の性質があります。<br>
-        ・本サービスが使う権限は、投稿・投稿の反応（いいね等の数値・コメント）の取得・本サービスから投稿した投稿の削除に限ります<br>
-        ・SNSのパスワードの確認や変更には使えません<br>
-        ・利用者がいつでも無効にできます
+        ・本サービスが使う権限は、投稿・投稿の反応（いいね等の数値・コメント）の取得・本サービスから投稿した投稿の削除に限ります。<br>
+        ・SNSのパスワードの確認や変更には使えません。<br>
+        ・利用者がいつでも無効にできます。
       </div>
-
       <ol>
         <li>
           <strong>暗号化による安全管理</strong><br>
@@ -256,8 +343,8 @@
         </li>
         <li>
           <strong>当社が預かるもの・預からないもの</strong><br>
-          【預かるもの】アクセストークン（暗号化して保管）・SNSのユーザーIDとアカウント名<br>
-          【預からないもの】SNSのパスワード・クレジットカードの番号<br>
+          【預かるもの】アクセストークン（暗号化して保管）・SNSのユーザーIDとアカウント名。<br>
+          【預からないもの】SNSのパスワード・クレジットカードの番号。<br>
           店舗情報など、そのほかの情報の取り扱いは、プライバシーポリシーをご確認ください。
         </li>
         <li>
@@ -266,7 +353,7 @@
         </li>
         <li>
           <strong>アクセストークンの取り消し</strong><br>
-          設定画面の「SNS」から、いつでも連携を解除できます。各SNSの設定画面から、アクセストークンを無効にすることもできます。
+          設定画面の「SNS連携」タブから、いつでも連携を解除できます。各SNSの設定画面から、アクセストークンを無効にすることもできます。
         </li>
         <li>
           <strong>免責</strong><br>
@@ -275,9 +362,9 @@
       </ol>
     </div>
 
-    <!-- 第9条 -->
+    <!-- 第15条 -->
     <div class="section">
-      <div class="section-title">第9条（利用者アップロード画像の取り扱い）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第15条<wbr>（利用者<wbr>アップロード画像の<wbr>取り扱い）</div>
       <ol>
         <li>利用者は、本サービスにアップロードする画像について、自らが著作権・肖像権その他の権利を有すること、または当該権利者から適法な使用許諾を得ていることを保証するものとします。</li>
         <li>前項の保証に反し、利用者がアップロードした画像が第三者の著作権・肖像権その他の権利を侵害していることが判明した場合、利用者は自己の責任と費用負担において解決するものとし、当社が損害を被った場合はこれを賠償するものとします。</li>
@@ -287,41 +374,51 @@
       <div class="warn-box">⚠️ 他人が撮影した写真、インターネット上で見つけた画像、著名なキャラクター・ロゴ等、ご自身が権利を持たない画像のアップロードはお控えください。権利侵害が疑われる画像は、運営にて予告なく利用を停止する場合があります。</div>
     </div>
 
-    <!-- 第10条 -->
+    <!-- 第16条 -->
     <div class="section">
-      <div class="section-title">第10条（匿名統計データの利用）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第16条<wbr>（匿名統計データの<wbr>利用）</div>
       <p>本サービスでは、PROプランの「同業種・同エリア平均との比較」機能のために、LITEプラン以上の利用者の分析データを匿名化した上で統計処理に使用します。個人や店舗を特定できる情報は一切含まれません。詳細はプライバシーポリシーをご確認ください。</p>
     </div>
 
-    <!-- 第11条 -->
+    <!-- 第17条 -->
     <div class="section">
-      <div class="section-title">第11条（禁止事項）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第17条<wbr>（禁止事項）</div>
       <p>利用者は以下の行為を行ってはなりません。</p>
       <ol>
-        <li>法令または公序良俗に違反する行為</li>
-        <li>各SNSの利用規約に違反する投稿</li>
-        <li>XへのURL付き投稿の迂回行為</li>
-        <li>当社または第三者の知的財産権を侵害する行為</li>
-        <li>本サービスの運営を妨害する行為</li>
-        <li>不正アクセスその他のセキュリティに反する行為</li>
-        <li>複数アカウントの作成・譲渡</li>
-        <li>その他当社が不適切と判断する行為</li>
+        <li>法令または公序良俗に違反する行為。</li>
+        <li>各SNSの利用規約に違反する投稿。</li>
+        <li>XへのURL付き投稿の迂回行為。</li>
+        <li>当社または第三者の知的財産権を侵害する行為。</li>
+        <li>本サービスの運営を妨害する行為。</li>
+        <li>不正アクセスその他のセキュリティに反する行為。</li>
+        <li>複数アカウントの作成・譲渡。</li>
+        <li>退会とお申し込みを繰り返すなど、予約枠やお試しの回数の上限を不正に回避する行為。</li>
+        <li>その他当社が不適切と判断する行為。</li>
       </ol>
     </div>
 
-    <!-- 第12条 -->
+    <!-- 第18条 -->
     <div class="section">
-      <div class="section-title">第12条（利用停止・登録解除）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第18条<wbr>（利用停止・<wbr>登録解除）</div>
       <ol>
         <li>当社は、利用者が禁止事項に違反した場合、事前通知なくサービスの利用停止・登録解除を行うことができます。</li>
-        <li>登録解除した場合、当社が保管する利用者のデータは、すぐに削除します（第4条の退会の時と同じデータです）。</li>
-        <li>登録解除に伴う返金は行いません。</li>
+        <li>登録解除した場合、当社が保管する利用者のデータは、すぐに削除します（第9条の退会の時と同じデータです）。</li>
+        <li>登録解除に伴う返金は行いません。ただし、法令で返金が必要な場合は除きます。</li>
       </ol>
     </div>
 
-    <!-- 第13条 -->
+    <!-- 第19条 -->
     <div class="section">
-      <div class="section-title">第13条（免責事項）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第19条<wbr>（サービスの<wbr>変更・<wbr>停止）</div>
+      <ol>
+        <li>当社は、本サービスの内容を変えたり、提供を止めたり、終えたりすることがあります。</li>
+        <li>利用者に大きな影響がある時は、相当な期間を置いて、前もって本サービスの画面でお知らせします。ただし、障害や緊急の保守など、やむを得ない時は除きます。</li>
+      </ol>
+    </div>
+
+    <!-- 第20条 -->
+    <div class="section">
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第20条<wbr>（免責事項）</div>
       <ol>
         <li>当社は、本サービスの中断・停止・終了について責任を負いません。</li>
         <li>SNS側のAPI変更・仕様変更・障害により投稿が失敗した場合、当社は責任を負いません。</li>
@@ -332,21 +429,27 @@
       </ol>
     </div>
 
-    <!-- 第14条 -->
+    <!-- 第21条 -->
     <div class="section">
-      <div class="section-title">第14条（規約の変更）</div>
-      <p>当社は必要に応じて本規約を変更することができます。変更後の規約は本サービス内に掲載した時点で効力を生じます。変更後も本サービスをご利用いただいた場合、変更後の規約に同意したものとみなします。</p>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第21条<wbr>（規約の変更）</div>
+      <ol>
+        <li>当社は、次のいずれかに当たる場合は、本規約を変更することがあります。<br>
+          （1）変更が、利用者の一般の利益に合う場合。<br>
+          （2）変更が、本サービスの目的に反せず、変更の必要性、変更後の内容の相当性、その他の事情に照らして合理的な場合。</li>
+        <li>本規約を変更する時は、効力が生じる日を定め、その日より前に、本規約を変更すること、変更後の内容、効力が生じる日を、本サービスの画面のお知らせでお知らせします。</li>
+        <li>利用者に不利な変更は、効力が生じる日の30日前までにお知らせします。</li>
+      </ol>
     </div>
 
-    <!-- 第15条 -->
+    <!-- 第22条 -->
     <div class="section">
-      <div class="section-title">第15条（準拠法・管轄裁判所）</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">第22条<wbr>（準拠法・<wbr>管轄裁判所）</div>
       <p>本規約の解釈・適用は日本法に準拠します。本サービスに関する紛争については、<span class="placeholder">【管轄裁判所】</span>を専属的合意管轄裁判所とします。</p>
     </div>
 
     <!-- 事業者情報 -->
     <div class="section">
-      <div class="section-title">事業者情報</div>
+      <div class="section-title" style="word-break:keep-all;overflow-wrap:anywhere;">事業者情報</div>
       <div class="company-row"><span class="company-key">会社名</span><span class="company-val placeholder">【会社名】</span></div>
       <div class="company-row"><span class="company-key">代表者名</span><span class="company-val placeholder">【代表者名】</span></div>
       <div class="company-row"><span class="company-key">所在地</span><span class="company-val placeholder">【所在地】</span></div>
@@ -354,6 +457,5 @@
     </div>
 
   </div>
-
 </body>
 </html>
