@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金13 - AiPost</title>
+  <title>プラン・料金14 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -105,7 +105,19 @@
     .period-row-value { min-width: 0; }
     .nowrap { white-space: nowrap; }
     .btn-scheduled { white-space: nowrap; }
-    .plan-table .btn-row .plan-btn { white-space: nowrap; padding-left: 2px; padding-right: 2px; }
+    .plan-table .btn-row .plan-btn { white-space: nowrap; padding-left: 0; padding-right: 0; }
+    /* ★liff_plan.html14：狭い幅・文字を大きくした時に、ボタンの文字（申し込む など）・「（Xは不可）」がはみ出し、画面が横に少しずれていたため、
+       ボタンの行と値の行の左右の余白を詰め、ボタンの文字の間を少しだけ詰めた。見出しの列（左の列）は、決めた区切りでだけ折り返す */
+    .plan-table .btn-row td { padding-left: 1px; padding-right: 1px; }
+    .plan-table .btn-row .plan-btn { font-size: 8.5px; letter-spacing: -0.3px; }
+    .plan-table .data-row td { padding-left: 1px; padding-right: 1px; }
+    .plan-table .data-row .key-td, .plan-table .btn-row .key-td { padding-left: 3px; padding-right: 2px; }
+    .plan-table .data-row .key-td { font-size: 9px; }
+    .plan-table .btn-row .key-td { font-size: 10px; word-break: keep-all; overflow-wrap: anywhere; }
+    .plan-price-sm span { white-space: nowrap; }
+    .topbar-logo { min-width: auto; }
+    .plan-table .data-row td { word-break: keep-all; overflow-wrap: anywhere; }
+    .plan-table thead th { padding-left: 1px; padding-right: 1px; }
     .period-next { display: none; margin-top: 8px; padding: 8px 10px; background: #e3f2fd; border-radius: 8px; color: #0d47a1; font-weight: 700; }
     .period-next.show { display: block; }
     .period-cancel-btn { display: block; width: 100%; margin-top: 8px; padding: 9px; border-radius: 8px; border: 1px solid #1565c0; background: #fff; color: #1565c0; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
@@ -342,7 +354,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金13</span></span>
+    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金14</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -597,7 +609,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'プラン13';
+  const TRACE_SCREEN = 'プラン14';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -631,30 +643,31 @@
   const PLAN_PRICE = { FREE: '0', PERSONAL: '300', LITE: '680', STANDARD: '1,280', PRO: '1,980' };
   const NO = '－', OK = '✓';
   // 値は FREE・PERSONAL・LITE・STANDARD・PRO の順。「|」の後ろは小さな補足（2行目）
+  // ★liff_plan.html14：「^」は折り返してよい所（画面では<wbr>にする。確認の窓などの文では消す）
   const PLAN_FEATURES = [
     { sec: '■ 投稿' },
-    { label: '投稿先SNS数', vals: ['1つ|Xは不可', '2つ', '2つ', '3つ', '3つ'] },
+    { label: '投稿先^SNS数', vals: ['1つ|Xは不可', '2つ', '2つ', '3つ', '3つ'] },
     { label: 'SNS連携', vals: ['3つ', '3つ', '3つ', '3つ', '3つ'] },
-    { label: '予約枠|実質予約枠', vals: ['4件|実質4件', '8件|実質16件', '10件|実質20件', '20件|実質60件', '40件|実質120件'] },
-    { label: '本文文字数上限', vals: ['70字|全角', '140字|全角', '140字|全角', '140字|全角', '140字|全角'] },
-    { label: '予約修正・画像差し替え', vals: [OK, OK, OK, OK, OK] },
-    { label: '予約一括キャンセル', vals: [OK, OK, OK, OK, OK] },
-    { label: '投稿文一括削除|X・Threads', vals: [OK, OK, OK, OK, OK] },
+    { label: '予約枠|実質^予約枠', vals: ['4件|実質4件', '8件|実質16件', '10件|実質20件', '20件|実質60件', '40件|実質120件'] },
+    { label: '本文^文字数^上限', vals: ['70字|全角', '140字|全角', '140字|全角', '140字|全角', '140字|全角'] },
+    { label: '予約修正・画像^差し替え', vals: [OK, OK, OK, OK, OK] },
+    { label: '予約^一括^キャンセル', vals: [OK, OK, OK, OK, OK] },
+    { label: '投稿文^一括^削除|X・Threads', vals: [OK, OK, OK, OK, OK] },
     { sec: '■ AI投稿文作成' },
-    { label: 'AI投稿文作成', vals: ['∞', '∞', '∞', '∞', '∞'] },
-    { label: 'ハッシュタグ作成', vals: [OK, OK, OK, OK, OK] },
+    { label: 'AI^投稿文^作成', vals: ['∞', '∞', '∞', '∞', '∞'] },
+    { label: 'ハッシュタグ^作成', vals: [OK, OK, OK, OK, OK] },
     { sec: '■ 画像' },
-    { label: '画像アップロード・SNSごとのトリミング', vals: [OK, OK, OK, OK, OK] },
+    { label: '画像^アップロード・SNSごとの^トリミング', vals: [OK, OK, OK, OK, OK] },
     { sec: '■ 分析' },
-    { label: '分析データの取得', vals: [NO, NO, '24時間後', '24時間後', '1・3・24時間後'] },
-    { label: '今日の状況・直近投稿の状況', vals: [NO, NO, OK, OK, OK] },
-    { label: '投稿日別データ・フォロワー推移', vals: [NO, NO, OK, OK, OK] },
-    { label: '先週・先月のまとめ・次回の投稿おすすめ', vals: [NO, NO, OK, OK, OK] },
-    { label: '投稿平均との比較', vals: [NO, NO, NO, OK, OK] },
-    { label: '初速スコア', vals: [NO, NO, NO, NO, OK] },
-    { label: 'コメント感情分析', vals: [NO, NO, NO, NO, OK] },
-    { label: '同業種・同エリア平均との比較', vals: [NO, NO, NO, NO, OK] },
-    { label: 'ネガティブコメント検知', vals: [NO, NO, NO, NO, OK] }
+    { label: '分析^データの^取得', vals: [NO, NO, '24^時間後', '24^時間後', '1・3・24^時間後'] },
+    { label: '今日の^状況・直近^投稿の^状況', vals: [NO, NO, OK, OK, OK] },
+    { label: '投稿^日別^データ・フォロワー^推移', vals: [NO, NO, OK, OK, OK] },
+    { label: '先週・先月の^まとめ・次回の^投稿^おすすめ', vals: [NO, NO, OK, OK, OK] },
+    { label: '投稿^平均との^比較', vals: [NO, NO, NO, OK, OK] },
+    { label: '初速^スコア', vals: [NO, NO, NO, NO, OK] },
+    { label: 'コメント^感情^分析', vals: [NO, NO, NO, NO, OK] },
+    { label: '同業種・同エリア^平均との^比較', vals: [NO, NO, NO, NO, OK] },
+    { label: 'ネガティブ^コメント^検知', vals: [NO, NO, NO, NO, OK] }
   ];
 
   function escapeHtml(text) {
@@ -666,18 +679,19 @@
     if (v === OK) return '<span class="ok">✓</span>';
     if (v === NO) return '<span class="no">－</span>';
     const parts = String(v).split('|');
-    return escapeHtml(parts[0]) + (parts[1] ? '<br><span class="val-sub nowrap">（' + escapeHtml(parts[1]).replace(/^実質/, '実質<wbr>') + '）</span>' : '');
+    return wb(escapeHtml(parts[0]).replace(/・/g, '・<wbr>')) + (parts[1] ? '<br><span class="val-sub nowrap">（' + escapeHtml(parts[1]).replace(/^実質/, '実質<wbr>').replace(/^Xは/, 'Xは<wbr>') + '）</span>' : '');
   }
   function labelHtml(label) {
     const parts = String(label).split('|');
     // 「・」の後ろで折り返す（言葉の途中で折り返さないように）
-    return escapeHtml(parts[0]).replace(/・/g, '・<wbr>') + (parts[1] ? '<br><span class="val-sub">（' + escapeHtml(parts[1]) + '）</span>' : '');
+    return wb(escapeHtml(parts[0]).replace(/・/g, '・<wbr>')) + (parts[1] ? '<br><span class="val-sub" style="word-break:keep-all;overflow-wrap:anywhere">（' + wb(escapeHtml(parts[1]).replace(/・/g, '・<wbr>')) + '）</span>' : '');
   }
+  function wb(h) { return String(h).replace(/\^/g, '<wbr>'); }
   function labelText(label) {
-    return String(label).split('|')[0];
+    return String(label).split('|')[0].replace(/\^/g, '');
   }
   function valText(v) {
-    const parts = String(v).split('|');
+    const parts = String(v).replace(/\^/g, '').split('|');
     return parts[0] + (parts[1] ? '（' + parts[1] + '）' : '');
   }
 
@@ -732,7 +746,7 @@
     document.getElementById('plan-header-row').innerHTML = '<th></th>' + PLANS.map(function (p) {
       return '<th' + (p === currentPlan ? ' class="current"' : '') + '>' +
         '<span class="plan-badge plan-' + p + '">' + PLAN_SHORT[p] + '</span>' +
-        '<span class="plan-price-sm">¥' + PLAN_PRICE[p] + '<span>/月</span></span></th>';
+        '<span class="plan-price-sm">¥' + PLAN_PRICE[p] + '<wbr><span>/月</span></span></th>';
     }).join('');
     document.getElementById('feat-body').innerHTML = PLAN_FEATURES.map(function (f) {
       if (f.sec) return '<tr class="sec-row"><td colspan="6">' + escapeHtml(f.sec) + '</td></tr>';
@@ -843,6 +857,10 @@
     }
   }
   function applyProfile(profile, sns) {
+    // ★liff_plan.html14：利用規約・プライバシーポリシーへの同意が必要なら、同意の窓を出す（窓は画面の最後。6画面で同じ中身）。
+    // 　窓の部品がまだ読み込まれていない時は、読み込んだ時に確かめてもらう
+    if (typeof aipostCheckConsent === 'function') aipostCheckConsent(profile);
+    else window.aipostConsentPending = profile;
     profileReady = true;
     profileFound = !!(profile && profile.found !== false);
     // ★liff_plan.html11：お試し中・期間・変更の予定・退会のお申し込み
@@ -1147,7 +1165,8 @@
       LINE_UID = liff.getDecodedIDToken().sub;
       const cached = readQuotaCache();
       // ★liff_plan.html11：期間（period）の入っていない古い保存は使わずに取り直す
-      if (cached && cached.plan !== undefined && cached.period !== undefined) {
+      // ★liff_plan.html14：利用規約への同意（terms）を含まない古い保存済み情報も、取り直す
+      if (cached && cached.plan !== undefined && cached.period !== undefined && cached.terms !== undefined) {
         applyProfile(Object.assign({ found: true }, cached), cached.sns);
       } else {
         await fetchProfile(true);
@@ -1450,5 +1469,176 @@
 })();
 </script>
 
+<!-- ★利用規約・プライバシーポリシーへの同意の窓（6画面で同じ中身。最初に入れた画面：投稿文作成155。Kenさん承認：consent_sample2.png）。
+     ・プロフィール（getUserProfile。UserProfilegs_19）の terms.needAgree が true の時に出す。同意するまで閉じられない（「同意しないで閉じる」で画面ごと閉じる）。
+     ・「同意して続ける」で agreeTerms（WebAppEndpointgs_42）を1回だけ送る（書き込みのため自動のやり直しはしない）。記録できたら、保存済みの情報の terms も書き直す。
+     ・「利用規約を読む」「プライバシーポリシーを読む」は、liff_terms.html・liff_privacy.html の本文（.content）を読み込んで、窓の中に出す（liff_about.html と同じ読み込み方）。
+     ・米国の事業者に送ることは、個人情報保護法第28条のため、ここで知らせる（プライバシーポリシー第5条）。 -->
+<style>
+  .consent-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 6000; align-items: flex-end; }
+  .consent-overlay.open { display: flex; }
+  .consent-sheet { background: #fff; border-radius: 16px 16px 0 0; padding: 20px 16px 24px; width: 100%; max-width: 520px; margin: 0 auto; max-height: 88vh; overflow-y: auto; box-sizing: border-box; font-family: inherit; }
+  .consent-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; text-align: left; color: #212121; }
+  .consent-note { font-size: 12px; color: var(--text-sub); line-height: 1.8; margin-bottom: 12px; word-break: keep-all; overflow-wrap: anywhere; }
+  .consent-box { background: #f0f2ff; border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 12px; color: #1a237e; line-height: 1.8; margin-bottom: 12px; word-break: keep-all; overflow-wrap: anywhere; }
+  .consent-links { display: flex; gap: 8px; margin-bottom: 14px; }
+  .consent-link { flex: 1; padding: 9px 4px; border: 1px solid var(--primary); border-radius: 8px; background: #fff; color: var(--primary); font-size: 12px; font-weight: 700; text-align: center; word-break: keep-all; cursor: pointer; font-family: inherit; line-height: 1.5; }
+  .consent-check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 700; margin-bottom: 14px; word-break: keep-all; overflow-wrap: anywhere; line-height: 1.6; color: #212121; cursor: pointer; }
+  .consent-check input { width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
+  .consent-error { display: none; font-size: 12px; color: #e53935; font-weight: 700; line-height: 1.6; margin-bottom: 10px; word-break: keep-all; overflow-wrap: anywhere; }
+  .consent-btn { display: block; width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; background: var(--primary); color: #fff; cursor: pointer; font-family: inherit; }
+  .consent-btn:disabled { opacity: 0.45; cursor: default; }
+  .consent-btn-gray { margin-top: 8px; background: var(--bg); color: var(--text-sub); border: 1px solid var(--border); }
+  .consent-reader { display: none; position: fixed; inset: 0; background: #f8f9fa; z-index: 6100; flex-direction: column; }
+  .consent-reader.open { display: flex; }
+  .consent-reader-head { display: flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; padding: 10px 14px; font-size: 15px; font-weight: 700; }
+  .consent-reader-back { background: none; border: none; color: #fff; font-size: 13px; cursor: pointer; padding: 0; white-space: nowrap; font-family: inherit; }
+  .consent-reader-body { flex: 1; overflow-y: auto; padding: 16px; font-size: 13px; line-height: 1.8; color: #212121; }
+  .consent-reader-body .doc-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+  .consent-reader-body .doc-date { font-size: 11px; color: var(--text-sub); margin-bottom: 20px; }
+  .consent-reader-body .section { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 12px; }
+  .consent-reader-body .section-title { display: block; font-size: 14px; font-weight: 700; color: var(--primary); margin: 0 0 10px; padding: 0 0 8px; border-bottom: 1px solid var(--border); border-left: none; letter-spacing: normal; }
+  .consent-reader-body .section-title::before, .consent-reader-body .section-title::after { content: none; display: none; }
+  .consent-reader-body .section p { margin: 0 0 8px; font-size: 12px; line-height: 1.9; }
+  .consent-reader-body ol, .consent-reader-body ul { padding-left: 18px; margin: 0 0 8px; }
+  .consent-reader-body li { font-size: 12px; line-height: 1.9; margin-bottom: 4px; }
+  .consent-reader-body .warn-box { background: #fff8e1; border-left: 4px solid #e65100; border-radius: 0 8px 8px 0; padding: 10px 12px; margin: 10px 0; font-size: 12px; color: #5d4037; line-height: 1.8; }
+  .consent-reader-body .info-box { background: #f0f2ff; border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; padding: 10px 12px; margin: 10px 0; font-size: 12px; color: #1a237e; line-height: 1.8; }
+  .consent-reader-body .placeholder { background: #fff3e0; border-radius: 4px; padding: 1px 6px; font-weight: 700; color: #e65100; }
+  .consent-reader-body table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 8px 0; }
+  .consent-reader-body th { background: #e8eaf6; color: var(--primary); font-weight: 700; padding: 6px 4px; text-align: left; border-bottom: 1px solid var(--border); }
+  .consent-reader-body td { padding: 6px 4px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.7; }
+  .consent-reader-body .company-row { display: flex; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; gap: 12px; }
+  .consent-reader-body .company-key { color: var(--text-sub); width: 100px; flex-shrink: 0; }
+  .consent-reader-body .company-val { font-weight: 600; }
+  .consent-reader-status { padding: 40px 16px; text-align: center; font-size: 13px; color: var(--text-sub); line-height: 1.8; }
+</style>
+<div class="consent-overlay" id="consent-overlay">
+  <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
+    <div class="consent-title">ご利用の前に</div>
+    <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
+    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第5条を<wbr>ご覧ください。</div>
+    <div class="consent-links">
+      <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
+      <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを読む</button>
+    </div>
+    <label class="consent-check"><input type="checkbox" id="consent-check" onchange="aipostConsentUpdate()"><span>利用規約と<wbr>プライバシーポリシーに<wbr>同意します。</span></label>
+    <div class="consent-error" id="consent-error"></div>
+    <button type="button" class="consent-btn" id="consent-agree-btn" onclick="aipostAgreeTerms()" disabled>同意して続ける</button>
+    <button type="button" class="consent-btn consent-btn-gray" id="consent-close-btn" onclick="aipostDeclineTerms()">同意しないで閉じる</button>
+  </div>
+</div>
+<div class="consent-reader" id="consent-reader">
+  <div class="consent-reader-head"><button type="button" class="consent-reader-back" onclick="aipostCloseLegal()">◀ 戻る</button><span id="consent-reader-title"></span></div>
+  <div class="consent-reader-body" id="consent-reader-body"></div>
+</div>
+<script>
+(function () {
+  var KEY = 'aipost_reservation_quota';
+  var SOURCES = { terms: 'liff_terms.html', privacy: 'liff_privacy.html' };
+  var TITLES = { terms: '利用規約', privacy: 'プライバシーポリシー' };
+  var loaded = {};
+  var sending = false;
+  function log(msg) { try { if (typeof traceLog === 'function') traceLog(msg); } catch (e) {} }
+  function lineUid() { try { return (typeof LINE_UID !== 'undefined' && LINE_UID) ? LINE_UID : null; } catch (e) { return null; } }
+  function webappUrl() { try { return (typeof WEBAPP_URL !== 'undefined') ? WEBAPP_URL : null; } catch (e) { return null; } }
+  function showError(msg) {
+    var el = document.getElementById('consent-error');
+    el.textContent = msg || '';
+    el.style.display = msg ? 'block' : 'none';
+  }
+  // プロフィール（保存済みの情報を含む）を見て、同意が必要なら窓を出す
+  window.aipostCheckConsent = function (profile) {
+    if (!profile || profile.found === false || !profile.terms || profile.terms.needAgree !== true) return;
+    var ov = document.getElementById('consent-overlay');
+    if (!ov || ov.classList.contains('open')) return;
+    document.getElementById('consent-check').checked = false;
+    showError('');
+    aipostConsentUpdate();
+    ov.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    log('同意の窓を表示');
+  };
+  window.aipostConsentUpdate = function () {
+    document.getElementById('consent-agree-btn').disabled = sending || !document.getElementById('consent-check').checked;
+    document.getElementById('consent-close-btn').disabled = sending;
+  };
+  window.aipostAgreeTerms = async function () {
+    if (sending || !document.getElementById('consent-check').checked || !lineUid() || !webappUrl()) return;
+    sending = true;
+    showError('');
+    var btn = document.getElementById('consent-agree-btn');
+    btn.textContent = '記録しています…';
+    aipostConsentUpdate();
+    var message = '';
+    var agreedAt = '';
+    try {
+      var res = await fetch(webappUrl(), { method: 'POST', body: JSON.stringify({ action: 'agreeTerms', lineUid: lineUid(), params: {} }) });
+      var r = await res.json();
+      if (r && r.success && r.data && r.data.agreed) {
+        agreedAt = String(r.data.agreedAt || '');
+      } else {
+        message = String((r && r.error) || '同意を記録できませんでした。もう一度お試しください。');
+      }
+    } catch (err) {
+      message = '通信エラーが発生しました。通信の状態をご確認のうえ、もう一度お試しください。';
+      log('同意 通信エラー ' + String(err && err.message));
+    }
+    sending = false;
+    btn.textContent = '同意して続ける';
+    if (message) {
+      log('同意NG ' + message);
+      showError(message);
+      aipostConsentUpdate();
+      return;
+    }
+    log('同意OK');
+    // 保存済みの情報の terms を書き直す（ほかの画面で、もう一度出さないように）
+    try {
+      var c = JSON.parse(sessionStorage.getItem(KEY) || 'null');
+      if (c) { c.terms = { agreedAt: agreedAt, needAgree: false }; sessionStorage.setItem(KEY, JSON.stringify(c)); }
+    } catch (e) {}
+    document.getElementById('consent-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    aipostConsentUpdate();
+  };
+  // 同意しない：AiPostの画面を閉じて、LINEのトーク画面に戻る
+  window.aipostDeclineTerms = function () {
+    if (sending) return;
+    log('同意しないで閉じる');
+    try { liff.closeWindow(); } catch (e) {}
+  };
+  window.aipostOpenLegal = function (name) {
+    document.getElementById('consent-reader-title').textContent = TITLES[name];
+    var body = document.getElementById('consent-reader-body');
+    document.getElementById('consent-reader').classList.add('open');
+    body.scrollTop = 0;
+    if (loaded[name]) { body.innerHTML = loaded[name]; return; }
+    body.innerHTML = '<div class="consent-reader-status">読み込んでいます。</div>';
+    fetch(SOURCES[name], { cache: 'no-cache' })
+      .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.text(); })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var content = doc.querySelector('.content');
+        if (!content) throw new Error('本文が見つかりません');
+        content.querySelectorAll('script').forEach(function (el) { el.remove(); });
+        loaded[name] = content.innerHTML;
+        if (document.getElementById('consent-reader-title').textContent === TITLES[name]) body.innerHTML = loaded[name];
+      })
+      .catch(function () {
+        body.innerHTML = '<div class="consent-reader-status">読み込めませんでした。通信の状態をご確認のうえ、もう一度お試しください。</div>';
+      });
+  };
+  window.aipostCloseLegal = function () {
+    document.getElementById('consent-reader').classList.remove('open');
+  };
+  // この窓の部品を読み込む前に、プロフィールが分かっていた時（画面の始めの処理が先に進んだ時）は、ここで確かめる
+  if (window.aipostConsentPending) {
+    var pending = window.aipostConsentPending;
+    window.aipostConsentPending = null;
+    aipostCheckConsent(pending);
+  }
+})();
+</script>
 </body>
 </html>
