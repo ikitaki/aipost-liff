@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析59 - AiPost</title>
+<title>分析60 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -123,6 +123,10 @@
   .today-card { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
   .today-item { background:var(--bg); border-radius:8px; padding:8px; text-align:center; }
   .today-label { font-size:9px; color:var(--text-sub); margin-bottom:3px; }
+  /* ★liff_analytics.html60：「最新の状況」の文は、決めた区切り（<wbr>）でだけ折り返す。入りきらない時だけ、やむを得ず途中で折る */
+  .today-label, .today-sub, .wrap-ja { word-break: keep-all; overflow-wrap: anywhere; }
+  .today-card { gap: 6px; }
+  .today-item { padding: 8px 4px; }
   .today-val { font-size:14px; font-weight:700; color:var(--text); }
   .today-sub { font-size:10px; color:var(--text-sub); margin-top:2px; }
   /* データ蓄積ゲージ */
@@ -313,7 +317,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析59</span></span>
+  <span class="header-logo"><span class="nowrap">分析60</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -411,7 +415,7 @@
       <div class="already-use-title" style="color:var(--primary);">LITEプランで<wbr>利用できます</div>
       <div class="plan-feature-list">
         <div class="plan-feature-label">LITE分析に<wbr>含まれる機能</div>
-        <div class="plan-feature-item"><span>📊</span><span>今日の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>最新の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
         <div class="plan-feature-item"><span>📊</span><span>直近投稿と<wbr>24時間後の<wbr>状況</span></div>
         <div class="plan-feature-item"><span>📅</span><span>投稿日別<wbr>データ</span></div>
         <div class="plan-feature-item"><span>👥</span><span>フォロワー数の<wbr>推移<wbr>（SNS別）</span></div>
@@ -427,24 +431,24 @@
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">📊 今日の状況</div>
+    <div class="card-title">📊 最新の状況</div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定） -->
 
     <!-- 3項目グリッド -->
     <div class="today-card" style="margin-bottom:10px;">
       <div class="today-item">
-        <div class="today-label">今日の投稿数</div>
+        <div class="today-label">今日の<wbr>投稿数</div>
         <div class="today-val" id="lite-today-post">-<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">本日投稿済み</div>
+        <div class="today-sub">本日<wbr>投稿済み</div>
       </div>
       <div class="today-item">
-        <div class="today-label">今月の投稿数</div>
+        <div class="today-label" style="word-break:keep-all;overflow-wrap:anywhere;">期間内の<wbr>予約</div><!-- ★liff_analytics.html60：「今月の投稿数」→「期間内の予約」（ご利用期間ごとに数えるため） -->
         <div class="today-val" style="color:var(--primary);" id="lite-month-post">-<span style="font-size:10px;">件</span></div>
         <div class="today-sub" id="lite-month-total">/-件</div>
       </div>
       <div class="today-item">
-        <div class="today-label">総合EG率</div>
+        <div class="today-label">総合<wbr>EG率</div>
         <div class="today-val" style="color:#2e7d32;" id="lite-eg-rate">-%</div>
-        <div class="today-sub" style="color:var(--success);">今月の平均</div>
+        <div class="today-sub" style="color:var(--success);">今月の<wbr>平均</div>
       </div>
     </div>
 
@@ -460,7 +464,7 @@
     <!-- 📆 今月の投稿枠（テキスト） -->
     <div style="display:grid;grid-template-columns:1fr;gap:6px;">
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
-        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;word-break:keep-all;overflow-wrap:anywhere;" class="quota-title">📆 予約枠</div><!-- ★liff_analytics.html60：「今月の投稿枠」→「予約枠（M/dまで）」（ご利用期間ごとに数えるため） -->
         <div style="font-size:14px;font-weight:700;color:var(--success);" id="lite-quota-remaining">残り-件</div>
         <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="lite-quota-used">- / -件使用</div>
       </div>
@@ -569,7 +573,7 @@
       <div class="already-use-title" style="color:var(--primary);">STANDARDプランで<wbr>利用できます</div>
       <div class="plan-feature-list">
         <div class="plan-feature-label">STANDARD分析に<wbr>含まれる機能</div>
-        <div class="plan-feature-item"><span>📊</span><span>今日の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>最新の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
         <div class="plan-feature-item"><span>📊</span><span>直近投稿と<wbr>24時間後の<wbr>状況</span></div>
         <div class="plan-feature-item"><span>📅</span><span>投稿日別<wbr>データ</span></div>
         <div class="plan-feature-item"><span>👥</span><span>フォロワー数の<wbr>推移<wbr>（SNS別）</span></div>
@@ -586,24 +590,24 @@
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">📊 今日の状況</div>
+    <div class="card-title">📊 最新の状況</div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定） -->
 
     <!-- 3項目グリッド -->
     <div class="today-card" style="margin-bottom:10px;">
       <div class="today-item">
-        <div class="today-label">今日の投稿数</div>
+        <div class="today-label">今日の<wbr>投稿数</div>
         <div class="today-val" id="standard-today-post">-<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">本日投稿済み</div>
+        <div class="today-sub">本日<wbr>投稿済み</div>
       </div>
       <div class="today-item">
-        <div class="today-label">今月の投稿数</div>
+        <div class="today-label" style="word-break:keep-all;overflow-wrap:anywhere;">期間内の<wbr>予約</div><!-- ★liff_analytics.html60：「今月の投稿数」→「期間内の予約」（ご利用期間ごとに数えるため） -->
         <div class="today-val" style="color:var(--primary);" id="standard-month-post">-<span style="font-size:10px;">件</span></div>
         <div class="today-sub" id="standard-month-total">/-件</div>
       </div>
       <div class="today-item">
-        <div class="today-label">総合EG率</div>
+        <div class="today-label">総合<wbr>EG率</div>
         <div class="today-val" style="color:#2e7d32;" id="standard-eg-rate">-%</div>
-        <div class="today-sub" style="color:var(--success);">今月の平均</div>
+        <div class="today-sub" style="color:var(--success);">今月の<wbr>平均</div>
       </div>
     </div>
 
@@ -619,7 +623,7 @@
     <!-- 📆 今月の投稿枠（テキスト） -->
     <div style="display:grid;grid-template-columns:1fr;gap:6px;">
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
-        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;word-break:keep-all;overflow-wrap:anywhere;" class="quota-title">📆 予約枠</div><!-- ★liff_analytics.html60：「今月の投稿枠」→「予約枠（M/dまで）」（ご利用期間ごとに数えるため） -->
         <div style="font-size:14px;font-weight:700;color:var(--success);" id="standard-quota-remaining">残り-件</div>
         <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="standard-quota-used">- / -件使用</div>
       </div>
@@ -741,7 +745,7 @@
       <div class="already-use-title" style="color:var(--primary);">PROプランで<wbr>利用できます</div>
       <div class="plan-feature-list">
         <div class="plan-feature-label">PRO分析に<wbr>含まれる機能</div>
-        <div class="plan-feature-item"><span>📊</span><span>今日の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>最新の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
         <div class="plan-feature-item"><span>⚡</span><span>直近投稿の<wbr>初速状況<wbr>（1時間・<wbr>3時間・<wbr>24時間ごとの<wbr>数値推移）</span></div>
         <div class="plan-feature-item"><span>📊</span><span>あなたの<wbr>投稿平均との<wbr>比較</span></div>
         <div class="plan-feature-item"><span>📅</span><span>投稿日別<wbr>データ</span></div>
@@ -763,30 +767,30 @@
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">📊 今日の状況</div>
+    <div class="card-title">📊 最新の状況</div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定） -->
 
     <!-- グループ①：今日のパフォーマンス -->
     <div class="today-card" style="margin-bottom:10px;">
       <div class="today-item">
-        <div class="today-label">今日の投稿数</div>
+        <div class="today-label">今日の<wbr>投稿数</div>
         <div class="today-val" id="pro-today-post">-<span style="font-size:10px;">件</span></div>
-        <div class="today-sub">本日投稿済み</div>
+        <div class="today-sub">本日<wbr>投稿済み</div>
       </div>
       <div class="today-item">
         <!-- ★liff_analytics.html43：初速スコア順位・総合初速スコアを実データで表示する（applyFirstSpeedScore） -->
-        <div class="today-label">初速スコア順位</div>
+        <div class="today-label">初速スコア<wbr>順位</div>
         <div class="today-val" style="color:var(--primary);" id="pro-fs-rank">-</div>
         <div class="today-sub" id="pro-fs-rank-sub">-</div>
       </div>
       <div class="today-item">
-        <div class="today-label">総合初速スコア</div>
+        <div class="today-label">総合<wbr>初速スコア</div>
         <div class="today-val" style="color:var(--text-sub);" id="pro-fs-total">-</div>
         <div class="today-sub" id="pro-fs-total-sub">-</div>
       </div>
     </div>
     <!-- 内訳 -->
     <div style="background:var(--bg);border-radius:8px;padding:6px 10px;margin-bottom:10px;">
-      <div style="font-size:9px;color:var(--text-sub);margin-bottom:6px;">SNS別初速スコア（投稿割合による重み付け）</div>
+      <div style="font-size:9px;color:var(--text-sub);margin-bottom:6px;" class="wrap-ja">SNS別<wbr>初速スコア<wbr>（投稿割合による<wbr>重み付け）</div>
       <!-- ★liff_analytics.html43：SNS別初速スコアを実データで表示する（applyFirstSpeedScore） -->
       <div id="pro-fs-bysns">
         <div style="font-size:10px;color:var(--text-light);">-</div>
@@ -825,10 +829,10 @@
         <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📈 データ蓄積率</div>
         <div style="font-size:14px;font-weight:700;color:#2e7d32;" id="pro-accum-rate">-</div>
         <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="pro-accum-count">- / 30投稿</div>
-        <div style="font-size:8px;color:var(--text-light);margin-top:2px;">直近60日以内の投稿が対象です</div>
+        <div style="font-size:8px;color:var(--text-light);margin-top:2px;" class="wrap-ja">直近60日以内の<wbr>投稿が<wbr>対象です</div>
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
-        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📆 今月の投稿枠</div>
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;word-break:keep-all;overflow-wrap:anywhere;" class="quota-title">📆 予約枠</div><!-- ★liff_analytics.html60：「今月の投稿枠」→「予約枠（M/dまで）」（ご利用期間ごとに数えるため） -->
         <div style="font-size:14px;font-weight:700;color:var(--success);" id="pro-quota-remaining">残り-件</div>
         <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="pro-quota-used">- / -件使用</div>
       </div>
@@ -1084,7 +1088,7 @@
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">🔍 LITE分析</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.7;">今日の状況・直近投稿の24時間後データ・投稿カレンダー・フォロワー推移（連携SNS）・先週・先月のまとめ・次回おすすめを確認できます。データは投稿後24時間後に1回取得されます。</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">最新の状況・直近投稿の24時間後データ・投稿カレンダー・フォロワー推移（連携SNS）・先週・先月のまとめ・次回おすすめを確認できます。データは投稿後24時間後に1回取得されます。</div>
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:4px;">📊 STANDARD分析</div>
@@ -1885,7 +1889,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析59';
+const TRACE_SCREEN = '分析60';
 
 function traceLog(msg) {
   try {
@@ -1988,6 +1992,10 @@ function writeQuotaCache(profileData, sns) {
 }
 
 function applyQuotaFromCache(cache) {
+  // ★liff_analytics.html60：利用規約・プライバシーポリシーへの同意が必要なら、同意の窓を出す（窓は画面の最後。6画面で同じ中身）。
+  // 　窓の部品がまだ読み込まれていない時は、読み込んだ時に確かめてもらう
+  if (typeof aipostCheckConsent === 'function') aipostCheckConsent(cache);
+  else window.aipostConsentPending = cache;
   // ★liff_analytics.html58：登録が無い・お試し中に対応し、残り予約枠に期間の終了日を付けた（ほかの画面と同じ）
   if (cache.found === false) {
     applyNotRegistered();
@@ -2011,6 +2019,11 @@ function applyQuotaFromCache(cache) {
       el.textContent = '残り予約枠' + Math.max(0, cache.remainingReservable) + '件' + (m ? '（' + Number(m[2]) + '/' + Number(m[3]) + 'まで）' : '');
     }
   }
+  // ★liff_analytics.html60：「📆 予約枠」の見出しに、ご利用期間の終了日を付ける（予約枠は期間ごとに数えるため）
+  const pm = String((cache.period && cache.period.end) || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+  document.querySelectorAll('.quota-title').forEach(function (t) {
+    t.innerHTML = '📆 予約枠' + (pm ? '<wbr>（' + Number(pm[2]) + '/' + Number(pm[3]) + 'まで）' : '');
+  });
 }
 
 // ★liff_analytics_html15：予約一覧も「最初に開いた画面での一括
@@ -2112,7 +2125,8 @@ async function applyQuotaFromCacheOrFetch() {
   const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
   // ★liff_analytics.html58：期間・退会のお申し込み（withdrawal）を含まない古い保存済み情報は使わず、取り直す
   // 　（「登録が無い」と保存済みの時は、取り直さずにその表示にする。ほかの画面と同じ）
-  if (cached && (cached.found === false || cached.withdrawal !== undefined)) {
+  // ★liff_analytics.html60：利用規約への同意（terms）を含まない古い保存済み情報も、取り直す
+  if (cached && (cached.found === false || (cached.withdrawal !== undefined && cached.terms !== undefined))) {
     applyQuotaFromCache(cached);
     if (needsReservationList && canUseReservations()) warmupReservationListCache();
   } else {
@@ -3317,6 +3331,177 @@ initLiff();
         clearInterval(timer);
       }
     }, 300);
+  }
+})();
+</script>
+<!-- ★利用規約・プライバシーポリシーへの同意の窓（6画面で同じ中身。最初に入れた画面：投稿文作成155。Kenさん承認：consent_sample2.png）。
+     ・プロフィール（getUserProfile。UserProfilegs_19）の terms.needAgree が true の時に出す。同意するまで閉じられない（「同意しないで閉じる」で画面ごと閉じる）。
+     ・「同意して続ける」で agreeTerms（WebAppEndpointgs_42）を1回だけ送る（書き込みのため自動のやり直しはしない）。記録できたら、保存済みの情報の terms も書き直す。
+     ・「利用規約を読む」「プライバシーポリシーを読む」は、liff_terms.html・liff_privacy.html の本文（.content）を読み込んで、窓の中に出す（liff_about.html と同じ読み込み方）。
+     ・米国の事業者に送ることは、個人情報保護法第28条のため、ここで知らせる（プライバシーポリシー第5条）。 -->
+<style>
+  .consent-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 6000; align-items: flex-end; }
+  .consent-overlay.open { display: flex; }
+  .consent-sheet { background: #fff; border-radius: 16px 16px 0 0; padding: 20px 16px 24px; width: 100%; max-width: 520px; margin: 0 auto; max-height: 88vh; overflow-y: auto; box-sizing: border-box; font-family: inherit; }
+  .consent-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; text-align: left; color: #212121; }
+  .consent-note { font-size: 12px; color: var(--text-sub); line-height: 1.8; margin-bottom: 12px; word-break: keep-all; overflow-wrap: anywhere; }
+  .consent-box { background: #f0f2ff; border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 12px; color: #1a237e; line-height: 1.8; margin-bottom: 12px; word-break: keep-all; overflow-wrap: anywhere; }
+  .consent-links { display: flex; gap: 8px; margin-bottom: 14px; }
+  .consent-link { flex: 1; padding: 9px 4px; border: 1px solid var(--primary); border-radius: 8px; background: #fff; color: var(--primary); font-size: 12px; font-weight: 700; text-align: center; word-break: keep-all; cursor: pointer; font-family: inherit; line-height: 1.5; }
+  .consent-check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; font-weight: 700; margin-bottom: 14px; word-break: keep-all; overflow-wrap: anywhere; line-height: 1.6; color: #212121; cursor: pointer; }
+  .consent-check input { width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
+  .consent-error { display: none; font-size: 12px; color: #e53935; font-weight: 700; line-height: 1.6; margin-bottom: 10px; word-break: keep-all; overflow-wrap: anywhere; }
+  .consent-btn { display: block; width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; background: var(--primary); color: #fff; cursor: pointer; font-family: inherit; }
+  .consent-btn:disabled { opacity: 0.45; cursor: default; }
+  .consent-btn-gray { margin-top: 8px; background: var(--bg); color: var(--text-sub); border: 1px solid var(--border); }
+  .consent-reader { display: none; position: fixed; inset: 0; background: #f8f9fa; z-index: 6100; flex-direction: column; }
+  .consent-reader.open { display: flex; }
+  .consent-reader-head { display: flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; padding: 10px 14px; font-size: 15px; font-weight: 700; }
+  .consent-reader-back { background: none; border: none; color: #fff; font-size: 13px; cursor: pointer; padding: 0; white-space: nowrap; font-family: inherit; }
+  .consent-reader-body { flex: 1; overflow-y: auto; padding: 16px; font-size: 13px; line-height: 1.8; color: #212121; }
+  .consent-reader-body .doc-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+  .consent-reader-body .doc-date { font-size: 11px; color: var(--text-sub); margin-bottom: 20px; }
+  .consent-reader-body .section { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 12px; }
+  .consent-reader-body .section-title { display: block; font-size: 14px; font-weight: 700; color: var(--primary); margin: 0 0 10px; padding: 0 0 8px; border-bottom: 1px solid var(--border); border-left: none; letter-spacing: normal; }
+  .consent-reader-body .section-title::before, .consent-reader-body .section-title::after { content: none; display: none; }
+  .consent-reader-body .section p { margin: 0 0 8px; font-size: 12px; line-height: 1.9; }
+  .consent-reader-body ol, .consent-reader-body ul { padding-left: 18px; margin: 0 0 8px; }
+  .consent-reader-body li { font-size: 12px; line-height: 1.9; margin-bottom: 4px; }
+  .consent-reader-body .warn-box { background: #fff8e1; border-left: 4px solid #e65100; border-radius: 0 8px 8px 0; padding: 10px 12px; margin: 10px 0; font-size: 12px; color: #5d4037; line-height: 1.8; }
+  .consent-reader-body .info-box { background: #f0f2ff; border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; padding: 10px 12px; margin: 10px 0; font-size: 12px; color: #1a237e; line-height: 1.8; }
+  .consent-reader-body .placeholder { background: #fff3e0; border-radius: 4px; padding: 1px 6px; font-weight: 700; color: #e65100; }
+  .consent-reader-body table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 8px 0; }
+  .consent-reader-body th { background: #e8eaf6; color: var(--primary); font-weight: 700; padding: 6px 4px; text-align: left; border-bottom: 1px solid var(--border); }
+  .consent-reader-body td { padding: 6px 4px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.7; }
+  .consent-reader-body .company-row { display: flex; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; gap: 12px; }
+  .consent-reader-body .company-key { color: var(--text-sub); width: 100px; flex-shrink: 0; }
+  .consent-reader-body .company-val { font-weight: 600; }
+  .consent-reader-status { padding: 40px 16px; text-align: center; font-size: 13px; color: var(--text-sub); line-height: 1.8; }
+</style>
+<div class="consent-overlay" id="consent-overlay">
+  <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
+    <div class="consent-title">ご利用の前に</div>
+    <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
+    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第5条を<wbr>ご覧ください。</div>
+    <div class="consent-links">
+      <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
+      <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを読む</button>
+    </div>
+    <label class="consent-check"><input type="checkbox" id="consent-check" onchange="aipostConsentUpdate()"><span>利用規約と<wbr>プライバシーポリシーに<wbr>同意します。</span></label>
+    <div class="consent-error" id="consent-error"></div>
+    <button type="button" class="consent-btn" id="consent-agree-btn" onclick="aipostAgreeTerms()" disabled>同意して続ける</button>
+    <button type="button" class="consent-btn consent-btn-gray" id="consent-close-btn" onclick="aipostDeclineTerms()">同意しないで閉じる</button>
+  </div>
+</div>
+<div class="consent-reader" id="consent-reader">
+  <div class="consent-reader-head"><button type="button" class="consent-reader-back" onclick="aipostCloseLegal()">◀ 戻る</button><span id="consent-reader-title"></span></div>
+  <div class="consent-reader-body" id="consent-reader-body"></div>
+</div>
+<script>
+(function () {
+  var KEY = 'aipost_reservation_quota';
+  var SOURCES = { terms: 'liff_terms.html', privacy: 'liff_privacy.html' };
+  var TITLES = { terms: '利用規約', privacy: 'プライバシーポリシー' };
+  var loaded = {};
+  var sending = false;
+  function log(msg) { try { if (typeof traceLog === 'function') traceLog(msg); } catch (e) {} }
+  function lineUid() { try { return (typeof LINE_UID !== 'undefined' && LINE_UID) ? LINE_UID : null; } catch (e) { return null; } }
+  function webappUrl() { try { return (typeof WEBAPP_URL !== 'undefined') ? WEBAPP_URL : null; } catch (e) { return null; } }
+  function showError(msg) {
+    var el = document.getElementById('consent-error');
+    el.textContent = msg || '';
+    el.style.display = msg ? 'block' : 'none';
+  }
+  // プロフィール（保存済みの情報を含む）を見て、同意が必要なら窓を出す
+  window.aipostCheckConsent = function (profile) {
+    if (!profile || profile.found === false || !profile.terms || profile.terms.needAgree !== true) return;
+    var ov = document.getElementById('consent-overlay');
+    if (!ov || ov.classList.contains('open')) return;
+    document.getElementById('consent-check').checked = false;
+    showError('');
+    aipostConsentUpdate();
+    ov.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    log('同意の窓を表示');
+  };
+  window.aipostConsentUpdate = function () {
+    document.getElementById('consent-agree-btn').disabled = sending || !document.getElementById('consent-check').checked;
+    document.getElementById('consent-close-btn').disabled = sending;
+  };
+  window.aipostAgreeTerms = async function () {
+    if (sending || !document.getElementById('consent-check').checked || !lineUid() || !webappUrl()) return;
+    sending = true;
+    showError('');
+    var btn = document.getElementById('consent-agree-btn');
+    btn.textContent = '記録しています…';
+    aipostConsentUpdate();
+    var message = '';
+    var agreedAt = '';
+    try {
+      var res = await fetch(webappUrl(), { method: 'POST', body: JSON.stringify({ action: 'agreeTerms', lineUid: lineUid(), params: {} }) });
+      var r = await res.json();
+      if (r && r.success && r.data && r.data.agreed) {
+        agreedAt = String(r.data.agreedAt || '');
+      } else {
+        message = String((r && r.error) || '同意を記録できませんでした。もう一度お試しください。');
+      }
+    } catch (err) {
+      message = '通信エラーが発生しました。通信の状態をご確認のうえ、もう一度お試しください。';
+      log('同意 通信エラー ' + String(err && err.message));
+    }
+    sending = false;
+    btn.textContent = '同意して続ける';
+    if (message) {
+      log('同意NG ' + message);
+      showError(message);
+      aipostConsentUpdate();
+      return;
+    }
+    log('同意OK');
+    // 保存済みの情報の terms を書き直す（ほかの画面で、もう一度出さないように）
+    try {
+      var c = JSON.parse(sessionStorage.getItem(KEY) || 'null');
+      if (c) { c.terms = { agreedAt: agreedAt, needAgree: false }; sessionStorage.setItem(KEY, JSON.stringify(c)); }
+    } catch (e) {}
+    document.getElementById('consent-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    aipostConsentUpdate();
+  };
+  // 同意しない：AiPostの画面を閉じて、LINEのトーク画面に戻る
+  window.aipostDeclineTerms = function () {
+    if (sending) return;
+    log('同意しないで閉じる');
+    try { liff.closeWindow(); } catch (e) {}
+  };
+  window.aipostOpenLegal = function (name) {
+    document.getElementById('consent-reader-title').textContent = TITLES[name];
+    var body = document.getElementById('consent-reader-body');
+    document.getElementById('consent-reader').classList.add('open');
+    body.scrollTop = 0;
+    if (loaded[name]) { body.innerHTML = loaded[name]; return; }
+    body.innerHTML = '<div class="consent-reader-status">読み込んでいます。</div>';
+    fetch(SOURCES[name], { cache: 'no-cache' })
+      .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.text(); })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var content = doc.querySelector('.content');
+        if (!content) throw new Error('本文が見つかりません');
+        content.querySelectorAll('script').forEach(function (el) { el.remove(); });
+        loaded[name] = content.innerHTML;
+        if (document.getElementById('consent-reader-title').textContent === TITLES[name]) body.innerHTML = loaded[name];
+      })
+      .catch(function () {
+        body.innerHTML = '<div class="consent-reader-status">読み込めませんでした。通信の状態をご確認のうえ、もう一度お試しください。</div>';
+      });
+  };
+  window.aipostCloseLegal = function () {
+    document.getElementById('consent-reader').classList.remove('open');
+  };
+  // この窓の部品を読み込む前に、プロフィールが分かっていた時（画面の始めの処理が先に進んだ時）は、ここで確かめる
+  if (window.aipostConsentPending) {
+    var pending = window.aipostConsentPending;
+    window.aipostConsentPending = null;
+    aipostCheckConsent(pending);
   }
 })();
 </script>
