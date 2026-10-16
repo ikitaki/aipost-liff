@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析57 - AiPost</title>
+<title>分析58 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -14,7 +14,13 @@
   }
   body { font-family:'Hiragino Sans','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); max-width:480px; margin:0 auto; padding-bottom:70px; }
   .header { background:var(--primary); color:white; padding:8px 14px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; }
-  .header-logo { font-size:15px; font-weight:700; }
+  .header-logo { font-size:15px; font-weight:700; min-width:0; }
+  /* ★liff_analytics.html58：「AiPost」は入りきらない時に隠す（ほかの画面と同じ）・言葉の途中で折り返さない */
+  .header-sub { font-size:11px; opacity:0.75; margin-left:auto; white-space:nowrap; overflow:hidden; min-width:0; }
+  .nowrap { white-space:nowrap; }
+  /* ★liff_analytics.html58：決めた区切り（<wbr>）でだけ折り返す。入りきらない時だけ、やむを得ず途中で折る */
+  .plan-feature-item span:last-child, .already-use-title, .plan-feature-label, .plan-guide-price, .unregistered-card { word-break:keep-all; overflow-wrap:anywhere; }
+  .unregistered-card { background:#fff3e0; border:1px solid #ffcc80; border-radius:10px; padding:12px; margin-bottom:12px; font-size:12px; color:#e65100; line-height:1.7; }
   .subbar { background:#13195f; padding:6px 14px; display:flex; flex-direction:column; position:sticky; top:40px; z-index:99; }
   .tab-nav { display:flex; background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:74px; z-index:98; }
   .tab-btn { flex:1; padding:10px 4px; border:none; background:none; font-size:11px; font-weight:600; color:var(--text-sub); cursor:pointer; border-bottom:2px solid transparent; font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:2px; }
@@ -305,8 +311,8 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo">分析57</span>
-  <span style="font-size:11px;opacity:0.75;margin-left:auto;">AiPost</span>
+  <span class="header-logo"><span class="nowrap">分析58</span></span>
+  <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
@@ -353,15 +359,18 @@
 
 <div class="subbar">
   <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-    <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">LITE</span>
-    <span id="plan-price">¥680/月</span>
+    <!-- ★liff_analytics.html58：仮の表示（LITE ¥680/月）をやめ、「確認中」から始める（ほかの画面と同じ。プランが分かったら色を付ける） -->
+    <span id="plan-badge" style="background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">確認中</span>
+    <span id="plan-price"></span>
     <!-- ★liff_analytics.html39：デモの固定文字「次回更新：2026年7月1日」を削除した。決済（Stripe）実装時に、有料プランのみ実際の次回請求日を表示する -->
   </div>
-  <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+  <div id="plan-sns" style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;white-space:nowrap;">
     <span>連携中：</span>
-    <span id="subbar-sns-x" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
-    <span id="subbar-sns-ig" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
-    <span id="subbar-sns-th" style="background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
+    <!-- ★liff_analytics.html58：連携の状態が分かるまでは「確認中」と出し、SNSの名前は出さない -->
+    <span id="subbar-sns-checking">確認中</span>
+    <span id="subbar-sns-x" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
+    <span id="subbar-sns-ig" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
+    <span id="subbar-sns-th" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
     <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
 </div>
@@ -382,6 +391,11 @@
 
 <div class="content">
 
+<!-- ★liff_analytics.html58：登録が見つからない時の案内（タブは出さない） -->
+<div class="unregistered-card" id="unregistered-card" style="display:none;">
+  ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
+</div>
+
 <!-- ===== LITE分析タブ ===== -->
 <!-- ===== LITE分析タブ ===== -->
 <div id="tab-lite" class="tab-panel active">
@@ -392,15 +406,15 @@
   <div id="lite-upgrade-guide" style="display:none;">
     <div style="text-align:center;padding:20px 16px 12px;">
       <div style="font-size:28px;margin-bottom:8px;">🔍</div>
-      <div class="already-use-title" style="color:var(--primary);">LITEプランで利用できます</div>
+      <div class="already-use-title" style="color:var(--primary);">LITEプランで<wbr>利用できます</div>
       <div class="plan-feature-list">
-        <div class="plan-feature-label">LITE分析に含まれる機能</div>
-        <div class="plan-feature-item"><span>📊</span><span>今日の状況（投稿数・反応の概況）</span></div>
-        <div class="plan-feature-item"><span>📊</span><span>直近投稿と24時間後の状況</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>投稿日別データ</span></div>
-        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移（SNS別）</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>先週・先月のまとめ</span></div>
-        <div class="plan-feature-item"><span>🎯</span><span>次回の投稿おすすめ</span></div>
+        <div class="plan-feature-label">LITE分析に<wbr>含まれる機能</div>
+        <div class="plan-feature-item"><span>📊</span><span>今日の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>直近投稿と<wbr>24時間後の<wbr>状況</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>投稿日別<wbr>データ</span></div>
+        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の<wbr>推移<wbr>（SNS別）</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>先週・<wbr>先月の<wbr>まとめ</span></div>
+        <div class="plan-feature-item"><span>🎯</span><span>次回の<wbr>投稿おすすめ</span></div>
       </div>
       <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
       <p class="plan-guide-price">LITEプラン ¥680/月</p>
@@ -610,17 +624,17 @@
   <div id="standard-upgrade-guide" style="display:none;">
     <div style="text-align:center;padding:20px 16px 12px;">
       <div style="font-size:28px;margin-bottom:8px;">📊</div>
-      <div class="already-use-title" style="color:var(--primary);">STANDARDプランで利用できます</div>
+      <div class="already-use-title" style="color:var(--primary);">STANDARDプランで<wbr>利用できます</div>
       <div class="plan-feature-list">
-        <div class="plan-feature-label">STANDARD分析に含まれる機能</div>
-        <div class="plan-feature-item"><span>📊</span><span>今日の状況（投稿数・反応の概況）</span></div>
-        <div class="plan-feature-item"><span>📊</span><span>直近投稿と24時間後の状況</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>投稿日別データ</span></div>
-        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移（SNS別）</span></div>
-        <div class="plan-feature-item"><span>📊</span><span>あなたの投稿平均との比較</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>先週・先月のまとめ</span></div>
-        <div class="plan-feature-item"><span>🎯</span><span>次回の投稿おすすめ</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>データ更新：投稿後24時間（毎日）</span></div>
+        <div class="plan-feature-label">STANDARD分析に<wbr>含まれる機能</div>
+        <div class="plan-feature-item"><span>📊</span><span>今日の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>直近投稿と<wbr>24時間後の<wbr>状況</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>投稿日別<wbr>データ</span></div>
+        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の<wbr>推移<wbr>（SNS別）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>あなたの<wbr>投稿平均との<wbr>比較</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>先週・<wbr>先月の<wbr>まとめ</span></div>
+        <div class="plan-feature-item"><span>🎯</span><span>次回の<wbr>投稿おすすめ</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>データ更新：<wbr>投稿後<wbr>24時間<wbr>（毎日）</span></div>
       </div>
       <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
       <p class="plan-guide-price">STANDARDプラン ¥1,280/月</p>
@@ -802,19 +816,19 @@
   <div id="pro-upgrade-guide" style="display:none;">
     <div style="text-align:center;padding:20px 16px 12px;">
       <div style="font-size:28px;margin-bottom:8px;">📈</div>
-      <div class="already-use-title" style="color:var(--primary);">PROプランで利用できます</div>
+      <div class="already-use-title" style="color:var(--primary);">PROプランで<wbr>利用できます</div>
       <div class="plan-feature-list">
-        <div class="plan-feature-label">PRO分析に含まれる機能</div>
-        <div class="plan-feature-item"><span>📊</span><span>今日の状況（投稿数・反応の概況）</span></div>
-        <div class="plan-feature-item"><span>⚡</span><span>直近投稿の初速状況（1時間・3時間・24時間ごとの数値推移）</span></div>
-        <div class="plan-feature-item"><span>📊</span><span>あなたの投稿平均との比較</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>投稿日別データ</span></div>
-        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の推移（SNS別）</span></div>
-        <div class="plan-feature-item"><span>🏙️</span><span>同業種・同エリア平均との比較</span></div>
-        <div class="plan-feature-item"><span>⚠️</span><span>ネガティブコメント検知（コメントの感情分析を含む）</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>先週・先月のまとめ</span></div>
-        <div class="plan-feature-item"><span>🎯</span><span>次回の投稿おすすめ（おすすめの投稿時間帯を含む）</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>データ更新：投稿後1時間・3時間・24時間（毎日）</span></div>
+        <div class="plan-feature-label">PRO分析に<wbr>含まれる機能</div>
+        <div class="plan-feature-item"><span>📊</span><span>今日の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
+        <div class="plan-feature-item"><span>⚡</span><span>直近投稿の<wbr>初速状況<wbr>（1時間・<wbr>3時間・<wbr>24時間ごとの<wbr>数値推移）</span></div>
+        <div class="plan-feature-item"><span>📊</span><span>あなたの<wbr>投稿平均との<wbr>比較</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>投稿日別<wbr>データ</span></div>
+        <div class="plan-feature-item"><span>👥</span><span>フォロワー数の<wbr>推移<wbr>（SNS別）</span></div>
+        <div class="plan-feature-item"><span>🏙️</span><span>同業種・<wbr>同エリア<wbr>平均との<wbr>比較</span></div>
+        <div class="plan-feature-item"><span>⚠️</span><span>ネガティブ<wbr>コメント検知<wbr>（コメントの<wbr>感情分析を<wbr>含む）</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>先週・<wbr>先月の<wbr>まとめ</span></div>
+        <div class="plan-feature-item"><span>🎯</span><span>次回の<wbr>投稿おすすめ<wbr>（おすすめの<wbr>投稿時間帯を<wbr>含む）</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>データ更新：<wbr>投稿後<wbr>1時間・<wbr>3時間・<wbr>24時間<wbr>（毎日）</span></div>
       </div>
       <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
       <p class="plan-guide-price">PROプラン ¥1,980/月</p>
@@ -1383,12 +1397,23 @@ function renderSubbarSnsTags() {
     const el = document.getElementById('subbar-sns-' + key);
     if (el) el.style.display = (sns && sns[backendKey]) ? '' : 'none';
   });
+  // ★liff_analytics.html58：連携の状態が分かったので「確認中」を消す
+  const snsChecking = document.getElementById('subbar-sns-checking');
+  if (snsChecking && sns) snsChecking.style.display = 'none';
+}
+
+// ★liff_analytics.html58：プランが分かったら、プランの印をいつもの色にする（読み込み中は白っぽい「確認中」）
+function markPlanBadgeKnown() {
+  const badge = document.getElementById('plan-badge');
+  badge.style.background = '#fff8e1';
+  badge.style.color = '#e65100';
 }
 
 function applyPlan(plan) {
   currentActualPlan = plan;
   document.getElementById('plan-badge').textContent = plan;
   document.getElementById('plan-price').textContent = ANALYTICS_PLAN_INFO[plan].price;
+  markPlanBadgeKnown(); // ★liff_analytics.html58
   renderSubbarSnsTags();
 
   // FREE・PERSONALでもLITE/STANDARD/PROタブは開ける（各タブでアップグレード案内を表示するため）
@@ -1401,9 +1426,45 @@ function applyPlan(plan) {
   switchTab(initialTab);
 }
 
+// ★liff_analytics.html58：お試し中（プラン未申し込み）は、フリー・パーソナルと同じく各タブに「〇〇プランで利用できます」の案内を出す（Kenさん決定）。
+// 　プランの印は「お試し中」、その横に今日あと何回作成できるかを出す（ほかの画面と同じ）
+let IS_TRIAL = false;
+let NOT_REGISTERED = false;
+function applyTrial(trial) {
+  IS_TRIAL = true;
+  currentActualPlan = '未入会';
+  document.getElementById('plan-badge').textContent = 'お試し中';
+  document.getElementById('plan-price').textContent = (trial && typeof trial.remainingToday === 'number') ? '今日あと' + trial.remainingToday + '回作成できます' : '';
+  markPlanBadgeKnown();
+  renderSubbarSnsTags();
+  document.getElementById('analytics-tab-nav').style.display = 'flex';
+  switchTab('lite');
+}
+// ★liff_analytics.html58：登録が見つからない時は、案内だけを出す（タブ・分析の中身は出さない）
+function applyNotRegistered() {
+  NOT_REGISTERED = true;
+  document.getElementById('plan-badge').textContent = '未登録';
+  document.getElementById('plan-price').textContent = '';
+  markPlanBadgeKnown();
+  const el = document.getElementById('reservation-quota');
+  if (el) el.textContent = '';
+  currentSnsCache = { x: false, instagram: false, threads: false };
+  renderSubbarSnsTags();
+  document.getElementById('unregistered-card').style.display = 'block';
+  document.getElementById('analytics-tab-nav').style.display = 'none';
+  document.querySelectorAll('.tab-panel').forEach(function (p) { p.style.display = 'none'; });
+}
+// ★liff_analytics.html58：予約一覧はプランの利用者だけ、分析はLITE・STANDARD・PROだけ取る（使わないデータは取りに行かない。Kenさん決定）
+function canUseReservations() {
+  return !IS_TRIAL && !NOT_REGISTERED;
+}
+function canUseAnalytics() {
+  return canUseReservations() && ['LITE', 'STANDARD', 'PRO'].indexOf(currentActualPlan) !== -1;
+}
+
 // 契約プランと、各タブ（LITE/STANDARD/PRO）の関係を表すバナー・表示切替
 let currentActualPlan = 'LITE';
-const ANALYTICS_TIER = { FREE: 0, PERSONAL: 0, LITE: 1, STANDARD: 2, PRO: 3 };
+const ANALYTICS_TIER = { FREE: 0, PERSONAL: 0, '未入会': 0, LITE: 1, STANDARD: 2, PRO: 3 }; // ★liff_analytics.html58：お試し中（未入会）はフリーと同じ扱い
 
 // タブ1つ分の表示状態を切り替える共通処理
 // tabKey: 'lite'|'standard'|'pro'、requiredTier: そのタブが要求するプランのティア
@@ -1454,7 +1515,7 @@ function includedBlockHtml(tabKey) {
   const listHtml = featureList ? featureList.outerHTML : '';
   return `<div style="text-align:center;padding:20px 16px 12px;">
     <div style="font-size:28px;margin-bottom:8px;">✅</div>
-    <div class="already-use-title" style="color:var(--success);">現在のプランに全て含まれています</div>
+    <div class="already-use-title" style="color:var(--success);">現在のプランに<wbr>全て<wbr>含まれています</div>
     ${listHtml}
   </div>`;
 }
@@ -1467,21 +1528,8 @@ function switchTab(id) {
     document.querySelectorAll('.tab-btn')[i].classList.toggle('active', t===id);
   });
 
-  // プランバッジ・価格・連携SNSは「契約プラン（currentActualPlan）」基準で表示する。
-  // タブはあくまで各プランの内容を見比べるプレビューのため、タブ切替では変更しない。
-  const planInfo = {
-    LITE:     { badge:'LITE',     price:'¥680/月' },
-    STANDARD: { badge:'STANDARD', price:'¥1,280/月' },
-    PRO:      { badge:'PRO',      price:'¥1,980/月' },
-  };
-  const info = planInfo[currentActualPlan];
-  if (info) {
-    const badge = document.getElementById('plan-badge');
-    const price = document.getElementById('plan-price');
-    if (badge) badge.textContent = info.badge;
-    if (price) price.textContent = info.price;
-    renderSubbarSnsTags();
-  }
+  // ★liff_analytics.html58：プランの印・料金・連携中のSNSは、applyPlan・applyTrial で出す（タブ切替では変えない。
+  // 　以前はここでも書き換えていたため、読み込み前にタブを押すと「LITE ¥680/月」と出ていた）
 
   // 見ているタブと契約プランの関係バナーを更新
   updatePlanRelationBanners();
@@ -1913,6 +1961,8 @@ async function postToGas(payload, label, isOk) {
       }
       lastGasError = String((result && (result.error || (result.data && result.data.error))) || '');
       traceLog(label + '取得NG(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
+      // ★liff_analytics.html58：登録が無い・プランの申し込みが要る、という返事は、もう一度送っても同じなので再試行しない（ほかの画面と同じ）
+      if (result && (result.notRegistered === true || result.needsPlan === true)) return null;
     } catch (err) {
       lastGasError = String(err && err.message);
       traceLog(label + '通信エラー(' + attempt + '回目) ' + lastGasError + ' ' + (Date.now() - t0) + 'ms');
@@ -1927,7 +1977,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析57';
+const TRACE_SCREEN = '分析58';
 
 function traceLog(msg) {
   try {
@@ -2030,16 +2080,28 @@ function writeQuotaCache(profileData, sns) {
 }
 
 function applyQuotaFromCache(cache) {
+  // ★liff_analytics.html58：登録が無い・お試し中に対応し、残り予約枠に期間の終了日を付けた（ほかの画面と同じ）
+  if (cache.found === false) {
+    applyNotRegistered();
+    return;
+  }
   const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
   currentSnsCache = cache.sns || null;
-  if (validPlans.includes(cache.plan)) {
+  if (cache.plan === '未入会') {
+    applyTrial(cache.trial);
+  } else if (validPlans.includes(cache.plan)) {
     applyPlan(cache.plan);
   }
   const el = document.getElementById('reservation-quota');
-  if (el && typeof cache.remainingReservable === 'number') {
-    // ★liff_analytics.html38：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
-    // ★liff_analytics.html55：「残り投稿可能数」→「残り予約枠」（予約枠に言葉をそろえる。Kenさん決定）
-    el.textContent = '残り予約枠' + Math.max(0, cache.remainingReservable) + '件';
+  if (el) {
+    if (IS_TRIAL) {
+      el.textContent = '';
+    } else if (typeof cache.remainingReservable === 'number') {
+      // ★liff_analytics.html38：プラン変更等で上限を超えている場合（マイナス）は0件と表示する
+      // ★liff_analytics.html55：「残り投稿可能数」→「残り予約枠」（予約枠に言葉をそろえる。Kenさん決定）
+      const m = String((cache.period && cache.period.end) || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+      el.textContent = '残り予約枠' + Math.max(0, cache.remainingReservable) + '件' + (m ? '（' + Number(m[2]) + '/' + Number(m[3]) + 'まで）' : '');
+    }
   }
 }
 
@@ -2094,8 +2156,15 @@ async function refreshReservationQuota(showOverlay) {
       postToGas({ action: 'getUserProfile', lineUid: LINE_UID }, 'プロフィール'),
       postToGas({ action: 'getSnsStatus', lineUid: LINE_UID }, 'SNS連携状況')
     ]);
-    if (!profileResult || !profileResult.data || profileResult.data.found === false) {
-      traceLog('プロフィール取得NG found=' + (profileResult && profileResult.data && profileResult.data.found));
+    if (profileResult && profileResult.data && profileResult.data.found === false) {
+      // ★liff_analytics.html58：登録が見つからない時は案内を出し、保存しておく（ほかの画面と同じ）
+      traceLog('プロフィール：登録なし');
+      applyNotRegistered();
+      writeQuotaCache({ found: false }, null);
+      return;
+    }
+    if (!profileResult || !profileResult.data) {
+      traceLog('プロフィール取得NG');
       return;
     }
 
@@ -2108,13 +2177,13 @@ async function refreshReservationQuota(showOverlay) {
       threadsAccount: snsResult.data.threadsAccount || ''
     } : null;
 
-    applyQuotaFromCache({ plan: profileResult.data.plan, remainingReservable: profileResult.data.remainingReservable, sns: sns });
+    applyQuotaFromCache(Object.assign({}, profileResult.data, { sns: sns }));
     writeQuotaCache(profileResult.data, sns);
   } catch (err) {
     console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
   } finally {
     if (showOverlay) { traceLog('スピナー終了（プラン等）'); releaseLoadingOverlay(); }
-    if (needsReservationList) warmupReservationListCache();
+    if (needsReservationList && canUseReservations()) warmupReservationListCache(); // ★liff_analytics.html58：プランの利用者だけ
   }
 }
 
@@ -2132,9 +2201,11 @@ async function refreshReservationQuota(showOverlay) {
 async function applyQuotaFromCacheOrFetch() {
   const cached = readQuotaCache();
   const needsReservationList = !sessionStorage.getItem(RESERVATION_LIST_CACHE_KEY);
-  if (cached) {
+  // ★liff_analytics.html58：期間・退会のお申し込み（withdrawal）を含まない古い保存済み情報は使わず、取り直す
+  // 　（「登録が無い」と保存済みの時は、取り直さずにその表示にする。ほかの画面と同じ）
+  if (cached && (cached.found === false || cached.withdrawal !== undefined)) {
     applyQuotaFromCache(cached);
-    if (needsReservationList) warmupReservationListCache();
+    if (needsReservationList && canUseReservations()) warmupReservationListCache();
   } else {
     await refreshReservationQuota(true);
   }
@@ -2150,7 +2221,12 @@ async function initLiff() {
     const idToken = liff.getDecodedIDToken();
     LINE_UID = idToken.sub;
     await applyQuotaFromCacheOrFetch();
-    loadAnalyticsData();
+    // ★liff_analytics.html58：分析のデータは、LITE・STANDARD・PROの時だけ取る（お試し中・フリー・パーソナル・登録なしは取らない）
+    if (canUseAnalytics()) {
+      loadAnalyticsData();
+    } else if (!NOT_REGISTERED && !readMasterDataCache()) {
+      warmupMasterDataCache();
+    }
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -3021,6 +3097,21 @@ async function loadAnalyticsData() {
     if (needMaster) warmupMasterDataCache();
   }
 }
+
+// ★liff_analytics.html58：ヘッダーの「AiPost」が入りきらない時はまるごと隠し、サブバーとタブをヘッダーのすぐ下に止める
+// 　（文字の大きい端末で、ヘッダーが2行になった時のため。ほかの画面と同じ）
+function updateHeaderLayout() {
+  const sub = document.querySelector('.header-sub');
+  if (sub) { sub.style.visibility = ''; if (sub.scrollWidth > sub.clientWidth + 1) sub.style.visibility = 'hidden'; }
+  const header = document.querySelector('.header');
+  const subbar = document.querySelector('.subbar');
+  const tabNav = document.querySelector('.tab-nav');
+  if (header && subbar) subbar.style.top = header.offsetHeight + 'px';
+  if (header && subbar && tabNav) tabNav.style.top = (header.offsetHeight + subbar.offsetHeight) + 'px';
+}
+window.addEventListener('resize', updateHeaderLayout);
+try { const ro = new ResizeObserver(updateHeaderLayout); ro.observe(document.querySelector('.header')); ro.observe(document.querySelector('.subbar')); } catch (e) {}
+updateHeaderLayout();
 
 traceStart();
 applyCachedAnalyticsData();
