@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AIサポート13 - AiPost</title>
+  <title>AIサポート14 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -45,8 +45,21 @@
       top: 0;
       z-index: 100;
     }
-    .topbar-logo { font-size: 15px; font-weight: 700; }
-    .topbar-sub { font-size: 10px; opacity: 0.75; margin-left: auto; }
+    .topbar-logo { font-size: 15px; font-weight: 700; min-width: 0; }
+    /* ★liff_support.html14：「AiPost」は入りきらない時に隠す・言葉の途中で折り返さない（ほかの画面と同じ） */
+    .topbar-sub { font-size: 10px; opacity: 0.75; margin-left: auto; white-space: nowrap; overflow: hidden; min-width: 0; }
+    .nowrap { white-space: nowrap; }
+    /* ★liff_support.html14：文は決めた区切りや「、」「。」でだけ折り返す（文字を大きくした時に「タ／ブ」「報／告」と折れていたため） */
+    .faq-hint, .faq-q-text, .faq-a, .faq-empty, .inq-kind, .inq-kind-note, .inq-text, .inq-warn, .inq-error, .inq-small, .inq-done, .sheet-done-text { word-break: keep-all; overflow-wrap: anywhere; }
+    /* ★liff_support.html14：登録が見つからない時の案内（ほかの画面と同じ形・色） */
+    .unregistered-card { background: #fff3e0; border: 1px solid #ffcc80; border-radius: 10px; padding: 12px; margin: 12px 12px 0; font-size: 12px; color: #e65100; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+    /* ★liff_support.html14：完了の窓（ほかの画面と同じ。下から出る・✅・灰色の「閉じる」） */
+    .sheet-done { text-align: center; }
+    .sheet-done-icon { font-size: 48px; margin-bottom: 12px; }
+    .sheet-done-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .sheet-done-text { font-size: 13px; color: var(--text-sub); line-height: 1.9; margin-bottom: 4px; }
+    .sheet-done-id { font-size: 12px; color: var(--text-sub); margin-bottom: 16px; }
+    .modal-btn-gray { background: var(--bg); color: var(--text-sub); border: 1px solid var(--border); }
 
     .subbar {
       background: #13195f;
@@ -320,7 +333,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">🤖</span>
-    <span class="topbar-logo">AIサポート13</span>
+    <span class="topbar-logo"><span class="nowrap">AIサポート14</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -371,11 +384,14 @@
   <!-- プラン・SNSサブバー（★liff_plan.html6：デモの固定文字をやめ、実際の値を表示する） -->
   <div class="subbar">
     <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-      <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">確認中</span>
+      <!-- ★liff_support.html14：読み込み中は白っぽい「確認中」（ほかの画面と同じ。プランが分かったら色を付ける） -->
+      <span id="plan-badge" style="background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">確認中</span>
       <span id="plan-price"></span>
     </div>
-    <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:6px;">
+    <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;white-space:nowrap;">
       <span>連携中：</span>
+      <!-- ★liff_support.html14：連携の状態が分かるまでは「確認中」と出す -->
+      <span id="subbar-sns-checking">確認中</span>
       <span id="subbar-sns-x" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
       <span id="subbar-sns-ig" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
       <span id="subbar-sns-th" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
@@ -389,11 +405,16 @@
     <button type="button" class="tab" id="tab-inq" onclick="switchTab('inq')">✉️ 問い合わせ</button>
   </div>
 
+  <!-- ★liff_support.html14：登録が見つからない時の案内（どちらのタブでも出す。ほかの画面と同じ文） -->
+  <div class="unregistered-card" id="unregistered-card" style="display:none;">
+    ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
+  </div>
+
   <!-- よくある質問（システム設定の「よくある質問マスタ」を表示する） -->
   <div class="tab-panel active" id="panel-faq">
     <div class="faq-sec">
       <input type="search" class="faq-search" id="faq-search" placeholder="言葉で探す（例：予約、Instagram）" oninput="renderFaq()">
-      <div class="faq-hint">質問を押すと、答えが開きます。解決しない時は「問い合わせ」タブからお送りください。</div>
+      <div class="faq-hint">質問を押すと、<wbr>答えが<wbr>開きます。<wbr>解決しない時は<wbr><span class="nowrap">「問い合わせ」タブから</span><wbr>お送りください。</div>
       <div id="faq-list"><div class="faq-empty">読み込んでいます…</div></div>
     </div>
   </div>
@@ -412,23 +433,25 @@
       </div>
       <div class="inq-kind-note" id="inq-kind-note"></div>
       <div class="inq-lbl">② 内容を書く</div>
-      <textarea class="inq-text" id="inq-text" placeholder="できるだけ詳しく書いてください。" oninput="updateInqForm()"></textarea>
+      <textarea class="inq-text" id="inq-text" placeholder="できるだけ​詳しく​書いてください。" oninput="updateInqForm()"></textarea>
       <div class="inq-count" id="inq-count">0 / 1000文字</div>
-      <div class="inq-warn">⚠️ カード番号やパスワードは書かないでください。</div>
+      <div class="inq-warn">⚠️ カード番号や<wbr>パスワードは<wbr>書かないでください。</div>
       <div class="inq-error" id="inq-error"></div>
       <button type="button" class="inq-send" id="inq-send" onclick="sendInquiry()" disabled>送信する</button>
-      <div class="inq-small">・問い合わせは1日10件までです。<br>・「要望」「その他」には、個別の返事はしていません。今後の改善に生かします。</div>
+      <div class="inq-small">・問い合わせは<wbr>1日10件までです。<br>・「要望」<wbr>「その他」には、<wbr>個別の<wbr>返事は<wbr>していません。<wbr>今後の<wbr>改善に<wbr>生かします。</div>
     </div>
   </div>
 
   <!-- ★liff_support.html11：送信が終わった時の表示（画面の真ん中に出す。下へスクロールしていても見落とさないように） -->
-  <div class="modal-overlay" id="inq-done-modal" style="align-items:center;padding:0 16px;">
-    <div class="modal" style="border-radius:16px;text-align:center;padding:24px 18px 18px;">
-      <div style="font-size:44px;margin-bottom:8px;">✅</div>
-      <div style="font-size:16px;font-weight:700;margin-bottom:10px;">送信しました。</div>
-      <p style="font-size:13px;color:var(--text);line-height:1.8;margin-bottom:8px;" id="inq-done-modal-msg"></p>
-      <p style="font-size:12px;color:var(--text-sub);margin-bottom:16px;" id="inq-done-modal-id"></p>
-      <button type="button" class="modal-btn modal-btn-cancel" style="border:1px solid var(--border);margin-bottom:0;" onclick="closeInqDone()">閉じる</button>
+  <!-- ★liff_support.html14：ほかの画面の完了の窓と同じ形にした（画面の真ん中→下から出す。✅・見出し・文・灰色の「閉じる」） -->
+  <div class="modal-overlay" id="inq-done-modal" onclick="if(event.target===this)closeInqDone()">
+    <div class="modal sheet-done">
+      <div class="modal-handle"></div>
+      <div class="sheet-done-icon">✅</div>
+      <div class="sheet-done-title">送信しました。</div>
+      <div class="sheet-done-text" id="inq-done-modal-msg"></div>
+      <div class="sheet-done-id" id="inq-done-modal-id"></div>
+      <button type="button" class="modal-btn modal-btn-gray" style="margin-bottom:0;" onclick="closeInqDone()">閉じる</button>
     </div>
   </div>
 
@@ -498,7 +521,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'AIサポート13';
+  const TRACE_SCREEN = 'AIサポート14';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -556,29 +579,62 @@
       sessionStorage.setItem(QUOTA_CACHE_KEY, JSON.stringify(Object.assign({}, profileData, { sns: sns || null, fetchedAt: Date.now() })));
     } catch (err) {}
   }
-  function applySubbar(plan, remaining, sns) {
-    if (PLANS.indexOf(plan) !== -1) {
-      const badge = document.getElementById('plan-badge');
+  // ★liff_support.html14：プランが分かったら、プランの印をいつもの色にする（読み込み中は白っぽい「確認中」）
+  function markPlanBadgeKnown() {
+    const badge = document.getElementById('plan-badge');
+    badge.style.background = '#fff8e1';
+    badge.style.color = '#e65100';
+  }
+  function applySubbarSns(sns) {
+    if (!sns) return;
+    const ids = { x: 'subbar-sns-x', instagram: 'subbar-sns-ig', threads: 'subbar-sns-th' };
+    Object.keys(ids).forEach(function (k) {
+      const el = document.getElementById(ids[k]);
+      if (el) el.style.display = sns[k] ? '' : 'none';
+    });
+    document.getElementById('subbar-sns-checking').style.display = 'none';
+  }
+  // ★liff_support.html14：お試し中（未入会）は「お試し中」と今日あと何回作成できるか、登録が無い時は「未登録」と案内を出す（ほかの画面と同じ）。
+  // 　以前は、お試し中の人も「FREE ¥0/月」と出ていた。残り予約枠には、ご利用期間の終わりの日を付ける
+  function applySubbar(profile, sns) {
+    const badge = document.getElementById('plan-badge');
+    const price = document.getElementById('plan-price');
+    const quota = document.getElementById('reservation-quota');
+    const plan = String(profile.plan || '');
+    if (plan === '未入会') {
+      badge.textContent = 'お試し中';
+      price.textContent = (profile.trial && typeof profile.trial.remainingToday === 'number') ? '今日あと' + profile.trial.remainingToday + '回作成できます' : '';
+      quota.textContent = '';
+      markPlanBadgeKnown();
+    } else if (PLANS.indexOf(plan) !== -1) {
       badge.textContent = plan;
-      document.getElementById('plan-price').textContent = '¥' + PLAN_PRICE[plan] + '/月';
+      price.textContent = '¥' + PLAN_PRICE[plan] + '/月';
+      markPlanBadgeKnown();
+      if (typeof profile.remainingReservable === 'number') {
+        const m = String((profile.period && profile.period.end) || '').match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+        quota.textContent = '残り予約枠' + Math.max(0, profile.remainingReservable) + '件' + (m ? '（' + Number(m[2]) + '/' + Number(m[3]) + 'まで）' : '');
+      }
     }
-    if (typeof remaining === 'number') {
-      document.getElementById('reservation-quota').textContent = '残り予約枠' + Math.max(0, remaining) + '件';
-    }
-    if (sns) {
-      const ids = { x: 'subbar-sns-x', instagram: 'subbar-sns-ig', threads: 'subbar-sns-th' };
-      Object.keys(ids).forEach(function (k) {
-        const el = document.getElementById(ids[k]);
-        if (el) el.style.display = sns[k] ? '' : 'none';
-      });
-    }
+    applySubbarSns(sns);
+  }
+  function applyNotRegistered() {
+    document.getElementById('plan-badge').textContent = '未登録';
+    document.getElementById('plan-price').textContent = '';
+    document.getElementById('reservation-quota').textContent = '';
+    markPlanBadgeKnown();
+    applySubbarSns({ x: false, instagram: false, threads: false });
+    document.getElementById('unregistered-card').style.display = 'block';
+    // よくある質問・問い合わせは、登録が無いと使えない（サーバー側で受け付けない）
+    faqItems = null;
+    document.getElementById('faq-list').innerHTML = '';
   }
   function applyProfile(profile, sns) {
     profileReady = true;
     profileFound = !!(profile && profile.found !== false);
     if (profileFound) {
-      const plan = PLANS.indexOf(String(profile.plan || '')) !== -1 ? String(profile.plan) : 'FREE';
-      applySubbar(plan, profile.remainingReservable, sns);
+      applySubbar(profile, sns);
+    } else {
+      applyNotRegistered();
     }
     updateInqForm();
   }
@@ -593,6 +649,8 @@
         const result = await response.json();
         if (check(result)) { traceLog(label + '取得OK ' + (Date.now() - t0) + 'ms'); return result; }
         traceLog(label + '取得NG(' + attempt + '回目) ' + String((result && result.error) || ''));
+        // ★liff_support.html14：登録が無い・プランの申し込みが要る、という返事は、もう一度送っても同じなので再試行しない（ほかの画面と同じ）
+        if (result && (result.notRegistered === true || result.needsPlan === true)) return null;
       } catch (err) {
         traceLog(label + '通信エラー(' + attempt + '回目) ' + String(err && err.message));
       }
@@ -621,7 +679,8 @@
       instagramAccount: snsResult.data.instagramAccount || '',
       threadsAccount: snsResult.data.threadsAccount || ''
     } : null;
-    if (profileResult.data.found !== false) writeQuotaCache(profileResult.data, sns);
+    // ★liff_support.html14：登録が無い時も保存する（ほかの画面と同じ）
+    writeQuotaCache(profileResult.data.found === false ? { found: false } : profileResult.data, profileResult.data.found === false ? null : sns);
     applyProfile(profileResult.data, sns);
     return true;
   }
@@ -651,6 +710,7 @@
     const result = await postToGas({ action: 'getFaqList', lineUid: LINE_UID }, 'よくある質問',
       function (r) { return r && r.success && r.data && Array.isArray(r.data.items); });
     faqLoading = false;
+    if (!result && profileReady && !profileFound) { document.getElementById('faq-list').innerHTML = ''; return; } // ★liff_support.html14
     if (!result) {
       faqItems = null;
       document.getElementById('faq-list').innerHTML =
@@ -722,9 +782,7 @@
     textEl.disabled = sending || (profileReady && !profileFound);
     document.querySelectorAll('.inq-kind').forEach(function (b) { b.disabled = sending || (profileReady && !profileFound); });
     document.getElementById('inq-send').disabled = sending || !canUse || !inqKind || len === 0 || len > INQ_MAX_LENGTH;
-    if (profileReady && !profileFound) {
-      showInqError('問い合わせを送るには、LINEで友だち追加をしてから、もう一度この画面を開いてください。');
-    }
+    // ★liff_support.html14：登録が無い時の赤い文（友だち追加の案内）はやめ、上の案内（ほかの画面と同じ文）で知らせる
   }
 
   // 問い合わせを送る（書き込みのため、自動のやり直しはせず1回だけ送る）
@@ -784,6 +842,9 @@
 
   // ★タブを、ヘッダーとサブバーのすぐ下に止めておく
   function updateTabsTop() {
+    // ★liff_support.html14：「AiPost」が入りきらない時はまるごと隠す（ほかの画面と同じ）
+    const sub = document.querySelector('.topbar-sub');
+    if (sub) { sub.style.visibility = ''; if (sub.scrollWidth > sub.clientWidth + 1) sub.style.visibility = 'hidden'; }
     const topbarH = document.querySelector('.topbar').offsetHeight;
     document.querySelector('.subbar').style.top = topbarH + 'px';
     const top = topbarH + document.querySelector('.subbar').offsetHeight;
@@ -803,7 +864,10 @@
       const cachedFaq = readFaqCache();
       if (cachedFaq) { faqItems = cachedFaq; renderFaq(); } else { loadFaq(); }
       const cached = readQuotaCache();
-      if (cached && cached.plan !== undefined) {
+      // ★liff_support.html14：期間・退会のお申し込み（withdrawal）を含まない古い保存済み情報は使わず、取り直す（ほかの画面と同じ）
+      if (cached && cached.found === false) {
+        applyProfile({ found: false }, null);
+      } else if (cached && cached.plan !== undefined && cached.withdrawal !== undefined) {
         applyProfile(Object.assign({ found: true }, cached), cached.sns);
       } else {
         await fetchProfile();
