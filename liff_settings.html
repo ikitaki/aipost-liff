@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録74 - AiPost</title>
+<title>設定・登録75 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -192,7 +192,10 @@
   /* ★liff_settings.html70：お試し中の案内・登録が無い時の案内 */
   .trial-card { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #1b5e20; line-height: 1.7; }
   .trial-card .btn { margin: 10px 0 0; padding: 10px; font-size: 13px; }
-  .unregistered-card { background: #fff8e1; border: 1px solid #ffe082; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #5d4037; line-height: 1.7; }
+  /* ★liff_settings.html75：案内の文は、決めた区切り（<wbr>）でだけ折り返す。入りきらない時だけ、やむを得ず途中で折る */
+  .trial-card, .unregistered-card { word-break: keep-all; overflow-wrap: anywhere; }
+  /* ★liff_settings.html75：色をほかの画面にそろえた（以前は黄色・茶色の文字） */
+  .unregistered-card { background: #fff3e0; border: 1px solid #ffcc80; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #e65100; line-height: 1.7; }
 
   /* プラン比較 */
   .plan-current-card {
@@ -565,7 +568,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録74</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録75</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -637,14 +640,14 @@
 
   <!-- ★liff_settings.html70：登録が見つからない時の案内（店舗情報を保存すると登録される） -->
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
-    ご利用の登録が見つかりませんでした。「登録」タブで店舗情報を保存すると、ご利用を始められます。
+    ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
   </div>
 
   <!-- SNSタブ -->
   <div id="tab-sns" class="tab-panel active">
     <!-- ★liff_settings.html70：お試し中（プラン未申し込み）の案内 -->
     <div class="trial-card" id="trial-card" style="display:none;">
-      SNSの連携は、プランをお申し込みいただくとご利用いただけます。
+      SNSの<wbr>連携は、<wbr>プランを<wbr>お申し込みいただくと<wbr>ご利用いただけます。
       <button class="btn btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
     </div>
     <div class="notice">
@@ -988,6 +991,7 @@ async function initLiff() {
     // 　確認画面を開いた時に即表示できるようキャッシュだけしておく）。
     // ★liff_settings.html71：登録が無い人は予約一覧を取れないので、取りに行かない
     const needsReservationList = !cachedNotRegistered && !sessionStorage.getItem('aipost_reservation_list');
+    // ★liff_settings.html75：予約一覧は、プランが分かってから、プランの利用者の時だけ取る（お試し中は取らない。ほかの画面と同じ）
 
     // ★liff_settings.html49：スピナーを出すのは、この画面で表示するデータ
     // 　（マスタデータ・プロフィール）を新規取得する場合だけにした。
@@ -1008,7 +1012,6 @@ async function initLiff() {
     // 　軽い取得まで遅くなりスピナーが7〜10秒に延びていた（GAS側で同時の取得が競合する）ため、
     // 　分析データの取得は、スピナーが終わった後（スピナーを出していない場合は直後）に開始する。
     const warmTasks = [];
-    if (needsReservationList) warmTasks.push(warmupReservationListCache());
 
     if (cachedMaster) {
       MASTER_DATA = cachedMaster;
@@ -1025,6 +1028,7 @@ async function initLiff() {
     } else {
       await loadProfileAndSnsFresh();
     }
+    if (needsReservationList && canUseReservations()) warmTasks.push(warmupReservationListCache()); // ★liff_settings.html75
 
     if (needsAnyFetch) {
       // ★liff_settings.html71：登録が無いと分かった時は、予約一覧の取得（失敗する）を待たずにスピナーを止める
@@ -1036,7 +1040,8 @@ async function initLiff() {
     if (!SNS_KNOWN && !NOT_REGISTERED) loadSnsConnectionStatus();
     // スピナーが終わってから（出していない場合は直後に）、裏側で分析データを取得する（保存済みなら何もしない）
     // ★liff_settings.html70：お試し中・登録が無い人は、分析データを使えないので取りに行かない
-    if (!IS_TRIAL && !NOT_REGISTERED) warmupAnalyticsCache();
+    // ★liff_settings.html75：分析データは、LITE・STANDARD・PROの時だけ取る（フリー・パーソナルも取らない。ほかの画面と同じ）
+    if (canUseAnalytics()) warmupAnalyticsCache();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
     alert('LINEアプリ内でこの画面を開いてください。');
@@ -1092,7 +1097,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定74';
+const TRACE_SCREEN = '設定75';
 
 function traceLog(msg) {
   try {
@@ -1287,6 +1292,13 @@ let currentRemainingReservable = null;
 let IS_TRIAL = false;
 let NOT_REGISTERED = false;
 let SNS_KNOWN = false;
+// ★liff_settings.html75：予約一覧はプランの利用者だけ、分析はLITE・STANDARD・PROだけ取る（ほかの画面と同じ）
+function canUseReservations() {
+  return !IS_TRIAL && !NOT_REGISTERED && currentDemoPlan !== '' && currentDemoPlan !== '未入会';
+}
+function canUseAnalytics() {
+  return canUseReservations() && ['LITE', 'STANDARD', 'PRO'].indexOf(currentDemoPlan) !== -1;
+}
 // ★liff_settings.html33：外部ブラウザから戻ってきた直後、複数の
 // 　loadSnsConnectionStatus()呼び出しが重なった際、古いリクエスト
 // 　の結果が新しいリクエストの結果を上書きしてしまう競合状態を
