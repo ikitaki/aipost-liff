@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析58 - AiPost</title>
+<title>分析59 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -28,6 +28,8 @@
   .tab-icon { font-size:16px; }
   .tab-panel { display:none; }
   .tab-panel.active { display:block; }
+  /* ★liff_analytics.html59：プランが分かるまで、タブの中身を出さない（お試し中の人に、読み込み中だけLITEの画面が見えていたため） */
+  .content.plan-pending .tab-panel { visibility:hidden; }
   .content { padding:14px; }
   .card { background:var(--surface); border-radius:12px; padding:14px; margin-bottom:12px; border:1px solid var(--border); }
   .card-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:10px; }
@@ -311,7 +313,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析58</span></span>
+  <span class="header-logo"><span class="nowrap">分析59</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -389,7 +391,7 @@
   <button class="tab-btn" onclick="switchTab('guide')" style="font-size:10px;"><span class="tab-icon">📖</span>ガイド</button>
 </div>
 
-<div class="content">
+<div class="content plan-pending" id="analytics-content">
 
 <!-- ★liff_analytics.html58：登録が見つからない時の案内（タブは出さない） -->
 <div class="unregistered-card" id="unregistered-card" style="display:none;">
@@ -526,74 +528,14 @@
 
     <!-- 先週のまとめ -->
     <div id="summary-weekly">
-      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
-          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div>
-          <div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div>
-        </div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
-          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div>
-          <div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div>
-        </div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
-          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div>
-          <div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
-          <span style="font-size:10px;color:var(--text);">X</span>
-          <span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
-          <span style="font-size:10px;color:var(--text);">IG</span>
-          <span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
-          <span style="font-size:10px;color:var(--text);">TH</span>
-          <span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span>
-        </div>
-      </div>
-      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">
-        <div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div>
-      </div>
+      <!-- ★liff_analytics.html59：見本の数字を消した（実際のデータを読み込むまで「読み込み中…」） -->
+      <p style="font-size:11px;color:var(--text-sub);">読み込み中…</p>
     </div>
 
     <!-- 先月のまとめ -->
     <div id="summary-monthly" style="display:none;">
-      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
-          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div>
-          <div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div>
-        </div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
-          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div>
-          <div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div>
-        </div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
-          <div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div>
-          <div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
-          <span style="font-size:10px;color:var(--text);">X</span>
-          <span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
-          <span style="font-size:10px;color:var(--text);">IG</span>
-          <span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;">
-          <span style="font-size:10px;color:var(--text);">TH</span>
-          <span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span>
-        </div>
-      </div>
-      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">
-        <div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。Instagramの反応が最も好調でした。</div>
-      </div>
+      <!-- ★liff_analytics.html59：見本の数字を消した（実際のデータを読み込むまで「読み込み中…」） -->
+      <p style="font-size:11px;color:var(--text-sub);">読み込み中…</p>
     </div>
   </div>
 
@@ -757,32 +699,12 @@
       <button onclick="switchSummary('monthly',this)" style="flex:1;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;">先月</button>
     </div>
     <div id="summary-weekly-2">
-      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">X</span><span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">IG</span><span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">TH</span><span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span></div>
-      </div>
-      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
+      <!-- ★liff_analytics.html59：見本の数字を消した（実際のデータを読み込むまで「読み込み中…」） -->
+      <p style="font-size:11px;color:var(--text-sub);">読み込み中…</p>
     </div>
     <div id="summary-monthly-2" style="display:none;">
-      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">X</span><span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">IG</span><span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">TH</span><span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span></div>
-      </div>
-      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
+      <!-- ★liff_analytics.html59：見本の数字を消した（実際のデータを読み込むまで「読み込み中…」） -->
+      <p style="font-size:11px;color:var(--text-sub);">読み込み中…</p>
     </div>
   </div>
 
@@ -998,32 +920,12 @@
       <button onclick="switchSummary('monthly',this)" style="flex:1;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:11px;font-weight:700;cursor:pointer;">先月</button>
     </div>
     <div id="summary-weekly-3">
-      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月16日（月）〜 6月22日（日）</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">5<span style="font-size:10px;">件</span></div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">842</div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">8.4%</div></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">X</span><span style="font-size:10px;color:var(--text);">いいね計 312　平均EG率 9.2%</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">IG</span><span style="font-size:10px;color:var(--text);">いいね計 418　平均EG率 10.8%</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">TH</span><span style="font-size:10px;color:var(--text);">いいね計 34　平均EG率 3.8%</span></div>
-      </div>
-      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先週は前週比+12%。Instagramの反応が最も好調でした。</div></div>
+      <!-- ★liff_analytics.html59：見本の数字を消した（実際のデータを読み込むまで「読み込み中…」） -->
+      <p style="font-size:11px;color:var(--text-sub);">読み込み中…</p>
     </div>
     <div id="summary-monthly-3" style="display:none;">
-      <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;">6月1日（日）〜 6月30日（月）</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">投稿数</div><div style="font-size:16px;font-weight:700;color:var(--primary);">22<span style="font-size:10px;">件</span></div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">合計いいね</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">3,842</div></div>
-        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;"><div style="font-size:9px;color:var(--text-sub);margin-bottom:3px;">平均EG率</div><div style="font-size:16px;font-weight:700;color:#2e7d32;">9.1%</div></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">X</span><span style="font-size:10px;color:var(--text);">いいね計 1,284　平均EG率 9.8%</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">IG</span><span style="font-size:10px;color:var(--text);">いいね計 1,842　平均EG率 12.4%</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:var(--bg);border-radius:6px;"><span style="font-size:10px;color:var(--text);">TH</span><span style="font-size:10px;color:var(--text);">いいね計 234　平均EG率 4.8%</span></div>
-      </div>
-      <div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;"><div style="font-size:10px;color:#166534;">📈 先月は前月比+8%。最も反応が高かった投稿は6月21日（水）の抹茶テリーヌ投稿です。</div></div>
+      <!-- ★liff_analytics.html59：見本の数字を消した（実際のデータを読み込むまで「読み込み中…」） -->
+      <p style="font-size:11px;color:var(--text-sub);">読み込み中…</p>
     </div>
   </div>
 
@@ -1407,6 +1309,12 @@ function markPlanBadgeKnown() {
   const badge = document.getElementById('plan-badge');
   badge.style.background = '#fff8e1';
   badge.style.color = '#e65100';
+  showTabContents(); // ★liff_analytics.html59
+}
+// ★liff_analytics.html59：プランが分かったので、タブの中身を出す（取得に失敗した時も、最後に出す）
+function showTabContents() {
+  const c = document.getElementById('analytics-content');
+  if (c) c.classList.remove('plan-pending');
 }
 
 function applyPlan(plan) {
@@ -1977,7 +1885,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析58';
+const TRACE_SCREEN = '分析59';
 
 function traceLog(msg) {
   try {
@@ -2182,6 +2090,7 @@ async function refreshReservationQuota(showOverlay) {
   } catch (err) {
     console.error('プラン・残り予約可能件数・SNS連携状況の取得エラー:', err);
   } finally {
+    showTabContents(); // ★liff_analytics.html59：プランを取れなかった時も、画面が空のままにならないようにする
     if (showOverlay) { traceLog('スピナー終了（プラン等）'); releaseLoadingOverlay(); }
     if (needsReservationList && canUseReservations()) warmupReservationListCache(); // ★liff_analytics.html58：プランの利用者だけ
   }
@@ -3047,7 +2956,11 @@ async function fetchAndApplyAnalyticsCalendar() {
 // 　（getAnalyticsPeriodSummary）。
 async function fetchAndApplyAnalyticsPeriodSummary() {
   const result = await postToGas({ action: 'getAnalyticsPeriodSummary', lineUid: LINE_UID, params: { plan: currentActualPlan } }, '分析(先週・先月のまとめ)', function (r) { return r && r.success && r.data && !r.data.error; });
-  if (!result) return;
+  if (!result) {
+    // ★liff_analytics.html59：取れなかった時は「データを取得できませんでした」と出す（「読み込み中…」のままにしない）
+    applyPeriodSummaryData({ weekly: null, monthly: null });
+    return;
+  }
   applyPeriodSummaryData(result.data);
   writeAnalyticsCache('periodSummary', result.data);
 }
