@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AIサポート15 - AiPost</title>
+  <title>AIサポート16 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -87,6 +87,9 @@
     .faq-q-icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; }
     .faq-q-text { flex: 1; }
     .faq-arrow { color: #9e9e9e; font-size: 10px; transition: transform 0.2s; }
+    /* ★liff_support.html16：質問の番号を左の印に出す（「Q11」など。運営が「Q11を差し替えて」のように言えるように。システム設定の「番号」の列。Kenさん決定）。
+       番号がある時は、丸ではなく横に長い形にする（2けたまで同じ幅で、質問の文の始まりがそろう） */
+    .faq-q-icon.has-no { width: auto; min-width: 30px; padding: 0 4px; border-radius: 10px; font-size: 10.5px; white-space: nowrap; box-sizing: border-box; }
     .faq-card.open .faq-arrow { transform: rotate(180deg); }
     .faq-a { display: none; padding: 0 12px 12px 38px; font-size: 12px; line-height: 1.75; color: #424242; }
     .faq-card.open .faq-a { display: block; }
@@ -333,7 +336,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">🤖</span>
-    <span class="topbar-logo"><span class="nowrap">AIサポート15</span></span>
+    <span class="topbar-logo"><span class="nowrap">AIサポート16</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -521,7 +524,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'AIサポート15';
+  const TRACE_SCREEN = 'AIサポート16';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -703,7 +706,8 @@
   function readFaqCache() {
     try {
       const o = JSON.parse(sessionStorage.getItem(FAQ_CACHE_KEY) || 'null');
-      if (o && Array.isArray(o.items) && o.fetchedAt && Date.now() - o.fetchedAt <= FAQ_MAX_AGE_MS) return o.items;
+      // ★liff_support.html16：番号（no）が入っていない、前の画面の保存は使わない（番号が出ないため）
+      if (o && Array.isArray(o.items) && o.fetchedAt && Date.now() - o.fetchedAt <= FAQ_MAX_AGE_MS && o.items.every(function (it) { return it && 'no' in it; })) return o.items;
     } catch (err) {}
     return null;
   }
@@ -722,9 +726,28 @@
       return;
     }
     faqItems = result.data.items.filter(function (it) { return it && it.q && it.a; })
-      .map(function (it) { return { q: String(it.q), a: String(it.a) }; });
+      .map(function (it) { return { no: faqNo(it.no), q: String(it.q), a: String(it.a) }; }); // ★liff_support.html16：番号（no）も残す
     try { sessionStorage.setItem(FAQ_CACHE_KEY, JSON.stringify({ items: faqItems, fetchedAt: Date.now() })); } catch (err) {}
     renderFaq();
+  }
+  // ★liff_support.html16：番号は1以上の整数だけ使う（空・文字は番号なし）
+  function faqNo(v) { const n = Number(v); return (Number.isInteger(n) && n > 0) ? n : null; }
+  // ★liff_support.html16：質問・答えは、言葉の切れ目（Intl.Segmenter で調べる）でだけ折り返す（「必｜要」のように言葉の途中で折れないように）。
+  // 　「？」「。」などは、その前の言葉とつなげる。Intl.Segmenter が使えない端末では、今までどおりに出す
+  function faqWrapHtml(text) {
+    const t = String(text);
+    let segs = null;
+    try { if (typeof Intl !== 'undefined' && Intl.Segmenter) segs = Array.from(new Intl.Segmenter('ja', { granularity: 'word' }).segment(t), function (x) { return x.segment; }); } catch (err) { segs = null; }
+    if (!segs) return escapeHtml(t);
+    const out = [];
+    segs.forEach(function (g) {
+      if (out.length && /^[、。，．？?！!」』）)\]】ー〜…・]+$/.test(g)) {
+        out[out.length - 1] += g;
+        // 「か？」のように、ひらがな1字と記号だけになった時は、さらに前の言葉ともつなげる（「ます／か？」と折れないように）
+        if (out.length > 1 && /^[ぁ-ん][、。，．？?！!」』）)\]】ー〜…・]+$/.test(out[out.length - 1])) out[out.length - 2] += out.pop();
+      } else out.push(g);
+    });
+    return out.map(escapeHtml).join('<wbr>');
   }
   function renderFaq() {
     const list = document.getElementById('faq-list');
@@ -734,7 +757,10 @@
       return;
     }
     const word = document.getElementById('faq-search').value.trim().toLowerCase();
+    // ★liff_support.html16：「Q11」「q11」と入れた時は、その番号の質問だけを出す
+    const noMatch = word.match(/^q\s*(\d+)$/);
     const hits = faqItems.filter(function (it) {
+      if (noMatch) return it.no === Number(noMatch[1]);
       return !word || it.q.toLowerCase().indexOf(word) !== -1 || it.a.toLowerCase().indexOf(word) !== -1;
     });
     if (hits.length === 0) {
@@ -743,8 +769,9 @@
     }
     list.innerHTML = hits.map(function (it) {
       return '<div class="faq-card"><div class="faq-q" onclick="toggleFaq(this.parentNode)">' +
-        '<span class="faq-q-icon">Q</span><span class="faq-q-text">' + escapeHtml(it.q) + '</span><span class="faq-arrow">▼</span></div>' +
-        '<div class="faq-a">' + escapeHtml(it.a).replace(/\n/g, '<br>') + '</div></div>';
+        (it.no ? '<span class="faq-q-icon has-no">Q' + it.no + '</span>' : '<span class="faq-q-icon">Q</span>') +
+        '<span class="faq-q-text">' + faqWrapHtml(it.q) + '</span><span class="faq-arrow">▼</span></div>' +
+        '<div class="faq-a">' + String(it.a).split('\n').map(faqWrapHtml).join('<br>') + '</div></div>';
     }).join('');
   }
 
