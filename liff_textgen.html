@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成155 - AiPost</title>
+<title>投稿文作成156 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -787,7 +787,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成155</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成156</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1230,7 +1230,7 @@
     <div class="accordion-body" id="acc-t6">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>自分で<wbr>直接入力する<wbr>ことも<wbr>できます。<wbr>すでに<wbr>投稿文が<wbr>ある<wbr>時に<wbr>もう<wbr>一度<wbr>作成すると、<wbr>上書きして<wbr>よいかの<wbr>確認が<wbr>出ます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限と<wbr>数え方</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文の<wbr>上限は<wbr>全角140文字で<wbr>す（FREEプランは<wbr>70文字）<wbr>。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5文字、<wbr>絵文字は<wbr>1文字と<wbr>して数えます。<wbr>上限を<wbr>超える分は<wbr>入力で<wbr>きません。<wbr>また、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて全角140文字まで<wbr>で<wbr>す（⑧を<wbr>参照）<wbr>。<wbr></div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;"><!-- ★liff_textgen.html156：FREEプランも140字にそろえた（Kenさん決定）。「（FREEプランは70文字）」を消した -->投稿文の<wbr>上限は<wbr>全角140文字<wbr>です<wbr>（全プラン<wbr>共通）<wbr>。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5文字、<wbr>絵文字は<wbr>1文字と<wbr>して数えます。<wbr>上限を<wbr>超える分は<wbr>入力で<wbr>きません。<wbr>また、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて全角140文字<wbr>までです<wbr>（⑧を<wbr>参照）<wbr>。<wbr></div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文が<wbr>全角140文字である<wbr>理由</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AiPostでは、<wbr>同じ<wbr>投稿文・<wbr>同じ<wbr>画像で<wbr>あれば、<wbr>複数の<wbr>SNSへの<wbr>同時投稿を<wbr>「1投稿」と<wbr>して<wbr>数えます。<wbr>その<wbr>ためには<wbr>投稿文が<wbr>すべての<wbr>SNSで<wbr>共通の<wbr>1つである<wbr>必要が<wbr>あり、<wbr>文字数の<wbr>制限が<wbr>最も<wbr>厳しい<wbr>X<wbr>（全角<wbr>140文字＝半角280文字）に<wbr>合わせる<wbr>ことで、<wbr>どの<wbr>SNSを<wbr>選んでも<wbr>確実に<wbr>投稿できるように<wbr>しています。</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
@@ -1495,7 +1495,8 @@
 
 <script>
 let CHAR_LIMIT = 140; // 全角換算の文字数上限（PERSONAL以上：140字＝半角280字相当）※プランにより可変
-const PLAN_CHAR_LIMIT = { FREE: 70, PERSONAL: 140, LITE: 140, STANDARD: 140, PRO: 140 };
+// ★liff_textgen.html156：FREEプランも140字にそろえた（Kenさん決定。システム設定の「FREEプラン文字数上限」も140）
+const PLAN_CHAR_LIMIT = { FREE: 140, PERSONAL: 140, LITE: 140, STANDARD: 140, PRO: 140 };
 const X_LIMIT = 140;
 // ★liff_textgen.html152：本文とハッシュタグを合わせた上限（全SNS・全プラン共通。Kenさん決定。GASの投稿予約gs_33と同じ）
 const POST_TOTAL_LIMIT = 140;
@@ -1753,7 +1754,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成155';
+const TRACE_SCREEN = '投稿文作成156';
 
 function traceLog(msg) {
   try {
@@ -2760,11 +2761,10 @@ function applyPlan(plan) {
   // プランに応じて文字数上限・入力欄の高さ・上限表示ラベルを切り替え
   CHAR_LIMIT = PLAN_CHAR_LIMIT[plan];
   const ta = document.getElementById('post-textarea');
-  ta.style.minHeight = (plan === 'FREE') ? '160px' : '280px';
+  // ★liff_textgen.html156：FREEプランも140字にそろえたため、入力欄の高さと上限の表示を全プランで同じにした
+  ta.style.minHeight = '280px';
   const label = document.getElementById('char-limit-label');
-  label.textContent = (plan === 'FREE')
-    ? '上限70字（半角140字）'
-    : '上限140字（半角280字）';
+  label.textContent = '上限140字（半角280字）';
 
   updateCharCount();
 }
