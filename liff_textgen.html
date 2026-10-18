@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成156 - AiPost</title>
+<title>投稿文作成157 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -392,6 +392,8 @@
   .cal-date.sunday { color: var(--danger); }
   .cal-date.saturday { color: var(--accent); }
   .cal-date.today.sunday, .cal-date.today.saturday { color: white; }
+  /* ★liff_textgen.html157：選べない日（過去の日・予約できる日より後）は、土日も灰色にする（Kenさん決定） */
+  .cal-date.past.sunday, .cal-date.past.saturday { color: #ccc; }
 
   /* 選択日表示 */
   .selected-date-bar {
@@ -787,7 +789,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成156</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成157</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1754,7 +1756,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成156';
+const TRACE_SCREEN = '投稿文作成157';
 
 function traceLog(msg) {
   try {
@@ -2900,9 +2902,21 @@ function tgPeriods() {
   return p;
 }
 // 予約できる最後の日（次のご利用期間の終了日）。分からない時は null（GAS側の確かめに任せる）
+// ★liff_textgen.html157：退会のお申し込み中は、今のご利用期間の終了日まで（投稿予約gs_34 と同じ。退会は今の期間の終わりに行われるため）
+function tgWithdrawing() {
+  const c = readQuotaCache();
+  return !!(c && c.withdrawal && c.withdrawal.requested);
+}
 function lastReservableDate() {
   const p = tgPeriods();
-  return p ? p.nextEnd : null;
+  if (!p) return null;
+  return tgWithdrawing() ? p.curEnd : p.nextEnd;
+}
+// 予約できる最後の日の文字（例：11月19日）
+function lastReservableMd() {
+  const p = tgPeriods();
+  if (!p) return '';
+  return tgMd(tgWithdrawing() ? p.cur.end : p.next.end);
 }
 function isAfterReservable(y, m, d) {
   const last = lastReservableDate();
@@ -2912,6 +2926,11 @@ function updateCalendarRangeHint() {
   const el = document.getElementById('cal-range-hint');
   if (!el) return;
   const p = tgPeriods();
+  // ★liff_textgen.html157：退会のお申し込み中は、今のご利用期間の終了日までの案内にする
+  if (p && tgWithdrawing()) {
+    el.innerHTML = '退会の<wbr>お申し込み中の<wbr>ため、<wbr>予約できるのは、<wbr>ご利用期間の<wbr>終了日<wbr>（' + tgMd(p.cur.end) + '）までです。';
+    return;
+  }
   el.innerHTML = p
     ? '予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日<wbr>（' + tgMd(p.next.end) + '）までです。'
     : '予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日までです。';
@@ -3178,7 +3197,8 @@ async function showConfirm() {
   // ★liff_textgen.html152：予約できる日（次のご利用期間の終了日まで）と、選んだ日が入るご利用期間の予約枠を確かめる
   // 　（画面を開いたまま日が変わった場合などに備えた確認。最終的な判定はGAS側でも行う）
   if (isAfterReservable(selectedYear, selectedMonth, selectedDay)) {
-    alert('予約できるのは' + tgMd(tgPeriods().next.end) + 'までです。\n投稿日を選び直してください。');
+    // ★liff_textgen.html157：退会のお申し込み中は、今のご利用期間の終了日まで
+    alert((tgWithdrawing() ? '退会のお申し込み中のため、予約できるのは' : '予約できるのは') + lastReservableMd() + 'までです。\n投稿日を選び直してください。');
     return;
   }
   const selQuota = getQuotaForDate(selectedYear, selectedMonth, selectedDay);
