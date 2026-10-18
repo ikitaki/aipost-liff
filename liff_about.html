@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AiPostとは6 - AiPost</title>
+  <title>AiPostとは7 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -292,13 +292,15 @@
     .nav-item:active { opacity: 0.7; }
     .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
     .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
-  </style>
+    /* ★liff_about.html7：言葉の途中で折り返さない（ヘッダーと「AiPostとは」タブ。言葉の切れ目には、下のスクリプトが<wbr>を入れる） */
+  .header, #panel-about { word-break: keep-all; overflow-wrap: anywhere; }
+</style>
 </head>
 <body>
 
   <!-- ヘッダー -->
   <div class="header">
-    <div class="header-logo">AiPostとは6</div>
+    <div class="header-logo">AiPostとは7</div>
     <div class="header-tagline">AIが投稿文を作成し、SNSへ予約投稿。<br>忙しい店舗オーナーのためのSNS運用サービス</div>
   </div>
 
@@ -373,39 +375,48 @@
         <div class="step-num">1</div>
         <div class="step-content">
           <div class="step-title">LINEで友だち登録をする</div>
-          <div class="step-desc">友だち登録をすると、すぐにFREEプランでお使いいただけます。</div>
+          <!-- ★liff_about.html7：友だち追加はお試しから始まるため、FREEの案内をお試しの案内に直し、手順2「プランのお申し込み」を足した（Kenさん承認） -->
+          <div class="step-desc">友だち登録をすると、お試しとして、投稿文とハッシュタグの作成（1日に決まった回数まで）と店舗情報の登録をお使いいただけます。</div>
         </div>
       </div>
       <div class="step-item">
         <div class="step-num">2</div>
         <div class="step-content">
-          <div class="step-title">設定画面で、店舗情報の登録とSNSの連携をする</div>
-          <div class="step-desc">店舗名・業種・エリア・所在地を登録すると、投稿文の作成に使えます。投稿するSNSは「SNS」タブで連携します（パスワードはお預かりしません）。</div>
+          <div class="step-title">プラン画面で、プランを申し込む</div>
+          <div class="step-desc">無料のFREEプランもあります。お申し込みいただくと、予約投稿・SNSの連携・分析などが使えるようになります。お試しから、有料プランに自動で切り替わることはありません。</div>
         </div>
       </div>
       <div class="step-item">
         <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">設定画面で、店舗情報の登録とSNSの連携をする</div>
+          <!-- ★liff_about.html7：設定画面のタブの名前「SNS連携」にそろえた -->
+          <div class="step-desc">店舗名・業種・エリア・所在地を登録すると、投稿文の作成に使えます。投稿するSNSは「SNS連携」タブで連携します（パスワードはお預かりしません）。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
         <div class="step-content">
           <div class="step-title">投稿文作成画面で、投稿を予約する</div>
           <div class="step-desc">投稿先のSNSを選び、AIで投稿文を作成（自分で書くこともできます）。画像と投稿日を決めて「内容を確認する」を押し、予約を確定します。</div>
         </div>
       </div>
       <div class="step-item">
-        <div class="step-num">4</div>
+        <div class="step-num">5</div>
         <div class="step-content">
           <div class="step-title">予約確認画面で、予約を確かめる</div>
           <div class="step-desc">予約の一覧とカレンダーで確かめられます。投稿予定の時刻の5分前までなら、本文の修正と画像の差し替えができます。投稿前の予約は、キャンセルもできます。</div>
         </div>
       </div>
       <div class="step-item">
-        <div class="step-num">5</div>
+        <div class="step-num">6</div>
         <div class="step-content">
           <div class="step-title">投稿の結果を確かめる</div>
           <div class="step-desc">予約した時刻になると、自動で投稿します。結果はベルのお知らせと、予約確認画面の「投稿履歴」で確かめられます。</div>
         </div>
       </div>
       <div class="step-item">
-        <div class="step-num">6</div>
+        <div class="step-num">7</div>
         <div class="step-content">
           <div class="step-title">分析画面で、反応を確かめる（LITE以上）</div>
           <div class="step-desc">投稿への反応やフォロワーの増え方、次の投稿におすすめの時間帯などを確かめられます。</div>
@@ -420,7 +431,9 @@
     <div class="card">
       <div class="card-text">
         予約1件で、選んだSNSへまとめて投稿します。この時に使う予約枠は<strong style="color:var(--primary);">1件</strong>です。<br><br>
-        たとえば、予約枠が月20件のプランで、毎回3つのSNSへまとめて投稿すると、SNSごとに数えた投稿の数は<strong style="color:var(--primary);">最大60回</strong>になります。<br><br>
+        <!-- ★liff_about.html7：予約枠はご利用期間ごとに数えるため、「月20件」を「20件」にし、数え方の1文を足した -->
+        予約枠は、ご利用期間（お申し込みの日から1か月ごと）ごとに数えます。使わなかった予約枠は、次のご利用期間に繰り越しません。<br><br>
+        たとえば、予約枠が20件のプランで、毎回3つのSNSへまとめて投稿すると、SNSごとに数えた投稿の数は<strong style="color:var(--primary);">最大60回</strong>になります。<br><br>
         予約をキャンセルすると、その分の予約枠は戻ります。投稿した後に削除しても、予約枠は戻りません。
       </div>
     </div>
@@ -430,12 +443,13 @@
   <div class="section">
     <div class="section-title">投稿のきまり</div>
     <div class="card">
+      <!-- ★liff_about.html7：文字数（全プラン共通の140字）・Xへの投稿・予約できる期間を今の仕様に直した -->
       <ul class="rule-list">
-        <li><span class="rule-icon">✏️</span><span><strong>本文の文字数</strong>：FREEプランは全角70字、ほかのプランは全角140字までです。</span></li>
-        <li><span class="rule-icon">🔗</span><span><strong>Xへの投稿</strong>：URLを含む投稿と、ハッシュタグを含めた文字数がXの上限を超える投稿は、Xには投稿しません（ほかのSNSには投稿します）。</span></li>
+        <li><span class="rule-icon">✏️</span><span><strong>本文の文字数</strong>：本文とハッシュタグを合わせて、全角140字までです（全プラン・お試し共通）。半角の文字は、2字で全角1字と数えます。超えると予約できません。</span></li>
+        <li><span class="rule-icon">🔗</span><span><strong>Xへの投稿</strong>：URLを含む投稿は、Xには投稿しません（ほかのSNSには投稿します）。</span></li>
         <li><span class="rule-icon">📷</span><span><strong>Instagramへの投稿</strong>：画像が必要です。ハッシュタグは5つまでです。</span></li>
         <li><span class="rule-icon">#️⃣</span><span><strong>ハッシュタグ</strong>：本文の中には入れられません。ハッシュタグの入力欄に入れてください。</span></li>
-        <li><span class="rule-icon">🕐</span><span><strong>投稿できる時刻</strong>：6時〜23時です。予約できるのは翌月の末までです。</span></li>
+        <li><span class="rule-icon">🕐</span><span><strong>投稿できる時刻</strong>：6時〜23時です。予約できるのは、次のご利用期間の終了日までです。</span></li>
         <li><span class="rule-icon">🛡️</span><span><strong>投稿の回数</strong>：スパムと判定されないよう、1つのSNSにつき、同じ時刻は1件・1日3件・1週間（月曜〜日曜）15件までです。</span></li>
       </ul>
       <div class="note-text">※ URLを別の文字で言い換えたり、短縮URLを使ったりして、Xへの投稿を試みることはご遠慮ください。</div>
@@ -447,9 +461,10 @@
     <div class="section-title">プラン</div>
     <div class="card">
       <div class="card-text">
-        プランによって、投稿先に選べるSNSの数、月の予約枠、使える分析の機能が変わります。<br>
+        <!-- ★liff_about.html7：「月の予約枠」を「予約枠」に、お試しの回数の1文を足した -->
+        プランによって、投稿先に選べるSNSの数、予約枠、使える分析の機能が変わります。<br>
         FREEプランは無料で、投稿先は1つ（Xは選べません）です。分析はLITEプランから使えます。<br>
-        AI投稿文作成は、どのプランでも回数の制限はありません。
+        AI投稿文作成は、どのプランでも回数の制限はありません。お試しの間は、1日に決まった回数までです。
       </div>
       <button class="link-btn" onclick="navigateTo('plan')">💎 プランの詳しい違いを見る</button>
     </div>
@@ -472,7 +487,8 @@
   <div class="section">
     <div class="card" style="text-align:center;padding:20px;">
       <div style="font-size:12px;color:var(--text-sub);line-height:2.0;margin-bottom:12px;">
-        当サービスをご利用いただくことで、以下の規約・ポリシーに同意したものとみなします。
+        <!-- ★liff_about.html7：同意はほかの画面の同意の窓でいただくため、「同意したものとみなします」の文をやめた -->
+        利用規約とプライバシーポリシーは、こちらからいつでもお読みいただけます。
       </div>
       <div style="display:flex;justify-content:center;gap:24px;">
         <button onclick="switchTab('terms')" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit;">利用規約</button>
@@ -578,6 +594,61 @@
           '<button class="link-btn" onclick="loadLegal(\'' + name + '\')">もう一度読み込む</button></div>';
       });
   }
+
+  // ★liff_about.html7：ヘッダーと「AiPostとは」タブの文を、言葉のまとまり（文節）の切れ目でだけ折り返す
+  // 　（「す｜る」「予約｜枠」のように言葉の途中で折れないように）。言葉の切れ目は Intl.Segmenter で調べ、
+  // 　ひらがなだけの言葉（助詞・「ます」など）は前の言葉に、「、」「。」「）」などは前に、「（」「「」は次につなげる。
+  // 　漢字どうし・カタカナどうし・数字と漢字（「1か月」）・英字と漢字・カタカナ（「LITE以上」「FREEプラン」）もつなげる。
+  // 　Intl.Segmenter が使えない端末では、何もしない（今までどおりに出る）。
+  function aboutChunks(seg, t) {
+    const s = Array.from(seg.segment(t), function (x) { return x.segment; });
+    const OPEN = /^[「『（(【\[〈《]+$/, CLOSE = /^[、。，．？?！!」』）)\]】〉》ー〜…・：:]+$/, HIRA = /^[ぁ-んー]+$/;
+    const out = [];
+    let carry = '';
+    for (let i = 0; i < s.length; i++) {
+      let g = s[i];
+      if (OPEN.test(g)) { carry += g; continue; }
+      // 「お」「ご」（ていねいの頭）は、次の漢字の言葉とつなげる
+      if (/^[おご]$/.test(g) && i + 1 < s.length && /^[一-龥]/.test(s[i + 1])) { carry += g; continue; }
+      g = carry + g;
+      carry = '';
+      const prev = out.length ? out[out.length - 1] : '';
+      const prevEndsBreak = /[、。，．？?！!：]$/.test(prev);
+      const compound = (/[一-龥々]$/.test(prev) && /^[一-龥々]/.test(g)) || (/[ァ-ヶー]$/.test(prev) && /^[ァ-ヶ]/.test(g)) ||
+        (/[0-9０-９][かヶケ]?$/.test(prev) && /^[一-龥]/.test(g)) || (/[A-Za-z]$/.test(prev) && /^[一-龥ァ-ヶ]/.test(g));
+      if (out.length && (CLOSE.test(g) || compound || (HIRA.test(g) && !prevEndsBreak))) out[out.length - 1] += g;
+      else out.push(g);
+    }
+    if (carry) { if (out.length) out[out.length - 1] += carry; else out.push(carry); }
+    return out;
+  }
+  function aboutWrapWords(root) {
+    let seg = null;
+    try { if (typeof Intl !== 'undefined' && Intl.Segmenter) seg = new Intl.Segmenter('ja', { granularity: 'word' }); } catch (err) { seg = null; }
+    if (!seg || !root) return;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        const tag = n.parentNode && n.parentNode.nodeName;
+        if (tag === 'SCRIPT' || tag === 'STYLE') return NodeFilter.FILTER_REJECT;
+        return /[^\s]/.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (node) {
+      let out;
+      try { out = aboutChunks(seg, node.nodeValue); } catch (err) { return; }
+      if (out.length < 2) return;
+      const frag = document.createDocumentFragment();
+      out.forEach(function (g, i) {
+        if (i > 0) frag.appendChild(document.createElement('wbr'));
+        frag.appendChild(document.createTextNode(g));
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+  }
+  aboutWrapWords(document.querySelector('.header'));
+  aboutWrapWords(document.getElementById('panel-about'));
 
   function navigateTo(page) {
     if (LIFF_URLS[page]) {
