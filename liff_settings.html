@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録76 - AiPost</title>
+<title>設定・登録77 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -431,6 +431,16 @@
   .notice-band-more { margin-left: auto; white-space: nowrap; }
   .notice-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1045; align-items: flex-start; justify-content: center; padding: 8px; box-sizing: border-box; }
   .notice-overlay.open { display: flex; }
+  /* ★liff_settings.html77：お知らせの削除の確認を、端末の窓（confirm）から画面の中の窓にした（SNS連携の解除の窓と同じ形。言葉の途中で折り返さない。Kenさん承認） */
+  .notice-confirm { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1046; align-items: flex-end; justify-content: center; }
+  .notice-confirm.open { display: flex; }
+  .notice-confirm-sheet { background: #fff; border-radius: 16px 16px 0 0; padding: 20px 16px 32px; width: 100%; max-width: 520px; box-sizing: border-box; word-break: keep-all; overflow-wrap: anywhere; }
+  .notice-confirm-handle { width: 36px; height: 4px; background: #e0e4ed; border-radius: 2px; margin: 0 auto 14px; }
+  .notice-confirm-title { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 12px; text-align: left; }
+  .notice-confirm-note { font-size: 12px; color: #6b7280; line-height: 1.8; margin-bottom: 14px; }
+  .notice-confirm-btn { display: block; width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
+  .notice-confirm-del { background: #e53935; color: #fff; }
+  .notice-confirm-back { background: #f5f7fa; color: #6b7280; border: 1px solid #e0e4ed; }
   .notice-panel { background: #fff; border-radius: 14px; width: 100%; max-width: 520px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,0.25); word-break: normal; overflow-wrap: anywhere; }
   .notice-panel-head { display: flex; align-items: center; padding: 12px 14px; border-bottom: 1px solid #eee; }
   .notice-panel-title { font-size: 15px; font-weight: 700; color: #1a237e; display: flex; align-items: center; gap: 6px; }
@@ -568,7 +578,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録76</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録77</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1098,7 +1108,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定76';
+const TRACE_SCREEN = '設定77';
 
 function traceLog(msg) {
   try {
@@ -2694,13 +2704,39 @@ const LIFF_URLS = {
     selectedIds = selectedIds.length === data.items.length ? [] : data.items.map(function (n) { return n.noticeId; });
     renderList(openedUnreadIds);
   };
+  // ★liff_settings.html77：お知らせの削除の確認の窓（端末の窓〔confirm〕をやめた。初めて使う時に作る。外側を押すと閉じる）
+  function showDeleteConfirm(ids) {
+    var el = document.getElementById('notice-confirm');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'notice-confirm';
+      el.id = 'notice-confirm';
+      el.innerHTML = '<div class="notice-confirm-sheet"><div class="notice-confirm-handle"></div>' +
+        '<div class="notice-confirm-title">選んだ<wbr>お知らせを<wbr>削除しますか？</div>' +
+        '<div class="notice-confirm-note" id="notice-confirm-note"></div>' +
+        '<button type="button" class="notice-confirm-btn notice-confirm-del" id="notice-confirm-del">削除する</button>' +
+        '<button type="button" class="notice-confirm-btn notice-confirm-back" id="notice-confirm-back">やめる</button></div>';
+      el.addEventListener('click', function (e) { if (e.target === el) closeDeleteConfirm(); });
+      document.body.appendChild(el);
+      document.getElementById('notice-confirm-back').addEventListener('click', closeDeleteConfirm);
+    }
+    document.getElementById('notice-confirm-note').innerHTML = '選んだ<wbr>お知らせ' + ids.length + '件を<wbr>削除します。<wbr>削除した<wbr>お知らせは、<wbr>元に<wbr>戻せません。';
+    document.getElementById('notice-confirm-del').onclick = function () {
+      closeDeleteConfirm();
+      hideNotices(ids);
+    };
+    el.classList.add('open');
+  }
+  function closeDeleteConfirm() {
+    var el = document.getElementById('notice-confirm');
+    if (el) el.classList.remove('open');
+  }
   // 「通知を削除（N件）」：確認を1回出してから消す
   window.aipostHideSelectedNotices = function () {
     pruneSelected();
     var ids = selectedIds.slice();
     if (!ids.length || hiding) return;
-    if (!confirm('選んだお知らせ' + ids.length + '件を削除します。削除したお知らせは、元に戻せません。')) return;
-    hideNotices(ids);
+    showDeleteConfirm(ids);
   };
 
   window.aipostOpenNotices = async function () {
