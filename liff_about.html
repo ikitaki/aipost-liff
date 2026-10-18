@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AiPostとは7 - AiPost</title>
+  <title>AiPostとは8 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -292,15 +292,15 @@
     .nav-item:active { opacity: 0.7; }
     .nav-icon { font-size: 18px; line-height: 1; margin-bottom: 2px; }
     .nav-label { font-size: 9px; font-weight: 600; letter-spacing: -0.3px; }
-    /* ★liff_about.html7：言葉の途中で折り返さない（ヘッダーと「AiPostとは」タブ。言葉の切れ目には、下のスクリプトが<wbr>を入れる） */
-  .header, #panel-about { word-break: keep-all; overflow-wrap: anywhere; }
+    /* ★liff_about.html8：折り返しは、利用規約・プライバシーポリシーと同じふつうの折り返しにした（Kenさん決定。
+     html7の「言葉の途中で折り返さない」仕組みは、右側の空きが目立つため外した） */
 </style>
 </head>
 <body>
 
   <!-- ヘッダー -->
   <div class="header">
-    <div class="header-logo">AiPostとは7</div>
+    <div class="header-logo">AiPostとは8</div>
     <div class="header-tagline">AIが投稿文を作成し、SNSへ予約投稿。<br>忙しい店舗オーナーのためのSNS運用サービス</div>
   </div>
 
@@ -595,60 +595,6 @@
       });
   }
 
-  // ★liff_about.html7：ヘッダーと「AiPostとは」タブの文を、言葉のまとまり（文節）の切れ目でだけ折り返す
-  // 　（「す｜る」「予約｜枠」のように言葉の途中で折れないように）。言葉の切れ目は Intl.Segmenter で調べ、
-  // 　ひらがなだけの言葉（助詞・「ます」など）は前の言葉に、「、」「。」「）」などは前に、「（」「「」は次につなげる。
-  // 　漢字どうし・カタカナどうし・数字と漢字（「1か月」）・英字と漢字・カタカナ（「LITE以上」「FREEプラン」）もつなげる。
-  // 　Intl.Segmenter が使えない端末では、何もしない（今までどおりに出る）。
-  function aboutChunks(seg, t) {
-    const s = Array.from(seg.segment(t), function (x) { return x.segment; });
-    const OPEN = /^[「『（(【\[〈《]+$/, CLOSE = /^[、。，．？?！!」』）)\]】〉》ー〜…・：:]+$/, HIRA = /^[ぁ-んー]+$/;
-    const out = [];
-    let carry = '';
-    for (let i = 0; i < s.length; i++) {
-      let g = s[i];
-      if (OPEN.test(g)) { carry += g; continue; }
-      // 「お」「ご」（ていねいの頭）は、次の漢字の言葉とつなげる
-      if (/^[おご]$/.test(g) && i + 1 < s.length && /^[一-龥]/.test(s[i + 1])) { carry += g; continue; }
-      g = carry + g;
-      carry = '';
-      const prev = out.length ? out[out.length - 1] : '';
-      const prevEndsBreak = /[、。，．？?！!：]$/.test(prev);
-      const compound = (/[一-龥々]$/.test(prev) && /^[一-龥々]/.test(g)) || (/[ァ-ヶー]$/.test(prev) && /^[ァ-ヶ]/.test(g)) ||
-        (/[0-9０-９][かヶケ]?$/.test(prev) && /^[一-龥]/.test(g)) || (/[A-Za-z]$/.test(prev) && /^[一-龥ァ-ヶ]/.test(g));
-      if (out.length && (CLOSE.test(g) || compound || (HIRA.test(g) && !prevEndsBreak))) out[out.length - 1] += g;
-      else out.push(g);
-    }
-    if (carry) { if (out.length) out[out.length - 1] += carry; else out.push(carry); }
-    return out;
-  }
-  function aboutWrapWords(root) {
-    let seg = null;
-    try { if (typeof Intl !== 'undefined' && Intl.Segmenter) seg = new Intl.Segmenter('ja', { granularity: 'word' }); } catch (err) { seg = null; }
-    if (!seg || !root) return;
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-      acceptNode: function (n) {
-        const tag = n.parentNode && n.parentNode.nodeName;
-        if (tag === 'SCRIPT' || tag === 'STYLE') return NodeFilter.FILTER_REJECT;
-        return /[^\s]/.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-      }
-    });
-    const nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
-    nodes.forEach(function (node) {
-      let out;
-      try { out = aboutChunks(seg, node.nodeValue); } catch (err) { return; }
-      if (out.length < 2) return;
-      const frag = document.createDocumentFragment();
-      out.forEach(function (g, i) {
-        if (i > 0) frag.appendChild(document.createElement('wbr'));
-        frag.appendChild(document.createTextNode(g));
-      });
-      node.parentNode.replaceChild(frag, node);
-    });
-  }
-  aboutWrapWords(document.querySelector('.header'));
-  aboutWrapWords(document.getElementById('panel-about'));
 
   function navigateTo(page) {
     if (LIFF_URLS[page]) {
