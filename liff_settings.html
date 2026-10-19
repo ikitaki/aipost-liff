@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録79 - AiPost</title>
+<title>設定・登録80 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -582,7 +582,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録79</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録80</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1112,7 +1112,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定79';
+const TRACE_SCREEN = '設定80';
 
 function traceLog(msg) {
   try {
@@ -1352,6 +1352,18 @@ function applySnsButtonLock() {
     const btn = document.getElementById('sns-btn-' + s);
     if (btn) btn.disabled = locked;
   });
+  applyFreeXLock(); // ★liff_settings.html80
+}
+
+// ★liff_settings.html80：FREEプランはXを連携できない（Kenさん決定）。連携していないXの「連携」ボタンを押せなくし、案内を出す。
+// 　連携済みのXは「解除」できるようにしておく（FREEに変わる日の夜に、GASが連携を外す）。押せるようにはしない（applySnsButtonLock() が戻す）
+function applyFreeXLock() {
+  if (currentDemoPlan !== 'FREE' || !SNS_KNOWN || IS_TRIAL || NOT_REGISTERED) return;
+  if (isConnected('x')) return;
+  const btn = document.getElementById('sns-btn-x');
+  if (btn) btn.disabled = true;
+  const status = document.getElementById('sns-status-x');
+  if (status) status.innerHTML = 'PERSONALプラン<wbr>以上で<wbr>連携<wbr>できます';
 }
 
 // ★liff_settings.html70：お試し中の表示（連携の案内を出し、連携ボタンを押せなくし、退会のカードを出さない）
@@ -1443,6 +1455,8 @@ function toggleSnsConnection(sns) {
   }
   // ★liff_settings.html58：プランによる連携数の上限・FREEプランのX連携不可を廃止した
   // 　（連携は全プラン3つまで可能。投稿先の数だけをプランで制限する）
+  // ★liff_settings.html80：FREEプランのX連携不可を戻した（Kenさん決定。GASの XAuth でも断る）
+  if (sns === 'x' && currentDemoPlan === 'FREE') return;
 
   // X・Instagram・Threadsは実際のOAuth連携フローを開始する
   if (sns === 'x') {
@@ -1553,13 +1567,15 @@ async function startThreadsConnection() {
 function updateSnsSummary() {
   const connectedList = SNS_ORDER.filter(isConnected);
   // ★liff_settings.html70：連携の状態が分かるまでは件数を出さない（仮の件数を出さないため）
-  document.getElementById('sns-connected-title').textContent = SNS_KNOWN ? `連携状況（${connectedList.length}/${SNS_CONNECT_MAX}）` : '連携状況';
+  // ★liff_settings.html80：FREEは連携できるのが2つ（Instagram・Threads）
+  const connectMax = (currentDemoPlan === 'FREE' && !isConnected('x')) ? 2 : SNS_CONNECT_MAX;
+  document.getElementById('sns-connected-title').textContent = SNS_KNOWN ? `連携状況（${connectedList.length}/${connectMax}）` : '連携状況';
   // ★liff_settings.html58：プランごとの投稿先の数を案内する（STANDARD・PROは3つとも選べるため表示しない）
   const postLimit = PLAN_POST_SNS_LIMIT[currentDemoPlan];
   const postNote = document.getElementById('sns-post-limit-note');
   if (postNote) {
     if (currentDemoPlan === 'FREE') {
-      postNote.textContent = '💎 FREEプランの投稿先は2つまで（Xは選べません）'; // ★liff_settings.html79
+      postNote.textContent = '💎 FREEプランの連携・投稿先は2つまで（Xは選べません）'; // ★liff_settings.html79・80
       postNote.style.display = 'block';
     } else if (postLimit && postLimit < 3) {
       postNote.textContent = '💎 ' + currentDemoPlan + 'プランの投稿先は' + postLimit + 'つまで';
@@ -1568,6 +1584,7 @@ function updateSnsSummary() {
       postNote.style.display = 'none';
     }
   }
+  applyFreeXLock(); // ★liff_settings.html80
 
   const quotaHtml = (typeof currentRemainingReservable === 'number')
     // ★liff_settings.html57：プラン変更等で上限を超えている場合（マイナス）は0件と表示する

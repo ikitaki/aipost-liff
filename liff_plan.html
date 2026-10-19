@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金19 - AiPost</title>
+  <title>プラン・料金20 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -164,6 +164,11 @@
     .modal-warn-title { font-size: 12px; font-weight: 700; color: #e65100; margin-bottom: 8px; }
     .modal-warn-item { font-size: 11px; color: var(--text-sub); line-height: 1.8; }
     .modal-note { font-size: 11px; color: var(--text-sub); line-height: 1.8; margin-bottom: 14px; }
+    /* ★liff_plan.html20：プランを下げる時に、切り替わる日に行うこと（連携を外す・投稿しない）を出す枠と、申し込みの問いかけ */
+    .modal-remove { background: #fdecea; border-radius: 8px; padding: 12px; margin-bottom: 12px; border-left: 4px solid #c62828; }
+    .modal-remove-title { font-size: 12px; font-weight: 700; color: #c62828; margin-bottom: 8px; word-break: keep-all; overflow-wrap: anywhere; }
+    .modal-remove-item { font-size: 11px; color: var(--text-sub); line-height: 1.8; }
+    .modal-ask { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 12px; text-align: center; word-break: keep-all; overflow-wrap: anywhere; }
     .modal-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
     .modal-btn:disabled { opacity: 0.5; cursor: default; }
     .modal-btn-exec { background: #e65100; color: white; }
@@ -368,7 +373,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金19</span></span>
+    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金20</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -477,14 +482,20 @@
   <div class="modal-overlay" id="downgrade-modal">
     <div class="modal">
       <div class="modal-handle"></div>
-      <div class="modal-title" id="down-title">ダウングレードの確認</div>
+      <div class="modal-title" id="down-title" style="word-break:keep-all;overflow-wrap:anywhere;">ダウングレードの確認</div>
       <div class="modal-warn">
-        <div class="modal-warn-title">⚠️ 次の内容が変わります</div>
+        <div class="modal-warn-title">⚠️ できなくなること・<wbr>変わること</div>
         <div class="modal-warn-item" id="down-warn-items"></div>
       </div>
+      <!-- ★liff_plan.html20：切り替わる日に行うこと（FREEにする時だけ出す） -->
+      <div class="modal-remove" id="down-remove" style="display:none;">
+        <div class="modal-remove-title" id="down-remove-title">🗑️ 次回更新日に<wbr>行うこと</div>
+        <div class="modal-remove-item" id="down-remove-items"></div>
+      </div>
       <div class="modal-note" id="down-note"></div>
+      <div class="modal-ask">この内容で、<wbr>ダウングレードを<wbr>申し込みますか？</div>
       <div class="modal-error" id="down-error"></div>
-      <button class="modal-btn modal-btn-exec" id="down-exec-btn" onclick="executePlanChange('down')">ダウングレードする</button>
+      <button class="modal-btn modal-btn-exec" id="down-exec-btn" onclick="executePlanChange('down')">申し込む</button>
       <button class="modal-btn modal-btn-cancel" id="down-cancel-btn" onclick="closePlanModals()">やめる</button>
     </div>
   </div>
@@ -624,7 +635,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'プラン19';
+  const TRACE_SCREEN = 'プラン20';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -663,7 +674,8 @@
     { sec: '■ 投稿' },
     // ★liff_plan.html19：FREEの投稿先を2つにした（Kenさん決定。Xは今までどおり選べない）
     { label: '投稿先^SNS数', vals: ['2つ|Xは不可', '2つ', '2つ', '3つ', '3つ'] },
-    { label: 'SNS連携', vals: ['3つ', '3つ', '3つ', '3つ', '3つ'] },
+    // ★liff_plan.html20：FREEはXを連携できない（Kenさん決定。Xに投稿できないのに連携だけできるのは不自然なため）
+    { label: 'SNS連携', vals: ['2つ|Xは不可', '3つ', '3つ', '3つ', '3つ'] },
     { label: '予約枠|実質^予約枠', vals: ['4件|実質8件', '8件|実質16件', '10件|実質20件', '20件|実質60件', '40件|実質120件'] },
     // ★liff_plan.html15：FREEプランも140字にそろえた（Kenさん決定。行は残す）
     { label: '本文^文字数^上限', vals: ['140字|全角', '140字|全角', '140字|全角', '140字|全角', '140字|全角'] },
@@ -1015,13 +1027,25 @@
   function openDowngrade(plan) {
     if (changing || withdrawRequested || !currentPlan) return;
     selectedPlan = plan;
-    document.getElementById('down-title').textContent = currentPlan + ' → ' + plan + ' へのダウングレード';
+    // ★liff_plan.html20：言葉の途中で折り返さない
+    document.getElementById('down-title').innerHTML = escapeHtml(currentPlan) + ' → ' + escapeHtml(plan) + '<wbr> への<wbr>ダウングレード';
     const lines = downgradeWarnings(currentPlan, plan);
     document.getElementById('down-warn-items').innerHTML = lines.map(escapeHtml).join('<br>');
     // ★liff_plan.html11：ダウングレードは次の更新日から
     const from = nextPeriodInfo ? ymdText(nextPeriodInfo.start) : '';
+    // ★liff_plan.html20：FREEにする時は、切り替わる日に行うこと（Xの連携を外す・Xに投稿しない・投稿履歴が見られなくなる）を出す（Kenさん決定）
+    const toFree = plan === 'FREE';
+    const fromDay = from ? from.replace(/^\d+年/, '') : '';
+    document.getElementById('down-remove').style.display = toFree ? 'block' : 'none';
+    document.getElementById('down-remove-title').innerHTML = '🗑️ 次回更新日' + (fromDay ? '<wbr>（' + escapeHtml(fromDay) + '）' : '') + 'に<wbr>行うこと';
+    document.getElementById('down-remove-items').innerHTML = toFree ? [
+      '・Xの連携を外します。',
+      '・' + (fromDay || '次回更新日') + 'より後の予約にXが入っている時は、Xには投稿せず、ほかのSNSにだけ投稿します。',
+      '・投稿履歴と投稿削除の画面は見られなくなります。これまでの投稿履歴は保存期間（今月と過去12か月）まで残り、PERSONALプラン以上に戻すと、また見られます。'
+    ].map(escapeHtml).join('<br>') : '';
     document.getElementById('down-note').textContent = scheduledNote(plan) +
-      'すでに入っている予約は、そのまま投稿されます。' + (from ? from + 'から' : '次回更新日から') + 'の予約枠は、' + plan + 'プランの予約枠で数えます。';
+      (toFree ? 'すでに入っている予約は、Xを除いて、そのまま投稿されます。' : 'すでに入っている予約は、そのまま投稿されます。') +
+      (from ? from + 'から' : '次回更新日から') + 'の予約枠は、' + plan + 'プランの予約枠で数えます。切り替わる3日前に、ベルのお知らせでもお知らせします。';
     document.getElementById('down-error').textContent = '';
     document.getElementById('down-exec-btn').disabled = false;
     document.getElementById('downgrade-modal').classList.add('open');
