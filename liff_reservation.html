@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更65 - AiPost</title>
+<title>予約確認・変更66 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -626,6 +626,10 @@
   .ri-zoom img { max-width: 100%; max-height: 75vh; display: block; border-radius: 6px; background: #fff; }
   .ri-zoom-hint { color: rgba(255,255,255,0.7); font-size: 11px; margin-top: 10px; word-break: keep-all; overflow-wrap: anywhere; text-align: center; }
 
+  /* ★liff_reservation.html66：予約の詳細の窓のボタンを、窓の下に固定する（スクロールしても消えない。Kenさん指示） */
+  .detail-actions { position: sticky; bottom: -16px; background: #fff; margin: 14px -16px -16px; padding: 10px 16px 16px; border-top: 1px solid var(--border); z-index: 2; }
+  .detail-actions .btn-row { margin-top: 0; }
+
   /* ★liff_reservation_html33：予約本文の修正 */
   .edit-textarea {
     width: 100%;
@@ -938,7 +942,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更65</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更66</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1215,6 +1219,8 @@
       <div id="detail-sns-images" style="display:none;"></div>
       <div class="post-text-box" id="detail-posttext" style="white-space:pre-wrap;word-break:break-word;"></div>
 
+      <!-- ★liff_reservation.html66：ボタンを窓の下に固定する -->
+      <div class="detail-actions">
       <div class="btn-row">
         <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
         <!-- ★liff_reservation_html33：「修正する」ボタンを追加（投稿予定の5分前を過ぎた予約では非表示） -->
@@ -1224,6 +1230,7 @@
       </div>
       <!-- ★liff_reservation_html35：「画像を差し替える」ボタン（投稿予定の5分前を過ぎた予約では非表示） -->
       <button class="ri-btn" id="detail-image-btn" onclick="startImageReplace()" style="background:transparent;color:var(--primary);border:1.5px solid var(--primary);">🖼️ 画像を差し替える</button>
+      </div>
     </div>
 
     <!-- 画像差し替えモード（★liff_reservation_html35） -->
@@ -1256,7 +1263,7 @@
       <div class="ri-summary" id="ri-summary" style="display:none;"></div>
       <div class="edit-error" id="ri-error"></div>
 
-      <div class="btn-row">
+      <div class="btn-row detail-actions">
         <button class="btn btn-outline" id="ri-cancel-btn" onclick="cancelImageReplace()">やめる</button>
         <button class="btn btn-primary" id="ri-save-btn" onclick="saveImageReplace()" disabled>保存する</button>
       </div>
@@ -1269,7 +1276,7 @@
       <div class="edit-note">修正できるのは本文のみです。ハッシュタグ・投稿日時・投稿先は変わりません。本文とハッシュタグを合わせて140字までです。</div>
       <div class="edit-error" id="detail-edit-error"></div>
 
-      <div class="btn-row">
+      <div class="btn-row detail-actions">
         <button class="btn btn-gray" id="detail-edit-cancel-btn" onclick="cancelEditReservation()">やめる</button>
         <button class="btn btn-primary" id="detail-edit-save-btn" onclick="saveEditReservation()">保存する</button>
       </div>
@@ -1642,7 +1649,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認65';
+  const TRACE_SCREEN = '予約確認66';
 
   function traceLog(msg) {
     try {
@@ -2158,13 +2165,40 @@ function switchTab(id) {
     // ★liff_reservation_html38：画像なしの予約は「画像を掲載する」、画像ありは「画像を差し替える」
     document.getElementById('detail-image-btn').textContent = r.hasImage ? '🖼️ 画像を差し替える' : '🖼️ 画像を掲載する';
     document.getElementById('detail-modal').classList.add('open');
+    pushDetailHistory(); // ★liff_reservation.html66
   }
   function closeDetail() {
     if (editSaving || riSaving) return;
+    closeDetailCore();
+    // ★liff_reservation.html66：窓を開いた時に足した履歴を1つ戻す（戻った時の popstate では何もしない）
+    if (detailHistoryPushed) {
+      detailHistoryPushed = false;
+      try { history.back(); } catch (e) {}
+    }
+  }
+  function closeDetailCore() {
     setEditMode(false);
     setImageReplaceMode(false);
     document.getElementById('detail-modal').classList.remove('open');
   }
+  // ★liff_reservation.html66：スマホの戻る操作で、画面から離れずに窓だけを閉じる（Kenさん決定）
+  // 　窓を開く時に履歴を1つ足し、戻る操作（popstate）でその窓を閉じる。大きく表示中・切り抜き中はそれだけを閉じ、
+  // 　保存中は閉じずに履歴を足し直す。
+  let detailHistoryPushed = false;
+  function pushDetailHistory() {
+    if (detailHistoryPushed) return;
+    try { history.pushState({ aipostDetail: true }, ''); detailHistoryPushed = true; } catch (e) {}
+  }
+  window.addEventListener('popstate', function () {
+    if (!detailHistoryPushed) return;
+    detailHistoryPushed = false;
+    const zoom = document.getElementById('ri-zoom');
+    if (zoom && zoom.classList.contains('open')) { zoom.classList.remove('open'); pushDetailHistory(); return; }
+    const trim = document.getElementById('trim-overlay');
+    if (trim && trim.classList.contains('open')) { cancelTrim(); pushDetailHistory(); return; }
+    if (editSaving || riSaving) { pushDetailHistory(); return; }
+    if (document.getElementById('detail-modal').classList.contains('open')) closeDetailCore();
+  });
   function confirmCancel() {
     const r = currentReservationList.find(function (item) { return item.reservationId === currentDetailReservationId; });
     if (r) {
