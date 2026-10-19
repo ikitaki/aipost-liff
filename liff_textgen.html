@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成159 - AiPost</title>
+<title>投稿文作成160 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -803,7 +803,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成159</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成160</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1201,7 +1201,7 @@
     <div class="accordion-body" id="acc-t1">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">連携済みの<wbr>SNSの<wbr>中から、<wbr>今回投稿する<wbr>SNSを<wbr>選びます。<wbr>連携していない<wbr>SNSは<wbr>選べません<wbr>（設定画面で<wbr>連携できます）。<wbr>ここで<wbr>選んだ<wbr>SNSに<wbr>合わせて、<wbr>⑧ハッシュタグの<wbr>チェック欄と、<wbr>⑨画像の<wbr>トリミングの<wbr>対象が<wbr>切り<wbr>替わります。<wbr>1つも<wbr>選ばずに<wbr>予約する<wbr>ことは<wbr>できません。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 プランごとに<wbr>選べる<wbr>数</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">FREEプランは<wbr>1つ<wbr>（Xは<wbr>選べません）、<wbr>PERSONAL・LITEプランは<wbr>2つ、<wbr>STANDARD・PROプランは<wbr>3つまで<wbr>選べます。<wbr>上限まで<wbr>選んでいる<wbr>時に<wbr>別の<wbr>SNSに<wbr>したい<wbr>場合は、<wbr>先に<wbr>チェックを<wbr>外してください。</div>
+      <!-- ★liff_textgen.html160：FREEの投稿先を2つにした（Kenさん決定） --><div style="font-size:11px;color:var(--text-sub);line-height:1.8;">FREEプランは<wbr>2つ<wbr>（Xは<wbr>選べません）、<wbr>PERSONAL・LITEプランは<wbr>2つ、<wbr>STANDARD・PROプランは<wbr>3つまで<wbr>選べます。<wbr>上限まで<wbr>選んでいる<wbr>時に<wbr>別の<wbr>SNSに<wbr>したい<wbr>場合は、<wbr>先に<wbr>チェックを<wbr>外してください。</div>
     </div>
   </div>
 
@@ -1770,7 +1770,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成159';
+const TRACE_SCREEN = '投稿文作成160';
 
 function traceLog(msg) {
   try {
@@ -2721,7 +2721,8 @@ const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', 
 
 // ★liff_textgen.html120：プランごとの「投稿先に選べるSNSの数」（SNSの連携自体は全プラン3つまで可能）。
 // 　サーバー側（TextGenerationgs_22のcreateReservation()）でも同じ数で確認している。
-const PLAN_POST_SNS_LIMIT = { FREE: 1, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
+// ★liff_textgen.html160：FREEを1→2にした（Kenさん決定。GASの投稿予約gs_37 の TEXTGEN_PLAN_POST_SNS_LIMIT と同じ数）
+const PLAN_POST_SNS_LIMIT = { FREE: 2, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
 let currentPostSnsLimit = 3;
 let currentPlanName = '';
 
@@ -2764,7 +2765,7 @@ function applyPlan(plan) {
   currentPlanName = plan;
   currentPostSnsLimit = PLAN_POST_SNS_LIMIT[plan] || 1;
   if (plan === 'FREE') {
-    xNote.textContent = '💎 FREEプランの投稿先は1つまで（Xは選べません）';
+    xNote.textContent = '💎 FREEプランの投稿先は2つまで（Xは選べません）'; // ★liff_textgen.html160
     xNote.style.display = 'block';
   } else if (currentPostSnsLimit < 3) {
     xNote.textContent = '💎 ' + plan + 'プランの投稿先は' + currentPostSnsLimit + 'つまで';
