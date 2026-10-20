@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成161 - AiPost</title>
+<title>投稿文作成162 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -803,7 +803,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成161</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成162</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1772,7 +1772,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成161';
+const TRACE_SCREEN = '投稿文作成162';
 
 function traceLog(msg) {
   try {
@@ -2364,13 +2364,20 @@ function isEndLineOn(kind) {
   const el = document.getElementById(kind === 'shop' ? 'include-shopend-item' : 'include-address-item');
   return !!(el && el.classList.contains('checked'));
 }
+// ★liff_textgen.html162：⑦の行か（登録した店名・所在地の行と同じか、途中で切れた行〔印から始まり、登録の行の頭と同じ〕）。
+// 　以前の版で、上限を超えた時に投稿文の最後から削り、所在地の行の途中が切れることがあったため、切れた行も⑦の行として扱う
+function isEndLine(t, line, mark) {
+  if (!line || !t) return false;
+  if (t === line) return true;
+  return t.length > mark.length && t.indexOf(mark) === 0 && line.indexOf(t) === 0;
+}
 // 投稿文から⑦の行を取り除き、指定した状態（{shop, address}）の行を最後に付け直した文字列を返す
 function rebuildEndLines(text, want) {
   const shopLine = endLineText('shop');
   const addrLine = endLineText('address');
   const lines = String(text || '').split('\n').filter(function (l) {
     const t = l.trim();
-    return !((shopLine && t === shopLine) || (addrLine && t === addrLine));
+    return !(isEndLine(t, shopLine, '🏠') || isEndLine(t, addrLine, '📍')); // ★liff_textgen.html162：切れた行も取り除く
   });
   const body = lines.join('\n').replace(/\s+$/, '');
   const add = [];
@@ -2659,15 +2666,41 @@ function countChars(text) {
 }
 
 // 本文が全角換算140字を超えないよう、超過分を末尾から物理的に削る
+// ★liff_textgen.html162：最後に⑦の店名・所在地の行がある時は、その行は残し、その前の本文の最後から削る（所在地の行が途中で切れ、
+// 　付けた行と見分けられなくなる不具合〔Kenさん報告〕を直した）。⑦の行だけで上限を超える時は、今までどおり全体の最後から削る
 function enforceCharLimit(ta) {
   let text = ta.value;
   if (countCharsX(text) <= CHAR_LIMIT) return;
+  const shopLine = endLineText('shop');
+  const addrLine = endLineText('address');
+  const lines = text.split('\n');
+  const tail = [];
+  while (lines.length > 0) {
+    const t = lines[lines.length - 1].trim();
+    if ((shopLine && t === shopLine) || (addrLine && t === addrLine)) {
+      tail.unshift(lines.pop());
+    } else {
+      break;
+    }
+  }
+  if (tail.length > 0 && lines.length > 0) {
+    const tailText = '\n' + tail.join('\n');
+    let body = lines.join('\n');
+    while (countCharsX(body + tailText) > CHAR_LIMIT && body.length > 0) {
+      body = body.slice(0, -1);
+    }
+    text = body + tailText;
+  }
   while (countCharsX(text) > CHAR_LIMIT && text.length > 0) {
     text = text.slice(0, -1);
   }
   if (text !== ta.value) {
+    // ★liff_textgen.html162：⑦の行を残した時は、入力していた位置（本文の中）にカーソルを置く
+    const caret = (tail.length > 0 && typeof ta.selectionStart === 'number') ? ta.selectionStart : -1;
     ta.value = text;
-    ta.selectionStart = ta.selectionEnd = text.length;
+    const bodyEnd = tail.length > 0 ? text.length - ('\n' + tail.join('\n')).length : text.length;
+    const pos = caret >= 0 ? Math.min(caret, Math.max(bodyEnd, 0)) : text.length;
+    ta.selectionStart = ta.selectionEnd = pos;
   }
 }
 function updateCharCount() {
