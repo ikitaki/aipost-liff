@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成162 - AiPost</title>
+<title>投稿文作成163 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -803,7 +803,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成162</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成163</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1772,7 +1772,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成162';
+const TRACE_SCREEN = '投稿文作成163';
 
 function traceLog(msg) {
   try {
@@ -2420,9 +2420,23 @@ function toggleEndLine(el, kind) {
       return;
     }
     ta.value = next;
+    // ★liff_textgen.html163：先にチェックを変えてから知らせる（入力欄の行とチェックをそろえる処理が、付け外しの途中で働かないように）
+    toggleInclude(el);
     ta.dispatchEvent(new Event('input'));
+    return;
   }
   toggleInclude(el);
+}
+// ★liff_textgen.html163：入力欄に見えているものを正とする（Kenさん決定・A案）。チェックが入っていても、入力欄に登録どおりの店名・所在地の行が
+// 　無ければ（利用者が直した・消した）、チェックを外す。直した行はふつうの本文として扱い、後から付け直さない（文字数は入力欄のとおりになる）
+function syncEndLineChecks() {
+  const ta = document.getElementById('post-textarea');
+  if (!ta) return;
+  const lines = ta.value.split('\n').map(function (l) { return l.trim(); });
+  [['shop', endLineText('shop')], ['address', endLineText('address')]].forEach(function (pair) {
+    if (!pair[1] || !isEndLineOn(pair[0])) return; // 店名・所在地がまだ分からない時は、そのままにする
+    if (lines.indexOf(pair[1]) === -1) setEndLineChecked(pair[0], false);
+  });
 }
 // 「内容を確認する」の時、オンの行が投稿文に無ければ付ける。付けると上限を超える時は false（確認に進まない）
 function ensureEndLines() {
@@ -2711,6 +2725,7 @@ function updateCharCount() {
     setEndLineChecked('shop', false);
     setEndLineChecked('address', false);
   }
+  syncEndLineChecks(); // ★liff_textgen.html163
   const text = ta.value;
   const count = countChars(text);
   const ratio = count / CHAR_LIMIT;
