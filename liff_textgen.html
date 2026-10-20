@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成163 - AiPost</title>
+<title>投稿文作成164 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -196,6 +196,9 @@
     margin-bottom:8px;
   }
   .char-counter { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+  .post-total { font-size: 11px; color: var(--text-sub); margin: 4px 2px 0; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; } /* ★liff_textgen.html164 */
+  .post-total.over { color: var(--danger); font-weight: 700; }
+  .char-limit-msg { font-size: 11px; color: var(--danger, #e53935); margin: 4px 2px 0; word-break: keep-all; overflow-wrap: anywhere; } /* ★liff_textgen.html164 */
   .char-count { font-size: 12px; font-weight: 600; color: var(--text-sub); min-width: 70px; }
   .char-count.warn { color: var(--warning); }
   .char-count.over { color: var(--danger); }
@@ -803,7 +806,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成163</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成164</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1001,13 +1004,17 @@
     <!-- ★liff_textgen.html136：投稿文の中のハッシュタグの注意（予約の時に止めるため、先に知らせる。Kenさん指示） -->
     <div class="caution-box" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑧の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
     <div class="genre-notice" id="genre-notice">📍 登録業種<wbr>（<span id="genre-label"></span>）を<wbr>もとに<wbr>投稿文を<wbr>作成しました。</div>
-    <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount()"
+    <!-- ★liff_textgen.html164：利用者の入力は、上限を超える時は受け付けない（どこに入力しても）。そのため入力の知らせ（event）を渡す -->
+    <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount(event)" oncompositionend="updateCharCount(event)"
       placeholder="AIで作成した投稿文がここに表示されます。直接入力することもできます。"></textarea>
+    <div class="char-limit-msg" id="char-limit-msg" style="display:none;">上限（140字）を<wbr>超えるため、<wbr>入力できません。<wbr>先に<wbr>ほかの所を<wbr>短くしてください。</div>
     <div class="char-counter">
       <span class="char-count" id="char-count">0文字</span>
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
       <span style="font-size:11px;color:var(--text-light);" id="char-limit-label">上限140字<wbr>（半角280字）</span>
     </div>
+    <!-- ★liff_textgen.html164：ハッシュタグを付けている時は、本文とハッシュタグを合わせた文字数も、SNSごとにここに出す（Kenさん指摘） -->
+    <div class="post-total" id="post-total" style="display:none;"></div>
     <!-- ★liff_textgen.html136：「＋ 🏠店名を入れる」「＋ 📍所在地を入れる」ボタンは、⑦「投稿文の最後に店名・所在地を付ける」にまとめて外した -->
     <div class="url-warning" id="url-warning">
       🔗 <strong>投稿文に<wbr>URLが<wbr>含まれています。</strong><br>当サービスでは<wbr>Xへの<wbr>URL付き投稿に<wbr>対応していないため、<wbr>Xは<wbr>自動的に<wbr>除外されます。
@@ -1040,6 +1047,8 @@
   <div class="card">
     <div class="card-title">⑧ ハッシュタグ</div>
     <p class="hashtag-desc">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>投稿文と<wbr>同様、<wbr>自由に<wbr>編集できます。<wbr>チェックした<wbr>SNSにだけ付与されます。<wbr>「#」は<wbr>自動で<wbr>付きます。</p>
+    <!-- ★liff_textgen.html164：ハッシュタグの数え方の説明（Kenさん指摘） -->
+    <p class="hashtag-desc" style="margin-top:-4px;">文字数は、<wbr>「#」と<wbr>タグの間の<wbr>空白、<wbr>投稿文との<wbr>間の<wbr>改行も<wbr>数えます<wbr>（半角は<wbr>0.5字）。<wbr>例：<wbr>「カフェ」（3字）を<wbr>1つ<wbr>付けると<wbr>約5字、<wbr>2つ目からは<wbr>1つにつき<wbr>「タグの<wbr>字数＋1字」<wbr>増えます。</p>
     <div class="hashtag-x-status" id="hashtag-x-status"></div>
     <div class="hashtag-header">
       <div class="hashtag-header-spacer"></div>
@@ -1772,7 +1781,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成163';
+const TRACE_SCREEN = '投稿文作成164';
 
 function traceLog(msg) {
   try {
@@ -2179,7 +2188,31 @@ function getXCombinedTotal() {
 }
 
 // ⑧ハッシュタグカード内にXのリアルタイム文字数ステータスを表示
+// ★liff_textgen.html164：本文の文字数の下に、ハッシュタグを含めたSNSごとの合計を出す（ハッシュタグを付けているSNSがある時だけ）
+function updatePostTotalLine() {
+  const el = document.getElementById('post-total');
+  if (!el) return;
+  const text = document.getElementById('post-textarea').value;
+  const list = activePostSns();
+  const withTags = list.filter(sns => getHashtagsForSns(sns).length > 0);
+  if (!text.trim() || withTags.length === 0) {
+    el.style.display = 'none';
+    el.textContent = '';
+    return;
+  }
+  const NAMES = { X: 'X', IG: 'Instagram', TH: 'Threads' };
+  let over = false;
+  const parts = list.map(sns => {
+    const n = snsPostTotal(sns);
+    if (n > POST_TOTAL_LIMIT) over = true;
+    return '<span class="nowrap">' + NAMES[sns] + ' ' + n + '字</span>';
+  });
+  el.className = 'post-total' + (over ? ' over' : '');
+  el.innerHTML = 'ハッシュタグを<wbr>含めた<wbr>合計：<wbr>' + parts.join('・<wbr>') + '<wbr>（上限' + POST_TOTAL_LIMIT + '字）';
+  el.style.display = 'block';
+}
 function updateHashtagXStatus() {
+  updatePostTotalLine(); // ★liff_textgen.html164
   // ★liff_textgen.html152：Xだけの表示をやめ、選んでいるSNSのうち一番長いもの（本文とハッシュタグの合計）を出す
   const el = document.getElementById('hashtag-x-status');
   if (!el) return;
@@ -2717,9 +2750,32 @@ function enforceCharLimit(ta) {
     ta.selectionStart = ta.selectionEnd = pos;
   }
 }
-function updateCharCount() {
+// ★liff_textgen.html164：上限を超えない最後の入力欄の中身（利用者の入力が上限を超えた時に、この中身に戻す）
+let TA_LAST_OK = '';
+let TA_LIMIT_MSG_TIMER = null;
+function showCharLimitMsg() {
+  const el = document.getElementById('char-limit-msg');
+  if (!el) return;
+  el.style.display = 'block';
+  if (TA_LIMIT_MSG_TIMER) clearTimeout(TA_LIMIT_MSG_TIMER);
+  TA_LIMIT_MSG_TIMER = setTimeout(function () { el.style.display = 'none'; }, 3000);
+}
+function updateCharCount(e) {
   const ta = document.getElementById('post-textarea');
-  enforceCharLimit(ta);
+  // ★liff_textgen.html164：利用者の入力（キーボード・貼り付け）で上限を超えた時は、どこに入力しても受け付けず、入力の前の中身に戻す
+  // 　（以前は文章の最後から削っていたため、文章の途中を直すと、気付かないうちに最後が削られていた。Kenさん指摘）。
+  // 　日本語の変換中は戻さず、変換が終わった時に確かめる。プログラムが入れた文（AIで作成など）は、今までどおり最後（⑦の行の前）から削る
+  const composing = !!(e && e.isComposing);
+  if (e && e.isTrusted && !composing && countCharsX(ta.value) > CHAR_LIMIT && countCharsX(TA_LAST_OK) <= CHAR_LIMIT) {
+    const added = Math.max(ta.value.length - TA_LAST_OK.length, 0);
+    const caret = Math.max((typeof ta.selectionStart === 'number' ? ta.selectionStart : TA_LAST_OK.length) - added, 0);
+    ta.value = TA_LAST_OK;
+    ta.selectionStart = ta.selectionEnd = Math.min(caret, ta.value.length);
+    showCharLimitMsg();
+  } else if (!composing) {
+    enforceCharLimit(ta);
+  }
+  if (!composing && countCharsX(ta.value) <= CHAR_LIMIT) TA_LAST_OK = ta.value;
   // ★liff_textgen.html139：投稿文が空になったら、⑦の「店名を付ける」「所在地を付ける」のチェックも外す（Kenさん指示）
   if (ta && ta.value.trim() === '') {
     setEndLineChecked('shop', false);
