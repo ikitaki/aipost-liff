@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金20 - AiPost</title>
+  <title>プラン・料金21 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -373,7 +373,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金20</span></span>
+    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金21</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -462,7 +462,7 @@
   <div class="btn-status" id="btn-status"></div>
   <div class="table-notes">
     ※ 予約1件で、選んだSNS（投稿先SNS数まで）にまとめて投稿します。使う予約枠は1件です。実質予約枠は、予約枠 × 投稿先SNS数です。<br>
-    ※ FREEプランでは、Xを投稿先に選べません。Xへの投稿には運営側に費用がかかるためです。<br>
+    ※ FREEプランでは、Xを投稿先に選べず、連携もできません。Xへの投稿には運営側に費用がかかるためです。<br>
     ※ 投稿履歴は、今月と過去12か月の分を残します。FREEプランでは、投稿履歴は残らず、投稿の削除もできません。<br>
     ※ ネガティブコメントは、分析画面のほか、画面のベルのお知らせでもお知らせします。
   </div>
@@ -474,7 +474,8 @@
     有料プランどうしの変更と、FREEプランへの変更は、次回更新日から適用されます。それまでは、現在のプランをそのままご利用いただけます。<br>
     FREEプランから有料プランへの変更は、お申し込み後すぐに適用されます。ご利用期間は、その日から1か月ごとになります。<br>
     変更の取り消しは、次回更新日の前日まで、この画面から行えます。<br>
-    すでに入っている予約は、そのまま投稿されます。SNSの連携はそのまま残ります。投稿先に選べるSNSの数は、新しいプランに合わせて変わります。<br>
+    <!-- ★liff_plan.html21：FREEへ変わる時はXの連携を外し、Xに投稿しないことを書いた -->
+    すでに入っている予約は、そのまま投稿されます。SNSの連携はそのまま残ります。投稿先に選べるSNSの数は、新しいプランに合わせて変わります。ただし、FREEプランへ変わる時は、Xの連携を外し、変わった日からの予約ではXに投稿しません。<br>
     ※ この画面はデモのため、支払いは行いません。
   </div>
 
@@ -515,19 +516,19 @@
       <div style="height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;line-height:1.9;color:var(--text);">
         <div style="font-weight:700;font-size:13px;color:var(--primary);margin-bottom:10px;">AiPost 利用規約（抜粋）</div>
 
-        <div style="font-weight:700;margin-bottom:4px;">第3条（プランと料金）</div>
+        <div style="font-weight:700;margin-bottom:4px;">第5条（プランと料金）</div><!-- ★liff_plan.html21：条の番号を利用規約8に合わせた -->
         <p style="margin-bottom:10px;">料金はすべて税別で、お申し込みの日から1か月ごとのお支払いです。</p>
 
-        <div style="font-weight:700;margin-bottom:4px;">第4条（プランの変更・解約）</div>
+        <div style="font-weight:700;margin-bottom:4px;">第8〜10条（プランの変更・退会・返金）</div>
         <p style="margin-bottom:10px;">プランの変更は、次回更新日から適用されます。ただし、FREEプランから有料プランへの変更は、お申し込み後すぐに適用され、ご利用期間はその日から1か月ごとになります。退会は、現在のご利用期間の終了日に行います。日割りでの返金は行いません。</p>
 
-        <div style="font-weight:700;margin-bottom:4px;">第8条（SNSアカウントの連携と安全管理）</div>
+        <div style="font-weight:700;margin-bottom:4px;">第14条（SNSアカウントの連携と安全管理）</div>
         <p style="margin-bottom:10px;">SNSのパスワードはお預かりしません。各SNSが発行した許可証（アクセストークン）は、暗号化して保存します。</p>
 
-        <div style="font-weight:700;margin-bottom:4px;">第11条（禁止事項）</div>
+        <div style="font-weight:700;margin-bottom:4px;">第17条（禁止事項）</div>
         <p style="margin-bottom:10px;">各SNSの利用規約に違反する投稿、XへのURL付き投稿の制限を避ける行為、そのほか当社が不適切と判断する行為を禁止します。</p>
 
-        <div style="font-weight:700;margin-bottom:4px;">第13条（免責事項）</div>
+        <div style="font-weight:700;margin-bottom:4px;">第20条（免責事項）</div>
         <p style="margin-bottom:10px;">SNS側の仕様の変更や障害で投稿できなかった場合、当社は責任を負いません。</p>
 
         <div style="text-align:center;color:var(--text-sub);font-size:11px;padding-top:8px;">
@@ -635,7 +636,7 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'プラン20';
+  const TRACE_SCREEN = 'プラン21';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成160 - AiPost</title>
+<title>投稿文作成161 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -803,7 +803,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成160</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成161</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -919,6 +919,8 @@
     </div>
     <p class="sns-plan-note" id="sns-plan-note" style="display:none;"></p>
     <p class="sns-plan-note" id="sns-unconnected-note" style="display:none;"></p>
+    <!-- ★liff_textgen.html161：FREEプランに変わる予定の人への案内（変わった後の日付の予約ではXを選べない。投稿予約gs_38） -->
+    <p class="sns-plan-note" id="sns-pending-free-note" style="display:none;"></p>
   </div>
 
   <!-- ② キーワードから投稿文を作成する（★liff_textgen.html136：見出しの「文章・生成」を「投稿文・作成」に統一） -->
@@ -1369,7 +1371,7 @@
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t11')">内容を<wbr>確認して<wbr>予約する<span class="accordion-arrow" id="arr-acc-t11">▶</span></div>
     <div class="accordion-body" id="acc-t11">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その<wbr>ご利用期間の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿文を見る」を<wbr>押すと、<wbr>ハッシュタグを<wbr>含めて、<wbr>SNSごとに<wbr>実際に<wbr>投稿される<wbr>文章を<wbr>確かめられます。</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「予約を確定する」を<wbr>押すと<wbr>予約が<wbr>完了します。<wbr>この<wbr>時点で<wbr>初めて<wbr>予約と<wbr>して<wbr>保存されます。<wbr>直したい<wbr>場合は<wbr>「修正する」を<wbr>押すと、<wbr>入力した<wbr>内容の<wbr>まま<wbr>戻れます。<wbr>予約した後は、<wbr>予約確認画面で<wbr>投稿文の<wbr>修正・画像の<wbr>差し替え・キャンセルが<wbr>できます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「予約を確定する」を<wbr>押すと<wbr>予約が<wbr>完了します。<wbr>この<wbr>時点で<wbr>初めて<wbr>予約と<wbr>して<wbr>保存されます。<wbr>直したい<wbr>場合は<wbr>「修正する」を<wbr>押すと、<wbr>入力した<wbr>内容の<wbr>まま<wbr>戻れます。<wbr>予約した後は、<wbr>予約確認画面で<wbr>投稿文の<wbr>修正・画像の<wbr>変更・キャンセルが<wbr>できます。<!-- ★liff_textgen.html161：「差し替え」→「変更」 --></div>
     </div>
   </div>
 
@@ -1770,7 +1772,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成160';
+const TRACE_SCREEN = '投稿文作成161';
 
 function traceLog(msg) {
   try {
@@ -2784,6 +2786,24 @@ function applyPlan(plan) {
   label.textContent = '上限140字（半角280字）';
 
   updateCharCount();
+  updatePendingFreeNote(); // ★liff_textgen.html161
+}
+
+// ★liff_textgen.html161：次の期間からFREEプランに変わる予定の人は、その日からの予約でXを選べない（投稿予約gs_38）。
+// 　変わる日（次の期間の開始日）を返す。予定が無い・分からない時は null
+function tgPendingFreeStart() {
+  const c = readQuotaCache();
+  if (!c || c.nextPlan !== 'FREE' || currentPlanName === 'FREE' || !c.nextPeriod) return null;
+  return tgYmdToDate(c.nextPeriod.start);
+}
+function updatePendingFreeNote() {
+  const el = document.getElementById('sns-pending-free-note');
+  if (!el) return;
+  const start = tgPendingFreeStart();
+  if (!start) { el.style.display = 'none'; return; }
+  const c = readQuotaCache();
+  el.innerHTML = '💎 ' + tgMd(c.nextPeriod.start) + 'から<wbr>FREEプランに<wbr>変わるため、<wbr>その日からの<wbr>予約では<wbr>Xを<wbr>選べません';
+  el.style.display = 'block';
 }
 
 function toggleSns(el) {
@@ -3220,6 +3240,14 @@ async function showConfirm() {
   if (selQuota && selQuota.remaining <= 0) {
     alert(tgMd(selQuota.start) + '〜' + tgMd(selQuota.end) + 'の予約枠（' + selQuota.total + '件）を使い切っているため、この期間には予約できません。\n' +
       '予約中の投稿をキャンセルすると、予約できるようになります。');
+    return;
+  }
+
+  // ★liff_textgen.html161：FREEプランに変わる日からの予約で、Xを選んでいたら止める（URLでXが外れる時は、GASと同じく止めない）
+  const pendingFreeStart = tgPendingFreeStart();
+  if (pendingFreeStart && getCheckedSns().indexOf('X') !== -1 && !/https?:\/\//.test(ta.value) &&
+      new Date(selectedYear, selectedMonth - 1, selectedDay).getTime() >= pendingFreeStart.getTime()) {
+    alert(tgMd(readQuotaCache().nextPeriod.start) + 'からFREEプランに変わるため、その日からの予約ではXを選べません。\n投稿先を選び直してください。');
     return;
   }
 
