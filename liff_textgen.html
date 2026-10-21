@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成165K - AiPost</title>
+<title>投稿文作成165L - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -738,14 +738,15 @@
 #tab-form .image-section-header { padding:12px 16px; }
 #tab-form .post-textarea { min-height:150px; }
 
-.lv-kbar { position:fixed; left:0; right:0; bottom:60px; z-index:990; background:#fff; border-top:1px solid var(--border); box-shadow:0 -2px 10px rgba(0,0,0,.08); padding:8px 14px 10px; max-width:480px; margin:0 auto; box-sizing:border-box; word-break:keep-all; overflow-wrap:anywhere; }
-.lv-kbar .char-counter { margin:0 0 2px; }
-.lv-kbar .lv-ktotal { font-size:11px; color:var(--text-sub); line-height:1.5; margin-bottom:6px; }
-.lv-kbar .lv-ktotal.over { color:var(--danger); font-weight:700; }
-.lv-kbar .reserve-btn { margin:0; padding:11px; }
-body { padding-bottom:190px; }
-/* 本文の下の文字数は、下の帯に写して出す（id は処理で使うため残し、ここでは隠す） */
-#tab-form .card .char-counter, #tab-form .card .post-total { display:none !important; }
+.lv-cond { padding:12px 14px; }
+.lv-cond > summary { list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px; }
+.lv-cond > summary::-webkit-details-marker { display:none; }
+.lv-cond-head { flex:1; min-width:0; }
+.lv-cond-sum { font-size:11.5px; color:var(--text-sub); line-height:1.5; margin-top:2px; }
+.lv-cond[open] .lv-cond-sum { display:none; }
+.lv-cond-btn { flex:none; font-size:12px; font-weight:700; color:var(--primary); border:1px solid var(--primary); border-radius:8px; padding:5px 10px; white-space:nowrap; }
+.lv-cond[open] .lv-cond-btn .o { display:none; } .lv-cond:not([open]) .lv-cond-btn .c { display:none; }
+.lv-cond-body { margin-top:12px; }
 
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -845,7 +846,7 @@ body { padding-bottom:190px; }
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成165K</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成165L</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -920,7 +921,7 @@ body { padding-bottom:190px; }
 
   <div id="tab-form" class="tab-panel active">
 
-  <!-- ★liff_textgen.html165K（発行日：2026年10月21日）：レイアウト見直しの試作（司令塔の見本 案5）。機能・id・関数は164と同じで、項目の並びと見た目だけを変えた。説明文は見出しの「?」を押すと開く。カレンダーと画像の操作は164のまま -->
+  <!-- ★liff_textgen.html165L（発行日：2026年10月21日）：レイアウト見直しの試作（司令塔の見本 案6）。機能・id・関数は164と同じで、項目の並びと見た目だけを変えた。説明文は見出しの「?」を押すと開く。カレンダーと画像の操作は164のまま -->
   <!-- 予約の修正（編集モード）の処理が、この見出しを書き換えるため残す（表示はしない） -->
   <div class="section-title" style="display:none;">投稿文作成</div>
 
@@ -933,8 +934,9 @@ body { padding-bottom:190px; }
     ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
   </div>
 
-<div class="card">
-<div class="card-title lv-title"><span class="lv-badge">1</span>投稿文を<wbr>作る<button type="button" class="lv-q" onclick="lvHelp('lv-h1')" aria-label="説明">?</button></div>
+<details class="card lv-cond" id="lv-cond" open><summary><div class="lv-cond-head"><div class="card-title" style="margin:0;">作成の<wbr>条件</div><div class="lv-cond-sum" id="lv-cond-sum"></div></div><span class="lv-cond-btn"><span class="o">変える ▾</span><span class="c">たたむ ▴</span></span></summary>
+<div class="lv-cond-body">
+<div style="text-align:right;margin:-6px 0 6px;"><button type="button" class="lv-q" style="margin-left:auto;" onclick="lvHelp('lv-h1')" aria-label="説明">?</button></div>
 <div class="lv-help" id="lv-h1">
     <div class="page-intro-title">📝 この<wbr>画面で<wbr>できる<wbr>こと</div>
     <div>キーワードや<wbr>要望を<wbr>もとに、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>予約すると、<wbr>指定した<wbr>日時に<wbr>SNSへ<wbr>自動で<wbr>投稿されます。</div>
@@ -1001,7 +1003,7 @@ body { padding-bottom:190px; }
         <div class="sns-checkbox">✓</div>
       </div>
     </div></div>
-</div>
+</div></details>
   <!-- AI生成ボタン -->
   <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
     <span style="font-size:20px;">✨</span>投稿文・ハッシュタグを<wbr>作成
@@ -1013,7 +1015,7 @@ body { padding-bottom:190px; }
     <div class="loading-text">AIが<wbr>投稿文を<wbr>考えています…<br>少々<wbr>お待ちください</div>
   </div>
 <div class="card">
-<div class="card-title lv-title"><span class="lv-badge">2</span>投稿文<button type="button" class="lv-q" onclick="lvHelp('lv-h2')" aria-label="説明">?</button></div>
+<div class="card-title lv-title">投稿文<button type="button" class="lv-q" onclick="lvHelp('lv-h2')" aria-label="説明">?</button></div>
 <div class="lv-help" id="lv-h2">
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集できます。<wbr>直接入力する<wbr>ことも<wbr>できます。</p>
     <!-- ★liff_textgen.html139：投稿文が空の時はチェックできない（Kenさん指示） -->
@@ -1106,7 +1108,7 @@ body { padding-bottom:190px; }
   <!-- ⑨ 画像アップロード（インライン） -->
   <div class="image-section">
     <div class="image-section-header">
-      <div class="image-section-title lv-title"><span class="lv-badge">3</span>画像</div>
+      <div class="image-section-title">画像</div>
     </div>
 
     <!-- 選択中プレビューバー -->
@@ -1155,7 +1157,7 @@ body { padding-bottom:190px; }
   <!-- ⑩ 投稿日時：カレンダー -->
   <div class="card" style="padding:0;overflow:hidden;">
     <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);">
-      <div class="card-title lv-title" style="margin-bottom:0;"><span class="lv-badge">4</span>投稿日時</div>
+      <div class="card-title" style="margin-bottom:0;">投稿日時</div>
       <p class="step-hint" id="cal-range-hint" style="margin:6px 0 0;">予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日までです。</p>
     </div>
     <div class="calendar-wrap">
@@ -1194,11 +1196,10 @@ body { padding-bottom:190px; }
   </div>
   <!-- ★liff_textgen.html136：このボタンではまだ予約されないことの案内 -->
   <p class="step-hint" style="margin:4px 2px 8px;">次の<wbr>確認画面で<wbr>「予約を<wbr>確定する」を<wbr>押すと、<wbr>予約が<wbr>完了します。</p>
-<div class="lv-kbar" id="lv-kbar"><div class="char-counter"><span class="char-count" id="lv-kcount">0文字</span><div class="char-bar-bg"><div class="char-bar-fill" id="lv-kbarfill" style="width:0%;"></div></div><span style="font-size:11px;color:var(--text-light);white-space:nowrap;" id="lv-klimit">上限<wbr>140字</span></div><div class="lv-ktotal" id="lv-ktotal" style="display:none;"></div>
   <!-- 予約ボタン -->
   <button class="reserve-btn" onclick="showConfirm()">
     <span style="font-size:20px;">✅</span>内容を<wbr>確認する
-  </button></div>
+  </button>
 
   </div><!-- /tab-form -->
 
@@ -1785,7 +1786,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成165K';
+const TRACE_SCREEN = '投稿文作成165L';
 
 function traceLog(msg) {
   try {
@@ -5389,23 +5390,33 @@ loadEditModeFromUrl();
 })();
 </script>
 <script>
-/* ★liff_textgen.html165K：レイアウト用の処理（開け閉め・表示だけ。作成・予約の処理は164のまま） */
+/* ★liff_textgen.html165L：レイアウト用の処理（開け閉め・表示だけ。作成・予約の処理は164のまま） */
 function lvHelp(id) { const el = document.getElementById(id); if (el) el.classList.toggle('open'); }
-// 本文の下の文字数の表示を、画面の下の帯にも写す
-function lvMirror() {
-  const c = document.getElementById('char-count'), b = document.getElementById('char-bar'), t = document.getElementById('post-total');
-  const kc = document.getElementById('lv-kcount'), kb = document.getElementById('lv-kbarfill'), kt = document.getElementById('lv-ktotal');
-  if (!c || !kc) return;
-  if (kc.textContent !== c.textContent) kc.textContent = c.textContent;
-  if (kc.className !== c.className) kc.className = c.className;
-  if (kb.style.width !== b.style.width) kb.style.width = b.style.width;
-  if (kb.className !== b.className) kb.className = b.className;
-  const show = t && t.style.display !== 'none' && t.textContent.trim();
-  kt.style.display = show ? 'block' : 'none';
-  if (show && kt.textContent !== t.textContent) kt.textContent = t.textContent;
-  kt.className = 'lv-ktotal' + (t && t.classList.contains('over') ? ' over' : '');
+function lvCondSummary() {
+  const NAMES = { X: 'X', IG: 'Instagram', TH: 'Threads' };
+  const a = [];
+  const s = getCheckedSns().map(k => NAMES[k] || k); if (s.length) a.push(s.join('・'));
+  const kw = [1, 2, 3].map(i => (document.getElementById('keyword-input-' + i) || {}).value || '').filter(v => v.trim()); if (kw.length) a.push(kw.join('・'));
+  const ft = (document.getElementById('free-text-input') || {}).value || ''; if (ft.trim()) a.push(ft.length > 14 ? ft.slice(0, 14) + '…' : ft);
+  const pb = document.querySelector('.pattern-btn.selected'); if (pb) a.push(pb.textContent.replace(/\s+/g, '').replace(/^[^\p{L}]+/u, ''));
+  const inc = [...document.querySelectorAll('#include-area-item.checked,#include-shopname-item.checked')].map(e => e.textContent.trim().replace('を含める', '')); if (inc.length) a.push(inc.join('・'));
+  const el = document.getElementById('lv-cond-sum'); const t = a.join('／'); if (el && el.textContent !== t) el.textContent = t;
 }
-setInterval(lvMirror, 300);
+setInterval(lvCondSummary, 600);
+function lvAfterGen() { const d = document.getElementById('lv-cond'); if (d) d.open = false; }
+function lvAfterGenScroll() { lvAfterGen(); document.getElementById('post-textarea').scrollIntoView({ behavior: 'auto', block: 'center' }); }
+const _lvSetStep = setStep;
+setStep = function (n) { _lvSetStep(n); if (n === 1) { const d = document.getElementById('lv-cond'); if (d) d.open = true; } };
+/* 作成が終わった時だけ画面を切り替える（setStep(4) は、投稿文やハッシュタグを入力するたびにも呼ばれるため、そこでは切り替えない） */
+const _lvGen = executeGenerate;
+executeGenerate = async function () {
+  const ta = document.getElementById('post-textarea'); const before = ta.value;
+  const r = await _lvGen.apply(this, arguments);
+  if (ta.value.trim() && ta.value !== before) lvAfterGenScroll();
+  return r;
+};
+// 予約の修正で開いた時（投稿文が入っている時）は、作成の条件をたたんでおく
+if (document.getElementById('post-textarea').value.trim()) lvAfterGen();
 </script>
 </body>
 </html>
