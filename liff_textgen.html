@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成165F2 - AiPost</title>
+<title>投稿文作成165H - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -709,49 +709,45 @@
   .maint-msg { font-size: clamp(12px, 3.4vw, 14px); line-height: 1.9; color: #3c4043; white-space: pre-line; text-align: center; text-wrap: balance; word-break: normal; overflow-wrap: anywhere; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 14px 10px; }
   .maint-btn { margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 8px; background: #06C755; color: #fff; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; }
 
-/* ★liff_textgen.html165：レイアウト見直しの試作（機能・id・関数は164と同じ。見た目と並びだけを変えた） */
-.v165-title{display:flex;align-items:center;gap:6px;}
-.v165-num{background:var(--primary);color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;display:inline-flex;align-items:center;justify-content:center;flex:none;}
-.v165-i{margin-left:auto;width:20px;height:20px;border-radius:50%;border:1px solid var(--text-light);color:var(--text-sub);background:#fff;font-size:11px;font-weight:700;font-family:serif;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none;padding:0;}
-.v165-i-s{margin-left:4px;width:16px;height:16px;font-size:10px;vertical-align:middle;}
-.v165-help{display:none;background:#f5f7fa;border-radius:8px;padding:8px 10px;margin:0 0 10px;}
-.v165-help.open{display:block;}
-.v165-help .step-hint,.v165-help .keyword-hint,.v165-help .hashtag-desc,.v165-help p{margin:0 0 4px !important;font-size:11.5px;line-height:1.6;color:var(--text-sub);}
-.v165-help .caution-box{margin:4px 0 !important;}
-.v165-help .page-intro{margin:0;padding:0;background:none;border:none;}
-.v165-pagehead{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-sub);margin:0 2px 8px;}
-.v165-pagehead .v165-i{margin-left:0;}
-.v165-lbl{font-size:11px;font-weight:700;color:var(--text-sub);margin:12px 0 5px;}
-.card-title+.v165-help+.v165-lbl,.card-title+.v165-lbl,.v165-help+.v165-lbl:first-child{margin-top:0;}
-#tab-form .keyword-input-grid{gap:6px;}
-#tab-form .v165-chips .pattern-grid{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-#tab-form .v165-chips .pattern-grid::-webkit-scrollbar{display:none;}
-#tab-form .v165-chips .pattern-btn{flex:none;flex-direction:row;gap:4px;padding:6px 12px;border-radius:16px;font-size:12px;white-space:nowrap;}
-#tab-form .v165-chips .pattern-icon{font-size:14px;}
-#tab-form .v165-chips .pattern-btn wbr{display:none;}
-#tab-form .v165-two .sns-check-list{grid-template-columns:1fr 1fr;gap:6px;}
-#tab-form .v165-two .include-check-item{flex-direction:row;min-height:0;padding:8px 10px;gap:8px;justify-content:flex-start;}
-#tab-form .v165-two .include-check-item .sns-checkbox{order:-1;width:16px;height:16px;border-radius:4px;}
-#tab-form .sns-check-item{min-height:0;padding:8px 4px;gap:4px;}
-#tab-form .sns-check-item .sns-check-name{font-size:11.5px;white-space:nowrap;}
-#tab-form .keyword-input-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
-#tab-form .keyword-input-grid .keyword-input{min-width:0;font-size:13px;}
-.v165-help:has(.keyword-guide.unregistered){display:block;}
-.v165-help .keyword-guide{margin:0 0 6px;}
-#tab-form .generate-btn{margin-top:12px;}
-#tab-form .hashtag-row{margin-bottom:6px;}
-#tab-form .post-textarea{min-height:190px;}
+/* ★liff_textgen.html165G〜L：レイアウト見直しの試作（司令塔の見本 案1〜6）。機能・id・関数は164と同じで、並びと見た目だけを変えた */
+.lv-title { display:flex; align-items:center; gap:6px; }
+.lv-badge { background:var(--primary); color:#fff; border-radius:50%; width:20px; height:20px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; flex:none; }
+.lv-q { margin-left:auto; width:20px; height:20px; border-radius:50%; border:none; background:#e8eaf6; color:var(--primary); font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:none; padding:0; font-family:inherit; }
+.lv-help { display:none; background:#f5f7fa; border-radius:8px; padding:8px 10px; margin:0 0 10px; }
+.lv-help.open { display:block; }
+.lv-help p, .lv-help .step-hint, .lv-help .keyword-hint, .lv-help .hashtag-desc, .lv-help > div { margin:0 0 4px !important; font-size:11.5px !important; line-height:1.6; color:var(--text-sub) !important; }
+.lv-help .caution-box { color:#e65100 !important; }
+.lv-help .page-intro-title { font-weight:700; color:var(--text) !important; }
+.lv-lbl { font-size:12px; font-weight:700; color:var(--text); margin:12px 0 6px; }
+.lv-title + .lv-lbl, .lv-help + .lv-lbl { margin-top:0; }
+#tab-form .sns-check-list { gap:6px; }
+#tab-form .sns-check-item { min-height:0; padding:7px 4px; gap:3px; }
+#tab-form .sns-check-item .sns-check-name { font-size:11.5px; white-space:nowrap; }
+#tab-form .keyword-input-grid { display:flex; flex-direction:row; flex-wrap:wrap; gap:6px; margin-bottom:0; }
+#tab-form .keyword-input-grid .keyword-input { flex:1 1 90px; min-width:90px; width:auto; padding:8px 10px; font-size:13px; }
+#tab-form .keyword-guide { margin-bottom:6px; padding:6px 10px; font-size:11.5px; }
+#tab-form .pattern-grid { display:flex; flex-wrap:wrap; gap:6px; }
+#tab-form .pattern-btn { flex-direction:row; gap:3px; padding:5px 10px; border-radius:16px; font-size:12px; white-space:nowrap; }
+#tab-form .pattern-btn .pattern-icon { font-size:13px; }
+#tab-form .pattern-btn wbr { display:none; }
+#tab-form .lv-two .sns-check-list { grid-template-columns:1fr 1fr; }
+#tab-form .lv-two .include-check-item { flex-direction:row; justify-content:flex-start; min-height:0; padding:8px 10px; gap:8px; }
+#tab-form .lv-two .include-check-item .sns-checkbox { order:-1; width:16px; height:16px; border-radius:4px; flex:none; }
+#tab-form .generate-btn { margin:0 0 12px; }
+#tab-form .hashtag-row { margin-bottom:5px; }
+#tab-form .image-section-header { padding:12px 16px; }
+#tab-form .post-textarea { min-height:150px; }
 
-.v165-chat{background:#8cabd9;margin:0 -16px;padding:14px 12px 20px;}
-.v165-msg{display:flex;gap:8px;margin:0 0 8px;align-items:flex-start;}
-.v165-ava{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none;}
-.v165-bub{background:#fff;border-radius:4px 16px 16px 16px;padding:9px 12px;font-size:12.5px;line-height:1.6;max-width:290px;display:flex;align-items:flex-start;gap:6px;}
-.v165-bub .v165-i{margin-left:4px;}
-.v165-ans{background:#fff;border-radius:14px;padding:12px;margin:0 0 16px 40px;}
-.v165-ans>.v165-lbl:first-child,.v165-ans>.v165-help+.v165-lbl{margin-top:0;}
-#tab-form .v165-ans .card{border:none;margin:0;padding:0;}
-#tab-form .v165-ans .image-section{border:none;margin:0;}
-#tab-form .v165-ans .reserve-btn{margin-bottom:0;}
+.lv-pv { background:#fafbff; }
+.lv-pv-tabs { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+.lv-pv-tab { padding:5px 10px; border-radius:16px; border:1.5px solid var(--border); background:#fff; font-size:12px; font-weight:600; color:var(--text-sub); white-space:nowrap; font-family:inherit; cursor:pointer; }
+.lv-pv-tab.on { border-color:var(--primary); background:#e8eaf6; color:var(--primary); }
+.lv-pv-tab.over { color:var(--danger); }
+.lv-pv-text { background:#fff; border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13px; line-height:1.7; white-space:pre-wrap; word-break:normal; overflow-wrap:break-word; min-height:40px; }
+.lv-pv-text .tag { color:#1565c0; }
+.lv-pv-count { font-size:12px; font-weight:700; color:var(--text-sub); margin-top:6px; }
+.lv-pv-count.over { color:var(--danger); }
+.lv-pv-empty { color:var(--text-light); font-size:12px; }
 
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -851,7 +847,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成165F2</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成165H</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -925,9 +921,11 @@
 <div class="content" id="content-wrap">
 
   <div id="tab-form" class="tab-panel active">
-  <!-- ★liff_textgen.html165F2：予約の修正（編集モード）の処理が、この見出しを書き換えるため残す（表示はしない） -->
+
+  <!-- ★liff_textgen.html165H（発行日：2026年10月21日）：レイアウト見直しの試作（司令塔の見本 案2）。機能・id・関数は164と同じで、項目の並びと見た目だけを変えた。説明文は見出しの「?」を押すと開く。カレンダーと画像の操作は164のまま -->
+  <!-- 予約の修正（編集モード）の処理が、この見出しを書き換えるため残す（表示はしない） -->
   <div class="section-title" style="display:none;">投稿文作成</div>
-  <!-- ★liff_textgen.html165F（発行日：2026年10月21日）：レイアウト見直しの試作F。★165F2（司令塔が確かめて直した）：予約の修正で止まる所・番号の残った文・入力のたびに画面が切り替わる所を直した。機能・id・関数は164と同じで、項目の並びと見た目だけを変えた。説明文は各見出しの「i」を押すと開く -->
+
   <!-- ★liff_textgen.html152：お試し中（プラン未申し込み）の案内・登録が見つからない時の案内 -->
   <div class="trial-card" id="trial-card" style="display:none;">
     お試し中は、<wbr>投稿文と<wbr>ハッシュタグの<wbr>作成を<wbr>1日<span id="trial-daily-limit">20</span>回まで<wbr>ご利用いただけます。<wbr>SNSへの<wbr>予約投稿は、<wbr>プランを<wbr>お申し込みいただくと<wbr>ご利用いただけます。
@@ -936,19 +934,23 @@
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
     ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
   </div>
-<div class="v165-pagehead">この<wbr>画面でできること<wbr> <button type="button" class="v165-i" data-help="v165-help-25" onclick="v165Help(this)">i</button></div>
-<div class="v165-help" id="v165-help-25">
-  <div class="page-intro">
+
+<div class="card">
+<div class="card-title lv-title"><span class="lv-badge">1</span>投稿文を<wbr>作る<button type="button" class="lv-q" onclick="lvHelp('lv-h1')" aria-label="説明">?</button></div>
+<div class="lv-help" id="lv-h1">
     <div class="page-intro-title">📝 この<wbr>画面で<wbr>できる<wbr>こと</div>
     <div>キーワードや<wbr>要望を<wbr>もとに、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>予約すると、<wbr>指定した<wbr>日時に<wbr>SNSへ<wbr>自動で<wbr>投稿されます。</div>
     <div class="page-intro-sub">くわしくは、<wbr>上の<wbr>「📖 ガイド」を<wbr>ご覧ください。</div>
-  </div>
-</div>
-<div class="v165-chat">
-<div class="v165-msg"><div class="v165-ava">🤖</div><div class="v165-bub">投稿する<wbr>SNSを<wbr>選んでください。<wbr> <button type="button" class="v165-i" data-help="v165-help-22" onclick="v165Help(this)">i</button></div></div>
-<div class="v165-ans"><div class="v165-help" id="v165-help-22">
     <p class="step-hint">連携済みの<wbr>SNSから<wbr>選んでください<wbr>（<wbr>選べる<wbr>数は<wbr>プランに<wbr>よって<wbr>異なります）。</p>
-</div>    <div class="sns-check-list">
+    <div class="keyword-hint">💡 最大3個・1個15文字まで<wbr>（商品名・特徴・季節など）</div>
+    <div class="keyword-hint" style="margin-top:4px;color:var(--text-sub);">どんな<wbr>投稿に<wbr>したいかを、<wbr>自由に<wbr>書いてください。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>キーワードを<wbr>入力した<wbr>場合は、<wbr>キーワードも<wbr>含めて<wbr>作成します。</div>
+    <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で<wbr>書く<wbr>場合は、<wbr>投稿文の<wbr>欄に<wbr>直接入力できます。</div>
+    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">投稿の<wbr>伝え方を<wbr>選んでください。<wbr>迷った<wbr>ときは<wbr>「AIに任せる」のままで<wbr>大丈夫です。</p>
+    <p class="step-hint">チェックした<wbr>項目を<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。</p>
+    <div class="keyword-hint" style="margin-top:6px;">エリア・<wbr>店名は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
+</div>
+<div class="lv-lbl">投稿先</div>
+    <div class="sns-check-list">
       <div class="sns-check-item checked" id="sns-item-x" onclick="toggleSns(this)">
         <div class="sns-icon-sm sns-x">X</div>
         <div class="sns-check-name">X</div>
@@ -968,24 +970,18 @@
     <p class="sns-plan-note" id="sns-plan-note" style="display:none;"></p>
     <p class="sns-plan-note" id="sns-unconnected-note" style="display:none;"></p>
     <!-- ★liff_textgen.html161：FREEプランに変わる予定の人への案内（変わった後の日付の予約ではXを選べない。投稿予約gs_38） -->
-    <p class="sns-plan-note" id="sns-pending-free-note" style="display:none;"></p></div>
-<div class="v165-msg"><div class="v165-ava">🤖</div><div class="v165-bub">どんな<wbr>投稿にしますか？<wbr>　<wbr>キーワードや、<wbr>伝えたいことを<wbr>教えてください。<wbr> <button type="button" class="v165-i" data-help="v165-help-23" onclick="v165Help(this)">i</button></div></div>
-<div class="v165-ans"><div class="v165-help" id="v165-help-23">
+    <p class="sns-plan-note" id="sns-pending-free-note" style="display:none;"></p>
+<div class="lv-lbl">キーワード<wbr>（3個まで）</div>
     <div class="keyword-guide" id="keyword-guide"></div>
-    <div class="keyword-hint">💡 最大3個・1個15文字まで<wbr>（商品名・特徴・季節など）</div>
-    <div class="keyword-hint" style="margin-top:4px;color:var(--text-sub);">どんな<wbr>投稿に<wbr>したいかを、<wbr>自由に<wbr>書いてください。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>キーワードを<wbr>入力した<wbr>場合は、<wbr>キーワードも<wbr>含めて<wbr>作成します。</div>
-    <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で<wbr>書く<wbr>場合は、<wbr>投稿文の<wbr>欄に<wbr>直接入力できます。</div>
-</div><div class="v165-lbl">キーワード<wbr>（3個まで）</div>    <div class="keyword-input-grid">
+    <div class="keyword-input-grid">
       <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" placeholder="キーワード1">
       <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" placeholder="キーワード2">
       <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" placeholder="キーワード3">
-    </div><div class="v165-lbl">要望</div>    <textarea id="free-text-input" maxlength="150" placeholder="例：新商品の告知をしたい" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea></div>
-<div class="v165-msg"><div class="v165-ava">🤖</div><div class="v165-bub">伝え<wbr>方と、<wbr>投稿文に<wbr>入れるものを<wbr>選んでください。<wbr> <button type="button" class="v165-i" data-help="v165-help-24" onclick="v165Help(this)">i</button></div></div>
-<div class="v165-ans"><div class="v165-help" id="v165-help-24">
-    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">投稿の<wbr>伝え方を<wbr>選んでください。<wbr>迷った<wbr>ときは<wbr>「AIに任せる」のままで<wbr>大丈夫です。</p>
-    <p class="step-hint">チェックした<wbr>項目を<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。</p>
-    <div class="keyword-hint" style="margin-top:6px;">エリア・<wbr>店名は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
-</div><div class="v165-chips">    <div class="pattern-grid">
+    </div>
+<div class="lv-lbl">要望</div>
+    <textarea id="free-text-input" maxlength="150" placeholder="例：新商品の告知をしたい" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
+<div class="lv-lbl">伝え方</div>
+    <div class="pattern-grid">
       <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">🤖</span>AIに<wbr>任せる</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💰</span>お得</button>
@@ -995,7 +991,9 @@
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🌸</span>季節</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🆕</span>新登場</button>
       <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">📍</span>地域密着</button>
-    </div></div><div class="v165-lbl">投稿文に<wbr>入れる</div><div class="v165-two">    <div class="sns-check-list">
+    </div>
+<div class="lv-lbl">AIに<wbr>含めて<wbr>ほしいもの</div>
+<div class="lv-two">    <div class="sns-check-list">
       <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
         <div class="sns-check-name">エリアを<wbr>含める</div>
         <div class="sns-checkbox">✓</div>
@@ -1004,7 +1002,10 @@
         <div class="sns-check-name">店名を<wbr>含める</div>
         <div class="sns-checkbox">✓</div>
       </div>
-    </div></div>  <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
+    </div></div>
+</div>
+  <!-- AI生成ボタン -->
+  <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
     <span style="font-size:20px;">✨</span>投稿文・ハッシュタグを<wbr>作成
   </button>
 
@@ -1012,18 +1013,24 @@
   <div class="loading" id="loading">
     <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
     <div class="loading-text">AIが<wbr>投稿文を<wbr>考えています…<br>少々<wbr>お待ちください</div>
-  </div></div>
-<div class="v165-msg"><div class="v165-ava">🤖</div><div class="v165-bub">投稿文と<wbr>ハッシュタグです。<wbr>そのまま<wbr>直せます。<wbr>自分で<wbr>書く<wbr>場合も、<wbr>ここに<wbr>入力してください。<wbr> <button type="button" class="v165-i" data-help="v165-help-21" onclick="v165Help(this)">i</button></div></div>
-<div class="v165-ans"><div class="v165-help" id="v165-help-21">
+  </div>
+<div class="card">
+<div class="card-title lv-title"><span class="lv-badge">2</span>本文と<wbr>ハッシュタグ<button type="button" class="lv-q" onclick="lvHelp('lv-h2')" aria-label="説明">?</button></div>
+<div class="lv-help" id="lv-h2">
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集できます。<wbr>直接入力する<wbr>ことも<wbr>できます。</p>
+    <!-- ★liff_textgen.html139：投稿文が空の時はチェックできない（Kenさん指示） -->
     <p class="step-hint">チェックすると、<wbr>登録済みの<wbr>店名・所在地を、<wbr>投稿文の<wbr>最後に<wbr>そのまま<wbr>付けます<wbr>（AIは<wbr>使いません）。<wbr>投稿文が<wbr>空の<wbr>時は<wbr>チェックできません。</p>
-    <div class="keyword-hint" style="margin-top:6px;">店名・所在地は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
     <div class="caution-box" style="margin-top:10px;">⚠️ チェックを<wbr>付けて<wbr>文字数の<wbr>上限を<wbr>超えた<wbr>場合は、<wbr>投稿文を<wbr>短くしてから、<wbr>もう<wbr>一度<wbr>チェックを<wbr>付けてください。</div>
+    <div class="keyword-hint" style="margin-top:6px;">店名・所在地は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
     <p class="hashtag-desc">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>投稿文と<wbr>同様、<wbr>自由に<wbr>編集できます。<wbr>チェックした<wbr>SNSにだけ付与されます。<wbr>「#」は<wbr>自動で<wbr>付きます。</p>
+    <!-- ★liff_textgen.html164：ハッシュタグの数え方の説明（Kenさん指摘） -->
     <p class="hashtag-desc" style="margin-top:-4px;">文字数は、<wbr>「#」と<wbr>タグの間の<wbr>空白、<wbr>投稿文との<wbr>間の<wbr>改行も<wbr>数えます<wbr>（半角は<wbr>0.5字）。<wbr>例：<wbr>「カフェ」（3字）を<wbr>1つ<wbr>付けると<wbr>約5字、<wbr>2つ目からは<wbr>1つにつき<wbr>「タグの<wbr>字数＋1字」<wbr>増えます。</p>
     <div class="keyword-hint" style="margin-top:6px;">💡 ハッシュタグは<wbr>1個15文字までです。</div>
-</div>    <div class="caution-box" style="margin-bottom:8px;">⚠️<wbr> <wbr>ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>ハッシュタグの<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
+</div>
+    <!-- ★liff_textgen.html136：投稿文の中のハッシュタグの注意（予約の時に止めるため、先に知らせる。Kenさん指示） -->
+    <div class="caution-box" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>ハッシュタグの<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
     <div class="genre-notice" id="genre-notice">📍 登録業種<wbr>（<span id="genre-label"></span>）を<wbr>もとに<wbr>投稿文を<wbr>作成しました。</div>
+    <!-- ★liff_textgen.html164：利用者の入力は、上限を超える時は受け付けない（どこに入力しても）。そのため入力の知らせ（event）を渡す -->
     <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount(event)" oncompositionend="updateCharCount(event)"
       placeholder="AIで作成した投稿文がここに表示されます。直接入力することもできます。"></textarea>
     <div class="char-limit-msg" id="char-limit-msg" style="display:none;">上限（140字）を<wbr>超えるため、<wbr>入力できません。<wbr>先に<wbr>ほかの所を<wbr>短くしてください。</div>
@@ -1038,8 +1045,9 @@
     <div class="url-warning" id="url-warning">
       🔗 <strong>投稿文に<wbr>URLが<wbr>含まれています。</strong><br>当サービスでは<wbr>Xへの<wbr>URL付き投稿に<wbr>対応していないため、<wbr>Xは<wbr>自動的に<wbr>除外されます。
     </div>
-    <div class="x-warning" id="x-warning"></div><div class="v165-lbl">投稿文の<wbr>最後に<wbr>付ける<wbr>（AIは<wbr>使いません）</div>
-<div class="v165-two">    <div class="sns-check-list">
+    <div class="x-warning" id="x-warning"></div>
+<div class="lv-lbl">投稿文の<wbr>最後に<wbr>付ける</div>
+<div class="lv-two">    <div class="sns-check-list">
       <div class="include-check-item" id="include-shopend-item" onclick="toggleEndLine(this, 'shop')">
         <div class="sns-check-name">店名を<wbr>付ける</div>
         <div class="sns-checkbox">✓</div>
@@ -1048,7 +1056,8 @@
         <div class="sns-check-name">所在地を<wbr>付ける</div>
         <div class="sns-checkbox">✓</div>
       </div>
-    </div></div><div class="v165-lbl">ハッシュタグ<wbr>（「#」は<wbr>自動で<wbr>付きます）</div>
+    </div></div>
+<div class="lv-lbl">ハッシュタグ<wbr>（チェックした<wbr>SNSにだけ<wbr>付きます）</div>
     <div class="hashtag-x-status" id="hashtag-x-status"></div>
     <div class="hashtag-header">
       <div class="hashtag-header-spacer"></div>
@@ -1094,11 +1103,18 @@
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-5-IG" onchange="onHashtagCheckToggle(5,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-5-TH" onchange="onHashtagCheckToggle(5,'TH')"></span>
         </div>
       </div>
-    </div></div>
-<div class="v165-msg"><div class="v165-ava">🤖</div><div class="v165-bub">画像を<wbr>選んでください。</div></div>
-<div class="v165-ans">  <div class="image-section">
+    </div>
+</div>
+<div class="card lv-pv" id="lv-pv">
+<div class="card-title lv-title">👀 投稿の<wbr>見え方</div>
+<div class="lv-pv-tabs" id="lv-pv-tabs"></div>
+<div class="lv-pv-text" id="lv-pv-text"></div>
+<div class="lv-pv-count" id="lv-pv-count"></div>
+</div>
+  <!-- ⑨ 画像アップロード（インライン） -->
+  <div class="image-section">
     <div class="image-section-header">
-      <div class="image-section-title">画像アップロード</div>
+      <div class="image-section-title lv-title"><span class="lv-badge">3</span>画像</div>
     </div>
 
     <!-- 選択中プレビューバー -->
@@ -1143,11 +1159,11 @@
       <button onclick="selectNoImage()" id="no-image-btn" style="width:100%;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">🚫 画像なしで<wbr>投稿する</button>
     </div>
 
-  </div></div>
-<div class="v165-msg"><div class="v165-ava">🤖</div><div class="v165-bub">投稿する<wbr>日時を<wbr>選んでください。</div></div>
-<div class="v165-ans">  <div class="card" style="padding:0;overflow:hidden;">
+  </div>
+  <!-- ⑩ 投稿日時：カレンダー -->
+  <div class="card" style="padding:0;overflow:hidden;">
     <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);">
-      <div class="card-title" style="margin-bottom:0;">投稿日を<wbr>選ぶ</div>
+      <div class="card-title lv-title" style="margin-bottom:0;"><span class="lv-badge">4</span>投稿日時</div>
       <p class="step-hint" id="cal-range-hint" style="margin:6px 0 0;">予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日までです。</p>
     </div>
     <div class="calendar-wrap">
@@ -1183,13 +1199,14 @@
       <p id="time-past-hint" style="font-size:11px;color:var(--danger);margin-top:6px;display:none;">⚠️ 本日は<wbr>現在時刻より<wbr>前の<wbr>時間帯は<wbr>選べません</p>
       <p style="font-size:11px;color:var(--text-sub);margin-top:6px;">💡 指定した<wbr>時間帯に<wbr>自動で<wbr>投稿されます。</p>
     </div>
-  </div></div>
-<div class="v165-msg"><div class="v165-ava">🤖</div><div class="v165-bub">最後に<wbr>内容を<wbr>確認します。</div></div>
-<div class="v165-ans">  <p class="step-hint" style="margin:4px 2px 8px;">次の<wbr>確認画面で<wbr>「予約を<wbr>確定する」を<wbr>押すと、<wbr>予約が<wbr>完了します。</p>
+  </div>
+  <!-- ★liff_textgen.html136：このボタンではまだ予約されないことの案内 -->
+  <p class="step-hint" style="margin:4px 2px 8px;">次の<wbr>確認画面で<wbr>「予約を<wbr>確定する」を<wbr>押すと、<wbr>予約が<wbr>完了します。</p>
+  <!-- 予約ボタン -->
   <button class="reserve-btn" onclick="showConfirm()">
     <span style="font-size:20px;">✅</span>内容を<wbr>確認する
-  </button></div>
-</div>
+  </button>
+
   </div><!-- /tab-form -->
 
   <div id="tab-guide" class="tab-panel">
@@ -1775,7 +1792,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成165F2';
+const TRACE_SCREEN = '投稿文作成165H';
 
 function traceLog(msg) {
   try {
@@ -5379,8 +5396,35 @@ loadEditModeFromUrl();
 })();
 </script>
 <script>
-/* ★liff_textgen.html165F：説明の開け閉め */
-function v165Help(btn){ const el=document.getElementById(btn.dataset.help); if(el) el.classList.toggle('open'); }
+/* ★liff_textgen.html165H：レイアウト用の処理（開け閉め・表示だけ。作成・予約の処理は164のまま） */
+function lvHelp(id) { const el = document.getElementById(id); if (el) el.classList.toggle('open'); }
+let lvPvSns = null;
+const LV_NAMES = { X: 'X', IG: 'Instagram', TH: 'Threads' };
+function lvEsc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function lvPvPick(sns) { lvPvSns = sns; lvPreview(); }
+function lvPreview() {
+  const tabs = document.getElementById('lv-pv-tabs'), box = document.getElementById('lv-pv-text'), cnt = document.getElementById('lv-pv-count');
+  if (!tabs) return;
+  const text = document.getElementById('post-textarea').value;
+  const list = activePostSns();
+  if (!text.trim() || !list.length) {
+    const h = '<span class="lv-pv-empty">投稿文を<wbr>作成すると、<wbr>SNSごとの<wbr>投稿の<wbr>形が<wbr>ここに<wbr>出ます。</span>';
+    if (box.innerHTML !== h) box.innerHTML = h;
+    if (tabs.innerHTML) tabs.innerHTML = '';
+    cnt.textContent = '';
+    return;
+  }
+  if (!list.includes(lvPvSns)) lvPvSns = list[0];
+  const th = list.map(s => { const n = snsPostTotal(s); return '<button type="button" class="lv-pv-tab' + (s === lvPvSns ? ' on' : '') + (n > POST_TOTAL_LIMIT ? ' over' : '') + '" onclick="lvPvPick(\'' + s + '\')">' + LV_NAMES[s] + '　' + n + '字</button>'; }).join('');
+  if (tabs.innerHTML !== th) tabs.innerHTML = th;
+  const tags = getHashtagsForSns(lvPvSns);
+  const bh = lvEsc(text) + (tags.length ? '\n\n<span class="tag">' + tags.map(t => '#' + lvEsc(t)).join(' ') + '</span>' : '');
+  if (box.innerHTML !== bh) box.innerHTML = bh;
+  const n = snsPostTotal(lvPvSns);
+  cnt.className = 'lv-pv-count' + (n > POST_TOTAL_LIMIT ? ' over' : '');
+  cnt.textContent = LV_NAMES[lvPvSns] + 'で投稿する文字数：' + n + '字（上限' + POST_TOTAL_LIMIT + '字）';
+}
+setInterval(lvPreview, 500);
 </script>
 </body>
 </html>
