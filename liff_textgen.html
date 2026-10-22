@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成164 - AiPost</title>
+<title>投稿文作成166 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -246,6 +246,26 @@
   .img-selected-bar.show { display: flex; }
   .img-selected-thumb { font-size: 24px; }
   .img-selected-name { font-size: 12px; font-weight: 700; color: #2e7d32; flex: 1; }
+  /* ★liff_textgen.html166：SNSごとに切り抜いた画像を並べて見せる（Kenさん指示） */
+  .sns-img-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .sns-img-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+  .sns-img-cell .sns-img-name { font-size: 11px; font-weight: 700; color: var(--text); white-space: nowrap; }
+  .sns-img-box { width: 100%; height: 96px; background: #f1f3f7; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .sns-img-box img { max-width: 100%; max-height: 100%; display: block; }
+  .sns-img-box.none { border: 1px dashed #c4c9d4; color: var(--text-light); font-size: 11px; }
+  .sns-img-cell .sns-img-kind { font-size: 10px; color: var(--text-sub); white-space: nowrap; }
+  .sns-img-mini { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  .sns-img-mini span { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; white-space: nowrap; }
+  .sns-img-mini img { height: 32px; max-width: 48px; border-radius: 4px; object-fit: contain; background: #fff; border: 1px solid var(--border); }
+  .sns-img-mini .mini-none { display: inline-block; width: 32px; height: 32px; border-radius: 4px; border: 1px dashed #c4c9d4; }
+  .pv-card { background: var(--bg); border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+  .pv-head { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .pv-head .pv-count { font-size: 11px; font-weight: 600; color: var(--text-sub); }
+  .pv-img { background: #fff; border: 1px solid var(--border); border-radius: 8px; display: flex; justify-content: center; overflow: hidden; margin-bottom: 8px; }
+  .pv-img img { max-width: 100%; max-height: 260px; display: block; }
+  .pv-noimg { font-size: 11px; color: var(--text-light); background: #fff; border: 1px dashed #c4c9d4; border-radius: 8px; padding: 8px; text-align: center; margin-bottom: 8px; }
+  .pv-text { font-size: 12px; color: var(--text); line-height: 1.7; white-space: pre-wrap; word-break: normal; overflow-wrap: break-word; background: #fff; border-radius: 8px; padding: 8px 10px; }
+  .pv-text .pv-tags { color: #1565c0; }
   .img-selected-clear { background: none; border: none; color: #2e7d32; font-size: 18px; cursor: pointer; padding: 0; }
 
   /* 画像タブ */
@@ -806,7 +826,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成164</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成166</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1379,7 +1399,7 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t11')">内容を<wbr>確認して<wbr>予約する<span class="accordion-arrow" id="arr-acc-t11">▶</span></div>
     <div class="accordion-body" id="acc-t11">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その<wbr>ご利用期間の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿文を見る」を<wbr>押すと、<wbr>ハッシュタグを<wbr>含めて、<wbr>SNSごとに<wbr>実際に<wbr>投稿される<wbr>文章を<wbr>確かめられます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その<wbr>ご利用期間の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿を見る」を<wbr>押すと、<wbr>SNSごとに<wbr>切り抜いた<wbr>画像と、<wbr>ハッシュタグを<wbr>含めた<wbr>投稿文を、<wbr>実際に<wbr>投稿される<wbr>形で<wbr>確かめられます。</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「予約を確定する」を<wbr>押すと<wbr>予約が<wbr>完了します。<wbr>この<wbr>時点で<wbr>初めて<wbr>予約と<wbr>して<wbr>保存されます。<wbr>直したい<wbr>場合は<wbr>「修正する」を<wbr>押すと、<wbr>入力した<wbr>内容の<wbr>まま<wbr>戻れます。<wbr>予約した後は、<wbr>予約確認画面で<wbr>投稿文の<wbr>修正・画像の<wbr>変更・キャンセルが<wbr>できます。<!-- ★liff_textgen.html161：「差し替え」→「変更」 --></div>
     </div>
   </div>
@@ -1474,7 +1494,7 @@
       <div class="confirm-row"><span class="confirm-key">予約枠の残り</span><span class="confirm-val" id="confirm-remain"></span></div>
     </div>
     <!-- ★liff_textgen.html138：押せる所だと分かりにくかったため、枠付きのボタンにした（Kenさん指示・A案）。押すと開き、文字が「閉じる ▲」に変わる -->
-    <button type="button" class="preview-toggle" id="confirm-preview-toggle" onclick="toggleConfirmPreview()">📄 SNSごとの投稿文を見る <span class="pt-arrow">▼</span></button>
+    <button type="button" class="preview-toggle" id="confirm-preview-toggle" onclick="toggleConfirmPreview()">📄 SNSごとの投稿を見る <span class="pt-arrow">▼</span></button>
     <div class="accordion-body" id="confirm-preview" style="margin-bottom:10px;"></div>
     <button class="modal-btn modal-btn-success" onclick="executeReserve()">予約を確定する</button>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('confirm-modal')">修正する</button>
@@ -1781,7 +1801,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成164';
+const TRACE_SCREEN = '投稿文作成166';
 
 function traceLog(msg) {
   try {
@@ -3491,11 +3511,16 @@ async function showConfirm() {
     const name = el.querySelector('.sns-check-name').textContent;
     const tags = getHashtagsForSns(code);
     // ★liff_textgen.html121：実際の投稿と同じく、本文の後に改行2つを入れてハッシュタグを並べる
-    const tagText = tags.length ? '\n\n' + tags.map(t => '#' + t).join(' ') : '';
-    const bodyText = (ta.value + tagText) || '（投稿文なし）';
-    return `<div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:6px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:4px;">${SNS_ICON_MAP[code] || ''} ${name}</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.7;white-space:pre-wrap;">${bodyText.replace(/</g,'&lt;')}</div>
+    // ★liff_textgen.html166：SNSごとに、そのSNSの画像（切り抜いた形のまま）・投稿文・ハッシュタグを、実際の投稿に近い形で出す（Kenさん指示）
+    const esc = v => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const tagHtml = tags.length ? '\n\n<span class="pv-tags">' + esc(tags.map(t => '#' + t).join(' ')) + '</span>' : '';
+    const bodyHtml = ta.value ? esc(ta.value) + tagHtml : (tags.length ? tagHtml.replace(/^\n\n/, '') : '（投稿文なし）');
+    const src = snsImageSrc(code, snsImageKind(code));
+    const imgHtml = src ? `<div class="pv-img"><img src="${src}" alt="${esc(name)}の画像"></div>` : '<div class="pv-noimg">画像なし</div>';
+    return `<div class="pv-card">
+      <div class="pv-head"><span>${SNS_ICON_MAP[code] || ''} ${esc(name)}</span><span class="pv-count">${snsPostTotal(code)}字</span></div>
+      ${imgHtml}
+      <div class="pv-text">${bodyHtml}</div>
     </div>`;
   }).join('');
 
@@ -3962,8 +3987,8 @@ function setConfirmPreviewOpen(open) {
   if (btn) {
     btn.classList.toggle('open', open);
     btn.innerHTML = open
-      ? '📄 SNSごとの投稿文を閉じる <span class="pt-arrow">▲</span>'
-      : '📄 SNSごとの投稿文を見る <span class="pt-arrow">▼</span>';
+      ? '📄 SNSごとの投稿を閉じる <span class="pt-arrow">▲</span>'
+      : '📄 SNSごとの投稿を見る <span class="pt-arrow">▼</span>'; // ★liff_textgen.html166：画像も入れたため「投稿文」→「投稿」
   }
 }
 function toggleConfirmPreview() {
@@ -4183,6 +4208,22 @@ function snsImageKind(sns) {
   return 'none';
 }
 const TRIM_CHOICE_LABEL = { trim: '✂️ 切り抜き', original: '🖼️ 元画像のまま', none: '🚫 画像なし' };
+// ★liff_textgen.html166：SNSごとの画像（kind：trim／original／none）の表示用のURL。無ければ空
+function snsImageSrc(sns, kind) {
+  if (kind === 'trim') return trimResults[sns] || '';
+  if (kind === 'original') return originalImageDataUrl || '';
+  return '';
+}
+// ★liff_textgen.html166：SNSごとの画像を3つ並べたHTML（切り抜きの確認用）
+function snsImageGridHtml(list, kindOf) {
+  return '<div class="sns-img-grid">' + list.map(function (s) {
+    const kind = kindOf(s);
+    const src = snsImageSrc(s, kind);
+    const box = src ? '<div class="sns-img-box"><img src="' + src + '" alt=""></div>' : '<div class="sns-img-box none">画像なし</div>';
+    return '<div class="sns-img-cell"><div class="sns-img-name">' + SNS_SHORT_LABEL[s] + '</div>' + box +
+      '<div class="sns-img-kind">' + TRIM_CHOICE_LABEL[kind].replace(/^\S+ /, '') + '</div></div>';
+  }).join('') + '</div>';
+}
 const SNS_SHORT_LABEL = { X: 'X', IG: 'Instagram', TH: 'Threads' };
 
 // 画像アップロード処理（選択バーは表示しない・プレビューのみ）
@@ -4201,6 +4242,7 @@ function handleImageUpload(event) {
       document.getElementById('img-upload-area').style.display = 'none';
       document.getElementById('img-selected-bar').style.display = 'none'; // 確定前は非表示
       updateTrimStatusList();
+      setTrimSourceVisible(true); // ★liff_textgen.html166：新しい画像では、元の画像と処理状況をまた出す
     };
     img.src = e.target.result;
   };
@@ -4724,6 +4766,7 @@ function imgCancelRetrim() {
   const noTrimBtn = wrap.querySelector('button[onclick="selectMyImageWithoutTrim()"]');
   if (noTrimBtn) noTrimBtn.style.display = 'block';
   updateTrimStatusList();
+  setTrimSourceVisible(true); // ★liff_textgen.html166
 }
 
 // 削除して画像なしにする
@@ -4834,15 +4877,17 @@ function finishTrimFlow() {
   confirmArea.style.cssText = 'margin-top:10px;';
 
   // ★liff_textgen.html114：SNSごとの選択（切り抜き／元画像のまま／画像なし）を一覧で表示する
-  const choiceLines = trimQueue.map(s => SNS_SHORT_LABEL[s] + '：' + TRIM_CHOICE_LABEL[snsImageKindForQueue(s)]).join('<br>');
+  // ★liff_textgen.html166：文字だけでなく、SNSごとに選んだ画像を並べて見せる。元の大きい画像と処理状況の一覧は隠す（Kenさん指示）
+  const choiceLines = snsImageGridHtml(trimQueue, snsImageKindForQueue);
+  setTrimSourceVisible(false);
   const igNoneNote = (trimQueue.includes('IG') && snsImageKindForQueue('IG') === 'none')
     ? '<div style="font-size:10px;color:#e65100;margin-top:4px;">※Instagramは画像なしのため投稿されません</div>'
     : '';
 
   confirmArea.innerHTML = `
     <div style="padding:10px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;margin-bottom:10px;">
-      <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:4px;">✅ SNSごとの画像を選びました</div>
-      <div style="font-size:11px;color:#555;line-height:1.7;">${choiceLines}</div>${igNoneNote}
+      <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:8px;">✅ SNSごとの画像を選びました</div>
+      ${choiceLines}${igNoneNote}
     </div>
     <button onclick="confirmTrimResult()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:6px;">✅ これで決定する</button>
     <button onclick="retryTrimFlow()" style="width:100%;padding:8px;background:transparent;color:var(--text-sub);border:1px solid var(--border);border-radius:10px;font-size:12px;cursor:pointer;">🔄 やり直す</button>
@@ -4856,6 +4901,15 @@ function finishTrimFlow() {
   if (noTrimBtn) noTrimBtn.style.display = 'none';
 }
 
+// ★liff_textgen.html166：元の大きい画像と処理状況の一覧を、出す／隠す（切り抜きを選び終わったら隠し、やり直す時・画像を選び直した時に出す）
+function setTrimSourceVisible(show) {
+  const img = document.getElementById('my-img-preview');
+  const box = img ? img.parentElement : null;
+  if (box) box.style.display = show ? '' : 'none';
+  const list = document.getElementById('trim-status-list');
+  if (list) list.style.display = show ? 'flex' : 'none';
+}
+
 // トリミング中（imageStateが確定する前）の、SNSごとの選択
 function snsImageKindForQueue(sns) {
   return trimChoice[sns] || (trimResults[sns] ? 'trim' : 'none');
@@ -4867,8 +4921,11 @@ function confirmTrimResult() {
   const bar = document.getElementById("img-selected-bar");
   bar.style.display = "flex";
   document.getElementById("img-selected-thumb").textContent = "✂️";
-  const snsLabels = trimQueue.map(s => SNS_SHORT_LABEL[s] + '：' + TRIM_CHOICE_LABEL[snsImageKindForQueue(s)].replace(/^\S+ /, '')).join("／");
-  document.getElementById("img-selected-name").textContent = `SNSごとに選択（${snsLabels}）`;
+  // ★liff_textgen.html166：SNSごとの小さい画像を並べる（画像なしは点線の枠）
+  document.getElementById("img-selected-name").innerHTML = '<div style="margin-bottom:4px;">SNSごとに選んだ画像</div><div class="sns-img-mini">' + trimQueue.map(function (s) {
+    const src = snsImageSrc(s, snsImageKindForQueue(s));
+    return '<span>' + (src ? '<img src="' + src + '" alt="">' : '<i class="mini-none"></i>') + SNS_SHORT_LABEL[s] + '</span>';
+  }).join('') + '</div>';
   document.getElementById("img-selected-name").style.color = "#2e7d32";
   document.getElementById('my-img-preview-wrap').style.display = 'none';
 }
@@ -4878,6 +4935,7 @@ function retryTrimFlow() {
   // 確認エリアを削除
   const existing = document.getElementById('trim-confirm-area');
   if (existing) existing.remove();
+  setTrimSourceVisible(true); // ★liff_textgen.html166
   // トリミングボタンを再表示
   const wrap = document.getElementById('my-img-preview-wrap');
   const trimBtn = wrap.querySelector('button[onclick="startTrimFlow()"]');
