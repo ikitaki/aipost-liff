@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成166 - AiPost</title>
+<title>投稿文作成167 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -728,6 +728,24 @@
   .maint-title { font-size: 18px; font-weight: 700; color: #202124; margin: 14px 0 12px; }
   .maint-msg { font-size: clamp(12px, 3.4vw, 14px); line-height: 1.9; color: #3c4043; white-space: pre-line; text-align: center; text-wrap: balance; word-break: normal; overflow-wrap: anywhere; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 14px 10px; }
   .maint-btn { margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 8px; background: #06C755; color: #fff; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; }
+  /* ★liff_textgen.html167：② AIに渡す材料（写真・キーワード・ご要望）。どれも「なくても可」 */
+  .mat-item { border-top: 1px dashed var(--border); padding: 12px 0 4px; }
+  .mat-item.mat-first { border-top: none; padding-top: 4px; }
+  .mat-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .mat-opt { font-size: 10px; font-weight: 700; color: var(--text-sub); background: #f1f3f5; border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+  .mat-desc { font-size: 11px; color: var(--text-sub); line-height: 1.6; margin-bottom: 8px; }
+  .mat-photo-btns { display: flex; gap: 8px; }
+  .mat-photo-btns button { flex: 1; padding: 9px; border: none; border-radius: 10px; font-size: 12.5px; font-weight: 700; color: #fff; cursor: pointer; }
+  .mat-thumb-row { display: flex; gap: 10px; align-items: flex-start; }
+  .mat-thumb { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; background: #f1f3f5; }
+  .mat-check { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text); cursor: pointer; }
+  .mat-check input { width: 16px; height: 16px; margin: 0; flex-shrink: 0; }
+  .mat-status { font-size: 11px; color: var(--text-sub); line-height: 1.6; margin: 4px 0 6px; word-break: normal; overflow-wrap: anywhere; } /* AIの説明文は長いので、ふつうの折り返し */
+  .mat-small-btn { padding: 5px 10px; background: transparent; color: var(--primary); border: 1px solid var(--primary); border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+  .mat-summary { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 10px; padding: 10px 12px; font-size: 12.5px; color: #1a237e; line-height: 1.6; margin: 4px 0 10px; }
+  .mat-summary b { font-weight: 700; }
+  .mat-summary small { font-size: 11px; }
+  .photo-mismatch-note { font-size: 11px; color: var(--text-sub); background: #f1f3f5; border-radius: 8px; padding: 8px 10px; margin: 0 16px 10px; line-height: 1.6; }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -826,7 +844,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成166</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成167</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -915,7 +933,7 @@
   <!-- ★liff_textgen.html136：この画面でできることの案内（Kenさん指示） -->
   <div class="page-intro">
     <div class="page-intro-title">📝 この<wbr>画面で<wbr>できる<wbr>こと</div>
-    <div>キーワードや<wbr>要望を<wbr>もとに、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>予約すると、<wbr>指定した<wbr>日時に<wbr>SNSへ<wbr>自動で<wbr>投稿されます。</div>
+    <div>写真・<wbr>キーワード・<wbr>要望を<wbr>もとに、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>予約すると、<wbr>指定した<wbr>日時に<wbr>SNSへ<wbr>自動で<wbr>投稿されます。</div>
     <div class="page-intro-sub">くわしくは、<wbr>上の<wbr>「📖 ガイド」を<wbr>ご覧ください。</div>
   </div>
 
@@ -946,29 +964,47 @@
     <p class="sns-plan-note" id="sns-pending-free-note" style="display:none;"></p>
   </div>
 
-  <!-- ② キーワードから投稿文を作成する（★liff_textgen.html136：見出しの「文章・生成」を「投稿文・作成」に統一） -->
+  <!-- ★liff_textgen.html167：② AIに渡す材料（写真・キーワード・ご要望）。それまでの②キーワード・③要望を1枚にまとめ、写真を足した（Kenさん承認の見本）。
+       どれも「なくても可」。入れたものだけを使う（チェックは、写真を文に使うかどうかの1つだけ）。写真は⑧の画像と同じもの（同じ input を使う）。 -->
   <div class="card">
-    <div class="card-title">② キーワードから<wbr>投稿文を<wbr>作成する</div>
-    <div class="keyword-guide" id="keyword-guide"></div>
-    <div class="keyword-input-grid">
-      <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" placeholder="キーワード1">
-      <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" placeholder="キーワード2">
-      <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" placeholder="キーワード3">
+    <div class="card-title">② AIに<wbr>渡す<wbr>材料<wbr>（使う<wbr>ものだけ）</div>
+    <p class="step-hint">写真・<wbr>キーワード・<wbr>ご要望の<wbr>うち、<wbr>使う<wbr>ものだけ<wbr>入れて<wbr>ください。<wbr>1つだけでも、<wbr>組み合わせても<wbr>かまいません。</p>
+    <div class="mat-item mat-first">
+      <div class="mat-label">📷 写真<span class="mat-opt">なくても可</span></div>
+      <div class="mat-desc">写って<wbr>いる<wbr>ものを、<wbr>AIが<wbr>文の<wbr>材料に<wbr>します。<wbr>この<wbr>写真が<wbr>⑧の<wbr>投稿の<wbr>画像にも<wbr>なります。</div>
+      <div class="mat-photo-btns" id="mat-photo-btns">
+        <button type="button" style="background:var(--primary);" onclick="document.getElementById('my-img-input').click()">📁 フォルダから<wbr>選ぶ</button>
+        <button type="button" style="background:#2e7d32;" onclick="document.getElementById('my-cam-input').click()">📷 写真を<wbr>撮る</button>
+      </div>
+      <div class="mat-thumb-row" id="mat-photo-selected" style="display:none;">
+        <img class="mat-thumb" id="mat-photo-thumb" alt="選んだ写真">
+        <div style="flex:1;min-width:0;">
+          <label class="mat-check"><input type="checkbox" id="mat-photo-use" checked onchange="onMaterialPhotoUseChange()">この<wbr>写真の<wbr>内容も<wbr>文に<wbr>使う</label>
+          <div class="mat-status" id="mat-photo-status"></div>
+          <button type="button" class="mat-small-btn" onclick="reselectImage()">写真を<wbr>選び直す</button>
+        </div>
+      </div>
     </div>
-    <div class="keyword-hint">💡 最大3個・1個15文字まで<wbr>（商品名・特徴・季節など）</div>
-  </div>
-
-  <!-- ③ 要望から投稿文を作成する（★liff_textgen.html136：見出しの「（任意）」をすべて外した。Kenさん指示） -->
-  <div class="card">
-    <div class="card-title">③ 要望から<wbr>投稿文を<wbr>作成する</div>
-    <textarea id="free-text-input" maxlength="150" placeholder="例：新商品の告知をしたい" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
-    <div class="keyword-hint" style="margin-top:4px;color:var(--text-sub);">どんな<wbr>投稿に<wbr>したいかを、<wbr>自由に<wbr>書いてください。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>②に<wbr>キーワードを<wbr>入力した<wbr>場合は、<wbr>キーワードも<wbr>含めて<wbr>作成します。</div>
-    <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で<wbr>書く<wbr>場合は、<wbr>⑥に<wbr>直接入力できます。</div>
+    <div class="mat-item">
+      <div class="mat-label">🔑 キーワード<span class="mat-opt">なくても可</span></div>
+      <div class="mat-desc">入れた<wbr>言葉は、<wbr>必ず<wbr>文に<wbr>入ります<wbr>（最大3個・<wbr>1個15文字まで。<wbr>商品名・<wbr>特徴・<wbr>季節など）。</div>
+      <div class="keyword-input-grid">
+        <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" placeholder="キーワード1" oninput="updateMaterialSummary()">
+        <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" placeholder="キーワード2" oninput="updateMaterialSummary()">
+        <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" placeholder="キーワード3" oninput="updateMaterialSummary()">
+      </div>
+    </div>
+    <div class="mat-item">
+      <div class="mat-label">💬 ご要望<span class="mat-opt">なくても可</span></div>
+      <div class="mat-desc">どんな<wbr>投稿に<wbr>したいかを、<wbr>自由に<wbr>書いて<wbr>ください<wbr>（150文字まで）。</div>
+      <textarea id="free-text-input" maxlength="150" placeholder="例：新商品の告知をしたい" oninput="updateMaterialSummary()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
+      <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で<wbr>書く<wbr>場合は、<wbr>⑤に<wbr>直接入力できます。</div>
+    </div>
   </div>
 
   <!-- ④ 訴求パターン -->
   <div class="card">
-    <div class="card-title">④ 訴求パターンを<wbr>選ぶ</div>
+    <div class="card-title">③ 訴求パターンを<wbr>選ぶ</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">投稿の<wbr>伝え方を<wbr>選んでください。<wbr>迷った<wbr>ときは<wbr>「AIに任せる」のままで<wbr>大丈夫です。</p>
     <div class="pattern-grid">
       <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">🤖</span>AIに<wbr>任せる</button>
@@ -991,7 +1027,7 @@
        それまでの⑥「店名・所在地を含める」の店名（AI）は⑤へ移し、それまでの⑦の「＋店名を入れる」「＋所在地を入れる」ボタンは⑦にまとめて外した。 -->
   <!-- ⑤ エリア・店名を含めて投稿文を作成する -->
   <div class="card">
-    <div class="card-title">⑤ エリア・店名を<wbr>含めて<wbr>投稿文を<wbr>作成する</div>
+    <div class="card-title">④ エリア・店名を<wbr>含めて<wbr>投稿文を<wbr>作成する</div>
     <p class="step-hint">チェックした<wbr>項目を<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。</p>
     <div class="sns-check-list">
       <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
@@ -1006,6 +1042,9 @@
     <div class="keyword-hint" style="margin-top:6px;">エリア・<wbr>店名は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
   </div>
 
+  <!-- ★liff_textgen.html167：今AIに渡す材料を1行で出す（入力に合わせて updateMaterialSummary() が書き換える） -->
+  <div class="mat-summary" id="material-summary">🧩 AIに<wbr>渡す<wbr>材料：<wbr><b>確認中</b></div>
+
   <!-- AI生成ボタン -->
   <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
     <span style="font-size:20px;">✨</span>投稿文・ハッシュタグを<wbr>作成
@@ -1019,10 +1058,10 @@
 
   <!-- ⑥ 投稿文を確認・編集する（★liff_textgen.html137：それまでの⑦） -->
   <div class="card">
-    <div class="card-title">⑥ 投稿文を<wbr>確認・編集する</div>
+    <div class="card-title">⑤ 投稿文を<wbr>確認・編集する</div>
     <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集できます。<wbr>直接入力する<wbr>ことも<wbr>できます。</p>
     <!-- ★liff_textgen.html136：投稿文の中のハッシュタグの注意（予約の時に止めるため、先に知らせる。Kenさん指示） -->
-    <div class="caution-box" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑧の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
+    <div class="caution-box" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑦の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
     <div class="genre-notice" id="genre-notice">📍 登録業種<wbr>（<span id="genre-label"></span>）を<wbr>もとに<wbr>投稿文を<wbr>作成しました。</div>
     <!-- ★liff_textgen.html164：利用者の入力は、上限を超える時は受け付けない（どこに入力しても）。そのため入力の知らせ（event）を渡す -->
     <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount(event)" oncompositionend="updateCharCount(event)"
@@ -1044,7 +1083,7 @@
 
   <!-- ⑦ 投稿文の最後に店名・所在地を付ける（★liff_textgen.html137：⑥の文字数表示の下に移した。Kenさん指示） -->
   <div class="card">
-    <div class="card-title">⑦ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける</div>
+    <div class="card-title">⑥ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける</div>
     <!-- ★liff_textgen.html139：投稿文が空の時はチェックできない（Kenさん指示） -->
     <p class="step-hint">チェックすると、<wbr>登録済みの<wbr>店名・所在地を、<wbr>投稿文の<wbr>最後に<wbr>そのまま<wbr>付けます<wbr>（AIは<wbr>使いません）。<wbr>投稿文が<wbr>空の<wbr>時は<wbr>チェックできません。</p>
     <div class="sns-check-list">
@@ -1065,7 +1104,7 @@
 
   <!-- ⑧ ハッシュタグ -->
   <div class="card">
-    <div class="card-title">⑧ ハッシュタグ</div>
+    <div class="card-title">⑦ ハッシュタグ</div>
     <p class="hashtag-desc">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>投稿文と<wbr>同様、<wbr>自由に<wbr>編集できます。<wbr>チェックした<wbr>SNSにだけ付与されます。<wbr>「#」は<wbr>自動で<wbr>付きます。</p>
     <!-- ★liff_textgen.html164：ハッシュタグの数え方の説明（Kenさん指摘） -->
     <p class="hashtag-desc" style="margin-top:-4px;">文字数は、<wbr>「#」と<wbr>タグの間の<wbr>空白、<wbr>投稿文との<wbr>間の<wbr>改行も<wbr>数えます<wbr>（半角は<wbr>0.5字）。<wbr>例：<wbr>「カフェ」（3字）を<wbr>1つ<wbr>付けると<wbr>約5字、<wbr>2つ目からは<wbr>1つにつき<wbr>「タグの<wbr>字数＋1字」<wbr>増えます。</p>
@@ -1121,8 +1160,10 @@
   <!-- ⑨ 画像アップロード（インライン） -->
   <div class="image-section">
     <div class="image-section-header">
-      <div class="image-section-title">⑨ 画像アップロード</div>
+      <div class="image-section-title">⑧ 画像アップロード</div>
     </div>
+    <!-- ★liff_textgen.html167：作成に使った写真と、今の画像が違う時の案内（refreshPhotoMismatchNote()） -->
+    <p class="photo-mismatch-note" id="photo-mismatch-note" style="display:none;">投稿文は、<wbr>前の<wbr>写真を<wbr>もとに<wbr>作っています。<wbr>合わない<wbr>時は、<wbr>投稿文を<wbr>直すか<wbr>作り直して<wbr>ください。</p>
 
     <!-- 選択中プレビューバー -->
     <div class="img-selected-bar" id="img-selected-bar" style="display:none;">
@@ -1143,7 +1184,7 @@
         <button onclick="document.getElementById('my-img-input').click()" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 フォルダから<wbr>選ぶ</button>
         <button onclick="document.getElementById('my-cam-input').click()" style="flex:1;padding:10px;background:#2e7d32;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📷 写真を<wbr>撮る</button>
       </div>
-      <p style="font-size:10px;color:var(--text-light);text-align:center;margin-top:8px;">JPG・PNG対応　推奨：2MB以下</p>
+      <p style="font-size:10px;color:var(--text-light);text-align:center;margin-top:8px;">JPG・PNG対応　5MBまで</p>
     </div>
 
     <!-- アップロード済み画像プレビュー -->
@@ -1171,7 +1212,7 @@
   <!-- ⑩ 投稿日時：カレンダー -->
   <div class="card" style="padding:0;overflow:hidden;">
     <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);">
-      <div class="card-title" style="margin-bottom:0;">⑩ 投稿日を<wbr>選ぶ</div>
+      <div class="card-title" style="margin-bottom:0;">⑨ 投稿日を<wbr>選ぶ</div>
       <p class="step-hint" id="cal-range-hint" style="margin:6px 0 0;">予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日までです。</p>
     </div>
     <div class="calendar-wrap">
@@ -1230,54 +1271,47 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t1')">① 投稿先の<wbr>SNSを<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t1">▶</span></div>
     <div class="accordion-body" id="acc-t1">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">連携済みの<wbr>SNSの<wbr>中から、<wbr>今回投稿する<wbr>SNSを<wbr>選びます。<wbr>連携していない<wbr>SNSは<wbr>選べません<wbr>（設定画面で<wbr>連携できます）。<wbr>ここで<wbr>選んだ<wbr>SNSに<wbr>合わせて、<wbr>⑧ハッシュタグの<wbr>チェック欄と、<wbr>⑨画像の<wbr>トリミングの<wbr>対象が<wbr>切り<wbr>替わります。<wbr>1つも<wbr>選ばずに<wbr>予約する<wbr>ことは<wbr>できません。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">連携済みの<wbr>SNSの<wbr>中から、<wbr>今回投稿する<wbr>SNSを<wbr>選びます。<wbr>連携していない<wbr>SNSは<wbr>選べません<wbr>（設定画面で<wbr>連携できます）。<wbr>ここで<wbr>選んだ<wbr>SNSに<wbr>合わせて、<wbr>⑦ハッシュタグの<wbr>チェック欄と、<wbr>⑧画像の<wbr>トリミングの<wbr>対象が<wbr>切り<wbr>替わります。<wbr>1つも<wbr>選ばずに<wbr>予約する<wbr>ことは<wbr>できません。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 プランごとに<wbr>選べる<wbr>数</div>
       <!-- ★liff_textgen.html160：FREEの投稿先を2つにした（Kenさん決定） --><div style="font-size:11px;color:var(--text-sub);line-height:1.8;">FREEプランは<wbr>2つ<wbr>（Xは<wbr>選べません）、<wbr>PERSONAL・LITEプランは<wbr>2つ、<wbr>STANDARD・PROプランは<wbr>3つまで<wbr>選べます。<wbr>上限まで<wbr>選んでいる<wbr>時に<wbr>別の<wbr>SNSに<wbr>したい<wbr>場合は、<wbr>先に<wbr>チェックを<wbr>外してください。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② キーワードから<wbr>投稿文を<wbr>作成する<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② AIに<wbr>渡す<wbr>材料<wbr>（写真・<wbr>キーワード・<wbr>ご要望）<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
     <div class="accordion-body" id="acc-t2">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">入力した<wbr>キーワードを<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>キーワードが<wbr>空欄の<wbr>場合は、<wbr>設定画面で<wbr>登録した<wbr>業種を<wbr>もとに<wbr>作成します。<wbr>業種を<wbr>登録していない<wbr>場合は、<wbr>②の<wbr>キーワードか③の<wbr>要望の<wbr>どちらかを<wbr>入力してください。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 最大3個までの<wbr>理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文は<wbr>限られた<wbr>文字数<wbr>（⑥を<wbr>参照）で<wbr>作成する<wbr>ため、<wbr>キーワードが<wbr>多すぎると、<wbr>AIが<wbr>すべてを<wbr>詰め込もうと<wbr>して<wbr>不自然な<wbr>投稿文に<wbr>なりがちです。<wbr>3個程度に<wbr>絞って<wbr>投稿文には<wbr>中心となる<wbr>言葉だけを<wbr>入れ、<wbr>細かい<wbr>言葉は<wbr>⑧ハッシュタグで<wbr>補う、と<wbr>いう<wbr>役割分担に<wbr>しています。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 1個15文字までの<wbr>理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">キーワードは<wbr>短い<wbr>言葉での<wbr>入力を<wbr>想定しています。<wbr>長い文を<wbr>そのまま<wbr>入力できると、<wbr>「AIが投稿文を組み立てる」と<wbr>いう<wbr>本来の<wbr>使い方から<wbr>外れてしまう<wbr>ため、<wbr>15文字を<wbr>上限に<wbr>しています<wbr>（外部の<wbr>調査の<wbr>数値ではなく、<wbr>AiPost独自の<wbr>設計です）。<wbr>どのような<wbr>投稿に<wbr>したいかを<wbr>文章で<wbr>伝えたい<wbr>場合は、<wbr>③の<wbr>要望に<wbr>書いてください。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">写真・<wbr>キーワード・<wbr>ご要望の<wbr>うち、<wbr>入れた<wbr>ものを<wbr>材料に<wbr>して、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>1つだけでも、<wbr>組み合わせても<wbr>かまいません。<wbr>どれも<wbr>入れない<wbr>場合は、<wbr>設定画面で<wbr>登録した<wbr>業種を<wbr>もとに<wbr>作成します<wbr>（業種を<wbr>登録していない<wbr>場合は、<wbr>どれか<wbr>1つを<wbr>入れてください）。<wbr>「投稿文・ハッシュタグを作成」の<wbr>すぐ上に、<wbr>今<wbr>AIに<wbr>渡す<wbr>材料が<wbr>出ます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 写真</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">写真を<wbr>選ぶと、<wbr>作成を<wbr>押した<wbr>時に、<wbr>写真に<wbr>写って<wbr>いる<wbr>ものを<wbr>AIが<wbr>読み取って、<wbr>文の<wbr>材料に<wbr>します。<wbr>料理名・<wbr>値段など、<wbr>写真から<wbr>分からない<wbr>ことは<wbr>書きません。<wbr>読み取るのは<wbr>写真<wbr>1枚に<wbr>つき<wbr>1回だけで、<wbr>何回<wbr>作成しても<wbr>同じ<wbr>読み取りの<wbr>結果を<wbr>使います。<wbr>選んだ<wbr>写真は、<wbr>⑧の<wbr>投稿の<wbr>画像にも<wbr>なります。<wbr>投稿の<wbr>画像に<wbr>だけ<wbr>使い、<wbr>文の<wbr>材料に<wbr>しない<wbr>時は、<wbr>「この写真の内容も文に使う」の<wbr>チェックを<wbr>外して<wbr>ください。<wbr>⑧で<wbr>別の<wbr>画像に<wbr>変えた<wbr>時は、<wbr>投稿文が<wbr>前の<wbr>写真の<wbr>ままに<wbr>なって<wbr>いないか<wbr>確かめて<wbr>ください。<wbr>お試し中は、<wbr>写真の<wbr>読み取りも、<wbr>作成と<wbr>同じ<wbr>回数まで<wbr>です<wbr>（作成の<wbr>回数とは<wbr>別に<wbr>数えます）。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 キーワード<wbr>（最大3個・<wbr>1個15文字まで）</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入れた<wbr>キーワードは、<wbr>必ず<wbr>投稿文に<wbr>入ります。<wbr>投稿文は<wbr>限られた<wbr>文字数<wbr>（⑤を<wbr>参照）で<wbr>作成する<wbr>ため、<wbr>キーワードが<wbr>多すぎると、<wbr>AIが<wbr>すべてを<wbr>詰め込もうと<wbr>して<wbr>不自然な<wbr>投稿文に<wbr>なりがちです。<wbr>3個程度に<wbr>絞って<wbr>投稿文には<wbr>中心となる<wbr>言葉だけを<wbr>入れ、<wbr>細かい<wbr>言葉は<wbr>⑦ハッシュタグで<wbr>補う、と<wbr>いう<wbr>役割分担に<wbr>しています。<wbr>キーワードは<wbr>短い<wbr>言葉での<wbr>入力を<wbr>想定しているため、<wbr>15文字を<wbr>上限に<wbr>しています<wbr>（外部の<wbr>調査の<wbr>数値ではなく、<wbr>AiPost独自の<wbr>設計です）。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ご要望<wbr>（150文字まで）</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">どのような<wbr>投稿に<wbr>したいかを<wbr>自由に<wbr>書けます<wbr>（例：新商品の<wbr>告知を<wbr>したい）。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>「いつ」<wbr>「何を」<wbr>「誰に向けて」などを<wbr>具体的に<wbr>書く<wbr>ほど、<wbr>思いどおりの<wbr>投稿文に<wbr>なりやすくなります。<wbr>投稿文を<wbr>自分で<wbr>書く<wbr>場合は、<wbr>②を<wbr>使わずに<wbr>⑤に<wbr>直接入力できます。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t3')">③ 要望から<wbr>投稿文を<wbr>作成する<span class="accordion-arrow" id="arr-acc-t3">▶</span></div>
-    <div class="accordion-body" id="acc-t3">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">どのような<wbr>投稿に<wbr>したいかを、<wbr>150文字まで<wbr>自由に<wbr>書けます<wbr>（例：新商品の<wbr>告知を<wbr>したい）。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>②に<wbr>キーワードを<wbr>入力した<wbr>場合は、<wbr>キーワードも<wbr>含めて<wbr>作成します。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 書き方の<wbr>コツ</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「いつ」<wbr>「何を」<wbr>「誰に向けて」などを<wbr>具体的に<wbr>書く<wbr>ほど、<wbr>思いどおりの<wbr>投稿文に<wbr>なりやすくなります。<wbr>投稿文を<wbr>自分で<wbr>書く<wbr>場合は、<wbr>②③を<wbr>使わずに<wbr>⑥に<wbr>直接入力できます。</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ 訴求パターンを<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">③ 訴求パターンを<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
     <div class="accordion-body" id="acc-t4">
       <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の<wbr>伝え方<wbr>（限定感・<wbr>お得感など）を<wbr>選びます。<wbr>「🤖&nbsp;AIに任せる」のままに<wbr>すると、<wbr>AIが<wbr>キーワードなどから<wbr>合う<wbr>伝え方を<wbr>判断して<wbr>投稿文を<wbr>作成します。<wbr>特に<wbr>こだわりが<wbr>なければ、<wbr>そのままで<wbr>大丈夫です。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">⑤ エリア・店名を<wbr>含めて<wbr>投稿文を<wbr>作成する<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">④ エリア・店名を<wbr>含めて<wbr>投稿文を<wbr>作成する<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
     <div class="accordion-body" id="acc-t5">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">チェックした<wbr>項目を、<wbr>AIが<wbr>投稿文の<wbr>中に<wbr>自然な<wbr>形で<wbr>入れて<wbr>作成します。<wbr>エリアは<wbr>設定画面で<wbr>登録した<wbr>都道府県、<wbr>店名は<wbr>登録した<wbr>店名を<wbr>使います。<wbr>登録していない<wbr>項目は<wbr>使えないため、<wbr>先に<wbr>設定画面で<wbr>登録してください。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ⑦との<wbr>違い</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">⑤は、<wbr>AIが<wbr>文章の<wbr>流れに<wbr>合わせて<wbr>投稿文の<wbr>中に<wbr>入れます。<wbr>⑦は、<wbr>AIを<wbr>使わずに、<wbr>登録した<wbr>店名・所在地を<wbr>そのまま<wbr>投稿文の<wbr>最後に<wbr>付けます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ⑥との<wbr>違い</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">④は、<wbr>AIが<wbr>文章の<wbr>流れに<wbr>合わせて<wbr>投稿文の<wbr>中に<wbr>入れます。<wbr>⑥は、<wbr>AIを<wbr>使わずに、<wbr>登録した<wbr>店名・所在地を<wbr>そのまま<wbr>投稿文の<wbr>最後に<wbr>付けます。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t6')">⑥ 投稿文を<wbr>確認・編集する<span class="accordion-arrow" id="arr-acc-t6">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t6')">⑤ 投稿文を<wbr>確認・編集する<span class="accordion-arrow" id="arr-acc-t6">▶</span></div>
     <div class="accordion-body" id="acc-t6">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>自分で<wbr>直接入力する<wbr>ことも<wbr>できます。<wbr>すでに<wbr>投稿文が<wbr>ある<wbr>時に<wbr>もう<wbr>一度<wbr>作成すると、<wbr>上書きして<wbr>よいかの<wbr>確認が<wbr>出ます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限と<wbr>数え方</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;"><!-- ★liff_textgen.html156：FREEプランも140字にそろえた（Kenさん決定）。「（FREEプランは70文字）」を消した -->投稿文の<wbr>上限は<wbr>全角140文字<wbr>です<wbr>（全プラン<wbr>共通）<wbr>。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5文字、<wbr>絵文字は<wbr>1文字と<wbr>して数えます。<wbr>上限を<wbr>超える分は<wbr>入力で<wbr>きません。<wbr>また、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて全角140文字<wbr>までです<wbr>（⑧を<wbr>参照）<wbr>。<wbr></div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;"><!-- ★liff_textgen.html156：FREEプランも140字にそろえた（Kenさん決定）。「（FREEプランは70文字）」を消した -->投稿文の<wbr>上限は<wbr>全角140文字<wbr>です<wbr>（全プラン<wbr>共通）<wbr>。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5文字、<wbr>絵文字は<wbr>1文字と<wbr>して数えます。<wbr>上限を<wbr>超える分は<wbr>入力で<wbr>きません。<wbr>また、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて全角140文字<wbr>までです<wbr>（⑦を<wbr>参照）<wbr>。<wbr></div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文が<wbr>全角140文字である<wbr>理由</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AiPostでは、<wbr>同じ<wbr>投稿文・<wbr>同じ<wbr>画像で<wbr>あれば、<wbr>複数の<wbr>SNSへの<wbr>同時投稿を<wbr>「1投稿」と<wbr>して<wbr>数えます。<wbr>その<wbr>ためには<wbr>投稿文が<wbr>すべての<wbr>SNSで<wbr>共通の<wbr>1つである<wbr>必要が<wbr>あり、<wbr>文字数の<wbr>制限が<wbr>最も<wbr>厳しい<wbr>X<wbr>（全角<wbr>140文字＝半角280文字）に<wbr>合わせる<wbr>ことで、<wbr>どの<wbr>SNSを<wbr>選んでも<wbr>確実に<wbr>投稿できるように<wbr>しています。</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
@@ -1296,7 +1330,7 @@
       </div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xを<wbr>選んでいない<wbr>場合も、<wbr>上限は<wbr>140文字のままです。<wbr>SNSの<wbr>選び方で<wbr>上限が<wbr>変わると、<wbr>投稿文を<wbr>書いている<wbr>途中で<wbr>SNSを<wbr>選び直した<wbr>時に、<wbr>急に<wbr>文字数オーバーに<wbr>なると<wbr>いった<wbr>混乱が<wbr>起きやす<wbr>いためです。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文に<wbr>ハッシュタグは<wbr>入れられません</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文の<wbr>中に<wbr>「#」で<wbr>始まる<wbr>ハッシュタグが<wbr>あると、<wbr>予約できません。<wbr>ハッシュタグは<wbr>⑧の<wbr>欄に<wbr>入力してください。<wbr>SNSごとの<wbr>ハッシュタグの<wbr>数の<wbr>上限を<wbr>正しく<wbr>守る<wbr>ためです。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文の<wbr>中に<wbr>「#」で<wbr>始まる<wbr>ハッシュタグが<wbr>あると、<wbr>予約できません。<wbr>ハッシュタグは<wbr>⑦の<wbr>欄に<wbr>入力してください。<wbr>SNSごとの<wbr>ハッシュタグの<wbr>数の<wbr>上限を<wbr>正しく<wbr>守る<wbr>ためです。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xへの<wbr>投稿文に<wbr>URLは<wbr>入れられません</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xへの<wbr>投稿文には、<wbr>URL<wbr>（http://・https://で<wbr>始まるリンク）を<wbr>含められません。<wbr>Instagram・Threadsは、<wbr>URLを<wbr>含めても<wbr>通常どおり投稿できます。<wbr>AIが<wbr>作成する<wbr>投稿文に<wbr>URLは<wbr>入りませんが、<wbr>自分で<wbr>URLを<wbr>入力した<wbr>場合は、<wbr>次のようになります。</div>
       <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
@@ -1317,20 +1351,20 @@
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑦ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑥ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
     <div class="accordion-body" id="acc-t7">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">チェックすると、<wbr>設定画面で<wbr>登録した<wbr>店名・所在地を、<wbr>投稿文の<wbr>最後の<wbr>行に<wbr>そのまま<wbr>付けます<wbr>（AIは<wbr>使いません）。<wbr>「🏠店名」<wbr>「📍所在地」の<wbr>順で<wbr>付き、<wbr>チェックを<wbr>外すと<wbr>その<wbr>行が<wbr>消えます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 チェックできる<wbr>時</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文が<wbr>空の<wbr>時は<wbr>チェックできません。<wbr>先に<wbr>投稿文を<wbr>作成するか、<wbr>⑥に<wbr>入力してください。<wbr>投稿文を<wbr>すべて<wbr>消すと、<wbr>チェックも<wbr>外れます。<wbr>チェックした<wbr>後に<wbr>AIで<wbr>作成し直した<wbr>場合も、<wbr>作成した<wbr>投稿文の<wbr>最後に<wbr>付きます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文が<wbr>空の<wbr>時は<wbr>チェックできません。<wbr>先に<wbr>投稿文を<wbr>作成するか、<wbr>⑤に<wbr>入力してください。<wbr>投稿文を<wbr>すべて<wbr>消すと、<wbr>チェックも<wbr>外れます。<wbr>チェックした<wbr>後に<wbr>AIで<wbr>作成し直した<wbr>場合も、<wbr>作成した<wbr>投稿文の<wbr>最後に<wbr>付きます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限を<wbr>超える<wbr>場合</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">付けると<wbr>文字数の<wbr>上限を<wbr>超える<wbr>場合は、<wbr>付けずに<wbr>お知らせします。<wbr>投稿文を<wbr>短くしてから、<wbr>もう<wbr>一度<wbr>チェックしてください。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 AIを<wbr>使わない<wbr>理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">所在地を<wbr>AIに<wbr>書かせると、<wbr>番地や<wbr>ビル名を<wbr>省略したり<wbr>書き換えたりする<wbr>おそれが<wbr>ある<wbr>ためです。<wbr>登録した<wbr>とおりの<wbr>表記で<wbr>載せたい<wbr>店名・所在地は、<wbr>⑦で<wbr>付けてください。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">所在地を<wbr>AIに<wbr>書かせると、<wbr>番地や<wbr>ビル名を<wbr>省略したり<wbr>書き換えたりする<wbr>おそれが<wbr>ある<wbr>ためです。<wbr>登録した<wbr>とおりの<wbr>表記で<wbr>載せたい<wbr>店名・所在地は、<wbr>⑥で<wbr>付けてください。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t8')">⑧ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t8">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t8')">⑦ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t8">▶</span></div>
     <div class="accordion-body" id="acc-t8">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>チェックした<wbr>SNSにだけ<wbr>付きます。<wbr>1個15文字まで、<wbr>5個まで<wbr>入力できます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 <wbr>「#」は<wbr>自動で<wbr>付きます</div>
@@ -1358,9 +1392,9 @@
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t9')">⑨ 画像アップロード<span class="accordion-arrow" id="arr-acc-t9">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t9')">⑧ 画像アップロード<span class="accordion-arrow" id="arr-acc-t9">▶</span></div>
     <div class="accordion-body" id="acc-t9">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">フォルダから<wbr>選ぶか、<wbr>その場で<wbr>写真を<wbr>撮って、<wbr>画像を<wbr>1枚選びます。<wbr>画像を<wbr>選ぶと、<wbr>SNSごとに<wbr>合う<wbr>比率で<wbr>切り抜けます<wbr>（トリミング）。<wbr>⭐が<wbr>付いている<wbr>比率が<wbr>おすすめです。<wbr>「自由」を<wbr>選ぶと、<wbr>縦横の<wbr>比率を<wbr>決めずに<wbr>切り抜けます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">フォルダから<wbr>選ぶか、<wbr>その場で<wbr>写真を<wbr>撮って、<wbr>画像を<wbr>1枚選びます<wbr>（②で<wbr>写真を<wbr>選んだ<wbr>場合は、<wbr>その<wbr>写真が<wbr>入っています）。<wbr>画像を<wbr>選ぶと、<wbr>SNSごとに<wbr>合う<wbr>比率で<wbr>切り抜けます<wbr>（トリミング）。<wbr>⭐が<wbr>付いている<wbr>比率が<wbr>おすすめです。<wbr>「自由」を<wbr>選ぶと、<wbr>縦横の<wbr>比率を<wbr>決めずに<wbr>切り抜けます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとに<wbr>選べる<wbr>こと</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">「✂️&nbsp;SNSごとにトリミングする」では、<wbr>SNSごとに<wbr>「✂️&nbsp;切り抜く」<wbr>「🖼️&nbsp;元画像」<wbr>（切り抜かずに<wbr>載せる）<wbr>「🚫&nbsp;画像なし」の<wbr>3つから<wbr>選べます。<wbr>すべての<wbr>SNSで<wbr>同じ<wbr>画像を<wbr>そのまま<wbr>使う<wbr>場合は<wbr>「トリミングせずにそのまま使う」、<wbr>画像を<wbr>付けない<wbr>場合は<wbr>「🚫&nbsp;画像なしで投稿する」を<wbr>選んでください。</div>
       <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
@@ -1381,12 +1415,12 @@
           <div style="font-size:11px;color:#555;line-height:1.7;">⭐4:5<wbr>（縦長）<wbr>／1:1<wbr>（正方<wbr>形）<wbr>／16:9<wbr>（横長）。<wbr>Instagramと<wbr>同じ<wbr>Meta社の<wbr>サービスの<wbr>ため、<wbr>縦長が<wbr>最も<wbr>きれいに<wbr>見えます。</div>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">アップロードする<wbr>元の<wbr>画像は<wbr>1枚だけです。<wbr>⑥で<wbr>説明した<wbr>「同じ画像」は、<wbr>この<wbr>元の<wbr>画像の<wbr>ことです。<wbr>SNSごとに<wbr>切り<wbr>抜き方を<wbr>変えても、<wbr>元の<wbr>画像は<wbr>同じなので<wbr>「1投稿」の<wbr>数え方には<wbr>影響しません。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">アップロードする<wbr>元の<wbr>画像は<wbr>1枚だけです。<wbr>⑤で<wbr>説明した<wbr>「同じ画像」は、<wbr>この<wbr>元の<wbr>画像の<wbr>ことです。<wbr>SNSごとに<wbr>切り<wbr>抜き方を<wbr>変えても、<wbr>元の<wbr>画像は<wbr>同じなので<wbr>「1投稿」の<wbr>数え方には<wbr>影響しません。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t10')">⑩ 投稿日を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t10">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t10')">⑨ 投稿日を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t10">▶</span></div>
     <div class="accordion-body" id="acc-t10">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿する日と<wbr>時間を<wbr>選びます。<wbr>予約で<wbr>きるの<wbr>は、<wbr>次の<wbr>ご利用期間の<wbr>終了日まで<wbr>で<wbr>す（ご利用期間は、<wbr>プランを<wbr>お申し込みいただいた日から1か月ごと<wbr>で<wbr>す）<wbr>。<wbr>カレンダーの<wbr>各日に<wbr>は、<wbr>その<wbr>日の<wbr>予約の<wbr>件数が<wbr>表示されます。<wbr></div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿の<wbr>時間</div>
@@ -1801,7 +1835,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成166';
+const TRACE_SCREEN = '投稿文作成167';
 
 function traceLog(msg) {
   try {
@@ -2090,8 +2124,172 @@ function renderKeywordGuide() {
     el.innerHTML = `<p>入力した<wbr>キーワードを<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>空欄の<wbr>場合は、<wbr>登録業種〈${USER_GENRE.main}・${USER_GENRE.sub}〉を<wbr>もとに<wbr>作成します。</p>`;
   } else {
     el.className = 'keyword-guide registered';
-    el.innerHTML = `<p>入力した<wbr>キーワードを<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>業種が<wbr>未登録の<wbr>場合は、<wbr>②か<wbr>③の<wbr>どちらかを<wbr>入力してください。</p>`;
+    el.innerHTML = `<p>入力した<wbr>キーワードを<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>業種が<wbr>未登録の<wbr>場合は、<wbr>写真・<wbr>キーワード・<wbr>ご要望の<wbr>どれか<wbr>1つを<wbr>入れてください。</p>`;
   }
+}
+
+// ===== ★liff_textgen.html167：② AIに渡す材料（写真・キーワード・ご要望） =====
+// 写真は⑧の画像と同じもの（originalImage・originalImageDataUrl）。②の写真の欄は、それを映すだけ。
+// 写真の説明文は、作成を押した時に1回だけGAS（action「describePhoto」）で作り、写真が変わるまで使い回す。
+let MAT_PHOTO_TOKEN = 0;          // 写真を選ぶたびに1つ増える（どの写真の説明文かを見分ける）
+let MAT_PHOTO_DESC = { token: -1, status: '', text: '' }; // status：'ok'＝説明文あり／'unclear'＝読み取れなかった
+let MAT_PHOTO_PENDING = null;     // 説明文を作っている途中の Promise（二重に送らない）
+let MAT_PHOTO_TRIAL_REMAINING = null; // お試しの人の、今日あと何回写真を読み取れるか（GASの返事から）
+let LAST_GEN_PHOTO_TOKEN = null;  // 最後に作成した時に使った写真（使わなかった時は null）
+
+// 写真がある（②・⑧で選んだ写真。予約の修正で引き継いだ画像は含めない）
+function matPhotoActive() {
+  return !!originalImageDataUrl;
+}
+
+// 写真を文の材料に使う（写真があり、「この写真の内容も文に使う」にチェックがある）
+function matPhotoUse() {
+  const cb = document.getElementById('mat-photo-use');
+  return matPhotoActive() && !!(cb && cb.checked);
+}
+
+// 写真が変わった時（選んだ・選び直した・画像なしにした・予約の後に空にした）に呼ぶ
+function onMaterialPhotoChanged() {
+  const btns = document.getElementById('mat-photo-btns');
+  const sel = document.getElementById('mat-photo-selected');
+  const thumb = document.getElementById('mat-photo-thumb');
+  const cb = document.getElementById('mat-photo-use');
+  if (!btns || !sel) return;
+  if (matPhotoActive()) {
+    if (thumb) thumb.src = originalImageDataUrl;
+    btns.style.display = 'none';
+    sel.style.display = 'flex';
+  } else {
+    if (thumb) thumb.removeAttribute('src');
+    sel.style.display = 'none';
+    btns.style.display = 'flex';
+    if (cb) cb.checked = true; // 次に写真を選んだ時は、初めはチェックあり
+  }
+  renderMaterialPhotoStatus();
+  updateMaterialSummary();
+  refreshPhotoMismatchNote();
+}
+
+// 「この写真の内容も文に使う」を変えた時
+function onMaterialPhotoUseChange() {
+  renderMaterialPhotoStatus();
+  updateMaterialSummary();
+}
+
+// ②の写真の下の案内（読み取りの状態）
+function renderMaterialPhotoStatus(loading) {
+  const el = document.getElementById('mat-photo-status');
+  if (!el) return;
+  if (!matPhotoActive()) { el.textContent = ''; return; }
+  if (!matPhotoUse()) { el.textContent = 'この写真は、投稿の画像にだけ使います。'; return; }
+  if (loading) { el.textContent = '写真の内容を読み取っています…'; return; }
+  const sameTrial = (IS_TRIAL && typeof MAT_PHOTO_TRIAL_REMAINING === 'number')
+    ? '（お試し中：今日あと' + MAT_PHOTO_TRIAL_REMAINING + '回、写真を読み取れます）' : '';
+  if (MAT_PHOTO_DESC.token === MAT_PHOTO_TOKEN && MAT_PHOTO_DESC.status === 'ok') {
+    el.textContent = '読み取った内容：' + MAT_PHOTO_DESC.text + sameTrial;
+  } else if (MAT_PHOTO_DESC.token === MAT_PHOTO_TOKEN && MAT_PHOTO_DESC.status === 'unclear') {
+    el.textContent = '写真の内容を読み取れませんでした。別の写真にするか、チェックを外してください。';
+  } else {
+    el.textContent = '作成を押すと、写真に写っているものをAIが読み取って、文の材料にします。';
+  }
+}
+
+// 「投稿文・ハッシュタグを作成」のすぐ上の、今AIに渡す材料の1行
+function updateMaterialSummary() {
+  const el = document.getElementById('material-summary');
+  if (!el) return;
+  const names = [];
+  if (matPhotoUse()) names.push('写真');
+  if (getKeywords().length > 0) names.push('キーワード');
+  if (getFreeText().length > 0) names.push('ご要望');
+  if (names.length > 0) {
+    el.innerHTML = '🧩 AIに<wbr>渡す<wbr>材料：<wbr><b>' + names.join('・<wbr>') + '</b>';
+  } else if (USER_GENRE) {
+    el.innerHTML = '🧩 AIに<wbr>渡す<wbr>材料：<wbr><b>登録した<wbr>業種だけ</b><br><small>（お店の<wbr>一般的な<wbr>紹介の<wbr>文に<wbr>なります）</small>';
+  } else {
+    el.innerHTML = '🧩 AIに<wbr>渡す<wbr>材料：<wbr><b>まだ<wbr>ありません</b><br><small>（写真・<wbr>キーワード・<wbr>ご要望の<wbr>どれか<wbr>1つを<wbr>入れてください）</small>';
+  }
+}
+
+// ⑧の画像が、最後に作成した時の写真と違う時だけ、案内を出す
+function refreshPhotoMismatchNote() {
+  const el = document.getElementById('photo-mismatch-note');
+  if (!el) return;
+  const differs = LAST_GEN_PHOTO_TOKEN !== null && (!matPhotoActive() || MAT_PHOTO_TOKEN !== LAST_GEN_PHOTO_TOKEN);
+  el.style.display = differs ? 'block' : 'none';
+}
+
+// AIに送る写真を作る（長い辺を1024pxまでに小さくし、必ずJPEGにする。iPhoneのHEICなどもJPEGになる）
+function resizePhotoForAi() {
+  const MAX_SIDE = 1024;
+  const w = originalImage.naturalWidth || originalImage.width;
+  const h = originalImage.naturalHeight || originalImage.height;
+  const scale = Math.min(1, MAX_SIDE / Math.max(w, h));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(w * scale));
+  canvas.height = Math.max(1, Math.round(h * scale));
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff'; // 透過のある写真（PNG）は白の上に描く
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', 0.85);
+}
+
+// 今の写真の説明文を用意する（あれば使い回す。無ければGASで作る）。{ ok, text, token, message } を返す
+async function ensurePhotoDescription() {
+  const token = MAT_PHOTO_TOKEN;
+  if (MAT_PHOTO_DESC.token === token && MAT_PHOTO_DESC.status === 'ok') {
+    return { ok: true, text: MAT_PHOTO_DESC.text, token: token };
+  }
+  if (MAT_PHOTO_DESC.token === token && MAT_PHOTO_DESC.status === 'unclear') {
+    return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、②の「この写真の内容も文に使う」のチェックを外して作成してください。' };
+  }
+  if (MAT_PHOTO_PENDING && MAT_PHOTO_PENDING.token === token) return MAT_PHOTO_PENDING.promise;
+  const promise = (async function () {
+    renderMaterialPhotoStatus(true);
+    try {
+      let imageDataUrl;
+      try {
+        imageDataUrl = resizePhotoForAi();
+      } catch (resizeError) {
+        return { ok: false, message: '写真を読み込めませんでした。別の写真を選んでください。' };
+      }
+      // 書き込み（回数を数える）があるため、自動の再試行はしない（1回だけ送る）
+      const response = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'describePhoto', lineUid: LINE_UID, params: { imageDataUrl: imageDataUrl } })
+      });
+      const result = await response.json();
+      if (result && result.trialPhoto) MAT_PHOTO_TRIAL_REMAINING = result.trialPhoto.remainingToday;
+      if (!result || !result.success) {
+        const msg = (result && result.error) ? String(result.error) : '';
+        if (result && result.trialPhotoLimitReached) {
+          return { ok: false, message: msg + '\n②の「この写真の内容も文に使う」のチェックを外すと、写真を使わずに作成できます。' };
+        }
+        // GASの案内の文（「。」で終わる）はそのまま出し、技術的なエラーの文は出さない
+        const friendly = /。$/.test(msg) ? msg + '\n' : '写真の内容を読み取れませんでした。\n';
+        return { ok: false, message: friendly + 'もう一度お試しいただくか、②の「この写真の内容も文に使う」のチェックを外して作成してください。' };
+      }
+      if (token !== MAT_PHOTO_TOKEN) {
+        return { ok: false, message: '作成の途中で写真が変わりました。もう一度「投稿文・ハッシュタグを作成」を押してください。' };
+      }
+      const data = result.data || {};
+      if (data.unclear || !data.description) {
+        MAT_PHOTO_DESC = { token: token, status: 'unclear', text: '' };
+        return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、②の「この写真の内容も文に使う」のチェックを外して作成してください。' };
+      }
+      MAT_PHOTO_DESC = { token: token, status: 'ok', text: String(data.description) };
+      return { ok: true, text: MAT_PHOTO_DESC.text, token: token };
+    } catch (err) {
+      return { ok: false, message: '通信エラーのため、写真の内容を読み取れませんでした。もう一度お試しください。' };
+    } finally {
+      MAT_PHOTO_PENDING = null;
+      renderMaterialPhotoStatus();
+    }
+  })();
+  MAT_PHOTO_PENDING = { token: token, promise: promise };
+  return promise;
 }
 
 // ===== ハッシュタグ =====
@@ -2401,6 +2599,7 @@ function updateUserGenreFromProfile(profile) {
   const shopEndItem = document.getElementById('include-shopend-item');
   if (USER_SHOP_NAME === '' && shopEndItem && shopEndItem.classList.contains('checked')) toggleInclude(shopEndItem);
   renderKeywordGuide();
+  updateMaterialSummary(); // ★liff_textgen.html167：業種が分かったら、材料の1行を直す
 }
 
 // ★liff_textgen.html136：⑦「投稿文の最後に店名・所在地を付ける」（⑥の文字数表示の下）（AIを使わず、登録内容をそのまま行として付ける。Kenさん指示）
@@ -2460,7 +2659,7 @@ function toggleEndLine(el, kind) {
     }
     // ★liff_textgen.html139：投稿文が空の時はチェックできない（Kenさん指示）
     if (!ta || ta.value.trim() === '') {
-      alert('投稿文が空のため、' + label + 'は付けられません。\n先に投稿文を作成するか、⑥に入力してください。');
+      alert('投稿文が空のため、' + label + 'は付けられません。\n先に投稿文を作成するか、⑤に入力してください。');
       return;
     }
   }
@@ -2500,7 +2699,7 @@ function ensureEndLines() {
   const next = rebuildEndLines(ta.value, want);
   if (next === ta.value) return true;
   if (countCharsX(next) > CHAR_LIMIT) {
-    alert('⑦の店名・所在地を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くするか、⑦のチェックを外してください。');
+    alert('⑥の店名・所在地を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くするか、⑥のチェックを外してください。');
     return false;
   }
   ta.value = next;
@@ -2513,9 +2712,10 @@ function confirmAndGenerate() {
   const hasKeyword = getKeywords().length > 0;
   const hasFreeText = getFreeText().length > 0;
 
-  // 業種未登録・キーワード未入力・ご要望未入力の場合はアラート
-  if (!USER_GENRE && !hasKeyword && !hasFreeText) {
-    alert('キーワードまたはご要望のいずれかを入力してください。\n業種が未登録の場合、どちらか一方の入力が必要です。');
+  // 業種未登録・写真も使わない・キーワード未入力・ご要望未入力の場合はアラート
+  // ★liff_textgen.html167：写真も材料になったため、写真を使う時は通す
+  if (!USER_GENRE && !hasKeyword && !hasFreeText && !matPhotoUse()) {
+    alert('写真・キーワード・ご要望のどれか1つを入れてください。\n業種が未登録の場合、どれか1つが必要です。');
     document.getElementById('keyword-input-1').focus();
     return;
   }
@@ -2549,6 +2749,22 @@ async function executeGenerate() {
   const freeText = getFreeText();
   const includeFlags = getIncludeFlags(); // liff_textgen_UI追加_01で追加済み
   const appealPatternOverride = getSelectedAppealPattern();
+  // ★liff_textgen.html167：写真を文に使う時は、作成の前に写真の説明文を用意する（写真1枚につき1回だけAIに読ませる）
+  let photoDescription = '';
+  let photoTokenUsed = null;
+  if (matPhotoUse()) {
+    const photo = await ensurePhotoDescription();
+    if (!photo.ok) {
+      alert(photo.message);
+      setStep(2);
+      document.getElementById('loading').classList.remove('show');
+      document.getElementById('generate-btn').disabled = false;
+      document.getElementById('content-wrap').style.pointerEvents = '';
+      return;
+    }
+    photoDescription = photo.text;
+    photoTokenUsed = photo.token;
+  }
 
   const requestPayload = {
     action: 'generateText',
@@ -2561,7 +2777,8 @@ async function executeGenerate() {
       includeShopName: includeFlags.includeShopName,
       includeArea: includeFlags.includeArea,
       includeAddress: includeFlags.includeAddress, // ★html126
-      appealPatternOverride: appealPatternOverride
+      appealPatternOverride: appealPatternOverride,
+      photoDescription: photoDescription // ★liff_textgen.html167：写真の説明文（使わない時は空）
     }
   };
 
@@ -2597,12 +2814,15 @@ async function executeGenerate() {
       const withShop = result.data.generatedText + '\n' + endLineText('shop') + (result.data.addressLine ? '\n' + result.data.addressLine : '');
       if (countCharsX(withShop) > CHAR_LIMIT) {
         setEndLineChecked('shop', false);
-        alert('店名を付けると文字数の上限（' + CHAR_LIMIT + '字）を超えるため、付けませんでした。\n投稿文を短くしてから、もう一度⑦の「店名を付ける」にチェックを付けてください。');
+        alert('店名を付けると文字数の上限（' + CHAR_LIMIT + '字）を超えるため、付けませんでした。\n投稿文を短くしてから、もう一度⑥の「店名を付ける」にチェックを付けてください。');
       } else {
         ta.value = withShop;
       }
     }
     LAST_APPEAL_PATTERN = result.data.appealPattern;
+    // ★liff_textgen.html167：どの写真をもとに作ったかを覚えておく（⑧で画像を変えた時の案内に使う）
+    LAST_GEN_PHOTO_TOKEN = photoTokenUsed;
+    refreshPhotoMismatchNote();
 
     // ハッシュタグも続けて生成する
     const hashtagPayload = {
@@ -2629,7 +2849,7 @@ async function executeGenerate() {
 
     // 業種ベース生成（キーワード・ご要望とも未入力）の場合は既存の通知を表示
     const hasKeyword = keywords.length > 0;
-    if (USER_GENRE && !hasKeyword && !freeText) {
+    if (USER_GENRE && !hasKeyword && !freeText && !photoDescription) {
       document.getElementById('genre-label').textContent = `${result.data.businessMajor}・${result.data.businessMinor}`;
       document.getElementById('genre-notice').style.display = 'block';
     }
@@ -3897,6 +4117,10 @@ function resetAllForm() {
     if (noTrimBtnReset) noTrimBtnReset.style.display = '';
   }
 
+  // ★liff_textgen.html167：②の写真・材料の1行・⑧の案内も戻す
+  LAST_GEN_PHOTO_TOKEN = null;
+  onMaterialPhotoChanged();
+
   // 日付リセット
   selectedDay = null;
   buildCalendar();
@@ -4226,16 +4450,26 @@ function snsImageGridHtml(list, kindOf) {
 }
 const SNS_SHORT_LABEL = { X: 'X', IG: 'Instagram', TH: 'Threads' };
 
+// ★liff_textgen.html167：選べる写真の大きさの上限（GASのImageUpload.gsの_checkImageSizeLimitと同じ5MB）
+const IMAGE_SIZE_LIMIT_BYTES = 5 * 1024 * 1024;
+
 // 画像アップロード処理（選択バーは表示しない・プレビューのみ）
 function handleImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
+  // ★liff_textgen.html167：5MBを超える写真は、選んだ時点で知らせて受け付けない（予約で保存できる上限が5MBのため）
+  if (file.size > IMAGE_SIZE_LIMIT_BYTES) {
+    event.target.value = ''; // 同じ写真をもう一度選んでも、ここを通るようにする
+    alert('この写真は大きすぎるため、使えません。\n選んだ写真：' + (file.size / 1024 / 1024).toFixed(1) + 'MB（5MBまで使えます）\n別の写真を選んでください。');
+    return;
+  }
   const reader = new FileReader();
   reader.onload = e => {
     const img = new Image();
     img.onload = () => {
       originalImage = img;
       originalImageDataUrl = e.target.result;
+      MAT_PHOTO_TOKEN++; // ★liff_textgen.html167：新しい写真（前の写真の説明文は使わない）
       imageState = null; // まだ確定していない
       document.getElementById('my-img-preview').src = e.target.result;
       document.getElementById('my-img-preview-wrap').style.display = 'block';
@@ -4243,6 +4477,7 @@ function handleImageUpload(event) {
       document.getElementById('img-selected-bar').style.display = 'none'; // 確定前は非表示
       updateTrimStatusList();
       setTrimSourceVisible(true); // ★liff_textgen.html166：新しい画像では、元の画像と処理状況をまた出す
+      onMaterialPhotoChanged(); // ★liff_textgen.html167：②の写真・材料の1行・⑧の案内を直す
     };
     img.src = e.target.result;
   };
@@ -4746,6 +4981,7 @@ function imgCancelReupload() {
   if (trimBtn) trimBtn.style.display = 'block';
   const noTrimBtn = wrap.querySelector('button[onclick="selectMyImageWithoutTrim()"]');
   if (noTrimBtn) noTrimBtn.style.display = 'block';
+  onMaterialPhotoChanged(); // ★liff_textgen.html167
 }
 
 // トリミングをやり直す
@@ -4785,6 +5021,7 @@ function imgCancelNone() {
   document.getElementById('img-upload-area').style.display = 'none';
   const existing = document.getElementById('trim-confirm-area');
   if (existing) existing.remove();
+  onMaterialPhotoChanged(); // ★liff_textgen.html167
 }
 
 
@@ -4848,6 +5085,7 @@ function selectNoImage() {
   document.getElementById('img-upload-area').style.display = 'none';
   const existing = document.getElementById('trim-confirm-area');
   if (existing) existing.remove();
+  onMaterialPhotoChanged(); // ★liff_textgen.html167
 }
 
 // トリミングなしで使用
@@ -4948,6 +5186,8 @@ function retryTrimFlow() {
 
 // LIFF初期化は他の初期化処理より先に実行する
 traceStart();
+// ★liff_textgen.html167：材料の1行の初めの表示（写真の変数〔originalImageDataUrl〕の宣言より後で呼ぶ）
+updateMaterialSummary();
 initLiff();
 
 // 全ての変数宣言・初期化が完了した後に、編集モードの読み込みを実行する
