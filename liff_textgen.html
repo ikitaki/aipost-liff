@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成168 - AiPost</title>
+<title>投稿文作成169 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -844,7 +844,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成168</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成169</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1434,7 +1434,7 @@
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t11')">内容を<wbr>確認して<wbr>予約する<span class="accordion-arrow" id="arr-acc-t11">▶</span></div>
     <div class="accordion-body" id="acc-t11">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その<wbr>ご利用期間の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿を見る」を<wbr>押すと、<wbr>SNSごとに<wbr>切り抜いた<wbr>画像と、<wbr>ハッシュタグを<wbr>含めた<wbr>投稿文を、<wbr>実際に<wbr>投稿される<wbr>形で<wbr>確かめられます。</div>
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">確認の<wbr>前に、<wbr>前後30日の<wbr>投稿・予約と<wbr>同じ文・似た文・同じ画像が<wbr>ないかと、<wbr>SNSで<wbr>気をつけたい<wbr>言い方が<wbr>ないかを<wbr>確かめます。<wbr>同じSNSに<wbr>同じ文を<wbr>予約しようと<wbr>した時などは、<wbr>予約できません。<wbr>気をつけたい<wbr>ことが<wbr>ある時は、<wbr>確認の<wbr>窓の<wbr>上に<wbr>表示されます<wbr>（そのまま<wbr>予約も<wbr>できます）。<!-- ★liff_textgen.html168 --></div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">確認の<wbr>前に、<wbr>投稿先の<wbr>SNSごとに、<wbr>投稿の<wbr>数と、<wbr>前後30日の<wbr>投稿・予約と<wbr>同じ文・似た文・同じ画像が<wbr>ないか、<wbr>SNSで<wbr>気をつけたい<wbr>言い方が<wbr>ないかを<wbr>確かめます。<wbr>予約できない<wbr>時は、<wbr>理由と<wbr>直し方を<wbr>まとめて<wbr>表示します。<wbr>気をつけたい<wbr>ことが<wbr>ある時は、<wbr>確認の<wbr>窓の<wbr>上に<wbr>表示されます<wbr>（そのまま<wbr>予約も<wbr>できます）。<!-- ★liff_textgen.html168・169 --></div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「予約を確定する」を<wbr>押すと<wbr>予約が<wbr>完了します。<wbr>この<wbr>時点で<wbr>初めて<wbr>予約と<wbr>して<wbr>保存されます。<wbr>直したい<wbr>場合は<wbr>「修正する」を<wbr>押すと、<wbr>入力した<wbr>内容の<wbr>まま<wbr>戻れます。<wbr>予約した後は、<wbr>予約確認画面で<wbr>投稿文の<wbr>修正・画像の<wbr>変更・キャンセルが<wbr>できます。<!-- ★liff_textgen.html161：「差し替え」→「変更」 --></div>
     </div>
   </div>
@@ -1535,6 +1535,17 @@
     <div class="accordion-body" id="confirm-preview" style="margin-bottom:10px;"></div>
     <button class="modal-btn modal-btn-success" onclick="executeReserve()">予約を確定する</button>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('confirm-modal')">修正する</button>
+  </div>
+</div>
+
+<!-- ★liff_textgen.html169：止める時の窓（投稿チェックgs_04。投稿先のSNSごとに、止める理由をまとめて出す） -->
+<div class="modal-overlay" id="block-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">このままでは予約できません</div>
+    <div id="block-modal-body" style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:12px;"></div>
+    <div id="block-modal-advice" style="font-size:13px;font-weight:700;color:var(--text);line-height:1.7;margin-bottom:14px;"></div>
+    <button class="modal-btn modal-btn-cancel" style="color:var(--text);" onclick="closeModal('block-modal')">閉じる</button>
   </div>
 </div>
 
@@ -1838,7 +1849,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成168';
+const TRACE_SCREEN = '投稿文作成169';
 
 function traceLog(msg) {
   try {
@@ -3579,31 +3590,77 @@ async function imageFingerprintOf(dataUrl) {
 }
 
 // 確認の窓の上に、気をつけたいことを出す（無い時は隠す）。確かめられなかった時は1行だけ出す
+// ★liff_textgen.html169：SNSごと（check.sns）と共通（check.common）に分けて出す（Kenさん承認の見本169）
 function renderPostCheckBox(check) {
   const box = document.getElementById('confirm-check-box');
   const esc = v => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const warnings = (check && Array.isArray(check.warnings)) ? check.warnings : [];
+  const groups = [];
+  if (check && Array.isArray(check.sns)) {
+    check.sns.forEach(function (s) {
+      if (s.warnings && s.warnings.length) groups.push({ name: s.name, items: s.warnings.map(function (w) { return { message: w }; }) });
+    });
+  }
+  if (check && check.common && check.common.warnings && check.common.warnings.length) {
+    groups.push({ name: '共通（すべてのSNS）', items: check.common.warnings });
+  }
   let note = '';
   if (!check) note = '投稿の内容の確かめは、今回できませんでした。';
   else if (check.aiChecked === false) note = '言い回しの確かめは、今回できませんでした。';
-  if (warnings.length === 0 && !note) {
+  if (groups.length === 0 && !note) {
     box.style.display = 'none';
     box.innerHTML = '';
     return;
   }
-  if (warnings.length === 0) {
+  if (groups.length === 0) {
     box.style.cssText = 'font-size:11px;color:var(--text-sub);line-height:1.6;margin-bottom:12px;';
     box.textContent = note;
     return;
   }
   box.style.cssText = 'background:#fff8e1;border:1px solid #ffcc80;border-radius:10px;padding:10px 12px;margin-bottom:12px;';
-  box.innerHTML = '<div style="font-size:13px;font-weight:700;color:#e65100;margin-bottom:6px;">⚠️ 気をつけたいこと</div>' +
-    warnings.map(function (w, i) {
-      const last = i === warnings.length - 1 && !note;
-      const sub = w.suggestion ? '<div style="color:var(--text-sub);font-size:11px;padding-left:1em;">言い換えの例：' + esc(w.suggestion) + '</div>' : '';
-      return '<div style="font-size:12px;line-height:1.7;color:var(--text);margin-bottom:' + (last ? '0' : '6px') + ';">・' + esc(w.message) + sub + '</div>';
+  box.innerHTML = '<div style="font-size:13px;font-weight:700;color:#e65100;margin-bottom:2px;">⚠️ 気をつけたいこと</div>' +
+    groups.map(function (g) {
+      return '<div style="font-size:12px;font-weight:700;color:#e65100;margin-top:4px;">' + esc(g.name) + '</div>' +
+        g.items.map(function (w) {
+          const sub = w.suggestion ? '<div style="color:var(--text-sub);font-size:11px;text-indent:0;">言い換えの例：' + esc(w.suggestion) + '</div>' : '';
+          return '<div style="font-size:12px;line-height:1.7;color:var(--text);padding-left:1em;text-indent:-1em;">・' + esc(w.message) + sub + '</div>';
+        }).join('');
     }).join('') +
-    (note ? '<div style="font-size:11px;color:var(--text-sub);line-height:1.6;">' + note + '</div>' : '');
+    (note ? '<div style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:6px;">' + note + '</div>' : '');
+}
+
+// ★liff_textgen.html169：止める時の窓（Kenさん承認の見本169）。投稿先のSNSごとに、止める理由（⛔）か「このまま予約できます」（✅）を出し、
+// 　共通（モデレーション・気をつけたい言い方）と、どうすればよいか（check.advice）を一度に出す
+function showPostBlockModal(check) {
+  const esc = v => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const line = function (text, sub) {
+    return '<div style="font-size:12px;line-height:1.7;color:' + (sub ? 'var(--text-sub)' : 'var(--text)') + ';padding-left:1em;text-indent:-1em;">・' + text + '</div>';
+  };
+  let html = '';
+  const commonBlocked = !!(check.common && check.common.blocks && check.common.blocks.length);
+  (check.sns || []).forEach(function (s) {
+    const blocked = s.blocks && s.blocks.length > 0;
+    if (!blocked && commonBlocked) return; // 共通の理由で止める時は、「このまま予約できます」のSNSは出さない
+
+    html += '<div style="margin-bottom:10px;"><div style="font-size:13px;font-weight:700;color:' + (blocked ? '#c62828' : '#2e7d32') + ';margin-bottom:2px;">' +
+      (blocked ? '⛔ ' : '✅ ') + esc(s.name) + '</div>' +
+      (blocked ? s.blocks.map(function (b) { return line(esc(b), false); }).join('') : line('このまま予約できます。', true)) + '</div>';
+  });
+  const common = check.common || { blocks: [], warnings: [] };
+  if ((common.blocks && common.blocks.length) || (common.warnings && common.warnings.length)) {
+    html += '<div style="margin-bottom:10px;"><div style="font-size:13px;font-weight:700;color:' + (common.blocks.length ? '#c62828' : '#e65100') + ';margin-bottom:2px;">' +
+      (common.blocks.length ? '⛔ ' : '⚠️ ') + '共通（すべてのSNS）</div>' +
+      common.blocks.map(function (b) { return line(esc(b), false); }).join('') +
+      common.warnings.map(function (w) {
+        return line(esc(w.message) + (w.suggestion ? '<div style="color:var(--text-sub);font-size:11px;text-indent:0;">言い換えの例：' + esc(w.suggestion) + '</div>' : ''), false);
+      }).join('') + '</div>';
+  }
+  const hasSameText = (check.sns || []).some(function (s) { return (s.blocks || []).some(function (b) { return b.indexOf('文と同じです') !== -1; }); });
+  if (hasSameText) {
+    html += '<div style="font-size:11px;color:var(--text-sub);line-height:1.6;">同じ文をくり返し投稿すると、SNSの決まりに反するおそれがあります。</div>';
+  }
+  document.getElementById('block-modal-body').innerHTML = html;
+  document.getElementById('block-modal-advice').innerHTML = esc(check.advice || '').replace(/\n/g, '<br>');
+  document.getElementById('block-modal').classList.add('open');
 }
 
 // ===== 予約確認 =====
@@ -3730,22 +3787,9 @@ async function showConfirm() {
     return;
   }
 
-  // ★liff_textgen.html151：投稿の回数の上限（スパム判定の対策。1つのSNSにつき、同じ時刻の枠は1件まで・1日3件まで・
-  // 　1週間〔月曜〜日曜〕15件まで）を、サーバー（checkPostLimits。投稿予約gs_29）に確かめる。予約の確定と同じ確かめ方で、
-  // 　投稿済みの分（実際にSNSに出たもの）も数える。画像のアップロードの前に知らせる。確かめられなかった時は先へ進む
-  // 　（予約の確定の時に、サーバーがもう一度確かめる）。
-  showConfirmBusy = true;
-  let postLimitMsg = '';
-  try {
-    postLimitMsg = await checkPostLimitsOnServer(selectedYear, selectedMonth, selectedDay,
-      parseInt(document.getElementById('post-time').value, 10), remainingSnsNames);
-  } finally {
-    showConfirmBusy = false;
-  }
-  if (postLimitMsg) {
-    alert(postLimitMsg);
-    return;
-  }
+  // ★liff_textgen.html169：投稿の回数の上限（同じ時刻の枠1件・1日3件・1週間15件）は、下の投稿の内容の確かめ（投稿チェックgs_04）で、
+  // 　SNSごとに一緒に確かめる（理由をまとめて一度に出すため。html151 の checkPostLimitsOnServer() は使わなくなった）。予約の確定の時にも、
+  // 　サーバー（createReservation）がもう一度確かめる。
 
   // 画像状態確認
   if (imageState === null) {
@@ -3757,6 +3801,7 @@ async function showConfirm() {
   }
 
   // ★liff_textgen.html168：投稿の内容を確かめる（投稿チェックgs_01。前後30日の投稿・予約と同じ文・似た文・同じ画像、AIによる確かめ）。
+  // ★liff_textgen.html169：投稿チェックgs_04 から、投稿先のSNSごと（X・Instagram・Threads）に、投稿の数・同じ文・似た文・同じ画像を確かめる。
   // 　止める時は理由を出して確認の窓を開かない。気をつけたいことは、確認の窓の上（#confirm-check-box）に出す。
   // 　確かめられなかった時は止めずに進む（予約の確定の時には確かめない）。
   showConfirmBusy = true;
@@ -3769,7 +3814,7 @@ async function showConfirm() {
     showConfirmBusy = false;
   }
   if (postCheck && postCheck.blocked) {
-    alert(String(postCheck.message || ''));
+    showPostBlockModal(postCheck); // ★liff_textgen.html169：理由をSNSごとにまとめて、画面の中の窓で出す
     return;
   }
   renderPostCheckBox(postCheck);
