@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成167 - AiPost</title>
+<title>投稿文作成168 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -844,7 +844,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成167</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成168</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1434,6 +1434,7 @@
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t11')">内容を<wbr>確認して<wbr>予約する<span class="accordion-arrow" id="arr-acc-t11">▶</span></div>
     <div class="accordion-body" id="acc-t11">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その<wbr>ご利用期間の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿を見る」を<wbr>押すと、<wbr>SNSごとに<wbr>切り抜いた<wbr>画像と、<wbr>ハッシュタグを<wbr>含めた<wbr>投稿文を、<wbr>実際に<wbr>投稿される<wbr>形で<wbr>確かめられます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">確認の<wbr>前に、<wbr>前後30日の<wbr>投稿・予約と<wbr>同じ文・似た文・同じ画像が<wbr>ないかと、<wbr>SNSで<wbr>気をつけたい<wbr>言い方が<wbr>ないかを<wbr>確かめます。<wbr>同じSNSに<wbr>同じ文を<wbr>予約しようと<wbr>した時などは、<wbr>予約できません。<wbr>気をつけたい<wbr>ことが<wbr>ある時は、<wbr>確認の<wbr>窓の<wbr>上に<wbr>表示されます<wbr>（そのまま<wbr>予約も<wbr>できます）。<!-- ★liff_textgen.html168 --></div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「予約を確定する」を<wbr>押すと<wbr>予約が<wbr>完了します。<wbr>この<wbr>時点で<wbr>初めて<wbr>予約と<wbr>して<wbr>保存されます。<wbr>直したい<wbr>場合は<wbr>「修正する」を<wbr>押すと、<wbr>入力した<wbr>内容の<wbr>まま<wbr>戻れます。<wbr>予約した後は、<wbr>予約確認画面で<wbr>投稿文の<wbr>修正・画像の<wbr>変更・キャンセルが<wbr>できます。<!-- ★liff_textgen.html161：「差し替え」→「変更」 --></div>
     </div>
   </div>
@@ -1520,6 +1521,8 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">予約内容の確認</div>
+    <!-- ★liff_textgen.html168：投稿の内容の確かめ（投稿チェックgs_01）で、気をつけたいことがある時に出す（Kenさん承認の見本168） -->
+    <div id="confirm-check-box" style="display:none;"></div>
     <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:16px;">
       <div class="confirm-row"><span class="confirm-key">投稿先</span><span class="confirm-val" id="confirm-sns">Instagram・X</span></div>
       <div id="confirm-url-note" style="display:none;font-size:11px;color:#c62828;background:#ffebee;border-radius:6px;padding:6px 8px;margin:4px 0;line-height:1.6;white-space:pre-line;"></div>
@@ -1835,7 +1838,7 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成167';
+const TRACE_SCREEN = '投稿文作成168';
 
 function traceLog(msg) {
   try {
@@ -3508,7 +3511,7 @@ async function checkPostLimitsOnServer(y, m, d, hour, snsNames) {
   }
 }
 
-function showLimitCheckOverlay() {
+function showLimitCheckOverlay(message) {
   _ensureReserveSpinnerStyle();
   hideLimitCheckOverlay();
   const overlay = document.createElement('div');
@@ -3517,7 +3520,7 @@ function showLimitCheckOverlay() {
   overlay.innerHTML =
     '<div style="background:#fff;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:260px;text-align:center;">' +
     '<div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:#1a237e;border-radius:50%;animation:reserve-loading-spin 0.8s linear infinite;"></div>' +
-    '<div style="font-size:14px;font-weight:700;color:#333;">投稿の数を確認しています…</div>' +
+    '<div style="font-size:14px;font-weight:700;color:#333;">' + (message || '投稿の数を確認しています…') + '</div>' +
     '</div>';
   document.body.appendChild(overlay);
 }
@@ -3525,6 +3528,82 @@ function showLimitCheckOverlay() {
 function hideLimitCheckOverlay() {
   const el = document.getElementById('limit-check-overlay');
   if (el) el.remove();
+}
+
+// ===== 投稿の内容の確かめ（★liff_textgen.html168） =====
+// 　サーバー（投稿チェックgs_01 の checkPostContent_）に、投稿文・投稿先・投稿日時・画像の指紋・AIに見せる小さくした画像を送る。
+// 　文・投稿先・日時・画像が前と同じ時は、前の結果を使う（AIに送り直さない）。確かめられなかった時は null を返す。
+let POST_CHECK_CACHE = { key: '', result: null };
+
+async function checkPostContentOnServer(y, m, d, hour, targets) {
+  const text = document.getElementById('post-textarea').value;
+  const scheduledAt = new Date(y, m - 1, d, hour, 0, 0).toISOString();
+  const useImage = imageState !== 'none' && !!originalImageDataUrl && !!originalImage;
+  const fingerprint = useImage ? await imageFingerprintOf(originalImageDataUrl) : '';
+  const key = JSON.stringify([text, targets, scheduledAt, useImage ? (fingerprint || MAT_PHOTO_TOKEN) : '']);
+  if (POST_CHECK_CACHE.key === key && POST_CHECK_CACHE.result) return POST_CHECK_CACHE.result;
+  let imageDataUrl = '';
+  if (useImage) {
+    try { imageDataUrl = resizePhotoForAi(); } catch (err) { imageDataUrl = ''; }
+  }
+  showLimitCheckOverlay('投稿の内容を確認しています…');
+  try {
+    const result = await postToGas(
+      { action: 'checkPostContent', lineUid: LINE_UID,
+        params: { text: text, snsTargets: targets, scheduledAt: scheduledAt, imageFingerprint: fingerprint, imageDataUrl: imageDataUrl } },
+      '投稿の内容の確認',
+      function (r) { return r && r.success && r.data && typeof r.data.blocked === 'boolean'; }
+    );
+    if (!result) return null;
+    // AIに確かめてもらえなかった結果は覚えない（もう一度押した時に、確かめ直す）
+    if (result.data.aiChecked !== false) POST_CHECK_CACHE = { key: key, result: result.data };
+    return result.data;
+  } finally {
+    hideLimitCheckOverlay();
+  }
+}
+
+// 画像の指紋（中身のSHA-256を小文字の16進64字にしたもの。ImageUploadgs_05 と同じ計算）。作れない時は ''
+async function imageFingerprintOf(dataUrl) {
+  try {
+    const m = String(dataUrl || '').match(/^data:[^;]+;base64,(.+)$/);
+    if (!m || !window.crypto || !crypto.subtle) return '';
+    const bin = atob(m[1]);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const digest = await crypto.subtle.digest('SHA-256', bytes);
+    return Array.from(new Uint8Array(digest)).map(function (b) { return (b < 16 ? '0' : '') + b.toString(16); }).join('');
+  } catch (err) {
+    return '';
+  }
+}
+
+// 確認の窓の上に、気をつけたいことを出す（無い時は隠す）。確かめられなかった時は1行だけ出す
+function renderPostCheckBox(check) {
+  const box = document.getElementById('confirm-check-box');
+  const esc = v => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const warnings = (check && Array.isArray(check.warnings)) ? check.warnings : [];
+  let note = '';
+  if (!check) note = '投稿の内容の確かめは、今回できませんでした。';
+  else if (check.aiChecked === false) note = '言い回しの確かめは、今回できませんでした。';
+  if (warnings.length === 0 && !note) {
+    box.style.display = 'none';
+    box.innerHTML = '';
+    return;
+  }
+  if (warnings.length === 0) {
+    box.style.cssText = 'font-size:11px;color:var(--text-sub);line-height:1.6;margin-bottom:12px;';
+    box.textContent = note;
+    return;
+  }
+  box.style.cssText = 'background:#fff8e1;border:1px solid #ffcc80;border-radius:10px;padding:10px 12px;margin-bottom:12px;';
+  box.innerHTML = '<div style="font-size:13px;font-weight:700;color:#e65100;margin-bottom:6px;">⚠️ 気をつけたいこと</div>' +
+    warnings.map(function (w, i) {
+      const last = i === warnings.length - 1 && !note;
+      const sub = w.suggestion ? '<div style="color:var(--text-sub);font-size:11px;padding-left:1em;">言い換えの例：' + esc(w.suggestion) + '</div>' : '';
+      return '<div style="font-size:12px;line-height:1.7;color:var(--text);margin-bottom:' + (last ? '0' : '6px') + ';">・' + esc(w.message) + sub + '</div>';
+    }).join('') +
+    (note ? '<div style="font-size:11px;color:var(--text-sub);line-height:1.6;">' + note + '</div>' : '');
 }
 
 // ===== 予約確認 =====
@@ -3676,6 +3755,24 @@ async function showConfirm() {
     if (!confirm(noImageConfirmMsg)) return;
     imageState = 'none';
   }
+
+  // ★liff_textgen.html168：投稿の内容を確かめる（投稿チェックgs_01。前後30日の投稿・予約と同じ文・似た文・同じ画像、AIによる確かめ）。
+  // 　止める時は理由を出して確認の窓を開かない。気をつけたいことは、確認の窓の上（#confirm-check-box）に出す。
+  // 　確かめられなかった時は止めずに進む（予約の確定の時には確かめない）。
+  showConfirmBusy = true;
+  let postCheck = null;
+  try {
+    postCheck = await checkPostContentOnServer(selectedYear, selectedMonth, selectedDay,
+      parseInt(document.getElementById('post-time').value, 10),
+      { x: xChecked && !xExcluded, instagram: igChecked && !igExcluded, threads: thChecked });
+  } finally {
+    showConfirmBusy = false;
+  }
+  if (postCheck && postCheck.blocked) {
+    alert(String(postCheck.message || ''));
+    return;
+  }
+  renderPostCheckBox(postCheck);
 
   const isExcludedItem = el => {
     const icon = el.querySelector('.sns-icon-sm');
