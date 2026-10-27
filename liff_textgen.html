@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成169 - AiPost</title>
+<title>投稿文作成170 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -844,7 +844,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成169</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成170</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1176,7 +1176,7 @@
     <div id="img-upload-area" style="padding:20px 16px 12px;">
       <div style="text-align:center;color:var(--text-sub);margin-bottom:14px;">
         <div style="font-size:36px;margin-bottom:8px;">🖼️</div>
-        <div style="font-size:11px;line-height:1.7;text-align:left;">画像を<wbr>1枚選ぶと、<wbr>SNSごとに<wbr>合う形に<wbr>切り抜けます。<wbr>Instagramへの<wbr>投稿には<wbr>画像が<wbr>必要です。</div>
+        <div style="font-size:11px;line-height:1.7;text-align:left;">画像を<wbr>1枚選ぶと、<wbr>SNSごとに<wbr>合う形に<wbr>トリミング<wbr>できます。<wbr>Instagramへの<wbr>投稿には<wbr>画像が<wbr>必要です。</div>
       </div>
       <input type="file" id="my-img-input" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
       <input type="file" id="my-cam-input" accept="image/*" capture="environment" style="display:none;" onchange="handleImageUpload(event)">
@@ -1394,9 +1394,9 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t9')">⑧ 画像アップロード<span class="accordion-arrow" id="arr-acc-t9">▶</span></div>
     <div class="accordion-body" id="acc-t9">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">フォルダから<wbr>選ぶか、<wbr>その場で<wbr>写真を<wbr>撮って、<wbr>画像を<wbr>1枚選びます<wbr>（②で<wbr>写真を<wbr>選んだ<wbr>場合は、<wbr>その<wbr>写真が<wbr>入っています）。<wbr>画像を<wbr>選ぶと、<wbr>SNSごとに<wbr>合う<wbr>比率で<wbr>切り抜けます<wbr>（トリミング）。<wbr>⭐が<wbr>付いている<wbr>比率が<wbr>おすすめです。<wbr>「自由」を<wbr>選ぶと、<wbr>縦横の<wbr>比率を<wbr>決めずに<wbr>切り抜けます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">フォルダから<wbr>選ぶか、<wbr>その場で<wbr>写真を<wbr>撮って、<wbr>画像を<wbr>1枚選びます<wbr>（②で<wbr>写真を<wbr>選んだ<wbr>場合は、<wbr>その<wbr>写真が<wbr>入っています）。<wbr>画像を<wbr>選ぶと、<wbr>SNSごとに<wbr>合う<wbr>比率で<wbr>トリミング<wbr>できます。<wbr>⭐が<wbr>付いている<wbr>比率が<wbr>おすすめです。<wbr>「自由」を<wbr>選ぶと、<wbr>縦横の<wbr>比率を<wbr>決めずに<wbr>トリミング<wbr>できます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとに<wbr>選べる<wbr>こと</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">「✂️&nbsp;SNSごとにトリミングする」では、<wbr>SNSごとに<wbr>「✂️&nbsp;切り抜く」<wbr>「🖼️&nbsp;元画像」<wbr>（切り抜かずに<wbr>載せる）<wbr>「🚫&nbsp;画像なし」の<wbr>3つから<wbr>選べます。<wbr>すべての<wbr>SNSで<wbr>同じ<wbr>画像を<wbr>そのまま<wbr>使う<wbr>場合は<wbr>「トリミングせずにそのまま使う」、<wbr>画像を<wbr>付けない<wbr>場合は<wbr>「🚫&nbsp;画像なしで投稿する」を<wbr>選んでください。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">「✂️&nbsp;SNSごとにトリミングする」では、<wbr>SNSごとに<wbr>「✂️&nbsp;トリミングする」<wbr>「🖼️&nbsp;元画像」<wbr>（トリミングせずに<wbr>載せる）<wbr>「🚫&nbsp;画像なし」の<wbr>3つから<wbr>選べます。<wbr>すべての<wbr>SNSで<wbr>同じ<wbr>画像を<wbr>そのまま<wbr>使う<wbr>場合は<wbr>「トリミングせずにそのまま使う」、<wbr>画像を<wbr>付けない<wbr>場合は<wbr>「🚫&nbsp;画像なしで投稿する」を<wbr>選んでください。</div>
       <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
         <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">💡 Instagramは<wbr>画像が<wbr>必要です</div>
         <div style="font-size:11px;color:#5d4037;line-height:1.7;">Instagramは<wbr>画像が<wbr>無いと<wbr>投稿できません。<wbr>画像なしを<wbr>選ぶと、<wbr>Instagramは<wbr>投稿先から<wbr>外れます。</div>
@@ -1415,7 +1415,7 @@
           <div style="font-size:11px;color:#555;line-height:1.7;">⭐4:5<wbr>（縦長）<wbr>／1:1<wbr>（正方<wbr>形）<wbr>／16:9<wbr>（横長）。<wbr>Instagramと<wbr>同じ<wbr>Meta社の<wbr>サービスの<wbr>ため、<wbr>縦長が<wbr>最も<wbr>きれいに<wbr>見えます。</div>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">アップロードする<wbr>元の<wbr>画像は<wbr>1枚だけです。<wbr>⑤で<wbr>説明した<wbr>「同じ画像」は、<wbr>この<wbr>元の<wbr>画像の<wbr>ことです。<wbr>SNSごとに<wbr>切り<wbr>抜き方を<wbr>変えても、<wbr>元の<wbr>画像は<wbr>同じなので<wbr>「1投稿」の<wbr>数え方には<wbr>影響しません。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">アップロードする<wbr>元の<wbr>画像は<wbr>1枚だけです。<wbr>⑤で<wbr>説明した<wbr>「同じ画像」は、<wbr>この<wbr>元の<wbr>画像の<wbr>ことです。<wbr>SNSごとに<wbr>トリミングの<wbr>しかたを<wbr>変えても、<wbr>元の<wbr>画像は<wbr>同じなので<wbr>「1投稿」の<wbr>数え方には<wbr>影響しません。</div>
     </div>
   </div>
 
@@ -1433,7 +1433,7 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t11')">内容を<wbr>確認して<wbr>予約する<span class="accordion-arrow" id="arr-acc-t11">▶</span></div>
     <div class="accordion-body" id="acc-t11">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その<wbr>ご利用期間の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿を見る」を<wbr>押すと、<wbr>SNSごとに<wbr>切り抜いた<wbr>画像と、<wbr>ハッシュタグを<wbr>含めた<wbr>投稿文を、<wbr>実際に<wbr>投稿される<wbr>形で<wbr>確かめられます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を確認する」を<wbr>押すと、<wbr>予約の<wbr>内容<wbr>（投稿先・投稿日時・画像・<wbr>その<wbr>ご利用期間の<wbr>残りの<wbr>枠）が<wbr>表示されます。<wbr>「📄&nbsp;SNSごとの投稿を見る」を<wbr>押すと、<wbr>SNSごとに<wbr>トリミングした<wbr>画像と、<wbr>ハッシュタグを<wbr>含めた<wbr>投稿文を、<wbr>実際に<wbr>投稿される<wbr>形で<wbr>確かめられます。</div>
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">確認の<wbr>前に、<wbr>投稿先の<wbr>SNSごとに、<wbr>投稿の<wbr>数と、<wbr>前後30日の<wbr>投稿・予約と<wbr>同じ文・似た文・同じ画像が<wbr>ないか、<wbr>SNSで<wbr>気をつけたい<wbr>言い方が<wbr>ないかを<wbr>確かめます。<wbr>予約できない<wbr>時は、<wbr>理由と<wbr>直し方を<wbr>まとめて<wbr>表示します。<wbr>気をつけたい<wbr>ことが<wbr>ある時は、<wbr>確認の<wbr>窓の<wbr>上に<wbr>表示されます<wbr>（そのまま<wbr>予約も<wbr>できます）。<!-- ★liff_textgen.html168・169 --></div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">「予約を確定する」を<wbr>押すと<wbr>予約が<wbr>完了します。<wbr>この<wbr>時点で<wbr>初めて<wbr>予約と<wbr>して<wbr>保存されます。<wbr>直したい<wbr>場合は<wbr>「修正する」を<wbr>押すと、<wbr>入力した<wbr>内容の<wbr>まま<wbr>戻れます。<wbr>予約した後は、<wbr>予約確認画面で<wbr>投稿文の<wbr>修正・画像の<wbr>変更・キャンセルが<wbr>できます。<!-- ★liff_textgen.html161：「差し替え」→「変更」 --></div>
     </div>
@@ -1462,7 +1462,7 @@
   <div class="trim-header">
     <div>
       <div class="trim-header-title" id="trim-sns-title">🐦 X用 トリミング</div>
-      <div class="trim-header-sub" id="trim-sns-sub">切り抜き枠を動かして位置を決めてください</div>
+      <div class="trim-header-sub" id="trim-sns-sub">トリミング枠を動かして位置を決めてください</div>
     </div>
     <button onclick="cancelTrim()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap;">キャンセル</button>
   </div>
@@ -1492,7 +1492,7 @@
   <div class="trim-actions">
     <!-- ★liff_textgen.html114：「このSNSはスキップ」を廃止し、SNSごとに「切り抜く／元画像のまま載せる／画像なしで投稿」の3択にした -->
     <!-- ★liff_textgen.html115：画像を大きく表示するため、3つを横一列・短い表示にした -->
-    <button class="trim-btn-ok" onclick="confirmTrim()" id="trim-btn-ok">✂️ 切り抜く</button>
+    <button class="trim-btn-ok" onclick="confirmTrim()" id="trim-btn-ok">✂️ トリミングする</button>
     <button class="trim-btn-skip" onclick="chooseOriginalForSns()">🖼️ 元画像</button>
     <button class="trim-btn-skip" onclick="chooseNoImageForSns()" id="trim-btn-none">🚫 画像なし</button>
   </div>
@@ -1849,7 +1849,8 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '投稿文作成169';
+// ★liff_textgen.html170：画面の言葉を「トリミング」にそろえた（「切り抜き」「切り抜く」を使わない。Kenさん指摘・予約確認76と同じ）
+const TRACE_SCREEN = '投稿文作成170';
 
 function traceLog(msg) {
   try {
@@ -4573,7 +4574,7 @@ function snsImageKind(sns) {
   }
   return 'none';
 }
-const TRIM_CHOICE_LABEL = { trim: '✂️ 切り抜き', original: '🖼️ 元画像のまま', none: '🚫 画像なし' };
+const TRIM_CHOICE_LABEL = { trim: '✂️ トリミング', original: '🖼️ 元画像のまま', none: '🚫 画像なし' };
 // ★liff_textgen.html166：SNSごとの画像（kind：trim／original／none）の表示用のURL。無ければ空
 function snsImageSrc(sns, kind) {
   if (kind === 'trim') return trimResults[sns] || '';
