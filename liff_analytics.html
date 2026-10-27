@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析63 - AiPost</title>
+<title>分析64 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -194,6 +194,8 @@
   .notice-confirm-btn { display: block; width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
   .notice-confirm-del { background: #e53935; color: #fff; }
   .notice-confirm-back { background: #f5f7fa; color: #6b7280; border: 1px solid #e0e4ed; }
+  /* ★liff_analytics.html64：言葉の横の「？」。押すと意味を窓で出す（窓はお知らせの確認の窓と同じ形） */
+  .term-info { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; margin-left: 3px; padding: 0; border-radius: 50%; border: 1px solid var(--primary); background: #fff; color: var(--primary); font-size: 10px; font-weight: 700; line-height: 1; vertical-align: 1px; cursor: pointer; font-family: inherit; }
   .notice-panel { background: #fff; border-radius: 14px; width: 100%; max-width: 520px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,0.25); word-break: normal; overflow-wrap: anywhere; }
   .notice-panel-head { display: flex; align-items: center; padding: 12px 14px; border-bottom: 1px solid #eee; }
   .notice-panel-title { font-size: 15px; font-weight: 700; color: #1a237e; display: flex; align-items: center; gap: 6px; }
@@ -331,7 +333,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析63</span></span>
+  <span class="header-logo"><span class="nowrap">分析64</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -395,6 +397,15 @@
   </div>
 </div>
 
+<!-- ★liff_analytics.html64：言葉の意味の窓 -->
+<div class="notice-confirm" id="term-modal" onclick="if(event.target===this)closeTerm()">
+  <div class="notice-confirm-sheet">
+    <div class="notice-confirm-handle"></div>
+    <div class="notice-confirm-title" id="term-modal-title"></div>
+    <div class="notice-confirm-note" id="term-modal-text"></div>
+    <button type="button" class="notice-confirm-btn notice-confirm-back" onclick="closeTerm()">閉じる</button>
+  </div>
+</div>
 <div class="modal-overlay" id="profile-loading-overlay" style="z-index:2000;align-items:center;display:none;">
   <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
     <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
@@ -460,7 +471,7 @@
         <div class="today-sub" id="lite-month-total">/-件</div>
       </div>
       <div class="today-item">
-        <div class="today-label">総合<wbr>EG率</div>
+        <div class="today-label">総合<wbr>EG率<button type="button" class="term-info" onclick="showTerm('eg')" aria-label="説明">?</button></div>
         <div class="today-val" style="color:#2e7d32;" id="lite-eg-rate">-%</div>
         <div class="today-sub" style="color:var(--success);">今月の<wbr>平均</div>
       </div>
@@ -506,7 +517,7 @@
   <!-- ④ 投稿カレンダー（24時間後データ） -->
   <div class="card">
     <div class="card-title">📅 投稿日別データ</div>
-    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます</p>
+    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます。</p>
     <div class="cal-grid">
       <div class="cal-title" id="cal-lite-title"></div>
       <div class="cal-days">
@@ -519,7 +530,7 @@
       <div id="cal-lite-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-lite-sns"></div>
     </div>
-    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます。</p>
   </div>
 
   <!-- ④ フォロワー推移 -->
@@ -530,7 +541,7 @@
     <div style="display:flex;flex-direction:column;gap:10px;" id="lite-fol-card">
       <div style="font-size:10px;color:var(--text-light);">-</div>
     </div>
-    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています</p>
+    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています。</p>
   </div>
 
 
@@ -570,7 +581,7 @@
         <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています。</p>
   </div>
 
   </div><!-- /lite-content -->
@@ -619,7 +630,7 @@
         <div class="today-sub" id="standard-month-total">/-件</div>
       </div>
       <div class="today-item">
-        <div class="today-label">総合<wbr>EG率</div>
+        <div class="today-label">総合<wbr>EG率<button type="button" class="term-info" onclick="showTerm('eg')" aria-label="説明">?</button></div>
         <div class="today-val" style="color:#2e7d32;" id="standard-eg-rate">-%</div>
         <div class="today-sub" style="color:var(--success);">今月の<wbr>平均</div>
       </div>
@@ -657,7 +668,7 @@
       </div>
       <div id="std-p1-detail" style="display:none;padding:10px;">
         <div id="standard-latest-detail"></div>
-        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます。</p>
         <p style="font-size:9px;color:var(--text-light);margin-top:4px;">↑上昇　※ K=1,000</p>
       </div>
     </div>
@@ -666,7 +677,7 @@
   <!-- ③ 投稿カレンダー（24時間後データ） -->
   <div class="card">
     <div class="card-title">📅 投稿日別データ</div>
-    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます</p>
+    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます。</p>
     <div class="cal-grid">
       <div class="cal-title" id="cal-std-title"></div>
       <div class="cal-days">
@@ -679,7 +690,7 @@
       <div id="cal-std-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-std-sns"></div>
     </div>
-    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます。</p>
   </div>
 
   <!-- ④ フォロワー推移 -->
@@ -690,7 +701,7 @@
     <div style="display:flex;flex-direction:column;gap:10px;" id="standard-fol-card">
       <div style="font-size:10px;color:var(--text-light);">-</div>
     </div>
-    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています</p>
+    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています。</p>
   </div>
 
   <!-- ⑥ あなたの投稿平均との比較（24時間後のみ・STANDARD固有） -->
@@ -702,9 +713,9 @@
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="std-compare-desc">-</p>
     <div id="std-compare-detail" style="display:none;margin-top:10px;">
       <div id="std-compare-body"></div>
-      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています。</p>
       <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
-      <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 1時間後・3時間後のデータはPROプランで確認できます</p>
+      <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 1時間後・3時間後のデータはPROプランで確認できます。</p>
     </div>
   </div>
 
@@ -740,7 +751,7 @@
         <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています。</p>
   </div>
 
   </div><!-- /standard-content -->
@@ -793,19 +804,19 @@
       </div>
       <div class="today-item">
         <!-- ★liff_analytics.html43：初速スコア順位・総合初速スコアを実データで表示する（applyFirstSpeedScore） -->
-        <div class="today-label">初速スコア<wbr>順位</div>
+        <div class="today-label">初速スコア<wbr>順位<button type="button" class="term-info" onclick="showTerm('fsRank')" aria-label="説明">?</button></div>
         <div class="today-val" style="color:var(--primary);" id="pro-fs-rank">-</div>
         <div class="today-sub" id="pro-fs-rank-sub">-</div>
       </div>
       <div class="today-item">
-        <div class="today-label">総合<wbr>初速スコア</div>
+        <div class="today-label">総合<wbr>初速スコア<button type="button" class="term-info" onclick="showTerm('fsTotal')" aria-label="説明">?</button></div>
         <div class="today-val" style="color:var(--text-sub);" id="pro-fs-total">-</div>
         <div class="today-sub" id="pro-fs-total-sub">-</div>
       </div>
     </div>
     <!-- 内訳 -->
     <div style="background:var(--bg);border-radius:8px;padding:6px 10px;margin-bottom:10px;">
-      <div style="font-size:9px;color:var(--text-sub);margin-bottom:6px;" class="wrap-ja">SNS別<wbr>初速スコア<wbr>（投稿割合による<wbr>重み付け）</div>
+      <div style="font-size:9px;color:var(--text-sub);margin-bottom:6px;" class="wrap-ja">SNS別<wbr>初速スコア<button type="button" class="term-info" onclick="showTerm('fsSns')" aria-label="説明">?</button></div>
       <!-- ★liff_analytics.html43：SNS別初速スコアを実データで表示する（applyFirstSpeedScore） -->
       <div id="pro-fs-bysns">
         <div style="font-size:10px;color:var(--text-light);">-</div>
@@ -841,10 +852,10 @@
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
         <!-- ★liff_analytics.html41：ダミー表示をやめ、getAnalyticsSummary()のdataAccumulationを表示する（applyDataAccumulation） -->
-        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📈 データ蓄積率</div>
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📈 データ蓄積率<button type="button" class="term-info" onclick="showTerm('accum')" aria-label="説明">?</button></div>
         <div style="font-size:14px;font-weight:700;color:#2e7d32;" id="pro-accum-rate">-</div>
         <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="pro-accum-count">- / 30投稿</div>
-        <div style="font-size:8px;color:var(--text-light);margin-top:2px;" class="wrap-ja">直近60日以内の<wbr>投稿が<wbr>対象です</div>
+        <div style="font-size:8px;color:var(--text-light);margin-top:2px;" class="wrap-ja">直近60日以内の<wbr>投稿が<wbr>対象です。</div>
       </div>
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
         <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;word-break:keep-all;overflow-wrap:anywhere;" class="quota-title">📆 予約枠</div><!-- ★liff_analytics.html60：「今月の投稿枠」→「予約枠（M/dまで）」（ご利用期間ごとに数えるため） -->
@@ -871,7 +882,7 @@
     </div>
     <div id="compare-detail" style="display:none;margin-top:10px;">
       <div id="pro-compare-body"></div>
-      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています。</p>
       <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
     </div>
   </div>
@@ -879,7 +890,7 @@
   <!-- 投稿日別データ -->
   <div class="card">
     <div class="card-title">📅 投稿日別データ</div>
-    <p class="hint">💡 投稿のある日付をタップすると詳細を確認できます</p>
+    <p class="hint">💡 投稿のある日付をタップすると詳細を確認できます。</p>
     <div class="cal-grid">
       <div class="cal-title" id="cal-pro-title"></div>
       <div class="cal-days">
@@ -904,7 +915,7 @@
     <div style="display:flex;flex-direction:column;gap:10px;" id="pro-fol-card">
       <div style="font-size:10px;color:var(--text-light);">-</div>
     </div>
-    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています</p>
+    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています。</p>
   </div>
 
   <!-- 同業種・同エリア比較 -->
@@ -914,7 +925,7 @@
     <div class="card-title">🏙️ 同業種・同エリア平均との比較</div>
     <p style="font-size:10px;color:var(--text-sub);margin-bottom:10px;" id="pro-ind-desc">-</p>
     <div style="display:flex;flex-direction:column;gap:8px;" id="pro-ind-body"></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 同じ業種・地域の店舗（自分を除いて5店舗以上）のデータを匿名で集計しています。毎朝更新</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 同じ業種・地域の店舗（自分を除いて5店舗以上）のデータを匿名で集計しています。毎朝更新。</p>
   </div>
 
   <!-- ネガティブなコメント（★liff_analytics.html63：「ネガティブコメント検知」を「ネガティブなコメント」にした（決まった件数のコメントだけを確かめるため、「検知」だと全部を見張っていると誤解される。Kenさん決定）） -->
@@ -964,7 +975,7 @@
         <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています。</p>
   </div>
 
   </div><!-- /pro-content -->
@@ -988,15 +999,15 @@
     <div style="display:flex;flex-direction:column;gap:6px;">
       <div style="background:#fffde7;border-radius:8px;padding:8px 10px;">
         <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:3px;">X</div>
-        <div style="font-size:11px;color:#555555;line-height:1.7;">投稿後30分〜1時間以内（リポスト・リプライが広がりに影響すると考えられています）</div>
+        <div style="font-size:11px;color:#555555;line-height:1.7;">投稿後30分〜1時間以内（リポスト・リプライが広がりに影響すると考えられています）。</div>
       </div>
       <div style="background:#fff0f5;border-radius:8px;padding:8px 10px;">
         <div style="font-size:11px;font-weight:700;color:#e1306c;margin-bottom:3px;">Instagram</div>
-        <div style="font-size:11px;color:#e1306c;line-height:1.7;">投稿後1〜2時間以内（保存・シェアが拡散に影響すると考えられています）</div>
+        <div style="font-size:11px;color:#e1306c;line-height:1.7;">投稿後1〜2時間以内（保存・シェアが拡散に影響すると考えられています）。</div>
       </div>
       <div style="background:#e8f5e9;border-radius:8px;padding:8px 10px;">
         <div style="font-size:11px;font-weight:700;color:#555555;margin-bottom:3px;">Threads</div>
-        <div style="font-size:11px;color:#555555;line-height:1.7;">投稿後1〜3時間以内（返信・リポストが露出に影響すると考えられています）</div>
+        <div style="font-size:11px;color:#555555;line-height:1.7;">投稿後1〜3時間以内（返信・リポストが露出に影響すると考えられています）。</div>
       </div>
     </div>
   </div>
@@ -1144,7 +1155,7 @@
       <div style="background:#fffde7;border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:#555555;margin-bottom:4px;">X</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　🔁リポスト　↩️リプライ　👁️インプレッション　📊EG率</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：リポスト数（拡散力の核心。投稿後30分〜1時間のリポストの勢いがアルゴリズムの評価を左右すると考えられています）</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：リポスト数（拡散力の核心。投稿後30分〜1時間のリポストの勢いがアルゴリズムの評価を左右すると考えられています）。</div>
       </div>
       <div style="background:#fff0f5;border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:#e1306c;margin-bottom:4px;">Instagram</div>
@@ -1155,7 +1166,7 @@
       <div style="background:#e8f5e9;border-radius:8px;padding:10px;">
         <div style="font-size:12px;font-weight:700;color:#555555;margin-bottom:4px;">Threads</div>
         <div style="font-size:11px;color:var(--text);line-height:1.7;margin-bottom:4px;">取得指標：❤️いいね　🔁リポスト　↩️返信　🗨️引用　👁️インプレッション　📊EG率</div>
-        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：返信数・引用数（会話を重視するThreadsの特性上、返信や引用が露出増加に影響すると考えられています）</div>
+        <div style="font-size:11px;color:var(--text);line-height:1.7;">特に重要：返信数・引用数（会話を重視するThreadsの特性上、返信や引用が露出増加に影響すると考えられています）。</div>
       </div>
     </div>
   </div>
@@ -1406,7 +1417,7 @@ function applyTabLockState(tabKey, requiredTier, planLabel) {
   if (actualTier === requiredTier) {
     // ちょうど契約中のプラン：実データを表示
     banner.style.display = 'block';
-    banner.innerHTML = bannerHtml('ok', '✓ 現在ご利用中のプランです');
+    banner.innerHTML = bannerHtml('ok', '✓ 現在ご利用中のプランです。');
     guide.style.display = 'none';
     content.style.display = 'block';
   } else if (actualTier > requiredTier) {
@@ -1684,7 +1695,7 @@ function makeSNSBlock(snsKey, snsData, showAllTimings) {
 
   // 削除済み（元投稿が見つからない）の場合
   if (h1.deleted || h3.deleted || h24.deleted) {
-    return makeNoDataBlock(snsKey, '投稿が見つかりません（削除された可能性があります）');
+    return makeNoDataBlock(snsKey, '投稿が見つかりません（削除された可能性があります）。');
   }
 
   // SNSごとの固定リストから、アイコンと値を組み立てる
@@ -1693,7 +1704,7 @@ function makeSNSBlock(snsKey, snsData, showAllTimings) {
 
   // まだ1つもデータが取得されていない場合（1h/3h/24hすべて空）
   if (h1.likes === undefined && h3.likes === undefined && h24.likes === undefined) {
-    return makeNoDataBlock(snsKey, 'まだデータが取得されていません');
+    return makeNoDataBlock(snsKey, 'まだデータが取得されていません。');
   }
 
   const cols = metrics.length;
@@ -1786,7 +1797,7 @@ function showStdUnified(d) {
       SNS_ORDER.filter(k => post.sns && post.sns[k]).forEach(snsKey => {
         const d24 = post.sns[snsKey].h24;
         if (!d24) {
-          html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です');
+          html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です。');
           return;
         }
         // ★liff_analytics_html35：STANDARDは1時間後・3時間後を一切取得しないため、
@@ -1795,9 +1806,9 @@ function showStdUnified(d) {
       });
     });
   } else {
-    html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません</p>';
+    html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません。</p>';
   }
-  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ STANDARDプランは24時間後のデータのみ取得されます</p>';
+  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ STANDARDプランは24時間後のデータのみ取得されます。</p>';
   // ★liff_analytics_html23：カード下部の固定案内と重複していた「💎 1時間後・3時間後のデータは
   // 　PROプランで確認できます」の追加を削除（固定案内に一本化）
   document.getElementById('cal-std-sns').innerHTML = html;
@@ -1826,7 +1837,7 @@ function showLiteUnified(d) {
       SNS_ORDER.filter(k => post.sns && post.sns[k]).forEach(snsKey => {
         const d24 = post.sns[snsKey].h24;
         if (!d24) {
-          html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です');
+          html += makeNoDataBlock(snsKey, 'まだ24時間経過していないため未取得です。');
           return;
         }
         // ★liff_analytics_html35：LITEは1時間後・3時間後を一切取得しないため、
@@ -1835,9 +1846,9 @@ function showLiteUnified(d) {
       });
     });
   } else {
-    html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません</p>';
+    html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません。</p>';
   }
-  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ LITEプランは24時間後のデータのみ取得されます</p>';
+  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ LITEプランは24時間後のデータのみ取得されます。</p>';
   // ★liff_analytics_html23：カード下部の固定案内と重複していた💎の追加を削除（固定案内に一本化）
   document.getElementById('cal-lite-sns').innerHTML = html;
 }
@@ -1906,7 +1917,29 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '分析63';
+// ★liff_analytics.html64：利用者に見せる文の終わりに「。」を付けた（ボタン・見出し・プランで使えない所の見出し・表の値・かっこの補足には付けない。Kenさん承認の決まり）。
+// 　投稿の文字数の表示を「字」にした（ほかの画面と同じ）。
+// 　「SNS別初速スコア」の「（投稿割合による重み付け）」を消した。分かりにくい言葉の横に「？」を付け、押すと意味を窓で出す（Kenさん指示）
+const TRACE_SCREEN = '分析64';
+
+// ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
+const TERM_TEXT = {
+  fsTotal: ['総合初速スコア', '投稿してからの反応の強さを、あなたのいつもの投稿と比べて100点満点で表したものです。70点以上なら好調です。'],
+  fsRank: ['初速スコア順位', '最新の投稿の初速スコアが、これまでの投稿の中で何番目に高いかです。'],
+  fsSns: ['SNS別初速スコア', 'SNSごとの初速スコアです。%は、そのSNSに投稿した割合です。'],
+  eg: ['EG率', '投稿にどれだけ反応（いいね・コメントなど）があったかを、割合で表したものです。数字が大きいほど、よく反応されています。'],
+  accum: ['データ蓄積率', '初速スコアを出すために比べる投稿が、どれだけたまったかです。30件たまると、点数が正確になります。']
+};
+function showTerm(key) {
+  const t = TERM_TEXT[key];
+  if (!t) return;
+  document.getElementById('term-modal-title').textContent = t[0];
+  document.getElementById('term-modal-text').textContent = t[1];
+  document.getElementById('term-modal').classList.add('open');
+}
+function closeTerm() {
+  document.getElementById('term-modal').classList.remove('open');
+}
 
 function traceLog(msg) {
   try {
@@ -2246,7 +2279,7 @@ function formatSnsBlockValues(obj) {
 
 function renderSnsResultRow(result) {
   if (!result.timing1h && !result.timing3h && !result.timing24h) {
-    return makeNoDataBlock(result.sns, 'まだデータが取得されていません');
+    return makeNoDataBlock(result.sns, 'まだデータが取得されていません。');
   }
   const showAllTimings = currentActualPlan === 'PRO';
   // ★liff_analytics.html42：formatSnsBlockValues()で表示用に整形してから渡す
@@ -2275,7 +2308,7 @@ function applyLatestPostSection(prefix, data) {
 
   const p = data.latestPost;
   const snsLabels = p.results.map(function (r) { return (SNS_META[r.sns] || {}).label || r.sns; }).join('・');
-  if (metaEl) metaEl.textContent = formatPostedAt(p.postedAt) + '　' + p.honbun.length + '文字　' + snsLabels;
+  if (metaEl) metaEl.textContent = formatPostedAt(p.postedAt) + '　' + p.honbun.length + '字　' + snsLabels;
   if (textEl) textEl.textContent = '📝 ' + p.honbun;
   if (btnEl) btnEl.style.display = '';
   if (detailEl) detailEl.innerHTML = p.results.map(renderSnsResultRow).join('');
@@ -2391,7 +2424,7 @@ function applyPro1hReaction(data) {
   if (!el) return;
   const noteStyle = 'font-size:10px;color:var(--text-light);padding:4px 6px;';
   if (!data || !data.latestPost || !Array.isArray(data.latestPost.results) || data.latestPost.results.length === 0) {
-    el.innerHTML = '<div style="' + noteStyle + '">まだ投稿がありません</div>';
+    el.innerHTML = '<div style="' + noteStyle + '">まだ投稿がありません。</div>';
     return;
   }
   const bySns = {};
@@ -2406,7 +2439,7 @@ function applyPro1hReaction(data) {
     // ★liff_analytics.html41：EG率に「%」、1,000以上に「K」を付ける（カレンダーの表示と揃える）
     return _pro1hRow(labelObj, defs.map(function (d) { return d.icon + formatCompareValue(d.key, v[d.key]); }).join('　'));
   });
-  el.innerHTML = rows.length ? rows.join('') : '<div style="' + noteStyle + '">まだ投稿がありません</div>';
+  el.innerHTML = rows.length ? rows.join('') : '<div style="' + noteStyle + '">まだ投稿がありません。</div>';
 }
 
 // ★liff_analytics.html41：PROの「📈 データ蓄積率」を実データで表示する。
@@ -2460,7 +2493,7 @@ function renderCompareSNS(r, timings) {
   let html = '<div style="margin-bottom:4px;">' +
     '<div style="font-size:11px;font-weight:700;color:' + s.color + ';margin-bottom:6px;">' + s.label + '</div>';
   if (!hasAny) {
-    return html + '<div style="font-size:10px;color:var(--text-light);">比較できる過去の投稿がまだありません</div></div>';
+    return html + '<div style="font-size:10px;color:var(--text-light);">比較できる過去の投稿がまだありません。</div></div>';
   }
   html += '<div style="display:grid;grid-template-columns:52px repeat(' + defs.length + ', 1fr);gap:4px 6px;align-items:center;">';
   html += '<div></div>' + defs.map(function (d) {
@@ -2498,13 +2531,13 @@ function applyCompareSection(data) {
     const toggleEl = document.getElementById(t.toggle);
     const c = data.compare;
     if (!c || !Array.isArray(c.results) || c.results.length === 0) {
-      if (descEl) descEl.textContent = '24時間後の数値がそろった投稿がまだありません';
+      if (descEl) descEl.textContent = '24時間後の数値がそろった投稿がまだありません。';
       if (bodyEl) bodyEl.innerHTML = '';
       if (toggleEl) toggleEl.style.display = 'none';
       return;
     }
     const d = new Date(c.postedAt);
-    if (descEl) descEl.textContent = (d.getMonth() + 1) + '月' + d.getDate() + '日投稿の数値と、過去の平均を比べています';
+    if (descEl) descEl.textContent = (d.getMonth() + 1) + '月' + d.getDate() + '日投稿の数値と、過去の平均を比べています。';
     if (bodyEl) {
       bodyEl.innerHTML = c.results.map(function (r) { return renderCompareSNS(r, t.timings); })
         .join('<hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">');
@@ -2548,7 +2581,7 @@ function applyFirstSpeedScore(data) {
     if (totalSubEl) totalSubEl.textContent = lowReaction ? '算出できません' : '-';
     if (bySnsEl) {
       bySnsEl.innerHTML = '<div style="font-size:10px;color:var(--text-light);">' +
-        (lowReaction ? '反応がまだ少ないため算出できません' : '投稿が増えると表示されます') + '</div>';
+        (lowReaction ? '反応がまだ少ないため算出できません。' : '投稿が増えると表示されます。') + '</div>';
     }
     return;
   }
@@ -2574,11 +2607,11 @@ function applyFirstSpeedScore(data) {
     // ★liff_analytics.html44：反応が少なく点数が出ないSNS（lowReactionSns）を下に添える
     const lowNotes = (f.lowReactionSns || []).map(function (sns) {
       return '<div style="font-size:9px;color:var(--text-light);margin-top:4px;">※ ' +
-        (FIRST_SPEED_SNS_LABEL[sns] || sns) + '：反応がまだ少ないため算出できません</div>';
+        (FIRST_SPEED_SNS_LABEL[sns] || sns) + '：反応がまだ少ないため算出できません。</div>';
     }).join('');
     bySnsEl.innerHTML = (items.length
       ? '<div style="display:grid;grid-template-columns:repeat(' + items.length + ', 1fr);gap:4px;">' + items.join('') + '</div>'
-      : '<div style="font-size:10px;color:var(--text-light);">投稿が増えると表示されます</div>') + lowNotes;
+      : '<div style="font-size:10px;color:var(--text-light);">投稿が増えると表示されます。</div>') + lowNotes;
   }
 }
 
@@ -2610,9 +2643,9 @@ function applyNextRecommendation(data) {
 
   let slotHtml;
   if (slots.length === 0) {
-    slotHtml = '<div style="font-size:10px;color:var(--text-light);">いろいろな時間帯に投稿すると、おすすめが表示されます</div>';
+    slotHtml = '<div style="font-size:10px;color:var(--text-light);">いろいろな時間帯に投稿すると、おすすめが表示されます。</div>';
   } else if (goodSlots.length === 0) {
-    slotHtml = '<div style="font-size:10px;color:var(--text-light);">今のところ、いつもより反応が良い時間帯は見つかっていません</div>';
+    slotHtml = '<div style="font-size:10px;color:var(--text-light);">今のところ、いつもより反応が良い時間帯は見つかっていません。</div>';
   } else {
     slotHtml = goodSlots.map(function (sl, i) {
       const dayLabel = sl.dayType === 'weekend' ? '土日' : '平日';
@@ -2654,7 +2687,7 @@ function formatFollowerDiff(v) {
 function applyFollowers(data) {
   if (!data || !Array.isArray(data.followers)) return;
   const list = data.followers;
-  const emptyHtml = '<div style="font-size:10px;color:var(--text-light);">フォロワー数は毎日深夜に記録され、記録が始まると表示されます</div>';
+  const emptyHtml = '<div style="font-size:10px;color:var(--text-light);">フォロワー数は毎日深夜に記録され、記録が始まると表示されます。</div>';
 
   const todayHtml = list.length === 0 ? emptyHtml : list.map(function (f) {
     const st = FOL_SNS_STYLE[f.sns] || FOL_SNS_STYLE.X;
@@ -2735,11 +2768,11 @@ function applyFollowers(data) {
 // 　getAnalyticsSummary()のindustryCompare（Analyticsgs_21）を使う。
 // 　比較できない場合は理由ごとの案内を出す。古い保存データ（industryCompareが無い）の場合は何もしない。
 const IND_REASON_TEXT = {
-  noIndustry: '設定画面で業種と都道府県を登録すると、比較が表示されます',
-  otherIndustry: '業種が「上記に当てはまらない業種」のため、比較できません',
-  fewStores: '同じ業種の店舗がまだ少ないため表示できません',
-  noData: '比較用のデータは毎朝更新されます。明日以降に表示されます',
-  error: '比較を表示できませんでした。時間をおいて開き直してください'
+  noIndustry: '設定画面で業種と都道府県を登録すると、比較が表示されます。',
+  otherIndustry: '業種が「上記に当てはまらない業種」のため、比較できません。',
+  fewStores: '同じ業種の店舗がまだ少ないため表示できません。',
+  noData: '比較用のデータは毎朝更新されます。明日以降に表示されます。',
+  error: '比較を表示できませんでした。時間をおいて開き直してください。'
 };
 const IND_SNS_NAME = { X: 'X', Instagram: 'Instagram', Threads: 'Threads' };
 
@@ -2755,7 +2788,7 @@ function renderIndustryItem(title, item, unit, digits, avgDigits) {
     (item.topPercent !== null ? '<span style="font-size:10px;color:var(--primary);font-weight:700;">上位 ' + item.topPercent + '%</span>' : '') +
     '</div>';
   const body = item.average === null
-    ? '<div style="font-size:10px;color:var(--text-light);">比較できる店舗が少ないため表示できません</div>'
+    ? '<div style="font-size:10px;color:var(--text-light);">比較できる店舗が少ないため表示できません。</div>'
     : '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">' +
       '<div style="background:#e8f5e9;border-radius:6px;padding:6px;text-align:center;border:1px solid #a5d6a7;">' +
       '<div style="font-size:9px;color:#2e7d32;margin-bottom:2px;">あなたのお店</div>' +
@@ -2776,7 +2809,7 @@ function applyIndustryCompare(data) {
     if (bodyEl) bodyEl.innerHTML = '';
     return;
   }
-  if (descEl) descEl.textContent = c.levelLabel + 'の' + c.storeCount + '店舗と比べています（匿名集計）';
+  if (descEl) descEl.textContent = c.levelLabel + 'の' + c.storeCount + '店舗と比べています（匿名集計）。';
   const parts = [];
   (c.eg || []).forEach(function (e) {
     parts.push(renderIndustryItem('📊 EG率（' + (IND_SNS_NAME[e.sns] || e.sns) + '）', e, '%', 1, 1));
@@ -2785,7 +2818,7 @@ function applyIndustryCompare(data) {
   if (c.posts30) parts.push(renderIndustryItem('📅 30日間の投稿数', c.posts30, '件', 0, 1));
   if (bodyEl) {
     bodyEl.innerHTML = parts.length ? parts.join('')
-      : '<div style="font-size:10px;color:var(--text-light);">比較できる項目がまだありません</div>';
+      : '<div style="font-size:10px;color:var(--text-light);">比較できる項目がまだありません。</div>';
   }
 }
 
@@ -2816,12 +2849,12 @@ function applySentiment(data) {
   const sentEl = document.getElementById('pro-sent-body');
   const negEl = document.getElementById('pro-neg-body');
   const note = function (text) { return '<div style="font-size:10px;color:var(--text-light);line-height:1.6;">' + text + '</div>'; };
-  const xLimitNote = st.xLimitReached ? note('※ 今月のXのコメントの取得は上限に達したため、Xの新しいコメントは判定していません') : '';
+  const xLimitNote = st.xLimitReached ? note('※ 今月のXのコメントの取得は上限に達したため、Xの新しいコメントは判定していません。') : '';
 
   if (st.enabled === false) {
     if (titleEl) titleEl.textContent = '😊 コメント感情分析（今月）';
-    if (sentEl) sentEl.innerHTML = note('コメントの判定は、現在停止中です');
-    if (negEl) negEl.innerHTML = note('コメントの判定は、現在停止中です');
+    if (sentEl) sentEl.innerHTML = note('コメントの判定は、現在停止中です。');
+    if (negEl) negEl.innerHTML = note('コメントの判定は、現在停止中です。');
     return;
   }
 
@@ -2829,7 +2862,7 @@ function applySentiment(data) {
   if (titleEl) titleEl.textContent = '😊 コメント感情分析（今月 ' + total + '件）';
   if (sentEl) {
     if (total === 0) {
-      sentEl.innerHTML = note('今月はまだ判定したコメントがありません') + xLimitNote;
+      sentEl.innerHTML = note('今月はまだ判定したコメントがありません。') + xLimitNote;
     } else {
       const pct = function (n) { return Math.round((n / total) * 100); };
       const dot = function (color, border) { return '<span style="width:8px;height:8px;border-radius:50%;background:' + color + ';' + (border ? 'border:1px solid #ccc;' : '') + 'display:inline-block;"></span>'; };
@@ -2853,12 +2886,12 @@ function applySentiment(data) {
   if (negEl) {
     const posts = Array.isArray(data.negativePosts) ? data.negativePosts : [];
     if (!st.negative && posts.length === 0) {
-      negEl.innerHTML = '<div style="padding:8px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--text-sub);">今月のネガティブなコメントはありません</div>' + xLimitNote;
+      negEl.innerHTML = '<div style="padding:8px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--text-sub);">今月のネガティブなコメントはありません。</div>' + xLimitNote;
     } else {
       const summary = '<div style="display:flex;align-items:center;gap:10px;padding:8px;background:#fff5f5;border-radius:8px;border-left:3px solid var(--danger);margin-bottom:8px;">' +
         '<span style="font-size:22px;">⚠️</span><div><div style="font-size:13px;font-weight:700;color:#b71c1c;">今月 ' + (st.negative || 0) + '件</div>' + // ★liff_analytics.html63：「検知」を外した
         
-        '<div style="font-size:10px;color:var(--text-sub);margin-top:2px;">ネガティブが付いた新しい投稿10件までを表示しています</div></div></div>';
+        '<div style="font-size:10px;color:var(--text-sub);margin-top:2px;">ネガティブが付いた新しい投稿10件までを表示しています。</div></div></div>';
       const linkBtn = function (u) {
         return '<span style="display:inline-block;font-size:10px;color:var(--primary);font-weight:700;border:1px solid var(--primary);border-radius:12px;padding:2px 8px;margin:0 4px 4px 0;cursor:pointer;" onclick="openPostUrl(\'' +
           String(u.url).replace(/'/g, '%27') + '\')">' + escapeHtmlText(SENT_SNS_LABEL[u.sns] || u.sns) + 'で開く ›</span>';
@@ -2883,7 +2916,7 @@ function applySentiment(data) {
       const list = posts.length
         // ★liff_analytics.html51：スクロールする枠の境界が分かるよう、「今日の状況」と同じ太さ・色の枠線（2px・メインの色）を付けた（Kenさん指示）
         ? '<div style="max-height:420px;overflow-y:auto;-webkit-overflow-scrolling:touch;border:2px solid var(--primary);border-radius:12px;padding:8px;">' + cards + '</div>'
-        : '<div style="font-size:10px;color:var(--text-light);">コメントの内容を表示できる投稿がありません（古い投稿の内容は表示されません）</div>';
+        : '<div style="font-size:10px;color:var(--text-light);">コメントの内容を表示できる投稿がありません（古い投稿の内容は表示されません）。</div>';
       negEl.innerHTML = summary + list + xLimitNote;
     }
   }
@@ -2931,7 +2964,7 @@ function periodStatCell(label, value, color) {
 // 1期間分（先週または先月）のデータを、カードの中身のHTMLに変換する
 function renderPeriodBlock(p) {
   if (!p) {
-    return '<p style="font-size:11px;color:var(--text-sub);">データを取得できませんでした</p>';
+    return '<p style="font-size:11px;color:var(--text-sub);">データを取得できませんでした。</p>';
   }
   const snsRows = PERIOD_SNS_ORDER.map(function (key) {
     const s = (p.bySns && p.bySns[key]) || { totalLikes: 0, avgEgRate: null };
@@ -2950,7 +2983,7 @@ function renderPeriodBlock(p) {
     '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">' +
     periodStatCell('投稿数', p.postCount + '<span style="font-size:10px;">件</span>', 'var(--primary)') +
     periodStatCell('合計いいね', p.totalLikes, '#2e7d32') +
-    periodStatCell('平均EG率', (p.avgEgRate === null || p.avgEgRate === undefined) ? '-' : p.avgEgRate + '%', '#2e7d32') +
+    periodStatCell('平均EG率<button type="button" class="term-info" onclick="showTerm(\'eg\')" aria-label="説明">?</button>', (p.avgEgRate === null || p.avgEgRate === undefined) ? '-' : p.avgEgRate + '%', '#2e7d32') +
     '</div>' +
     '<div style="display:flex;flex-direction:column;gap:5px;">' + snsRows + '</div>' +
     '<div style="margin-top:8px;padding:8px;background:#f0fdf4;border-radius:8px;border-left:3px solid #2e7d32;">' +
@@ -3529,7 +3562,7 @@ initLiff();
       .then(function (html) {
         var doc = new DOMParser().parseFromString(html, 'text/html');
         var content = doc.querySelector('.content');
-        if (!content) throw new Error('本文が見つかりません');
+        if (!content) throw new Error('本文が見つかりません。');
         content.querySelectorAll('script').forEach(function (el) { el.remove(); });
         loaded[name] = content.innerHTML;
         if (document.getElementById('consent-reader-title').textContent === TITLES[name]) body.innerHTML = loaded[name];
