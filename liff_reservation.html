@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更76 - AiPost</title>
+<title>予約確認・変更77 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -956,7 +956,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更76</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更77</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1264,7 +1264,7 @@
           <button onclick="document.getElementById('ri-img-input').click()" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📁 フォルダから選ぶ</button>
           <button onclick="document.getElementById('ri-cam-input').click()" style="flex:1;padding:10px;background:#2e7d32;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📷 写真を撮る</button>
         </div>
-        <p style="font-size:10px;color:var(--text-light);text-align:center;margin-top:8px;">JPG・PNG対応　推奨：2MB以下</p>
+        <p style="font-size:10px;color:var(--text-light);text-align:center;margin-top:8px;">JPG・PNG対応　5MBまで</p>
       </div>
 
       <div id="ri-preview-wrap" style="display:none;">
@@ -1700,7 +1700,7 @@ function switchTab(id) {
   // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
   // 　原因の調査が終わったら削除する。個人情報は記録しない。
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = '予約確認76';
+  const TRACE_SCREEN = '予約確認77';
 
   function traceLog(msg) {
     try {
@@ -3119,9 +3119,17 @@ function _dataUrlToBase64(dataUrl) {
     setImageReplaceMode(false);
   }
 
+  // ★liff_reservation.html77：5MBを超える写真は、選んだ時点で知らせて受け付けない（投稿文作成167と同じ。保存できる上限が5MBのため）
+  const IMAGE_SIZE_LIMIT_BYTES = 5 * 1024 * 1024;
+
   function handleReplaceImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
+    if (file.size > IMAGE_SIZE_LIMIT_BYTES) {
+      event.target.value = ''; // 同じ写真をもう一度選んでも、ここを通るようにする
+      alert('この写真は大きすぎるため、使えません。\n選んだ写真：' + (file.size / 1024 / 1024).toFixed(1) + 'MB（5MBまで使えます）\n別の写真を選んでください。');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
