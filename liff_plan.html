@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金22 - AiPost</title>
+  <title>プラン・料金23 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -373,7 +373,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金22</span></span>
+    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金23</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -636,7 +636,8 @@
 
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
-  const TRACE_SCREEN = 'プラン22';
+  // ★liff_plan.html23：同意の窓を読み込めなかった時の文「本文が見つかりません」に「。」を付けた（ほかの画面と同じ。Kenさん承認の決まり）
+  const TRACE_SCREEN = 'プラン23';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -1692,7 +1693,7 @@
       .then(function (html) {
         var doc = new DOMParser().parseFromString(html, 'text/html');
         var content = doc.querySelector('.content');
-        if (!content) throw new Error('本文が見つかりません');
+        if (!content) throw new Error('本文が見つかりません。');
         content.querySelectorAll('script').forEach(function (el) { el.remove(); });
         loaded[name] = content.innerHTML;
         if (document.getElementById('consent-reader-title').textContent === TITLES[name]) body.innerHTML = loaded[name];
