@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録80 - AiPost</title>
+<title>設定・登録81 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -582,7 +582,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録80</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録81</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -741,7 +741,7 @@
         <div class="form-group">
           <label class="form-label">所在地（任意）</label>
           <input type="text" class="form-input" id="address-input" maxlength="50" placeholder="例：東京都渋谷区神南1-2-3 ○○ビル2F" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
-          <p style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:4px;">投稿文の最後に📍を付けて、そのまま載せられます</p>
+          <p style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:4px;">投稿文の最後に📍を付けて、そのまま載せられます。</p>
         </div>
         <button class="btn btn-primary" onclick="saveShopInfo()" disabled>店舗情報を保存する</button>
       </div>
@@ -1112,7 +1112,8 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
-const TRACE_SCREEN = '設定80';
+// ★liff_settings.html81：利用者に見せる文の終わりに「。」を付けた（ボタン・見出し・連携の状態の表示には付けない。Kenさん承認の決まり）
+const TRACE_SCREEN = '設定81';
 
 function traceLog(msg) {
   try {
@@ -1498,7 +1499,7 @@ async function startXConnection() {
       return;
     }
     liff.openWindow({ url: result.data.authUrl, external: true });
-    showToast('ブラウザでXの連携を完了したら、この画面を開き直してください');
+    showToast('ブラウザでXの連携を完了したら、この画面を開き直してください。');
   } catch (err) {
     console.error('X連携開始エラー:', err);
     alert('X連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
@@ -1527,7 +1528,7 @@ async function startInstagramConnection() {
       return;
     }
     liff.openWindow({ url: result.data.authUrl, external: true });
-    showToast('ブラウザでInstagramの連携を完了したら、この画面を開き直してください');
+    showToast('ブラウザでInstagramの連携を完了したら、この画面を開き直してください。');
   } catch (err) {
     console.error('Instagram連携開始エラー:', err);
     alert('Instagram連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
@@ -1556,7 +1557,7 @@ async function startThreadsConnection() {
       return;
     }
     liff.openWindow({ url: result.data.authUrl, external: true });
-    showToast('ブラウザでThreadsの連携を完了したら、この画面を開き直してください');
+    showToast('ブラウザでThreadsの連携を完了したら、この画面を開き直してください。');
   } catch (err) {
     console.error('Threads連携開始エラー:', err);
     alert('Threads連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
@@ -1575,7 +1576,7 @@ function updateSnsSummary() {
   const postNote = document.getElementById('sns-post-limit-note');
   if (postNote) {
     if (currentDemoPlan === 'FREE') {
-      postNote.textContent = '💎 FREEプランの連携・投稿先は2つまで（Xは選べません）'; // ★liff_settings.html79・80
+      postNote.textContent = '💎 FREEプランの連携・投稿先は2つまでです（Xは選べません）。'; // ★liff_settings.html79・80
       postNote.style.display = 'block';
     } else if (postLimit && postLimit < 3) {
       postNote.textContent = '💎 ' + currentDemoPlan + 'プランの投稿先は' + postLimit + 'つまで';
@@ -2336,7 +2337,7 @@ async function saveShopInfo() {
       alert('保存に失敗しました：' + result.error);
       return;
     }
-    showToast('店舗情報を保存しました');
+    showToast('店舗情報を保存しました。');
     reloadIfNewUser(result); // ★liff_settings.html70
     writeSharedCache({
       found: true,
@@ -2405,7 +2406,7 @@ async function saveEmail() {
       alert('保存に失敗しました：' + result.error);
       return;
     }
-    showToast('メールアドレスを保存しました');
+    showToast('メールアドレスを保存しました。');
     reloadIfNewUser(result); // ★liff_settings.html70
     writeSharedCache({ found: true, email: email });
     SAVED_EMAIL = email; // ★liff_settings.html60
@@ -2970,7 +2971,7 @@ const LIFF_URLS = {
       .then(function (html) {
         var doc = new DOMParser().parseFromString(html, 'text/html');
         var content = doc.querySelector('.content');
-        if (!content) throw new Error('本文が見つかりません');
+        if (!content) throw new Error('本文が見つかりません。');
         content.querySelectorAll('script').forEach(function (el) { el.remove(); });
         loaded[name] = content.innerHTML;
         if (document.getElementById('consent-reader-title').textContent === TITLES[name]) body.innerHTML = loaded[name];
