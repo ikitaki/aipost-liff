@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AIサポート19 - AiPost</title>
+  <title>AIサポート20 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -350,7 +350,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">🤖</span>
-    <span class="topbar-logo"><span class="nowrap">AIサポート19</span></span>
+    <span class="topbar-logo"><span class="nowrap">AIサポート20</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -384,8 +384,43 @@
     clearSessionCaches();
   }
 
-  window.aipostRefreshAll = function (needConfirm) {
-    if (needConfirm && !confirm('入力中の内容は消えます。最新の情報に更新しますか？')) return;
+  // ★AiPost共通：画面の中の確認の窓（端末の確認の窓 confirm() の代わり。形はお知らせの削除の窓と同じ）。
+  // 　aipostAsk({ title, note, ok, cancel, danger }) → 「ok」なら true、「やめる」・外側を押した時は false を返す（Promise）。
+  window.aipostAsk = function (o) {
+    return new Promise(function (resolve) {
+      var el = document.getElementById('aipost-ask');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'aipost-ask';
+        el.className = 'notice-confirm';
+        el.style.zIndex = '5000';
+        document.body.appendChild(el);
+      }
+      el.innerHTML = '<div class="notice-confirm-sheet"><div class="notice-confirm-handle"></div>' +
+        '<div class="notice-confirm-title" id="aipost-ask-title"></div>' +
+        '<div class="notice-confirm-note" id="aipost-ask-note"></div>' +
+        '<button type="button" class="notice-confirm-btn" id="aipost-ask-ok"></button>' +
+        '<button type="button" class="notice-confirm-btn notice-confirm-back" id="aipost-ask-no"></button></div>';
+      document.getElementById('aipost-ask-title').textContent = o.title || '';
+      var note = document.getElementById('aipost-ask-note');
+      note.textContent = o.note || '';
+      note.style.display = o.note ? '' : 'none';
+      note.style.whiteSpace = 'pre-line';
+      var ok = document.getElementById('aipost-ask-ok');
+      ok.textContent = o.ok || 'OK';
+      if (o.danger) ok.classList.add('notice-confirm-del');
+      else { ok.style.background = 'var(--primary)'; ok.style.color = '#fff'; }
+      document.getElementById('aipost-ask-no').textContent = o.cancel || 'やめる';
+      var done = function (v) { el.classList.remove('open'); el.onclick = null; resolve(v); };
+      ok.onclick = function () { done(true); };
+      document.getElementById('aipost-ask-no').onclick = function () { done(false); };
+      el.onclick = function (ev) { if (ev.target === el) done(false); };
+      el.classList.add('open');
+    });
+  };
+
+  window.aipostRefreshAll = async function (needConfirm) {
+    if (needConfirm && !(await window.aipostAsk({ title: '最新の情報に更新しますか？', note: '入力中の内容は消えます。', ok: '更新する' }))) return;
     clearSessionCaches();
     try { localStorage.removeItem(MASTER_KEY); } catch (e) {}
     location.reload();
@@ -539,7 +574,8 @@
   // ---- 動作の記録（ほかの画面と同じ仕組み。ヘッダーのロゴを3回続けて押すと履歴を表示） ----
   const TRACE_KEY = 'aipost_trace';
   // ★liff_support.html19：問い合わせの文字数の表示を「字」にした（ほかの画面と同じ）。同意の窓の「本文が見つかりません」に「。」を付けた
-  const TRACE_SCREEN = 'AIサポート19';
+  // ★liff_support.html20：「更新」の端末の確認の窓を、画面の中の確認の窓（aipostAsk）にした（Kenさん承認）
+  const TRACE_SCREEN = 'AIサポート20';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
