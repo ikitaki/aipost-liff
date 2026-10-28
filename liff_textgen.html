@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成172 - AiPost</title>
+<title>投稿文作成173 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -844,7 +844,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成172</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成173</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -878,8 +878,43 @@
     clearSessionCaches();
   }
 
-  window.aipostRefreshAll = function (needConfirm) {
-    if (needConfirm && !confirm('入力中の内容は消えます。最新の情報に更新しますか？')) return;
+  // ★AiPost共通：画面の中の確認の窓（端末の確認の窓 confirm() の代わり。形はお知らせの削除の窓と同じ）。
+  // 　aipostAsk({ title, note, ok, cancel, danger }) → 「ok」なら true、「やめる」・外側を押した時は false を返す（Promise）。
+  window.aipostAsk = function (o) {
+    return new Promise(function (resolve) {
+      var el = document.getElementById('aipost-ask');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'aipost-ask';
+        el.className = 'notice-confirm';
+        el.style.zIndex = '5000';
+        document.body.appendChild(el);
+      }
+      el.innerHTML = '<div class="notice-confirm-sheet"><div class="notice-confirm-handle"></div>' +
+        '<div class="notice-confirm-title" id="aipost-ask-title"></div>' +
+        '<div class="notice-confirm-note" id="aipost-ask-note"></div>' +
+        '<button type="button" class="notice-confirm-btn" id="aipost-ask-ok"></button>' +
+        '<button type="button" class="notice-confirm-btn notice-confirm-back" id="aipost-ask-no"></button></div>';
+      document.getElementById('aipost-ask-title').textContent = o.title || '';
+      var note = document.getElementById('aipost-ask-note');
+      note.textContent = o.note || '';
+      note.style.display = o.note ? '' : 'none';
+      note.style.whiteSpace = 'pre-line';
+      var ok = document.getElementById('aipost-ask-ok');
+      ok.textContent = o.ok || 'OK';
+      if (o.danger) ok.classList.add('notice-confirm-del');
+      else { ok.style.background = 'var(--primary)'; ok.style.color = '#fff'; }
+      document.getElementById('aipost-ask-no').textContent = o.cancel || 'やめる';
+      var done = function (v) { el.classList.remove('open'); el.onclick = null; resolve(v); };
+      ok.onclick = function () { done(true); };
+      document.getElementById('aipost-ask-no').onclick = function () { done(false); };
+      el.onclick = function (ev) { if (ev.target === el) done(false); };
+      el.classList.add('open');
+    });
+  };
+
+  window.aipostRefreshAll = async function (needConfirm) {
+    if (needConfirm && !(await window.aipostAsk({ title: '最新の情報に更新しますか？', note: '入力中の内容は消えます。', ok: '更新する' }))) return;
     clearSessionCaches();
     try { localStorage.removeItem(MASTER_KEY); } catch (e) {}
     location.reload();
@@ -1851,12 +1886,13 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
+// ★liff_textgen.html173：端末の確認の窓（confirm）8か所を、画面の中の確認の窓（aipostAsk。お知らせの削除の窓と同じ形）にした（Kenさん承認）
 // ★liff_textgen.html172：利用者に見せる文の終わりに「。」を付けた（ボタン・見出し・窓のタイトル・選ぶものの名前・かっこの補足には付けない。Kenさん承認の決まり）
 // 　②の「写真」「キーワード」「ご要望」の「なくても可」の札を消した（②の説明で分かるため。Kenさん承認）
 // ★liff_textgen.html171：メモの3つ（契約プランが空の時はFREE・予約内容の確認の見出しを折らない・字数は「字」にそろえる）と、
 // 　予約内容の確認の画像「マイ画像（トリミングなし）」を「元画像のまま」に（トリミングの選び方の言葉にそろえる）
 // ★liff_textgen.html170：画面の言葉を「トリミング」にそろえた（「切り抜き」「切り抜く」を使わない。Kenさん指摘・予約確認76と同じ）
-const TRACE_SCREEN = '投稿文作成172';
+const TRACE_SCREEN = '投稿文作成173';
 
 function traceLog(msg) {
   try {
@@ -2895,10 +2931,10 @@ async function executeGenerate() {
 
 // ===== 下書き =====
 let draftSaved = false;
-function saveDraft() {
+async function saveDraft() {
   const ta = document.getElementById('post-textarea');
   if (!ta.value.trim()) { alert('投稿文を入力してから保存してください。'); return; }
-  if (draftSaved && !confirm('保存済みの下書きを上書きしますか？')) return;
+  if (draftSaved && !(await window.aipostAsk({ title: '保存済みの下書きを上書きしますか？', ok: '上書きする' }))) return;
   window._draft = ta.value;
   draftSaved = true;
   const toast = document.getElementById('draft-toast');
@@ -3800,10 +3836,10 @@ async function showConfirm() {
 
   // 画像状態確認
   if (imageState === null) {
-    const noImageConfirmMsg = igExcluded
-      ? '画像が選択されていません。\nInstagramは画像が無いと投稿できないため、この予約はInstagramには反映されません（' + remainingSnsNames.join('・') + 'のみ投稿されます）。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。'
-      : '画像が選択されていません。\n「OK」で画像なしのまま予約確認へ進みます。\n「キャンセル」で画像を選び直します。';
-    if (!confirm(noImageConfirmMsg)) return;
+    const noImageNote = igExcluded
+      ? 'Instagramは画像が無いと投稿できないため、この予約はInstagramには反映されません（' + remainingSnsNames.join('・') + 'のみ投稿されます）。'
+      : '';
+    if (!(await window.aipostAsk({ title: '画像が選択されていません', note: noImageNote, ok: '画像なしで進む', cancel: '画像を選ぶ' }))) return;
     imageState = 'none';
   }
 
@@ -4378,10 +4414,10 @@ function toggleAcc(id) {
   if (arr) arr.style.transform = isOpen ? '' : 'rotate(90deg)';
 }
 
-function navigateTo(page) {
+async function navigateTo(page) {
   if (!LIFF_URLS[page]) return;
   if (hasInProgressContent()) {
-    if (!confirm('入力中の内容が失われます。移動しますか？')) return;
+    if (!(await window.aipostAsk({ title: 'ほかの画面に移りますか？', note: '入力中の内容が失われます。', ok: '移る', danger: true }))) return;
   }
   window.location.replace(LIFF_URLS[page]);
 }
@@ -5047,9 +5083,9 @@ function chooseOriginalForSns() {
 }
 
 // このSNSは画像なしで投稿する（Instagramは画像なしでは投稿できないため、投稿されなくなる）
-function chooseNoImageForSns() {
+async function chooseNoImageForSns() {
   const sns = trimQueue[currentTrimIndex];
-  if (sns === 'IG' && !confirm('Instagramは画像が無いと投稿できません。\n画像なしを選ぶと、この予約はInstagramには投稿されません。よろしいですか？')) return;
+  if (sns === 'IG' && !(await window.aipostAsk({ title: '画像なしにしますか？', note: 'Instagramは画像が無いと投稿できません。画像なしを選ぶと、この予約はInstagramには投稿されません。', ok: '画像なしにする' }))) return;
   delete trimResults[sns];
   trimChoice[sns] = 'none';
   goNextTrim();
@@ -5186,8 +5222,8 @@ function reselectImage() {
   imgCancelReupload();
 }
 
-function resetImagePreview() {
-  if (!confirm('アップロードした画像を削除しますか？')) return;
+async function resetImagePreview() {
+  if (!(await window.aipostAsk({ title: 'アップロードした画像を削除しますか？', ok: '削除する', danger: true }))) return;
   imgCancelReupload();
 }
 
@@ -5208,18 +5244,15 @@ function otherSnsNoteForNoImage() {
 // ★liff_textgen.html84：Instagramが投稿先に選択されている場合、
 // 　「画像なし」を選ぶとInstagramには反映されない（Instagram側APIの
 // 　仕様で画像なし投稿ができないため）ことを確認ダイアログで案内する。
-function selectNoImage() {
+async function selectNoImage() {
   const igCheckedForNoImage = !!document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-ig');
   // ★liff_textgen.html113：「（X・Threadsのみ投稿されます）」と固定の文言だったため、
   // 　実際に選択中のSNS（URL付きで除外されるXは除く）を表示するよう変更した
   const igNoImageNote = 'Instagramは画像が無いと投稿できないため、この予約はInstagramには反映されません' + otherSnsNoteForNoImage() + '。';
   if (originalImage) {
-    const msg = igCheckedForNoImage
-      ? 'アップロードした画像を削除して「画像なし」で投稿しますか？\n' + igNoImageNote
-      : 'アップロードした画像を削除して「画像なし」で投稿しますか？';
-    if (!confirm(msg)) return;
+    if (!(await window.aipostAsk({ title: 'アップロードした画像を削除して「画像なし」で投稿しますか？', note: igCheckedForNoImage ? igNoImageNote : '', ok: '画像なしにする' }))) return;
   } else if (igCheckedForNoImage) {
-    if (!confirm('画像なしで投稿しますか？\n' + igNoImageNote)) return;
+    if (!(await window.aipostAsk({ title: '画像なしで投稿しますか？', note: igNoImageNote, ok: '画像なしにする' }))) return;
   }
   originalImage = null;
   originalImageDataUrl = null;
