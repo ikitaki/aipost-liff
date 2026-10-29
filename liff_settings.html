@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録83 - AiPost</title>
+<title>設定・登録84 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -491,10 +491,10 @@
 <!-- ★メンテナンス中の表示。4画面で同じ中身（投稿文作成146・予約確認52・分析54・設定65 で追加） -->
 <div class="maint-overlay" id="maint-overlay" role="dialog" aria-label="メンテナンス中">
   <div class="maint-box">
-    <div class="maint-icon">🔧</div>
-    <div class="maint-title">メンテナンス中</div>
+    <div class="maint-icon" id="maint-icon">🔧</div>
+    <div class="maint-title" id="maint-title">メンテナンス中</div>
     <div class="maint-msg" id="maint-msg"></div>
-    <button type="button" class="maint-btn" onclick="location.reload()">再読み込み</button>
+    <button type="button" class="maint-btn" id="maint-btn" onclick="location.reload()">再読み込み</button>
   </div>
 </div>
 <script>
@@ -505,6 +505,9 @@
 // 　・表示した時は sessionStorage の aipost_maintenance に文を残す。この印があるまま画面を開いた時（再読み込み・
 // 　　画面の切り替え）は、すぐに表示を出してから、サーバーにメンテナンスが終わったかを問い合わせる
 // 　　（保存済みの情報で、いつもの画面が出てしまわないように）。終わっていれば印を消して、表示を閉じる。
+// ★liff_settings.html84：強制退会（利用停止）の表示（Kenさん承認：画面見本_利用停止_01.png）。返事に suspended:true があれば、同じ覆いに
+// 　🚫・「ご利用を停止しています」・サーバーの文を出す（ボタンは出さない。印は残さない）。続きの処理は止め、alert・confirm も出さない。
+// 　文は「。」ごとに行を変え、言葉の切れ目（Intl.Segmenter）でだけ折り返す（使えない端末では、ふつうに折り返す）。
 (function () {
   var KEY = 'aipost_maintenance';
   var GAS_PREFIX = 'https://script.google.com/macros/';
@@ -544,6 +547,45 @@
     }
   }
 
+  // ★利用停止の文を、言葉の切れ目でだけ折り返す形にする（「。」の後は行を変える）
+  function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function wrapHtml(text) {
+    var t = String(text);
+    var segs = null;
+    try { if (typeof Intl !== 'undefined' && Intl.Segmenter) segs = Array.from(new Intl.Segmenter('ja', { granularity: 'word' }).segment(t), function (x) { return x.segment; }); } catch (e) { segs = null; }
+    if (!segs) return esc(t).replace(/。/g, '。<br>');
+    var out = [];
+    var pre = '';
+    segs.forEach(function (g) {
+      if (/^[おご]$/.test(g)) { pre += g; return; }   // 「お」「ご」は次の言葉とつなげる（「お／問い合わせ」と折れないように）
+      g = pre + g;
+      pre = '';
+      if (out.length && /[「『（(【]$/.test(out[out.length - 1])) { out[out.length - 1] += g; return; }   // 開きかっこは次の言葉とつなげる
+      if (out.length && /^[ぁ-ん]+$/.test(g) && /[ぁ-ん]$/.test(out[out.length - 1])) { out[out.length - 1] += g; return; }   // ひらがなが続く時はつなげる
+      if (out.length && /^[一-龥々]/.test(g) && /[一-龥々]$/.test(out[out.length - 1])) { out[out.length - 1] += g; return; }   // 漢字が続く時はつなげる（「事業／者」と折れないように）
+      if (out.length && /^[、。，．？?！!」』）)\]】ー〜…・]+$/.test(g)) { out[out.length - 1] += g; return; }   // 記号は前の言葉とつなげる
+      out.push(g);
+    });
+    if (pre) out.push(pre);
+    return out.map(esc).join('<wbr>').replace(/。<wbr>/g, '。<br>');
+  }
+
+  function showSuspended(msg) {
+    document.getElementById('maint-icon').textContent = '🚫';
+    document.getElementById('maint-title').textContent = 'ご利用を停止しています';
+    var box = document.getElementById('maint-msg');
+    box.innerHTML = wrapHtml(msg || 'AiPostのご利用を停止しました。');
+    box.style.wordBreak = 'keep-all';
+    document.getElementById('maint-btn').style.display = 'none';
+    document.getElementById('maint-overlay').classList.add('open');
+    if (!shown) {
+      shown = true;
+      window.alert = function () {};
+      window.confirm = function () { return false; };
+      log('利用停止の表示');
+    }
+  }
+
   // サーバーへの問い合わせを見張る（GASのWebアプリへの問い合わせだけ。ほかはそのまま）
   window.fetch = function (input, init) {
     var p = origFetch(input, init);
@@ -554,6 +596,10 @@
         try { j = JSON.parse(t); } catch (e) {}
         if (j && j.maintenance === true) {
           show(j.error);
+          return new Promise(function () {});   // 続きの処理を止める
+        }
+        if (j && j.suspended === true) {
+          showSuspended(j.error);
           return new Promise(function () {});   // 続きの処理を止める
         }
         return res;
@@ -582,7 +628,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録83</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録84</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1179,7 +1225,8 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_settings.html81：利用者に見せる文の終わりに「。」を付けた（ボタン・見出し・連携の状態の表示には付けない。Kenさん承認の決まり）
 // ★liff_settings.html82：「更新」の端末の確認の窓を、画面の中の確認の窓（aipostAsk）にした（Kenさん承認）
 // ★liff_settings.html83：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
-const TRACE_SCREEN = '設定83';
+// ★liff_settings.html84：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
+const TRACE_SCREEN = '設定84';
 
 function traceLog(msg) {
   try {
