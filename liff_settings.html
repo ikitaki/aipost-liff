@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録82 - AiPost</title>
+<title>設定・登録83 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -582,7 +582,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録82</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録83</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -650,6 +650,35 @@
       el.classList.add('open');
     });
   };
+
+  // ★AiPost共通：画面の中の知らせの窓（端末の知らせ alert() の代わり。形は確認の窓 aipostAsk と同じで、ボタンは「OK」1つ）。
+  // 　aipostNotice(文) → 「OK」・外側を押すと閉じる（Promise。続けて呼ばれた時は、前の知らせが閉じてから次を出す）。
+  window.aipostNotice = (function () {
+    var queue = Promise.resolve();
+    return function (msg) {
+      queue = queue.then(function () {
+        return new Promise(function (resolve) {
+          var el = document.getElementById('aipost-notice');
+          if (!el) {
+            el = document.createElement('div');
+            el.id = 'aipost-notice';
+            el.className = 'notice-confirm';
+            el.style.zIndex = '5100';
+            document.body.appendChild(el);
+          }
+          el.innerHTML = '<div class="notice-confirm-sheet"><div class="notice-confirm-handle"></div>' +
+            '<div class="notice-confirm-title" id="aipost-notice-text" style="font-size:14px;font-weight:600;line-height:1.7;white-space:pre-line;"></div>' +
+            '<button type="button" class="notice-confirm-btn" id="aipost-notice-ok" style="background:var(--primary);color:#fff;">OK</button></div>';
+          document.getElementById('aipost-notice-text').textContent = String(msg === undefined || msg === null ? '' : msg);
+          var done = function () { el.classList.remove('open'); el.onclick = null; resolve(); };
+          document.getElementById('aipost-notice-ok').onclick = done;
+          el.onclick = function (ev) { if (ev.target === el) done(); };
+          el.classList.add('open');
+        });
+      });
+      return queue;
+    };
+  })();
 
   window.aipostRefreshAll = async function (needConfirm) {
     if (needConfirm && !(await window.aipostAsk({ title: '最新の情報に更新しますか？', note: '入力中の内容は消えます。', ok: '更新する' }))) return;
@@ -1094,7 +1123,7 @@ async function initLiff() {
     if (canUseAnalytics()) warmupAnalyticsCache();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     setFormLoadingState(false);
   }
 }
@@ -1149,7 +1178,8 @@ async function postToGas(payload, label, isOk) {
 const TRACE_KEY = 'aipost_trace';
 // ★liff_settings.html81：利用者に見せる文の終わりに「。」を付けた（ボタン・見出し・連携の状態の表示には付けない。Kenさん承認の決まり）
 // ★liff_settings.html82：「更新」の端末の確認の窓を、画面の中の確認の窓（aipostAsk）にした（Kenさん承認）
-const TRACE_SCREEN = '設定82';
+// ★liff_settings.html83：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
+const TRACE_SCREEN = '設定83';
 
 function traceLog(msg) {
   try {
@@ -1520,7 +1550,7 @@ function toggleSnsConnection(sns) {
  */
 async function startXConnection() {
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return;
   }
   try {
@@ -1531,14 +1561,14 @@ async function startXConnection() {
     });
     const result = await response.json();
     if (!result.success || !result.data || !result.data.authUrl) {
-      alert('X連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+      aipostNotice('X連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
       return;
     }
     liff.openWindow({ url: result.data.authUrl, external: true });
     showToast('ブラウザでXの連携を完了したら、この画面を開き直してください。');
   } catch (err) {
     console.error('X連携開始エラー:', err);
-    alert('X連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+    aipostNotice('X連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
   }
 }
 
@@ -1549,7 +1579,7 @@ async function startXConnection() {
  */
 async function startInstagramConnection() {
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return;
   }
   try {
@@ -1560,14 +1590,14 @@ async function startInstagramConnection() {
     });
     const result = await response.json();
     if (!result.success || !result.data || !result.data.authUrl) {
-      alert('Instagram連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+      aipostNotice('Instagram連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
       return;
     }
     liff.openWindow({ url: result.data.authUrl, external: true });
     showToast('ブラウザでInstagramの連携を完了したら、この画面を開き直してください。');
   } catch (err) {
     console.error('Instagram連携開始エラー:', err);
-    alert('Instagram連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+    aipostNotice('Instagram連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
   }
 }
 
@@ -1578,7 +1608,7 @@ async function startInstagramConnection() {
  */
 async function startThreadsConnection() {
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return;
   }
   try {
@@ -1589,14 +1619,14 @@ async function startThreadsConnection() {
     });
     const result = await response.json();
     if (!result.success || !result.data || !result.data.authUrl) {
-      alert('Threads連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+      aipostNotice('Threads連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
       return;
     }
     liff.openWindow({ url: result.data.authUrl, external: true });
     showToast('ブラウザでThreadsの連携を完了したら、この画面を開き直してください。');
   } catch (err) {
     console.error('Threads連携開始エラー:', err);
-    alert('Threads連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
+    aipostNotice('Threads連携の準備に失敗しました。しばらくしてからもう一度お試しください。');
   }
 }
 
@@ -1786,7 +1816,7 @@ async function confirmSnsDisconnect() {
  */
 async function disconnectXOnBackend() {
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return false;
   }
   try {
@@ -1797,13 +1827,13 @@ async function disconnectXOnBackend() {
     });
     const result = await response.json();
     if (!result.success) {
-      alert('連携解除に失敗しました：' + (result.error || '不明なエラー'));
+      aipostNotice('連携解除に失敗しました：' + (result.error || '不明なエラー'));
       return false;
     }
     return true;
   } catch (err) {
     console.error('X連携解除エラー:', err);
-    alert('連携解除に失敗しました。しばらくしてからもう一度お試しください。');
+    aipostNotice('連携解除に失敗しました。しばらくしてからもう一度お試しください。');
     return false;
   }
 }
@@ -1816,7 +1846,7 @@ async function disconnectXOnBackend() {
  */
 async function disconnectInstagramOnBackend() {
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return false;
   }
   try {
@@ -1827,13 +1857,13 @@ async function disconnectInstagramOnBackend() {
     });
     const result = await response.json();
     if (!result.success) {
-      alert('連携解除に失敗しました：' + (result.error || '不明なエラー'));
+      aipostNotice('連携解除に失敗しました：' + (result.error || '不明なエラー'));
       return false;
     }
     return true;
   } catch (err) {
     console.error('Instagram連携解除エラー:', err);
-    alert('連携解除に失敗しました。しばらくしてからもう一度お試しください。');
+    aipostNotice('連携解除に失敗しました。しばらくしてからもう一度お試しください。');
     return false;
   }
 }
@@ -1846,7 +1876,7 @@ async function disconnectInstagramOnBackend() {
  */
 async function disconnectThreadsOnBackend() {
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return false;
   }
   try {
@@ -1857,13 +1887,13 @@ async function disconnectThreadsOnBackend() {
     });
     const result = await response.json();
     if (!result.success) {
-      alert('連携解除に失敗しました：' + (result.error || '不明なエラー'));
+      aipostNotice('連携解除に失敗しました：' + (result.error || '不明なエラー'));
       return false;
     }
     return true;
   } catch (err) {
     console.error('Threads連携解除エラー:', err);
-    alert('連携解除に失敗しました。しばらくしてからもう一度お試しください。');
+    aipostNotice('連携解除に失敗しました。しばらくしてからもう一度お試しください。');
     return false;
   }
 }
@@ -1975,7 +2005,7 @@ let WITHDRAW_SENDING = false;
 async function showCancelComplete() {
   if (WITHDRAW_SENDING) return;
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return;
   }
 
@@ -2025,7 +2055,7 @@ async function showCancelComplete() {
   btn.disabled = false;
   btn.textContent = originalText;
   backBtn.disabled = false;
-  alert(message);
+  aipostNotice(message);
 }
 
 // 受付の後：お申し込み中の表示にし、保存済みの情報を直し、完了の窓を出す
@@ -2070,7 +2100,7 @@ function closeWithdrawUndo() {
 async function executeWithdrawUndo() {
   if (WD_UNDOING) return;
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return;
   }
   const btn = document.getElementById('wd-undo-btn');
@@ -2112,7 +2142,7 @@ async function executeWithdrawUndo() {
   backBtn.disabled = false;
   document.getElementById('wd-undo-modal').classList.remove('open');
   if (!done) {
-    alert(message);
+    aipostNotice(message);
     return;
   }
   WD_REQUESTED = false;
@@ -2175,7 +2205,7 @@ async function loadMasterDataAndPopulateForm() {
   try {
     const result = await postToGas({ action: 'getMasterData', lineUid: LINE_UID, params: {} }, 'マスタデータ');
     if (!result) {
-      alert('業種・エリアの選択肢の取得に失敗しました：' + lastGasError);
+      aipostNotice('業種・エリアの選択肢の取得に失敗しました：' + lastGasError);
       return;
     }
     MASTER_DATA = result.data;
@@ -2183,7 +2213,7 @@ async function loadMasterDataAndPopulateForm() {
     writeMasterDataCache(MASTER_DATA);
   } catch (err) {
     console.error('マスタデータ取得エラー:', err);
-    alert('通信エラーが発生しました。もう一度お試しください。');
+    aipostNotice('通信エラーが発生しました。もう一度お試しください。');
   }
 }
 
@@ -2324,7 +2354,7 @@ function captureSavedForm() {
 
 async function saveShopInfo() {
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return;
   }
 
@@ -2370,7 +2400,7 @@ async function saveShopInfo() {
     const result = await response.json();
 
     if (!result.success) {
-      alert('保存に失敗しました：' + result.error);
+      aipostNotice('保存に失敗しました：' + result.error);
       return;
     }
     showToast('店舗情報を保存しました。');
@@ -2389,7 +2419,7 @@ async function saveShopInfo() {
     originalText = '店舗情報を変更する';
   } catch (err) {
     console.error('保存リクエストエラー:', err);
-    alert('通信エラーが発生しました。もう一度お試しください。');
+    aipostNotice('通信エラーが発生しました。もう一度お試しください。');
   } finally {
     SHOP_SAVING = false;
     if (btn) {
@@ -2401,7 +2431,7 @@ async function saveShopInfo() {
 
 async function saveEmail() {
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     return;
   }
 
@@ -2439,7 +2469,7 @@ async function saveEmail() {
     const result = await response.json();
 
     if (!result.success) {
-      alert('保存に失敗しました：' + result.error);
+      aipostNotice('保存に失敗しました：' + result.error);
       return;
     }
     showToast('メールアドレスを保存しました。');
@@ -2450,7 +2480,7 @@ async function saveEmail() {
     originalText = '変更する';
   } catch (err) {
     console.error('保存リクエストエラー:', err);
-    alert('通信エラーが発生しました。もう一度お試しください。');
+    aipostNotice('通信エラーが発生しました。もう一度お試しください。');
   } finally {
     EMAIL_SAVING = false;
     if (btn) {

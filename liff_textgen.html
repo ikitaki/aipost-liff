@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成173 - AiPost</title>
+<title>投稿文作成174 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -844,7 +844,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成173</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成174</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -912,6 +912,35 @@
       el.classList.add('open');
     });
   };
+
+  // ★AiPost共通：画面の中の知らせの窓（端末の知らせ alert() の代わり。形は確認の窓 aipostAsk と同じで、ボタンは「OK」1つ）。
+  // 　aipostNotice(文) → 「OK」・外側を押すと閉じる（Promise。続けて呼ばれた時は、前の知らせが閉じてから次を出す）。
+  window.aipostNotice = (function () {
+    var queue = Promise.resolve();
+    return function (msg) {
+      queue = queue.then(function () {
+        return new Promise(function (resolve) {
+          var el = document.getElementById('aipost-notice');
+          if (!el) {
+            el = document.createElement('div');
+            el.id = 'aipost-notice';
+            el.className = 'notice-confirm';
+            el.style.zIndex = '5100';
+            document.body.appendChild(el);
+          }
+          el.innerHTML = '<div class="notice-confirm-sheet"><div class="notice-confirm-handle"></div>' +
+            '<div class="notice-confirm-title" id="aipost-notice-text" style="font-size:14px;font-weight:600;line-height:1.7;white-space:pre-line;"></div>' +
+            '<button type="button" class="notice-confirm-btn" id="aipost-notice-ok" style="background:var(--primary);color:#fff;">OK</button></div>';
+          document.getElementById('aipost-notice-text').textContent = String(msg === undefined || msg === null ? '' : msg);
+          var done = function () { el.classList.remove('open'); el.onclick = null; resolve(); };
+          document.getElementById('aipost-notice-ok').onclick = done;
+          el.onclick = function (ev) { if (ev.target === el) done(); };
+          el.classList.add('open');
+        });
+      });
+      return queue;
+    };
+  })();
 
   window.aipostRefreshAll = async function (needConfirm) {
     if (needConfirm && !(await window.aipostAsk({ title: '最新の情報に更新しますか？', note: '入力中の内容は消えます。', ok: '更新する' }))) return;
@@ -1647,7 +1676,7 @@ async function initLiff() {
     applyQuotaFromCacheOrFetch();
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
   }
 }
 
@@ -1886,13 +1915,14 @@ async function postToGas(payload, label, isOk) {
 // 　ヘッダーのロゴを3回続けてタップすると、その履歴が表示される（新しい順）。
 // 　原因の調査が終わったら削除する。個人情報は記録しない。
 const TRACE_KEY = 'aipost_trace';
+// ★liff_textgen.html174：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
 // ★liff_textgen.html173：端末の確認の窓（confirm）8か所を、画面の中の確認の窓（aipostAsk。お知らせの削除の窓と同じ形）にした（Kenさん承認）
 // ★liff_textgen.html172：利用者に見せる文の終わりに「。」を付けた（ボタン・見出し・窓のタイトル・選ぶものの名前・かっこの補足には付けない。Kenさん承認の決まり）
 // 　②の「写真」「キーワード」「ご要望」の「なくても可」の札を消した（②の説明で分かるため。Kenさん承認）
 // ★liff_textgen.html171：メモの3つ（契約プランが空の時はFREE・予約内容の確認の見出しを折らない・字数は「字」にそろえる）と、
 // 　予約内容の確認の画像「マイ画像（トリミングなし）」を「元画像のまま」に（トリミングの選び方の言葉にそろえる）
 // ★liff_textgen.html170：画面の言葉を「トリミング」にそろえた（「切り抜き」「切り抜く」を使わない。Kenさん指摘・予約確認76と同じ）
-const TRACE_SCREEN = '投稿文作成173';
+const TRACE_SCREEN = '投稿文作成174';
 
 function traceLog(msg) {
   try {
@@ -2707,16 +2737,16 @@ function toggleEndLine(el, kind) {
     const value = kind === 'shop' ? USER_SHOP_NAME : USER_ADDRESS;
     // 所在地は、不明（null）でもオンにできる（従来どおり。未登録ならAIで作成した時にGASがエラーを返す）
     if (value === null && kind === 'shop') {
-      alert(label + 'を確認できませんでした。画面を開き直してから、もう一度お試しください。');
+      aipostNotice(label + 'を確認できませんでした。画面を開き直してから、もう一度お試しください。');
       return;
     }
     if (value === '') {
-      alert(label + 'が未登録です。設定画面から登録してください。');
+      aipostNotice(label + 'が未登録です。設定画面から登録してください。');
       return;
     }
     // ★liff_textgen.html139：投稿文が空の時はチェックできない（Kenさん指示）
     if (!ta || ta.value.trim() === '') {
-      alert('投稿文が空のため、' + label + 'は付けられません。\n先に投稿文を作成するか、⑤に入力してください。');
+      aipostNotice('投稿文が空のため、' + label + 'は付けられません。\n先に投稿文を作成するか、⑤に入力してください。');
       return;
     }
   }
@@ -2725,7 +2755,7 @@ function toggleEndLine(el, kind) {
   if (ta && ta.value.trim() !== '') {
     const next = rebuildEndLines(ta.value, want);
     if (turningOn && countCharsX(next) > CHAR_LIMIT) {
-      alert(label + 'を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くしてから、もう一度チェックを付けてください。');
+      aipostNotice(label + 'を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くしてから、もう一度チェックを付けてください。');
       return;
     }
     ta.value = next;
@@ -2756,7 +2786,7 @@ function ensureEndLines() {
   const next = rebuildEndLines(ta.value, want);
   if (next === ta.value) return true;
   if (countCharsX(next) > CHAR_LIMIT) {
-    alert('⑥の店名・所在地を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くするか、⑥のチェックを外してください。');
+    aipostNotice('⑥の店名・所在地を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くするか、⑥のチェックを外してください。');
     return false;
   }
   ta.value = next;
@@ -2772,7 +2802,7 @@ function confirmAndGenerate() {
   // 業種未登録・写真も使わない・キーワード未入力・ご要望未入力の場合はアラート
   // ★liff_textgen.html167：写真も材料になったため、写真を使う時は通す
   if (!USER_GENRE && !hasKeyword && !hasFreeText && !matPhotoUse()) {
-    alert('写真・キーワード・ご要望のどれか1つを入れてください。\n業種が未登録の場合、どれか1つが必要です。');
+    aipostNotice('写真・キーワード・ご要望のどれか1つを入れてください。\n業種が未登録の場合、どれか1つが必要です。');
     document.getElementById('keyword-input-1').focus();
     return;
   }
@@ -2795,7 +2825,7 @@ async function executeGenerate() {
   setStep(3);
 
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     document.getElementById('loading').classList.remove('show');
     document.getElementById('generate-btn').disabled = false;
     document.getElementById('content-wrap').style.pointerEvents = '';
@@ -2812,7 +2842,7 @@ async function executeGenerate() {
   if (matPhotoUse()) {
     const photo = await ensurePhotoDescription();
     if (!photo.ok) {
-      alert(photo.message);
+      aipostNotice(photo.message);
       setStep(2);
       document.getElementById('loading').classList.remove('show');
       document.getElementById('generate-btn').disabled = false;
@@ -2851,9 +2881,9 @@ async function executeGenerate() {
       // ★liff_textgen.html152：お試し中で今日の回数を使い切った時は、GASの文をそのまま出し、残りの回数の表示を直す
       if (result.trialLimitReached) {
         if (result.trial) { updateTrialRemaining(result.trial); writeQuotaTrial(result.trial); }
-        alert(result.error);
+        aipostNotice(result.error);
       } else {
-        alert('作成に失敗しました：' + result.error);
+        aipostNotice('作成に失敗しました：' + result.error);
       }
       setStep(2);
       return;
@@ -2871,7 +2901,7 @@ async function executeGenerate() {
       const withShop = result.data.generatedText + '\n' + endLineText('shop') + (result.data.addressLine ? '\n' + result.data.addressLine : '');
       if (countCharsX(withShop) > CHAR_LIMIT) {
         setEndLineChecked('shop', false);
-        alert('店名を付けると文字数の上限（' + CHAR_LIMIT + '字）を超えるため、付けませんでした。\n投稿文を短くしてから、もう一度⑥の「店名を付ける」にチェックを付けてください。');
+        aipostNotice('店名を付けると文字数の上限（' + CHAR_LIMIT + '字）を超えるため、付けませんでした。\n投稿文を短くしてから、もう一度⑥の「店名を付ける」にチェックを付けてください。');
       } else {
         ta.value = withShop;
       }
@@ -2917,7 +2947,7 @@ async function executeGenerate() {
 
   } catch (err) {
     console.error('生成リクエストエラー:', err);
-    alert('通信エラーが発生しました。もう一度お試しください。');
+    aipostNotice('通信エラーが発生しました。もう一度お試しください。');
     setStep(2);
   } finally {
     document.getElementById('loading').classList.remove('show');
@@ -2933,7 +2963,7 @@ async function executeGenerate() {
 let draftSaved = false;
 async function saveDraft() {
   const ta = document.getElementById('post-textarea');
-  if (!ta.value.trim()) { alert('投稿文を入力してから保存してください。'); return; }
+  if (!ta.value.trim()) { aipostNotice('投稿文を入力してから保存してください。'); return; }
   if (draftSaved && !(await window.aipostAsk({ title: '保存済みの下書きを上書きしますか？', ok: '上書きする' }))) return;
   window._draft = ta.value;
   draftSaved = true;
@@ -3210,7 +3240,7 @@ function updatePendingFreeNote() {
 function toggleSns(el) {
   // ★liff_textgen.html120：プランの上限の数まで選んでいる時は、新たにチェックを付けない
   if (!el.classList.contains('checked') && getCheckedSns().length >= currentPostSnsLimit) {
-    alert((currentPlanName || '現在の') + 'プランで選べる投稿先は' + currentPostSnsLimit + 'つまでです。\n別のSNSにする場合は、先にチェックを外してください。');
+    aipostNotice((currentPlanName || '現在の') + 'プランで選べる投稿先は' + currentPostSnsLimit + 'つまでです。\n別のSNSにする場合は、先にチェックを外してください。');
     return;
   }
   el.classList.toggle('checked');
@@ -3250,7 +3280,7 @@ function getIncludeFlags() {
 // 　（保存済み情報に所在地の項目が無い＝不明の場合はONにでき、未登録ならGASがエラーを返す）
 function toggleIncludeAddress(el) {
   if (!el.classList.contains('checked') && USER_ADDRESS === '') {
-    alert('所在地が未登録です。設定画面から登録してください。');
+    aipostNotice('所在地が未登録です。設定画面から登録してください。');
     return;
   }
   toggleInclude(el);
@@ -3717,36 +3747,36 @@ async function showConfirm() {
     return;
   }
   if (NOT_REGISTERED) {
-    alert('ご利用の登録が見つかりませんでした。\n設定画面の「登録」タブで店舗情報を保存すると、ご利用を始められます。');
+    aipostNotice('ご利用の登録が見つかりませんでした。\n設定画面の「登録」タブで店舗情報を保存すると、ご利用を始められます。');
     return;
   }
   const ta = document.getElementById('post-textarea');
-  if (!ta.value.trim()) { alert('投稿文を入力してください。'); return; }
+  if (!ta.value.trim()) { aipostNotice('投稿文を入力してください。'); return; }
   // ★liff_textgen.html136：⑦でオンにした店名・所在地の行が投稿文に無ければ、ここで付ける（上限を超える時は止める）
   if (!ensureEndLines()) return;
   // ★liff_textgen.html134：ハッシュタグの確認を、日付・画像の確認より先に行う（Kenさん指示。以前は「予約を確定する」を
   // 　押すまで分からなかった）。本文の中のハッシュタグ → Instagramのタグ数（5つまで）の順。予約の確定時にも同じ確認を残す。
   const bodyTagsAtConfirm = String(ta.value || '').match(/[#＃][^\s#＃]+/g) || [];
   if (bodyTagsAtConfirm.length > 0) {
-    alert('投稿文の中にハッシュタグ（' + bodyTagsAtConfirm.slice(0, 3).join('、') + (bodyTagsAtConfirm.length > 3 ? ' など' : '') + '）があります。\n' +
+    aipostNotice('投稿文の中にハッシュタグ（' + bodyTagsAtConfirm.slice(0, 3).join('、') + (bodyTagsAtConfirm.length > 3 ? ' など' : '') + '）があります。\n' +
       'ハッシュタグは投稿文から消して、下の「ハッシュタグ」の入力欄に入れてください。');
     return;
   }
   if (document.querySelector('.sns-check-item.checked .sns-icon-sm.sns-ig')) {
     const igTagsAtConfirm = getHashtagsForSns('IG');
     if (igTagsAtConfirm.length > 5) {
-      alert('Instagramのハッシュタグは5つまでです（今は' + igTagsAtConfirm.length + '個です）。\nInstagram用のチェックを外すか、タグを減らしてください。');
+      aipostNotice('Instagramのハッシュタグは5つまでです（今は' + igTagsAtConfirm.length + '個です）。\nInstagram用のチェックを外すか、タグを減らしてください。');
       return;
     }
   }
-  if (!selectedDay) { alert('投稿日を選んでください。'); return; }
+  if (!selectedDay) { aipostNotice('投稿日を選んでください。'); return; }
 
   // 本日選択時、既に過ぎた時間帯が選ばれていないか再チェック
   const _now = new Date();
   if (selectedYear === _now.getFullYear() && selectedMonth === _now.getMonth() + 1 && selectedDay === _now.getDate()) {
     const selectedHour = parseInt(document.getElementById('post-time').value, 10);
     if (selectedHour <= new Date().getHours()) {
-      alert('選択した時間帯は既に過ぎています。\n投稿時間を選び直してください。');
+      aipostNotice('選択した時間帯は既に過ぎています。\n投稿時間を選び直してください。');
       updateTimeOptions();
       return;
     }
@@ -3756,12 +3786,12 @@ async function showConfirm() {
   // 　（画面を開いたまま日が変わった場合などに備えた確認。最終的な判定はGAS側でも行う）
   if (isAfterReservable(selectedYear, selectedMonth, selectedDay)) {
     // ★liff_textgen.html157：退会のお申し込み中は、今のご利用期間の終了日まで
-    alert((tgWithdrawing() ? '退会のお申し込み中のため、予約できるのは' : '予約できるのは') + lastReservableMd() + 'までです。\n投稿日を選び直してください。');
+    aipostNotice((tgWithdrawing() ? '退会のお申し込み中のため、予約できるのは' : '予約できるのは') + lastReservableMd() + 'までです。\n投稿日を選び直してください。');
     return;
   }
   const selQuota = getQuotaForDate(selectedYear, selectedMonth, selectedDay);
   if (selQuota && selQuota.remaining <= 0) {
-    alert(tgMd(selQuota.start) + '〜' + tgMd(selQuota.end) + 'の予約枠（' + selQuota.total + '件）を使い切っているため、この期間には予約できません。\n' +
+    aipostNotice(tgMd(selQuota.start) + '〜' + tgMd(selQuota.end) + 'の予約枠（' + selQuota.total + '件）を使い切っているため、この期間には予約できません。\n' +
       '予約中の投稿をキャンセルすると、予約できるようになります。');
     return;
   }
@@ -3770,7 +3800,7 @@ async function showConfirm() {
   const pendingFreeStart = tgPendingFreeStart();
   if (pendingFreeStart && getCheckedSns().indexOf('X') !== -1 && !/https?:\/\//.test(ta.value) &&
       new Date(selectedYear, selectedMonth - 1, selectedDay).getTime() >= pendingFreeStart.getTime()) {
-    alert(tgMd(readQuotaCache().nextPeriod.start) + 'からFREEプランに変わるため、その日からの予約ではXを選べません。\n投稿先を選び直してください。');
+    aipostNotice(tgMd(readQuotaCache().nextPeriod.start) + 'からFREEプランに変わるため、その日からの予約ではXを選べません。\n投稿先を選び直してください。');
     return;
   }
 
@@ -3784,7 +3814,7 @@ async function showConfirm() {
   if (hasUrl && xChecked) {
     if (checkedItems.length === 1) {
       // Xのみ選択している場合は予約自体をブロック
-      alert('投稿文にURLが含まれているため、Xへは投稿できません。\nXのみが選択されているため、このままでは予約できません。\nURLを削除するか、他のSNSも選択してください。');
+      aipostNotice('投稿文にURLが含まれているため、Xへは投稿できません。\nXのみが選択されているため、このままでは予約できません。\nURLを削除するか、他のSNSも選択してください。');
       return;
     }
     xExcluded = true;
@@ -3811,7 +3841,7 @@ async function showConfirm() {
   if (igChecked && !igExcluded) overSns.push('IG');
   if (thChecked) overSns.push('TH');
   if (overSns.some(sns => snsPostTotal(sns) > POST_TOTAL_LIMIT)) {
-    alert('本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています。\n本文を短くするか、ハッシュタグを減らしてください。');
+    aipostNotice('本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています。\n本文を短くするか、ハッシュタグを減らしてください。');
     return;
   }
 
@@ -3826,7 +3856,7 @@ async function showConfirm() {
     if (igExcluded) reasons.push(igExcludeReason === 'skip'
       ? '・Instagramは、「画像なし」を選んだため投稿できません。'
       : '・Instagramは、画像が無いと投稿できません。');
-    alert('投稿できるSNSがないため、このままでは予約できません。\n' + reasons.join('\n') + '\n内容を修正するか、他のSNSも選択してください。');
+    aipostNotice('投稿できるSNSがないため、このままでは予約できません。\n' + reasons.join('\n') + '\n内容を修正するか、他のSNSも選択してください。');
     return;
   }
 
@@ -4078,13 +4108,13 @@ async function executeReserve() {
   if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
 
   if (!LINE_UID) {
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
     hideReserveLoadingOverlay();
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
     return;
   }
   if (!selectedYear || !selectedMonth || !selectedDay) {
-    alert('投稿日を選んでください。');
+    aipostNotice('投稿日を選んでください。');
     hideReserveLoadingOverlay();
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
     return;
@@ -4094,7 +4124,7 @@ async function executeReserve() {
   const includeFlags = getIncludeFlags();
   // ★liff_textgen.html113：確認画面で除外判定を反映した投稿対象を送る
   if (!confirmedSnsTargets) {
-    alert('予約内容を確認してから、もう一度お試しください。');
+    aipostNotice('予約内容を確認してから、もう一度お試しください。');
     hideReserveLoadingOverlay();
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
     return;
@@ -4104,7 +4134,7 @@ async function executeReserve() {
   // 　（Kenさん決定）。ハッシュタグはハッシュタグ欄に入れてもらう（SNSごとの数の上限を正しく守るため）。
   const bodyTags = String(document.getElementById('post-textarea').value || '').match(/[#＃][^\s#＃]+/g) || [];
   if (bodyTags.length > 0) {
-    alert('投稿文の中にハッシュタグ（' + bodyTags.slice(0, 3).join('、') + (bodyTags.length > 3 ? ' など' : '') + '）があります。\n' +
+    aipostNotice('投稿文の中にハッシュタグ（' + bodyTags.slice(0, 3).join('、') + (bodyTags.length > 3 ? ' など' : '') + '）があります。\n' +
       'ハッシュタグは投稿文から消して、下の「ハッシュタグ」の入力欄に入れてください。');
     hideReserveLoadingOverlay();
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
@@ -4115,7 +4145,7 @@ async function executeReserve() {
   if (snsTargets.instagram) {
     const igTags = getHashtagsForSns('IG');
     if (igTags.length > 5) {
-      alert('Instagramのハッシュタグは5つまでです（今は' + igTags.length + '個です）。\nInstagram用のチェックを外すか、タグを減らしてから予約してください。');
+      aipostNotice('Instagramのハッシュタグは5つまでです（今は' + igTags.length + '個です）。\nInstagram用のチェックを外すか、タグを減らしてから予約してください。');
       hideReserveLoadingOverlay();
       if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
       return;
@@ -4138,7 +4168,7 @@ async function executeReserve() {
       ? await uploadImagesIfNeeded(snsTargets)
       : { imageId: null, originalImageFileId: '', trimmedImageFileIds: {} };
   } catch (imgErr) {
-    alert('画像のアップロードに失敗しました：' + imgErr.message);
+    aipostNotice('画像のアップロードに失敗しました：' + imgErr.message);
     hideReserveLoadingOverlay();
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
     return;
@@ -4185,7 +4215,7 @@ async function executeReserve() {
     const result = await response.json();
 
     if (!result.success) {
-      alert('予約の確定に失敗しました：' + result.error);
+      aipostNotice('予約の確定に失敗しました：' + result.error);
       hideReserveLoadingOverlay();
       if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
       return;
@@ -4234,7 +4264,7 @@ async function executeReserve() {
 
   } catch (err) {
     console.error('予約確定リクエストエラー:', err);
-    alert('通信エラーが発生しました。もう一度お試しください。');
+    aipostNotice('通信エラーが発生しました。もう一度お試しください。');
     hideReserveLoadingOverlay();
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
@@ -4645,7 +4675,7 @@ function handleImageUpload(event) {
   // ★liff_textgen.html167：5MBを超える写真は、選んだ時点で知らせて受け付けない（予約で保存できる上限が5MBのため）
   if (file.size > IMAGE_SIZE_LIMIT_BYTES) {
     event.target.value = ''; // 同じ写真をもう一度選んでも、ここを通るようにする
-    alert('この写真は大きすぎるため、使えません。\n選んだ写真：' + (file.size / 1024 / 1024).toFixed(1) + 'MB（5MBまで使えます）\n別の写真を選んでください。');
+    aipostNotice('この写真は大きすぎるため、使えません。\n選んだ写真：' + (file.size / 1024 / 1024).toFixed(1) + 'MB（5MBまで使えます）\n別の写真を選んでください。');
     return;
   }
   const reader = new FileReader();

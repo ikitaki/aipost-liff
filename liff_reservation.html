@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更79 - AiPost</title>
+<title>予約確認・変更80 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -957,7 +957,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更79</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更80</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1025,6 +1025,35 @@
       el.classList.add('open');
     });
   };
+
+  // ★AiPost共通：画面の中の知らせの窓（端末の知らせ alert() の代わり。形は確認の窓 aipostAsk と同じで、ボタンは「OK」1つ）。
+  // 　aipostNotice(文) → 「OK」・外側を押すと閉じる（Promise。続けて呼ばれた時は、前の知らせが閉じてから次を出す）。
+  window.aipostNotice = (function () {
+    var queue = Promise.resolve();
+    return function (msg) {
+      queue = queue.then(function () {
+        return new Promise(function (resolve) {
+          var el = document.getElementById('aipost-notice');
+          if (!el) {
+            el = document.createElement('div');
+            el.id = 'aipost-notice';
+            el.className = 'notice-confirm';
+            el.style.zIndex = '5100';
+            document.body.appendChild(el);
+          }
+          el.innerHTML = '<div class="notice-confirm-sheet"><div class="notice-confirm-handle"></div>' +
+            '<div class="notice-confirm-title" id="aipost-notice-text" style="font-size:14px;font-weight:600;line-height:1.7;white-space:pre-line;"></div>' +
+            '<button type="button" class="notice-confirm-btn" id="aipost-notice-ok" style="background:var(--primary);color:#fff;">OK</button></div>';
+          document.getElementById('aipost-notice-text').textContent = String(msg === undefined || msg === null ? '' : msg);
+          var done = function () { el.classList.remove('open'); el.onclick = null; resolve(); };
+          document.getElementById('aipost-notice-ok').onclick = done;
+          el.onclick = function (ev) { if (ev.target === el) done(); };
+          el.classList.add('open');
+        });
+      });
+      return queue;
+    };
+  })();
 
   window.aipostRefreshAll = async function (needConfirm) {
     if (needConfirm && !(await window.aipostAsk({ title: '最新の情報に更新しますか？', note: '入力中の内容は消えます。', ok: '更新する' }))) return;
@@ -1744,7 +1773,8 @@ function switchTab(id) {
   const TRACE_KEY = 'aipost_trace';
   // ★liff_reservation.html78：利用者に見せる文の終わりに「。」を付けた（ボタン・見出し・窓のタイトル・何も無い時の大きな見出し・選ぶものの名前・かっこの補足には付けない。Kenさん承認の決まり）
   // ★liff_reservation.html79：「更新」の端末の確認の窓を、画面の中の確認の窓（aipostAsk）にした（Kenさん承認）
-  const TRACE_SCREEN = '予約確認79';
+  // ★liff_reservation.html80：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
+  const TRACE_SCREEN = '予約確認80';
 
   function traceLog(msg) {
     try {
@@ -2003,7 +2033,7 @@ function switchTab(id) {
       if (postHistoryRequested) ensurePostHistoryLoaded();
     } catch (err) {
       console.error('LIFF初期化エラー:', err);
-      alert('LINEアプリ内でこの画面を開いてください。');
+      aipostNotice('LINEアプリ内でこの画面を開いてください。');
     }
   }
 
@@ -2334,11 +2364,11 @@ function switchTab(id) {
         // ★liff_reservation.html58：完了の窓を出す（ほかの画面と同じ）
         openResDone('予約をキャンセルしました。', '予約枠が1件戻りました。');
       } else {
-        alert((result.data && result.data.error) || 'キャンセルに失敗しました。もう一度お試しください。');
+        aipostNotice((result.data && result.data.error) || 'キャンセルに失敗しました。もう一度お試しください。');
       }
     } catch (err) {
       console.error('キャンセル処理エラー:', err);
-      alert('通信エラーが発生しました。もう一度お試しください。');
+      aipostNotice('通信エラーが発生しました。もう一度お試しください。');
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = '予約をキャンセルする'; }
       if (backBtn) backBtn.disabled = false;
@@ -2515,7 +2545,7 @@ function switchTab(id) {
       fetchAndRenderReservationList(true);
     }
     if (lines.length > 0) {
-      alert(lines.join('\n'));
+      aipostNotice(lines.join('\n'));
     } else if (cancelledCount > 0) {
       // ★liff_reservation.html58：全部キャンセルできた時は、完了の窓を出す（ほかの画面と同じ）
       openResDone('予約をキャンセルしました。', cancelledCount + '件の予約をキャンセルしました。予約枠が' + cancelledCount + '件戻りました。');
@@ -2990,7 +3020,7 @@ function moveDrag(x, y) {
   function chooseNoImageForSns() {
     const sns = trimQueue[currentTrimIndex];
     if (sns === 'IG') {
-      alert('Instagram宛ての予約は画像が必要なため、「画像なし」は選べません。\n「トリミングする」か「元画像」を選んでください。');
+      aipostNotice('Instagram宛ての予約は画像が必要なため、「画像なし」は選べません。\n「トリミングする」か「元画像」を選んでください。');
       return;
     }
     delete trimResults[sns];
@@ -3078,7 +3108,7 @@ function _dataUrlToBase64(dataUrl) {
     const r = getDetailReservation();
     if (!r) return;
     if (!isReservationEditable(r)) {
-      alert('投稿予定時刻の' + EDIT_CUTOFF_MINUTES + '分前を過ぎたため変更できません。');
+      aipostNotice('投稿予定時刻の' + EDIT_CUTOFF_MINUTES + '分前を過ぎたため変更できません。');
       document.getElementById('detail-image-btn').style.display = 'none';
       return;
     }
@@ -3171,7 +3201,7 @@ function _dataUrlToBase64(dataUrl) {
     if (!file) return;
     if (file.size > IMAGE_SIZE_LIMIT_BYTES) {
       event.target.value = ''; // 同じ写真をもう一度選んでも、ここを通るようにする
-      alert('この写真は大きすぎるため、使えません。\n選んだ写真：' + (file.size / 1024 / 1024).toFixed(1) + 'MB（5MBまで使えます）\n別の写真を選んでください。');
+      aipostNotice('この写真は大きすぎるため、使えません。\n選んだ写真：' + (file.size / 1024 / 1024).toFixed(1) + 'MB（5MBまで使えます）\n別の写真を選んでください。');
       return;
     }
     const reader = new FileReader();
@@ -3406,7 +3436,7 @@ function _dataUrlToBase64(dataUrl) {
         riSaving = false;
         document.getElementById('ri-saving-overlay').classList.remove('open');
         setImageReplaceMode(false);
-        alert(r.hasImage ? (hadImage ? '画像を変更しました。' : '画像を掲載しました。') : (hadImage ? '画像を外しました。' : '画像なしのまま保存しました。'));
+        aipostNotice(r.hasImage ? (hadImage ? '画像を変更しました。' : '画像を掲載しました。') : (hadImage ? '画像を外しました。' : '画像なしのまま保存しました。'));
         return;
       }
       const message = (result.data && result.data.error) || result.error || '画像を変更できませんでした。もう一度お試しください。';
@@ -3615,7 +3645,7 @@ function _dataUrlToBase64(dataUrl) {
     const r = getDetailReservation();
     if (!r) return;
     if (!isReservationEditable(r)) {
-      alert('投稿予定時刻の' + EDIT_CUTOFF_MINUTES + '分前を過ぎたため修正できません。');
+      aipostNotice('投稿予定時刻の' + EDIT_CUTOFF_MINUTES + '分前を過ぎたため修正できません。');
       document.getElementById('detail-edit-btn').style.display = 'none';
       return;
     }
@@ -4458,7 +4488,7 @@ function _dataUrlToBase64(dataUrl) {
       document.getElementById('del-saving-overlay').classList.remove('open');
       renderDeleteList();
     }
-    if (message) alert(message);
+    if (message) aipostNotice(message);
     if (doneMessage) openResDone('投稿を削除しました。', doneMessage);
   }
 

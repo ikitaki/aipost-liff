@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析66 - AiPost</title>
+<title>分析67 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -333,7 +333,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析66</span></span>
+  <span class="header-logo"><span class="nowrap">分析67</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -401,6 +401,35 @@
       el.classList.add('open');
     });
   };
+
+  // ★AiPost共通：画面の中の知らせの窓（端末の知らせ alert() の代わり。形は確認の窓 aipostAsk と同じで、ボタンは「OK」1つ）。
+  // 　aipostNotice(文) → 「OK」・外側を押すと閉じる（Promise。続けて呼ばれた時は、前の知らせが閉じてから次を出す）。
+  window.aipostNotice = (function () {
+    var queue = Promise.resolve();
+    return function (msg) {
+      queue = queue.then(function () {
+        return new Promise(function (resolve) {
+          var el = document.getElementById('aipost-notice');
+          if (!el) {
+            el = document.createElement('div');
+            el.id = 'aipost-notice';
+            el.className = 'notice-confirm';
+            el.style.zIndex = '5100';
+            document.body.appendChild(el);
+          }
+          el.innerHTML = '<div class="notice-confirm-sheet"><div class="notice-confirm-handle"></div>' +
+            '<div class="notice-confirm-title" id="aipost-notice-text" style="font-size:14px;font-weight:600;line-height:1.7;white-space:pre-line;"></div>' +
+            '<button type="button" class="notice-confirm-btn" id="aipost-notice-ok" style="background:var(--primary);color:#fff;">OK</button></div>';
+          document.getElementById('aipost-notice-text').textContent = String(msg === undefined || msg === null ? '' : msg);
+          var done = function () { el.classList.remove('open'); el.onclick = null; resolve(); };
+          document.getElementById('aipost-notice-ok').onclick = done;
+          el.onclick = function (ev) { if (ev.target === el) done(); };
+          el.classList.add('open');
+        });
+      });
+      return queue;
+    };
+  })();
 
   window.aipostRefreshAll = async function (needConfirm) {
     if (needConfirm && !(await window.aipostAsk({ title: '最新の情報に更新しますか？', note: '入力中の内容は消えます。', ok: '更新する' }))) return;
@@ -1737,7 +1766,8 @@ const TRACE_KEY = 'aipost_trace';
 // 　投稿の文字数の表示を「字」にした（ほかの画面と同じ）。
 // 　「SNS別初速スコア」の「（投稿割合による重み付け）」を消した。分かりにくい言葉の横に「？」を付け、押すと意味を窓で出す（Kenさん指示）
 // ★liff_analytics.html66：「更新」の端末の確認の窓を、画面の中の確認の窓（aipostAsk）にした（Kenさん承認）
-const TRACE_SCREEN = '分析66';
+// ★liff_analytics.html67：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
+const TRACE_SCREEN = '分析67';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
@@ -2019,7 +2049,7 @@ async function initLiff() {
     }
   } catch (err) {
     console.error('LIFF初期化エラー:', err);
-    alert('LINEアプリ内でこの画面を開いてください。');
+    aipostNotice('LINEアプリ内でこの画面を開いてください。');
   }
 }
 
