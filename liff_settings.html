@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録84 - AiPost</title>
+<title>設定・登録85 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -322,6 +322,8 @@
   /* 解約確認画面 */
   .cancel-screen { display: none; }
   .cancel-screen.open { display: block; }
+  /* ★liff_settings.html85：退会のお申し込みの画面は、文字を大きくしても言葉の途中で折らない（区切りは<wbr>・ゼロ幅の空白・句読点） */
+  .cancel-screen, .cancel-screen textarea { word-break: keep-all; overflow-wrap: anywhere; }
   .main-screen { }
   .main-screen.hidden { display: none; }
 
@@ -628,7 +630,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録84</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録85</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -913,8 +915,8 @@
       </div>
 
       <div class="card">
-        <div class="card-title">よろしければ理由をお聞かせください（任意）</div>
-        <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">今後のサービス改善の参考にさせていただきます。</p>
+        <div class="card-title">よろしければ<wbr>理由を<wbr>お聞かせ<wbr>ください<wbr>（任意）</div>
+        <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">今後の<wbr>サービス<wbr>改善の<wbr>参考に<wbr>させて<wbr>いただきます。</p>
         <div id="cancel-reason-options" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
           <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
             <input type="radio" name="cancel-reason" value="料金が合わなかった" style="accent-color:var(--primary);">料金が合わなかった
@@ -926,7 +928,7 @@
             <input type="radio" name="cancel-reason" value="使いこなせなかった" style="accent-color:var(--primary);">使いこなせなかった
           </label>
           <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
-            <input type="radio" name="cancel-reason" value="他のサービスに移行する" style="accent-color:var(--primary);">他のサービスに移行する
+            <input type="radio" name="cancel-reason" value="他のサービスに移行する" style="accent-color:var(--primary);">他の<wbr>サービスに<wbr>移行する
           </label>
           <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;">
             <input type="radio" name="cancel-reason" value="必要なくなった" style="accent-color:var(--primary);">必要なくなった
@@ -935,7 +937,9 @@
             <input type="radio" name="cancel-reason" value="その他" style="accent-color:var(--primary);">その他
           </label>
         </div>
-        <textarea id="cancel-reason-detail" placeholder="よろしければ詳しくお聞かせください（任意）" style="width:100%;min-height:70px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+        <textarea id="cancel-reason-detail" maxlength="500" oninput="updateWithdrawDetailCount()" placeholder="よろしければ&#8203;詳しく&#8203;お聞かせ&#8203;ください&#8203;（任意）" style="width:100%;min-height:70px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+        <!-- ★liff_settings.html85：理由の自由記述は500字まで（退会gs_06 の WITHDRAW_DETAIL_MAX と同じ）。字数を欄の下の右に出す（AIサポート画面の問い合わせと同じ形） -->
+        <div id="cancel-reason-count" style="text-align:right;font-size:11px;color:var(--text-sub);margin-top:2px;">0 / 500字</div>
       </div>
 
       <!-- ★liff_settings.html72：注意書きは「ご確認ください」にまとめたので外した。ボタンは「退会を申し込む」「やめる」 -->
@@ -1226,7 +1230,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_settings.html82：「更新」の端末の確認の窓を、画面の中の確認の窓（aipostAsk）にした（Kenさん承認）
 // ★liff_settings.html83：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
 // ★liff_settings.html84：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
-const TRACE_SCREEN = '設定84';
+// ★liff_settings.html85：退会の理由の自由記述を500字までにし、字数（「0 / 500字」）を出す（GASは500字を超えた分を何も知らせずに捨てていたため）。
+// 　あわせて、退会のお申し込みの画面を、文字を大きくしても言葉の途中で折らないようにした（keep-all・<wbr>・\u200b。Kenさん指示）
+const TRACE_SCREEN = '設定85';
 
 function traceLog(msg) {
   try {
@@ -2017,20 +2023,27 @@ function showCancelScreen() {
   const endMd = WD_PERIOD ? wdMd(WD_PERIOD.end) : '';
   const nextMd = WD_NEXT_START ? wdMd(WD_NEXT_START) : '';
   const planName = currentDemoPlan && currentDemoPlan !== '未入会' ? '今の' + currentDemoPlan + 'プラン' : '今のプラン';
-  document.getElementById('wd-confirm-sub').textContent = (endMd ? endMd : 'ご利用期間の終了日') + 'まで、' + planName + 'を引き続きご利用いただけます。';
+  document.getElementById('wd-confirm-sub').textContent = (endMd ? endMd : 'ご利用期間の終了日') + 'まで、' + planName + 'を\u200b引き続き\u200bご利用\u200bいただけます。';
   const items = [
-    (nextMd ? nextMd : '次回更新日') + 'に退会となります。',
-    '退会の日に、店舗情報・予約・投稿履歴・分析データ・画像は全て削除され、元に戻せません。',
-    (nextMd ? nextMd + '以降' : '退会の日以降') + 'の予約は取り消されます。',
-    'SNSに投稿済みの投稿は、そのまま残ります。'
+    (nextMd ? nextMd : '次回更新日') + 'に退会と\u200bなります。',
+    '退会の日に、店舗情報・予約・投稿履歴・分析データ・画像は\u200b全て\u200b削除され、元に\u200b戻せません。',
+    (nextMd ? nextMd + '以降' : '退会の日以降') + 'の予約は\u200b取り消されます。',
+    'SNSに投稿済みの投稿は、そのまま\u200b残ります。'
   ];
-  if (WD_NEXT_PLAN) items.push('予定していたプラン変更は取り消されます。');
-  items.push((endMd ? endMd : 'ご利用期間の終了日') + 'までは、お申し込みを取り消せます。');
+  if (WD_NEXT_PLAN) items.push('予定していた\u200bプラン変更は\u200b取り消されます。');
+  items.push((endMd ? endMd : 'ご利用期間の終了日') + 'までは、お申し込みを\u200b取り消せます。');
   document.getElementById('wd-confirm-list').innerHTML = items.map(function (t) { return '<li>' + wdEscape(t) + '</li>'; }).join('');
   document.getElementById('main-account').classList.add('hidden');
   document.getElementById('cancel-screen').classList.add('open');
   // 「退会」カードは画面下部にあるため、切り替え後は必ず先頭までスクロールを戻す
   window.scrollTo(0, 0);
+}
+// ★liff_settings.html85：退会の理由の自由記述の字数を出す（上限は欄の maxlength＝500字）
+function updateWithdrawDetailCount() {
+  const el = document.getElementById('cancel-reason-detail');
+  const count = document.getElementById('cancel-reason-count');
+  if (!el || !count) return;
+  count.textContent = el.value.length + ' / 500字';
 }
 function hideCancelScreen() {
   document.getElementById('main-account').classList.remove('hidden');
