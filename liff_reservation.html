@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更81 - AiPost</title>
+<title>予約確認・変更82 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -92,6 +92,12 @@
   .content { padding: 14px; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
+  /* ★liff_reservation.html82：横にスライドしてタブを移った時に、中身を移った向きから少し流して出す（Kenさん指示） */
+  .tab-panel.swipe-in-left { animation: tabSwipeInLeft 0.2s ease-out; }
+  .tab-panel.swipe-in-right { animation: tabSwipeInRight 0.2s ease-out; }
+  @keyframes tabSwipeInLeft { from { transform: translateX(28px); opacity: 0.4; } to { transform: none; opacity: 1; } }
+  @keyframes tabSwipeInRight { from { transform: translateX(-28px); opacity: 0.4; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .tab-panel.swipe-in-left, .tab-panel.swipe-in-right { animation: none; } }
 
   /* 使用状況バー */
   .usage-bar {
@@ -1003,7 +1009,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更81</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更82</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1586,6 +1592,81 @@ function switchTab(id) {
   if (typeof updateDeleteBar === 'function') updateDeleteBar(); // ★liff_reservation.html78
 }
 
+// ★liff_reservation.html82：タブの中身の上で横にスライドすると、隣のタブへ移る（Kenさん指示）。
+// 　左へスライド＝右隣のタブ、右へスライド＝左隣のタブ。出ているタブだけを順に移る（FREEプランは2つ）。端のタブでは何もしない。
+// 　誤って移らないよう、次の時は移らない：横の動きが60pxより小さい・縦より横の動きがはっきり大きくない（上下のスクロール）・
+// 　指を2本使った・指を離すまで0.8秒より長い・中身の外（ヘッダー・タブ・窓・下の帯・メニュー）から始めた・画面の左右の端（24px）から始めた
+// 　（端末やLINEの「戻る」の操作とぶつけない）・入力欄の上から始めた・文字を入力している・窓が開いている（予約の詳細・トリミング・
+// 　確認の窓・お知らせの一覧・拡大した画像。どれも画面全体を覆うので、中身に指が届かないことでも止まる）。
+const TAB_SWIPE_ORDER = ['list', 'calendar', 'history', 'delete'];
+const TAB_SWIPE_MIN_X = 60;
+const TAB_SWIPE_EDGE = 24;
+const TAB_SWIPE_MAX_MS = 800;
+let tabSwipeStart = null;
+function tabSwipeVisibleIds() {
+  const btns = document.querySelectorAll('.tab-nav .tab-btn');
+  return TAB_SWIPE_ORDER.filter(function (id, i) {
+    const b = btns[i];
+    return b && getComputedStyle(b).display !== 'none';
+  });
+}
+function tabSwipeBlocked(target) {
+  if (!target || !target.closest) return true;
+  // 中身の所（予約が少なくて空いている下の所も含む）から始めた時だけ。ヘッダー・タブ・下の帯・メニュー・窓からは移らない
+  if (!(target.closest('.content') || target === document.body || target === document.documentElement)) return true;
+  if (target.closest('input, textarea, select, [contenteditable="true"]')) return true;
+  const ae = document.activeElement;
+  if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return true;
+  // 画面全体を覆う窓が出ていれば止める（念のため。窓は body の直下か、その1つ下に置いてある）
+  const open = Array.prototype.some.call(document.querySelectorAll('body > *, body > * > *'), function (el) {
+    if (el.closest('.tab-panel')) return false;
+    const cs = getComputedStyle(el);
+    if (cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') return false;
+    const r = el.getBoundingClientRect();
+    return r.width >= window.innerWidth * 0.9 && r.height >= window.innerHeight * 0.6;
+  });
+  return open;
+}
+document.addEventListener('touchstart', function (e) {
+  tabSwipeStart = null;
+  if (!e.touches || e.touches.length !== 1) return;
+  const tch = e.touches[0];
+  if (tch.clientX < TAB_SWIPE_EDGE || tch.clientX > window.innerWidth - TAB_SWIPE_EDGE) return;
+  if (tabSwipeBlocked(e.target)) return;
+  tabSwipeStart = { x: tch.clientX, y: tch.clientY, t: Date.now() };
+}, { passive: true });
+document.addEventListener('touchmove', function (e) {
+  if (tabSwipeStart && e.touches && e.touches.length !== 1) tabSwipeStart = null;
+}, { passive: true });
+document.addEventListener('touchcancel', function () { tabSwipeStart = null; }, { passive: true });
+document.addEventListener('touchend', function (e) {
+  const s = tabSwipeStart;
+  tabSwipeStart = null;
+  if (!s || !e.changedTouches || e.changedTouches.length !== 1) return;
+  const tch = e.changedTouches[0];
+  const dx = tch.clientX - s.x;
+  const dy = tch.clientY - s.y;
+  if (Date.now() - s.t > TAB_SWIPE_MAX_MS) return;
+  if (Math.abs(dx) < TAB_SWIPE_MIN_X || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+  const ids = tabSwipeVisibleIds();
+  const active = document.querySelector('.tab-panel.active');
+  const cur = active ? ids.indexOf(active.id.replace(/^tab-/, '')) : -1;
+  if (cur === -1) return;
+  const next = cur + (dx < 0 ? 1 : -1);
+  if (next < 0 || next >= ids.length) return;
+  switchTab(ids[next]);
+  const panel = document.getElementById('tab-' + ids[next]);
+  if (panel) {
+    panel.classList.remove('swipe-in-left', 'swipe-in-right');
+    void panel.offsetWidth; // 続けて移った時も動きを最初から出す
+    panel.classList.add(dx < 0 ? 'swipe-in-left' : 'swipe-in-right');
+    panel.addEventListener('animationend', function done() {
+      panel.classList.remove('swipe-in-left', 'swipe-in-right');
+      panel.removeEventListener('animationend', done);
+    });
+  }
+}, { passive: true });
+
 // ★liff_reservation_html32：予約カレンダーのデモデータ（Facebookを含むダミーデータ）と
 // 　buildCalendar()・selectDay()を削除し、実データ表示（下のscript内）に置き換えた。
 
@@ -1821,7 +1902,9 @@ function switchTab(id) {
   // ★liff_reservation.html79：「更新」の端末の確認の窓を、画面の中の確認の窓（aipostAsk）にした（Kenさん承認）
   // ★liff_reservation.html80：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
   // ★liff_reservation.html81：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
-  const TRACE_SCREEN = '予約確認81';
+  // ★liff_reservation.html82：タブの中身の上で横にスライドすると隣のタブへ移る。予約の詳細の「（押すと大きく表示）」→「（タップすると大きく表示）」、
+  // 　拡大した画像の下の「画面を押すと閉じます。」→「画面をタップすると閉じます。」（Kenさん指示）
+  const TRACE_SCREEN = '予約確認82';
 
   function traceLog(msg) {
     try {
@@ -2169,7 +2252,7 @@ function switchTab(id) {
       box.innerHTML = '';
       return;
     }
-    box.innerHTML = '<div class="ri-sns-head">SNSごとの<wbr>画像<wbr>（押すと<wbr>大きく<wbr>表示）</div><div class="ri-sns-row">' +
+    box.innerHTML = '<div class="ri-sns-head">SNSごとの<wbr>画像<wbr>（タップすると<wbr>大きく<wbr>表示）</div><div class="ri-sns-row">' +
       items.map(function (s) {
         const v = imgs[s.key];
         const state = SNS_IMAGE_STATE_LABEL[v.state] ? v.state : 'none';
@@ -2206,7 +2289,7 @@ function switchTab(id) {
       el.className = 'ri-zoom';
       el.id = 'ri-zoom';
       el.innerHTML = '<div class="ri-zoom-label" id="ri-zoom-label"></div><img id="ri-zoom-img" alt="">' +
-        '<div class="ri-zoom-hint">画面を<wbr>押すと<wbr>閉じます。</div>';
+        '<div class="ri-zoom-hint">画面を<wbr>タップすると<wbr>閉じます。</div>';
       el.addEventListener('click', function () { el.classList.remove('open'); });
       document.body.appendChild(el);
     }
