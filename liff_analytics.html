@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析68 - AiPost</title>
+<title>分析69 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -379,7 +379,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析68</span></span>
+  <span class="header-logo"><span class="nowrap">分析69</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1160,7 +1160,7 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-6')">⑥ 同業種・同エリアとの比較（PRO）<span class="accordion-arrow" id="arr-acc-6">▶</span></div>
     <div class="accordion-body" id="acc-6">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">同じ業種・同じ地域の店舗の平均と、あなたのEG率・フォロワー数・月の投稿数を比べます。PROプランの店舗の数字を、どの店か分からない形でまとめています。5店舗以上集まると表示されます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">同じ業種・同じ地域の店舗の平均と、あなたのEG率・フォロワー数・30日間の投稿数を比べます。LITEプラン以上の店舗の数字を、どの店か分からない形でまとめています。自分を除いて5店舗以上集まると表示されます。</div>
     </div>
   </div>
 
@@ -1814,7 +1814,8 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html66：「更新」の端末の確認の窓を、画面の中の確認の窓（aipostAsk）にした（Kenさん承認）
 // ★liff_analytics.html67：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
 // ★liff_analytics.html68：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
-const TRACE_SCREEN = '分析68';
+// ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
+const TRACE_SCREEN = '分析69';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
