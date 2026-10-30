@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更82 - AiPost</title>
+<title>予約確認・変更83 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -1009,11 +1009,11 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更82</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更83</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
-  <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
+  <button type="button" class="header-refresh" onclick="if (typeof clearPostHistoryCache === 'function') clearPostHistoryCache(); aipostRefreshAll(false)">🔄 更新</button>
 </div>
 <script>
 // ★liff_reservation.html40：保存済み情報（プラン・残り件数・SNS連携・予約一覧・分析）の読み直し。
@@ -1904,7 +1904,8 @@ document.addEventListener('touchend', function (e) {
   // ★liff_reservation.html81：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
   // ★liff_reservation.html82：タブの中身の上で横にスライドすると隣のタブへ移る。予約の詳細の「（押すと大きく表示）」→「（タップすると大きく表示）」、
   // 　拡大した画像の下の「画面を押すと閉じます。」→「画面をタップすると閉じます。」（Kenさん指示）
-  const TRACE_SCREEN = '予約確認82';
+  // ★liff_reservation.html83：投稿履歴を端末に覚え、画面を開いた時に裏で用意する（「🔄 更新」では覚えた履歴も消す。Kenさん承認）
+  const TRACE_SCREEN = '予約確認83';
 
   function traceLog(msg) {
     try {
@@ -2158,7 +2159,9 @@ document.addEventListener('touchend', function (e) {
         showNoReservationAccess();
         return;
       }
-      fetchAndRenderReservationList();
+      await fetchAndRenderReservationList();
+      // ★liff_reservation.html83：予約一覧の後に、投稿履歴も裏で用意する（覚えた履歴があればすぐ出す）
+      startPostHistoryEarly();
       // ★liff_reservation_html31：LINE UIDの取得前に投稿履歴タブが開かれていた場合は、ここで取得する
       if (postHistoryRequested) ensurePostHistoryLoaded();
     } catch (err) {
@@ -2339,6 +2342,7 @@ document.addEventListener('touchend', function (e) {
     const label = document.getElementById('reservation-list-label');
     if (!container) return;
     currentReservationList = list;
+    notePostHistoryReservations(list); // ★liff_reservation.html83：覚えた投稿履歴の「次の投稿の時刻」
     if (label) label.textContent = '予約中（' + list.length + '件）';
     // ★liff_reservation.html53：予約一覧タブだけ、カードの左にチェック欄を付ける（予約カレンダーのカードは今のまま）。
     // 　無くなった予約（キャンセル・投稿済み）は選択から外す。
@@ -4062,8 +4066,14 @@ function _dataUrlToBase64(dataUrl) {
   // ★liff_reservation_html31：投稿履歴タブ（実データ）
   // ============================================
   // ・取得は「投稿履歴タブを初めて開いた時」のみ（GAS：getMyPostHistory）。
-  // 　投稿は予約時刻に裏側で実行されるため、sessionStorageには保存しない
-  // 　（保存すると新しい投稿が反映されない時間が生じる）。4画面共通の先読みにも含めない。
+  // 　★liff_reservation.html83：画面を開いた時に裏で取りに行き、取った履歴を端末（localStorage）に覚えておく（Kenさん承認）。
+  // 　次に開いた時は、覚えた履歴をすぐ出す。投稿履歴が変わるのは新しい投稿の後なので、次のどれかの時だけ取り直す
+  // 　（取り直す間は、覚えた履歴を出したまま「最新の情報を確かめています…」と出す）：
+  // 　①覚えた時の「次の投稿の時刻」（予約一覧のいちばん早い投稿予定。投稿文作成で予約した時も早ければ置き換える）を過ぎた
+  // 　②夜中の4時を過ぎた（毎晩2時台の整理で、投稿履歴の画像が小さい画像に入れ替わるため。1日1回は取り直す）
+  // 　③予約一覧をまだ知らない時に覚えた（取ってから1分以内に予約一覧が届けば、その時に覚える）　④「🔄 更新」を押した（覚えた履歴を消す）
+  // 　プランが変わった時・別のLINEの人・覚えてから24時間を過ぎた時は、覚えた履歴を使わない（プライバシーポリシー：24時間で取り直す）。
+  // 　投稿削除で消した時は、取り直さずに覚えた履歴も直す。4画面共通の先読みには含めない。
   // ・いいね・コメント等の反応数は表示しない（反応の確認は分析画面の役割）。
   // ・各SNSの結果は、投稿履歴シートの「◯◯投稿結果」列の値をそのまま表示する
   // 　（「成功」は緑、それ以外＝失敗・除外は赤。空欄＝投稿対象外のSNSは表示しない）。
@@ -4081,17 +4091,150 @@ function _dataUrlToBase64(dataUrl) {
     return dt.getFullYear() + '-' + p2(dt.getMonth() + 1) + '-' + p2(dt.getDate());
   }
 
-  function setHistoryStatus(html) {
+  // ★liff_reservation.html83：compact＝覚えた履歴を出したまま取り直す時の小さな知らせ（上下の空きを小さくする）
+  function setHistoryStatus(html, compact) {
     const el = document.getElementById('history-status');
     if (!el) return;
     el.innerHTML = html || '';
     el.style.display = html ? 'block' : 'none';
+    el.style.padding = compact ? '0 0 8px' : '';
     // ★liff_reservation.html44：投稿削除タブにも同じ読み込み状況を表示する
     const delEl = document.getElementById('del-status');
     if (delEl) {
       delEl.innerHTML = html || '';
       delEl.style.display = html ? 'block' : 'none';
+      delEl.style.padding = compact ? '0 0 8px' : '';
     }
+  }
+
+  // ★liff_reservation.html83：覚えた投稿履歴（localStorage）
+  const POST_HISTORY_CACHE_KEY = 'aipost_post_history';
+  const POST_HISTORY_CACHE_MAX_MS = 24 * 60 * 60 * 1000;
+  let postHistoryFresh = false;     // 今出している履歴が、取り直さなくてよいものか
+  // 覚えた時刻の次の「夜中の4時」
+  function postHistoryNext4am(ms) {
+    const d = new Date(ms);
+    const b = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 4, 0, 0, 0);
+    if (b.getTime() <= ms) b.setDate(b.getDate() + 1);
+    return b.getTime();
+  }
+  // 予約一覧のいちばん早い投稿予定の時刻（予約が無ければ null）
+  function postHistoryEarliest(list) {
+    let min = null;
+    (list || []).forEach(function (r) {
+      const ms = new Date(r && r.scheduledAt).getTime();
+      if (!isNaN(ms) && (min === null || ms < min)) min = ms;
+    });
+    return min;
+  }
+  function readPostHistoryCache() {
+    try {
+      const c = JSON.parse(localStorage.getItem(POST_HISTORY_CACHE_KEY) || 'null');
+      if (!c || c.v !== 1 || !Array.isArray(c.items) || typeof c.fetchedAt !== 'number') return null;
+      if (c.lineUid !== LINE_UID || Date.now() - c.fetchedAt > POST_HISTORY_CACHE_MAX_MS) {
+        localStorage.removeItem(POST_HISTORY_CACHE_KEY);
+        return null;
+      }
+      if (c.plan !== currentDemoPlan) return null; // プランが変わった時は使わない（取り直して覚え直す）
+      return c;
+    } catch (e) { return null; }
+  }
+  function postHistoryCacheIsFresh(c) {
+    const now = Date.now();
+    if (!c.nextPostKnown) return false;
+    if (c.nextPostAt !== null && now >= c.nextPostAt) return false;
+    return now < postHistoryNext4am(c.fetchedAt);
+  }
+  // 今の履歴を覚える（fetchedAt・次の投稿の時刻は、取った時のものを使う。投稿削除の後は、それを引き継ぐ）
+  function savePostHistoryCache(keepMeta) {
+    if (postHistoryItems === null) return;
+    try {
+      const old = keepMeta ? JSON.parse(localStorage.getItem(POST_HISTORY_CACHE_KEY) || 'null') : null;
+      if (keepMeta && !(old && old.v === 1 && old.lineUid === LINE_UID)) return;
+      const c = {
+        v: 1, lineUid: LINE_UID, plan: currentDemoPlan,
+        fetchedAt: keepMeta ? old.fetchedAt : Date.now(),
+        nextPostKnown: keepMeta ? old.nextPostKnown : reservationListLoaded,
+        nextPostAt: keepMeta ? old.nextPostAt : (reservationListLoaded ? postHistoryEarliest(currentReservationList) : null),
+        items: postHistoryItems.map(function (item) {
+          return { reservationId: item.reservationId, postedAt: item.postedAt.toISOString(), honbun: item.honbun,
+            results: item.results, deletable: item.deletable, imageFileId: item.imageFileId };
+        })
+      };
+      localStorage.setItem(POST_HISTORY_CACHE_KEY, JSON.stringify(c));
+    } catch (e) {}
+  }
+  function clearPostHistoryCache() {
+    try { localStorage.removeItem(POST_HISTORY_CACHE_KEY); } catch (e) {}
+  }
+  // 予約一覧を読んだ時：覚えた「次の投稿の時刻」より早い予約があれば置き換える（遅くはしない）
+  function notePostHistoryReservations(list) {
+    try {
+      const c = JSON.parse(localStorage.getItem(POST_HISTORY_CACHE_KEY) || 'null');
+      if (!c || c.v !== 1 || c.lineUid !== LINE_UID) return;
+      const e = postHistoryEarliest(list);
+      if (!c.nextPostKnown) {
+        // 予約一覧より先に履歴を取った時（取ってから1分以内）は、ここで「次の投稿の時刻」を覚える。それより後は、次に開いた時に取り直す
+        if (Date.now() - c.fetchedAt > 60 * 1000) return;
+        c.nextPostKnown = true;
+        c.nextPostAt = e;
+        localStorage.setItem(POST_HISTORY_CACHE_KEY, JSON.stringify(c));
+        return;
+      }
+      if (e !== null && (c.nextPostAt === null || e < c.nextPostAt)) {
+        c.nextPostAt = e;
+        localStorage.setItem(POST_HISTORY_CACHE_KEY, JSON.stringify(c));
+      }
+    } catch (err) {}
+  }
+  // 取った（または覚えた）履歴を、画面のデータにして出す
+  function applyPostHistoryItems(rawItems) {
+    postHistoryItems = rawItems.map(function (item) {
+      return {
+        reservationId: item.reservationId,
+        postedAt: new Date(item.postedAt),
+        honbun: item.honbun || '',
+        results: item.results || {},
+        // ★liff_reservation.html45：AiPostから削除できるか（TextGenerationgs_23。無い時はfalse）
+        deletable: item.deletable || {},
+        // ★liff_reservation.html70：投稿した画像のファイルID（小さくした画像。夜の整理の前は元画像）。画像なしの時は空
+        imageFileId: typeof item.imageFileId === 'string' ? item.imageFileId : ''
+      };
+    }).filter(function (item) { return !isNaN(item.postedAt.getTime()); });
+    postHistoryItems.sort(function (a, b) { return b.postedAt.getTime() - a.postedAt.getTime(); });
+
+    postHistoryByDate = {};
+    postHistoryItems.forEach(function (item) {
+      const key = historyDateKey(item.postedAt);
+      if (!postHistoryByDate[key]) postHistoryByDate[key] = [];
+      postHistoryByDate[key].push(item);
+    });
+
+    renderPostHistory();
+    // 開いている日があれば、新しいデータで出し直す
+    if (historySelectedKey) {
+      const parts = historySelectedKey.split('-');
+      if (postHistoryByDate[historySelectedKey]) showHistoryDay(historySelectedKey, Number(parts[2]));
+      else { historySelectedKey = null; showHistoryDay(null); }
+    }
+    // ★liff_reservation.html44：投稿削除タブを開いていれば、取得したデータで表示する
+    renderDeleteTab();
+  }
+  // ★liff_reservation.html83：画面を開いた時に呼ぶ。覚えた履歴があればすぐ出し、要る時だけ裏で取り直す（PERSONALプラン以上だけ）
+  function startPostHistoryEarly() {
+    if (IS_TRIAL || NOT_REGISTERED) return;
+    if (currentDemoPlan === 'FREE') { clearPostHistoryCache(); return; }
+    if (postHistoryItems !== null || postHistoryLoading) return;
+    const c = readPostHistoryCache();
+    if (c) {
+      applyPostHistoryItems(c.items);
+      if (postHistoryCacheIsFresh(c)) {
+        postHistoryFresh = true;
+        setHistoryStatus('');
+        return;
+      }
+    }
+    loadPostHistory();
   }
 
   function ensurePostHistoryLoaded() {
@@ -4108,7 +4251,11 @@ function _dataUrlToBase64(dataUrl) {
   async function loadPostHistory() {
     if (postHistoryLoading) return;
     postHistoryLoading = true;
-    setHistoryStatus('読み込み中…');
+    // ★liff_reservation.html83：覚えた履歴を出している時は、出したまま小さく知らせる
+    const showingCache = postHistoryItems !== null;
+    if (showingCache) setHistoryStatus('<span style="font-size:11px;">最新の情報を確かめています…</span>', true);
+    else setHistoryStatus('読み込み中…');
+    const retryHtml = '<br><button class="btn btn-outline" style="flex:none;margin-top:10px;padding:8px 20px;" onclick="loadPostHistory()">再読み込み</button>';
     try {
       const result = await postToGas(
         { action: 'getMyPostHistory', lineUid: LINE_UID, params: {} },
@@ -4116,38 +4263,17 @@ function _dataUrlToBase64(dataUrl) {
         function (r) { return r && r.success && r.data && r.data.success && Array.isArray(r.data.items); }
       );
       if (!result) {
-        // 取得できなかった場合は「履歴なし」と誤表示しない
-        setHistoryStatus('投稿履歴を取得できませんでした<br><button class="btn btn-outline" style="flex:none;margin-top:10px;padding:8px 20px;" onclick="loadPostHistory()">再読み込み</button>');
+        // 取得できなかった場合は「履歴なし」と誤表示しない（覚えた履歴を出している時は、そのまま出す）
+        setHistoryStatus((showingCache ? '最新の情報を確かめられませんでした。' : '投稿履歴を取得できませんでした') + retryHtml);
         return;
       }
-      postHistoryItems = result.data.items.map(function (item) {
-        return {
-          reservationId: item.reservationId,
-          postedAt: new Date(item.postedAt),
-          honbun: item.honbun || '',
-          results: item.results || {},
-          // ★liff_reservation.html45：AiPostから削除できるか（TextGenerationgs_23。無い時はfalse）
-          deletable: item.deletable || {},
-          // ★liff_reservation.html70：投稿した画像のファイルID（小さくした画像。夜の整理の前は元画像）。画像なしの時は空
-          imageFileId: typeof item.imageFileId === 'string' ? item.imageFileId : ''
-        };
-      }).filter(function (item) { return !isNaN(item.postedAt.getTime()); });
-      postHistoryItems.sort(function (a, b) { return b.postedAt.getTime() - a.postedAt.getTime(); });
-
-      postHistoryByDate = {};
-      postHistoryItems.forEach(function (item) {
-        const key = historyDateKey(item.postedAt);
-        if (!postHistoryByDate[key]) postHistoryByDate[key] = [];
-        postHistoryByDate[key].push(item);
-      });
-
       setHistoryStatus('');
-      renderPostHistory();
-      // ★liff_reservation.html44：投稿削除タブを開いていれば、取得したデータで表示する
-      renderDeleteTab();
+      applyPostHistoryItems(result.data.items);
+      postHistoryFresh = true;
+      savePostHistoryCache(false); // ★liff_reservation.html83
     } catch (err) {
       console.error('投稿履歴の取得エラー:', err);
-      setHistoryStatus('投稿履歴を取得できませんでした<br><button class="btn btn-outline" style="flex:none;margin-top:10px;padding:8px 20px;" onclick="loadPostHistory()">再読み込み</button>');
+      setHistoryStatus((showingCache ? '最新の情報を確かめられませんでした。' : '投稿履歴を取得できませんでした') + retryHtml);
     } finally {
       postHistoryLoading = false;
     }
@@ -4602,6 +4728,8 @@ function _dataUrlToBase64(dataUrl) {
           (ngCount > 0 ? '\n' + ngCount + '件は削除できませんでした（理由は一覧に表示しています）。' : '');
         // ★liff_reservation.html58：全部削除できた時は、完了の窓を出す（ほかの画面と同じ）
         if (ngCount === 0 && okCount > 0) { doneMessage = message; message = ''; }
+        // ★liff_reservation.html83：覚えた履歴も直す（取り直さない）
+        if (okCount > 0) savePostHistoryCache(true);
         // 投稿履歴タブの表示も新しい結果で描き直す
         renderPostHistory();
         if (historySelectedKey) {
@@ -4612,6 +4740,7 @@ function _dataUrlToBase64(dataUrl) {
     } catch (err) {
       console.error('投稿削除エラー:', err);
       message = '通信エラーが発生しました。削除できたかどうかは、もう一度画面を開いてご確認ください。';
+      clearPostHistoryCache(); // ★liff_reservation.html83：削除できたか分からないので、次に開いた時は取り直す
       traceLog('投稿削除 通信エラー ' + (err && err.message));
     } finally {
       deleteRunning = false;

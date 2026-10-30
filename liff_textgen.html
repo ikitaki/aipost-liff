@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成175 - AiPost</title>
+<title>投稿文作成176 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -890,7 +890,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成175</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成176</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1927,6 +1927,22 @@ async function warmupReservationListCache() {
   refreshCalendarCounts();
 }
 
+// ★liff_textgen.html176：予約確認画面（liff_reservation.html82）は、投稿履歴を端末（localStorage「aipost_post_history」）に覚え、
+// 　「次の投稿の時刻」を過ぎるまで取り直さない。ここで予約した時刻がそれより早ければ置き換える（予約確認画面を開く前に
+// 　投稿されても、次に開いた時に取り直すため）。覚えた履歴が無い時・形が違う時は何もしない。
+function notePostHistoryNextPost(scheduledAtIso) {
+  try {
+    const ms = new Date(scheduledAtIso).getTime();
+    if (isNaN(ms)) return;
+    const c = JSON.parse(localStorage.getItem('aipost_post_history') || 'null');
+    if (!c || c.v !== 1 || !c.nextPostKnown) return;
+    if (c.nextPostAt === null || ms < c.nextPostAt) {
+      c.nextPostAt = ms;
+      localStorage.setItem('aipost_post_history', JSON.stringify(c));
+    }
+  } catch (e) {}
+}
+
 // ★通信の一時的な失敗（GAS・スプレッドシート側の一時的な不調、想定外の応答など）に
 // 　備え、失敗した場合は1回だけ自動で再試行してから諦める。
 // 　成功時は応答（result）を、最終的に失敗した場合は null を返す。
@@ -1969,7 +1985,8 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html171：メモの3つ（契約プランが空の時はFREE・予約内容の確認の見出しを折らない・字数は「字」にそろえる）と、
 // 　予約内容の確認の画像「マイ画像（トリミングなし）」を「元画像のまま」に（トリミングの選び方の言葉にそろえる）
 // ★liff_textgen.html170：画面の言葉を「トリミング」にそろえた（「切り抜き」「切り抜く」を使わない。Kenさん指摘・予約確認76と同じ）
-const TRACE_SCREEN = '投稿文作成175';
+// ★liff_textgen.html176：予約した時に、予約確認画面が覚えている投稿履歴の「次の投稿の時刻」を、早ければこの予約の時刻にする（予約確認82。Kenさん承認）
+const TRACE_SCREEN = '投稿文作成176';
 
 function traceLog(msg) {
   try {
@@ -4267,6 +4284,7 @@ async function executeReserve() {
       if (btn) { btn.disabled = false; btn.textContent = '予約を確定する'; }
       return;
     }
+    notePostHistoryNextPost(scheduledAt); // ★liff_textgen.html176
 
     if (imageUploadResult.imageId) {
       try {
