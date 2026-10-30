@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更84 - AiPost</title>
+<title>予約確認・変更85 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -1004,7 +1004,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更84</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更85</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1591,7 +1591,7 @@ function switchTab(id) {
 // ★liff_reservation.html84：指に合わせて中身が横に動くようにした（Kenさん指示：瞬時に切り替わるのではなく、画面が横に動いていくように）。
 // 　・横に動かし始めると、今のタブの中身が指についてくる（縦より横の動きがはっきり大きい時だけ。上下はスクロールのまま）。
 // 　・離した時：画面の幅の4分の1より多く動かした（または素早く払った）なら、今の中身がそのまま横に出ていき、隣のタブの中身が
-// 　　反対側から入ってくる（合わせて約0.4秒）。少しだけなら元の位置に戻る。端のタブでは少しだけ動いて戻る（それより先は無い）。
+// 　　反対側から入ってくる（合わせて約0.27秒。85で約0.4秒から速くした）。少しだけなら元の位置に戻る。端のタブでは少しだけ動いて戻る（それより先は無い）。
 // 　・左へ＝右隣のタブ、右へ＝左隣のタブ。出ているタブだけを順に移る（FREEプランは2つ）。
 // 　・移らない時：指を2本使った・中身の外（ヘッダー・タブ・窓・下の帯・メニュー）から始めた・画面の左右の端（24px）から始めた
 // 　　（端末やLINEの「戻る」の操作とぶつけない）・入力欄の上から始めた・文字を入力している・窓が開いている（予約の詳細・トリミング・
@@ -1599,9 +1599,9 @@ function switchTab(id) {
 const TAB_SWIPE_ORDER = ['list', 'calendar', 'history', 'delete'];
 const TAB_SWIPE_EDGE = 24;
 const TAB_SWIPE_DECIDE = 10;     // ここまで動いたら、横か縦かを決める（px）
-const TAB_SWIPE_OUT_MS = 180;    // 今の中身が出ていく時間
-const TAB_SWIPE_IN_MS = 220;     // 隣の中身が入ってくる時間
-const TAB_SWIPE_BACK_MS = 200;   // 元の位置に戻る時間
+const TAB_SWIPE_OUT_MS = 120;    // 今の中身が出ていく時間（★liff_reservation.html85：180→120。Kenさん「やや遅い」）
+const TAB_SWIPE_IN_MS = 150;     // 隣の中身が入ってくる時間（★liff_reservation.html85：220→150）
+const TAB_SWIPE_BACK_MS = 150;   // 元の位置に戻る時間（★liff_reservation.html85：200→150）
 let tabSwipe = null;             // { x, y, t, mode:'?'|'h'|'v', panel, lastX, lastT, v }
 let tabSwipeAnimating = false;
 function tabSwipeReduced() {
@@ -1966,7 +1966,8 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   // 　拡大した画像の下の「画面を押すと閉じます。」→「画面をタップすると閉じます。」（Kenさん指示）
   // ★liff_reservation.html83：投稿履歴を端末に覚え、画面を開いた時に裏で用意する（「🔄 更新」では覚えた履歴も消す。Kenさん承認）
   // ★liff_reservation.html84：横にスライドした時、指に合わせて中身が横に動き、離すと隣のタブの中身が横から入ってくる（Kenさん指示）
-  const TRACE_SCREEN = '予約確認84';
+  // ★liff_reservation.html85：スライドで切り替わる動きを速くした（出ていく0.18→0.12秒・入ってくる0.22→0.15秒・戻る0.2→0.15秒。Kenさん「やや遅い」）
+  const TRACE_SCREEN = '予約確認85';
 
   function traceLog(msg) {
     try {
