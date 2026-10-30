@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更83 - AiPost</title>
+<title>予約確認・変更84 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -92,12 +92,7 @@
   .content { padding: 14px; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
-  /* ★liff_reservation.html82：横にスライドしてタブを移った時に、中身を移った向きから少し流して出す（Kenさん指示） */
-  .tab-panel.swipe-in-left { animation: tabSwipeInLeft 0.2s ease-out; }
-  .tab-panel.swipe-in-right { animation: tabSwipeInRight 0.2s ease-out; }
-  @keyframes tabSwipeInLeft { from { transform: translateX(28px); opacity: 0.4; } to { transform: none; opacity: 1; } }
-  @keyframes tabSwipeInRight { from { transform: translateX(-28px); opacity: 0.4; } to { transform: none; opacity: 1; } }
-  @media (prefers-reduced-motion: reduce) { .tab-panel.swipe-in-left, .tab-panel.swipe-in-right { animation: none; } }
+  /* ★liff_reservation.html84：横にスライドした時、中身を指に合わせて動かす（動かし方は下の script。前の「少し流して出す」動きはやめた） */
 
   /* 使用状況バー */
   .usage-bar {
@@ -1009,7 +1004,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更83</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更84</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1593,24 +1588,32 @@ function switchTab(id) {
 }
 
 // ★liff_reservation.html82：タブの中身の上で横にスライドすると、隣のタブへ移る（Kenさん指示）。
-// 　左へスライド＝右隣のタブ、右へスライド＝左隣のタブ。出ているタブだけを順に移る（FREEプランは2つ）。端のタブでは何もしない。
-// 　誤って移らないよう、次の時は移らない：横の動きが60pxより小さい・縦より横の動きがはっきり大きくない（上下のスクロール）・
-// 　指を2本使った・指を離すまで0.8秒より長い・中身の外（ヘッダー・タブ・窓・下の帯・メニュー）から始めた・画面の左右の端（24px）から始めた
-// 　（端末やLINEの「戻る」の操作とぶつけない）・入力欄の上から始めた・文字を入力している・窓が開いている（予約の詳細・トリミング・
-// 　確認の窓・お知らせの一覧・拡大した画像。どれも画面全体を覆うので、中身に指が届かないことでも止まる）。
+// ★liff_reservation.html84：指に合わせて中身が横に動くようにした（Kenさん指示：瞬時に切り替わるのではなく、画面が横に動いていくように）。
+// 　・横に動かし始めると、今のタブの中身が指についてくる（縦より横の動きがはっきり大きい時だけ。上下はスクロールのまま）。
+// 　・離した時：画面の幅の4分の1より多く動かした（または素早く払った）なら、今の中身がそのまま横に出ていき、隣のタブの中身が
+// 　　反対側から入ってくる（合わせて約0.4秒）。少しだけなら元の位置に戻る。端のタブでは少しだけ動いて戻る（それより先は無い）。
+// 　・左へ＝右隣のタブ、右へ＝左隣のタブ。出ているタブだけを順に移る（FREEプランは2つ）。
+// 　・移らない時：指を2本使った・中身の外（ヘッダー・タブ・窓・下の帯・メニュー）から始めた・画面の左右の端（24px）から始めた
+// 　　（端末やLINEの「戻る」の操作とぶつけない）・入力欄の上から始めた・文字を入力している・窓が開いている（予約の詳細・トリミング・
+// 　　確認の窓・お知らせの一覧・拡大した画像）・動いている途中。タブのボタンを押した時は、今までどおりすぐ切り替わる。
 const TAB_SWIPE_ORDER = ['list', 'calendar', 'history', 'delete'];
-const TAB_SWIPE_MIN_X = 60;
 const TAB_SWIPE_EDGE = 24;
-const TAB_SWIPE_MAX_MS = 800;
-let tabSwipeStart = null;
+const TAB_SWIPE_DECIDE = 10;     // ここまで動いたら、横か縦かを決める（px）
+const TAB_SWIPE_OUT_MS = 180;    // 今の中身が出ていく時間
+const TAB_SWIPE_IN_MS = 220;     // 隣の中身が入ってくる時間
+const TAB_SWIPE_BACK_MS = 200;   // 元の位置に戻る時間
+let tabSwipe = null;             // { x, y, t, mode:'?'|'h'|'v', panel, lastX, lastT, v }
+let tabSwipeAnimating = false;
+function tabSwipeReduced() {
+  try { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; }
+}
 function tabSwipeVisibleIds() {
   const btns = document.querySelectorAll('.tab-nav .tab-btn');
   return TAB_SWIPE_ORDER.filter(function (id, i) {
     const b = btns[i];
     return b && getComputedStyle(b).display !== 'none';
   });
-}
-function tabSwipeBlocked(target) {
+}function tabSwipeBlocked(target) {
   if (!target || !target.closest) return true;
   // 中身の所（予約が少なくて空いている下の所も含む）から始めた時だけ。ヘッダー・タブ・下の帯・メニュー・窓からは移らない
   if (!(target.closest('.content') || target === document.body || target === document.documentElement)) return true;
@@ -1626,46 +1629,103 @@ function tabSwipeBlocked(target) {
     return r.width >= window.innerWidth * 0.9 && r.height >= window.innerHeight * 0.6;
   });
   return open;
+}function tabSwipeSet(panel, x, ms) {
+  panel.style.transition = ms ? ('transform ' + ms + 'ms ease-out, opacity ' + ms + 'ms ease-out') : 'none';
+  panel.style.transform = x ? ('translateX(' + x + 'px)') : '';
+  panel.style.opacity = x ? String(Math.max(0.35, 1 - Math.abs(x) / window.innerWidth * 0.6)) : '';
 }
-document.addEventListener('touchstart', function (e) {
-  tabSwipeStart = null;
-  if (!e.touches || e.touches.length !== 1) return;
-  const tch = e.touches[0];
-  if (tch.clientX < TAB_SWIPE_EDGE || tch.clientX > window.innerWidth - TAB_SWIPE_EDGE) return;
-  if (tabSwipeBlocked(e.target)) return;
-  tabSwipeStart = { x: tch.clientX, y: tch.clientY, t: Date.now() };
-}, { passive: true });
-document.addEventListener('touchmove', function (e) {
-  if (tabSwipeStart && e.touches && e.touches.length !== 1) tabSwipeStart = null;
-}, { passive: true });
-document.addEventListener('touchcancel', function () { tabSwipeStart = null; }, { passive: true });
-document.addEventListener('touchend', function (e) {
-  const s = tabSwipeStart;
-  tabSwipeStart = null;
-  if (!s || !e.changedTouches || e.changedTouches.length !== 1) return;
-  const tch = e.changedTouches[0];
-  const dx = tch.clientX - s.x;
-  const dy = tch.clientY - s.y;
-  if (Date.now() - s.t > TAB_SWIPE_MAX_MS) return;
-  if (Math.abs(dx) < TAB_SWIPE_MIN_X || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+function tabSwipeClear(panel) {
+  panel.style.transition = '';
+  panel.style.transform = '';
+  panel.style.opacity = '';
+}
+// 隣のタブ（無ければ null）。dir：-1＝左へ動かした（右隣）／1＝右へ動かした（左隣）
+function tabSwipeNeighbor(dir) {
   const ids = tabSwipeVisibleIds();
   const active = document.querySelector('.tab-panel.active');
   const cur = active ? ids.indexOf(active.id.replace(/^tab-/, '')) : -1;
-  if (cur === -1) return;
-  const next = cur + (dx < 0 ? 1 : -1);
-  if (next < 0 || next >= ids.length) return;
-  switchTab(ids[next]);
-  const panel = document.getElementById('tab-' + ids[next]);
-  if (panel) {
-    panel.classList.remove('swipe-in-left', 'swipe-in-right');
-    void panel.offsetWidth; // 続けて移った時も動きを最初から出す
-    panel.classList.add(dx < 0 ? 'swipe-in-left' : 'swipe-in-right');
-    panel.addEventListener('animationend', function done() {
-      panel.classList.remove('swipe-in-left', 'swipe-in-right');
-      panel.removeEventListener('animationend', done);
-    });
-  }
+  if (cur === -1) return null;
+  const next = cur + (dir < 0 ? 1 : -1);
+  return (next < 0 || next >= ids.length) ? null : ids[next];
+}
+document.addEventListener('touchstart', function (e) {
+  tabSwipe = null;
+  if (tabSwipeAnimating || !e.touches || e.touches.length !== 1) return;
+  const tch = e.touches[0];
+  if (tch.clientX < TAB_SWIPE_EDGE || tch.clientX > window.innerWidth - TAB_SWIPE_EDGE) return;
+  if (tabSwipeBlocked(e.target)) return;
+  const panel = document.querySelector('.tab-panel.active');
+  if (!panel) return;
+  tabSwipe = { x: tch.clientX, y: tch.clientY, t: Date.now(), mode: '?', panel: panel, lastX: tch.clientX, lastT: Date.now(), v: 0 };
 }, { passive: true });
+// 横に動かしている間は、上下のスクロールを止める（そのため passive にしない）
+document.addEventListener('touchmove', function (e) {
+  const s = tabSwipe;
+  if (!s) return;
+  if (!e.touches || e.touches.length !== 1) {
+    if (s.mode === 'h') tabSwipeSet(s.panel, 0, TAB_SWIPE_BACK_MS);
+    tabSwipe = null;
+    return;
+  }
+  const tch = e.touches[0];
+  const dx = tch.clientX - s.x;
+  const dy = tch.clientY - s.y;
+  if (s.mode === '?') {
+    if (Math.abs(dx) < TAB_SWIPE_DECIDE && Math.abs(dy) < TAB_SWIPE_DECIDE) return;
+    if (Math.abs(dx) > Math.abs(dy) * 1.5) {
+      s.mode = 'h';
+      s.x = tch.clientX; // 決めた所から動かす（いきなり10px飛ばないように）
+    } else {
+      tabSwipe = null; // 縦のスクロール
+      return;
+    }
+  }
+  if (e.cancelable) e.preventDefault();
+  const now = Date.now();
+  if (now > s.lastT) s.v = (tch.clientX - s.lastX) / (now - s.lastT);
+  s.lastX = tch.clientX;
+  s.lastT = now;
+  let moveX = tch.clientX - s.x;
+  // 端のタブでは、重く少しだけ動く（最大60px）
+  if (!tabSwipeNeighbor(moveX < 0 ? -1 : 1)) moveX = Math.max(-60, Math.min(60, moveX / 3));
+  tabSwipeSet(s.panel, moveX, 0);
+}, { passive: false });
+function tabSwipeFinish(cancelled) {
+  const s = tabSwipe;
+  tabSwipe = null;
+  if (!s || s.mode !== 'h') return;
+  const moveX = s.lastX - s.x;
+  const dir = moveX < 0 ? -1 : 1;
+  const nextId = cancelled ? null : tabSwipeNeighbor(dir);
+  const enough = Math.abs(moveX) > window.innerWidth * 0.25 || (Math.abs(s.v) > 0.5 && Math.abs(moveX) > 30 && (s.v < 0) === (dir < 0));
+  if (!nextId || !enough) {
+    tabSwipeSet(s.panel, 0, TAB_SWIPE_BACK_MS);
+    setTimeout(function () { tabSwipeClear(s.panel); }, TAB_SWIPE_BACK_MS + 30);
+    return;
+  }
+  const w = window.innerWidth;
+  if (tabSwipeReduced()) {
+    tabSwipeClear(s.panel);
+    switchTab(nextId);
+    return;
+  }
+  tabSwipeAnimating = true;
+  // ① 今の中身が、そのまま横に出ていく
+  tabSwipeSet(s.panel, dir * w, TAB_SWIPE_OUT_MS);
+  setTimeout(function () {
+    tabSwipeClear(s.panel);
+    switchTab(nextId);
+    const panel = document.getElementById('tab-' + nextId);
+    if (!panel) { tabSwipeAnimating = false; return; }
+    // ② 隣の中身が、反対側から入ってくる
+    tabSwipeSet(panel, -dir * w, 0);
+    void panel.offsetWidth; // 置いた位置を確定させてから動かす
+    tabSwipeSet(panel, 0, TAB_SWIPE_IN_MS);
+    setTimeout(function () { tabSwipeClear(panel); tabSwipeAnimating = false; }, TAB_SWIPE_IN_MS + 30);
+  }, TAB_SWIPE_OUT_MS);
+}
+document.addEventListener('touchend', function () { tabSwipeFinish(false); }, { passive: true });
+document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, { passive: true });
 
 // ★liff_reservation_html32：予約カレンダーのデモデータ（Facebookを含むダミーデータ）と
 // 　buildCalendar()・selectDay()を削除し、実データ表示（下のscript内）に置き換えた。
@@ -1905,7 +1965,8 @@ document.addEventListener('touchend', function (e) {
   // ★liff_reservation.html82：タブの中身の上で横にスライドすると隣のタブへ移る。予約の詳細の「（押すと大きく表示）」→「（タップすると大きく表示）」、
   // 　拡大した画像の下の「画面を押すと閉じます。」→「画面をタップすると閉じます。」（Kenさん指示）
   // ★liff_reservation.html83：投稿履歴を端末に覚え、画面を開いた時に裏で用意する（「🔄 更新」では覚えた履歴も消す。Kenさん承認）
-  const TRACE_SCREEN = '予約確認83';
+  // ★liff_reservation.html84：横にスライドした時、指に合わせて中身が横に動き、離すと隣のタブの中身が横から入ってくる（Kenさん指示）
+  const TRACE_SCREEN = '予約確認84';
 
   function traceLog(msg) {
     try {
