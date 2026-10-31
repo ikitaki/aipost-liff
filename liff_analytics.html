@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析69 - AiPost</title>
+<title>分析70 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -194,6 +194,12 @@
   .notice-confirm-btn { display: block; width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 8px; font-family: inherit; }
   .notice-confirm-del { background: #e53935; color: #fff; }
   .notice-confirm-back { background: #f5f7fa; color: #6b7280; border: 1px solid #e0e4ed; }
+  /* ★liff_analytics.html70：「最新の状況」の見出しの横の「？」。押すと、枠の中の言葉の説明を見出しの下にまとめて出す（投稿文作成のハッシュタグの「？」と同じ形） */
+  .status-help-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-left: 6px; border-radius: 50%; border: 1.5px solid var(--primary); background: #fff; color: var(--primary); font-size: 12px; font-weight: 700; line-height: 1; padding: 0; vertical-align: 1px; cursor: pointer; font-family: inherit; }
+  .status-help-btn.on { background: var(--primary); color: #fff; }
+  .status-help-box { background: #f8f9fc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; font-size: 12px; color: var(--text); line-height: 1.7; }
+  .status-help-box .status-help-item + .status-help-item { margin-top: 8px; }
+  .status-help-box b { color: var(--primary); }
   /* ★liff_analytics.html64：言葉の横の「？」。押すと意味を窓で出す（窓はお知らせの確認の窓と同じ形） */
   .term-info { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; margin-left: 3px; padding: 0; border-radius: 50%; border: 1px solid var(--primary); background: #fff; color: var(--primary); font-size: 10px; font-weight: 700; line-height: 1; vertical-align: 1px; cursor: pointer; font-family: inherit; }
   .notice-panel { background: #fff; border-radius: 14px; width: 100%; max-width: 520px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,0.25); word-break: normal; overflow-wrap: anywhere; }
@@ -379,7 +385,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析69</span></span>
+  <span class="header-logo"><span class="nowrap">分析70</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -566,7 +572,8 @@
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">📊 最新の状況</div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定） -->
+    <div class="card-title">📊 最新の状況<button type="button" class="status-help-btn" onclick="toggleStatusHelp(this,'eg')" aria-label="説明">？</button></div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定）。★liff_analytics.html70：言葉ごとの「？」をやめ、見出しの横の「？」にまとめた -->
+    <div class="status-help-box" style="display:none;"></div>
 
     <!-- 3項目グリッド -->
     <div class="today-card" style="margin-bottom:10px;">
@@ -581,7 +588,7 @@
         <div class="today-sub" id="lite-month-total">/-件</div>
       </div>
       <div class="today-item">
-        <div class="today-label">総合<wbr>EG率<button type="button" class="term-info" onclick="showTerm('eg')" aria-label="説明">?</button></div>
+        <div class="today-label">総合<wbr>EG率</div>
         <div class="today-val" style="color:#2e7d32;" id="lite-eg-rate">-%</div>
         <div class="today-sub" style="color:var(--success);">今月の<wbr>平均</div>
       </div>
@@ -725,7 +732,8 @@
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">📊 最新の状況</div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定） -->
+    <div class="card-title">📊 最新の状況<button type="button" class="status-help-btn" onclick="toggleStatusHelp(this,'eg')" aria-label="説明">？</button></div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定）。★liff_analytics.html70：言葉ごとの「？」をやめ、見出しの横の「？」にまとめた -->
+    <div class="status-help-box" style="display:none;"></div>
 
     <!-- 3項目グリッド -->
     <div class="today-card" style="margin-bottom:10px;">
@@ -740,7 +748,7 @@
         <div class="today-sub" id="standard-month-total">/-件</div>
       </div>
       <div class="today-item">
-        <div class="today-label">総合<wbr>EG率<button type="button" class="term-info" onclick="showTerm('eg')" aria-label="説明">?</button></div>
+        <div class="today-label">総合<wbr>EG率</div>
         <div class="today-val" style="color:#2e7d32;" id="standard-eg-rate">-%</div>
         <div class="today-sub" style="color:var(--success);">今月の<wbr>平均</div>
       </div>
@@ -903,7 +911,8 @@
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">📊 最新の状況</div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定） -->
+    <div class="card-title">📊 最新の状況<button type="button" class="status-help-btn" onclick="toggleStatusHelp(this,'fsRank,fsTotal,fsSns,accum')" aria-label="説明">？</button></div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定）。★liff_analytics.html70：言葉ごとの「？」をやめ、見出しの横の「？」にまとめた -->
+    <div class="status-help-box" style="display:none;"></div>
 
     <!-- グループ①：今日のパフォーマンス -->
     <div class="today-card" style="margin-bottom:10px;">
@@ -914,19 +923,19 @@
       </div>
       <div class="today-item">
         <!-- ★liff_analytics.html43：初速スコア順位・総合初速スコアを実データで表示する（applyFirstSpeedScore） -->
-        <div class="today-label">初速スコア<wbr>順位<button type="button" class="term-info" onclick="showTerm('fsRank')" aria-label="説明">?</button></div>
+        <div class="today-label">初速スコア<wbr>順位</div>
         <div class="today-val" style="color:var(--primary);" id="pro-fs-rank">-</div>
         <div class="today-sub" id="pro-fs-rank-sub">-</div>
       </div>
       <div class="today-item">
-        <div class="today-label">総合<wbr>初速スコア<button type="button" class="term-info" onclick="showTerm('fsTotal')" aria-label="説明">?</button></div>
+        <div class="today-label">総合<wbr>初速スコア</div>
         <div class="today-val" style="color:var(--text-sub);" id="pro-fs-total">-</div>
         <div class="today-sub" id="pro-fs-total-sub">-</div>
       </div>
     </div>
     <!-- 内訳 -->
     <div style="background:var(--bg);border-radius:8px;padding:6px 10px;margin-bottom:10px;">
-      <div style="font-size:9px;color:var(--text-sub);margin-bottom:6px;" class="wrap-ja">SNS別<wbr>初速スコア<button type="button" class="term-info" onclick="showTerm('fsSns')" aria-label="説明">?</button></div>
+      <div style="font-size:9px;color:var(--text-sub);margin-bottom:6px;" class="wrap-ja">SNS別<wbr>初速スコア</div>
       <!-- ★liff_analytics.html43：SNS別初速スコアを実データで表示する（applyFirstSpeedScore） -->
       <div id="pro-fs-bysns">
         <div style="font-size:10px;color:var(--text-light);">-</div>
@@ -962,7 +971,7 @@
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
       <div style="background:var(--bg);border-radius:8px;padding:7px 9px;">
         <!-- ★liff_analytics.html41：ダミー表示をやめ、getAnalyticsSummary()のdataAccumulationを表示する（applyDataAccumulation） -->
-        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📈 データ蓄積率<button type="button" class="term-info" onclick="showTerm('accum')" aria-label="説明">?</button></div>
+        <div style="font-size:9px;font-weight:700;color:var(--text-sub);margin-bottom:4px;">📈 データ蓄積率</div>
         <div style="font-size:14px;font-weight:700;color:#2e7d32;" id="pro-accum-rate">-</div>
         <div style="font-size:9px;color:var(--text-sub);margin-top:2px;" id="pro-accum-count">- / 30投稿</div>
         <div style="font-size:8px;color:var(--text-light);margin-top:2px;" class="wrap-ja">直近60日以内の<wbr>投稿が<wbr>対象です。</div>
@@ -1815,7 +1824,8 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html67：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
 // ★liff_analytics.html68：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
-const TRACE_SCREEN = '分析69';
+// ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
+const TRACE_SCREEN = '分析70';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
@@ -1831,6 +1841,22 @@ function showTerm(key) {
   document.getElementById('term-modal-title').textContent = t[0];
   document.getElementById('term-modal-text').textContent = t[1];
   document.getElementById('term-modal').classList.add('open');
+}
+// ★liff_analytics.html70：「最新の状況」の「？」。押すたびに、その枠の言葉の説明を出す・しまう
+function toggleStatusHelp(btn, keys) {
+  const box = btn.parentElement.nextElementSibling;
+  if (!box || !box.classList.contains('status-help-box')) return;
+  if (box.style.display === 'none') {
+    box.innerHTML = String(keys).split(',').map(function (k) {
+      const t = TERM_TEXT[k];
+      return t ? '<div class="status-help-item"><b>' + t[0] + '</b><br>' + t[1] + '</div>' : '';
+    }).join('');
+    box.style.display = '';
+    btn.classList.add('on');
+  } else {
+    box.style.display = 'none';
+    btn.classList.remove('on');
+  }
 }
 function closeTerm() {
   document.getElementById('term-modal').classList.remove('open');
