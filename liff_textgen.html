@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成178 - AiPost</title>
+<title>投稿文作成179 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -887,7 +887,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成178</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成179</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1992,7 +1992,8 @@ const TRACE_KEY = 'aipost_trace';
 // 　納める方が便利な時がある）。AIで作成した時の自動の調整（店名・ハッシュタグを上限に収める）は今のまま（Kenさん承認）
 // ★liff_textgen.html178：画像を確定した後に「画像を選び直す」「トリミングをやり直す」のボタンを出す（帯の「×」は消した）・帯の「マイ画像（トリミングなし）」を
 // 　「元画像のまま」に・本文だけで140字を超えている時は「本文が140字を超えています」と出す（Kenさん指示）
-const TRACE_SCREEN = '投稿文作成178';
+// ★liff_textgen.html179：AIの文が3回とも確かめに通らなかった時の知らせに「作成に失敗しました：」を付けない（文章生成gs_18 の文をそのまま出す）
+const TRACE_SCREEN = '投稿文作成179';
 
 function traceLog(msg) {
   try {
@@ -2943,6 +2944,9 @@ async function executeGenerate() {
       // ★liff_textgen.html152：お試し中で今日の回数を使い切った時は、GASの文をそのまま出し、残りの回数の表示を直す
       if (result.trialLimitReached) {
         if (result.trial) { updateTrialRemaining(result.trial); writeQuotaTrial(result.trial); }
+        aipostNotice(result.error);
+      } else if (String(result.error || '').indexOf('投稿文をうまく作れませんでした') === 0) {
+        // ★liff_textgen.html179：AIの文が3回とも確かめに通らなかった時（文章生成gs_18）は、GASのやさしい文をそのまま出す（「作成に失敗しました：」を付けない）
         aipostNotice(result.error);
       } else {
         aipostNotice('作成に失敗しました：' + result.error);
