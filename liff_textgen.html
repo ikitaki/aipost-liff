@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成177 - AiPost</title>
+<title>投稿文作成178 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -887,7 +887,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成177</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成178</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1276,7 +1276,12 @@
     <div class="img-selected-bar" id="img-selected-bar" style="display:none;">
       <span class="img-selected-thumb" id="img-selected-thumb">🖼️</span>
       <span class="img-selected-name" id="img-selected-name"></span>
-      <button class="img-selected-clear" onclick="showImageCancelOptions()">×</button>
+    </div>
+    <!-- ★liff_textgen.html178：画像を確定した後（緑の帯が出ている時）に、選び直す・トリミングをやり直すボタンを出す（Kenさん指示。以前は帯の右の
+         「×」を押した時だけ出たので分かりにくかった。「×」は消した）。出し入れは updateImgSelectedActions()（帯の表示に合わせて自動） -->
+    <div id="img-selected-actions" style="display:none;padding:8px 16px 8px;gap:8px;">
+      <button type="button" id="img-act-reupload" onclick="imgCancelReupload()" style="flex:1;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;word-break:keep-all;overflow-wrap:anywhere;">📁 画像を<wbr>選び直す</button>
+      <button type="button" id="img-act-retrim" onclick="imgCancelRetrim()" style="flex:1;padding:8px;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;word-break:keep-all;overflow-wrap:anywhere;">✂️ トリミングを<wbr>やり直す</button>
     </div>
 
     <!-- 画像アップロードエリア -->
@@ -1985,7 +1990,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html177：文字数の上限（本文とハッシュタグで140字）を超えても、入力・⑥店名・所在地を付ける・⑦ハッシュタグのチェックが
 // 　できるようにした。超えている間は字数と赤い文で知らせ、「内容を確認する」（予約）の時に止める（Kenさん指示：一旦超えた状態から削って
 // 　納める方が便利な時がある）。AIで作成した時の自動の調整（店名・ハッシュタグを上限に収める）は今のまま（Kenさん承認）
-const TRACE_SCREEN = '投稿文作成177';
+// ★liff_textgen.html178：画像を確定した後に「画像を選び直す」「トリミングをやり直す」のボタンを出す（帯の「×」は消した）・帯の「マイ画像（トリミングなし）」を
+// 　「元画像のまま」に・本文だけで140字を超えている時は「本文が140字を超えています」と出す（Kenさん指示）
+const TRACE_SCREEN = '投稿文作成178';
 
 function traceLog(msg) {
   try {
@@ -2589,11 +2596,25 @@ function updateHashtagXStatus() {
   const total = maxPostTotal();
   if (total > POST_TOTAL_LIMIT) {
     el.className = 'hashtag-x-status error';
-    el.textContent = '本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています（' + total + '字）。本文を短くするか、ハッシュタグを減らしてください。';
+    el.textContent = overLimitText(total, false); // ★liff_textgen.html178
   } else {
     el.className = 'hashtag-x-status ok';
     el.innerHTML = '<span class="nowrap">本文とハッシュタグ：</span><span class="nowrap">' + total + '字／' + POST_TOTAL_LIMIT + '字</span>';
   }
+}
+
+// ★liff_textgen.html178：上限を超えた時の文（Kenさん指示）。本文だけで超えている時は「本文が…」、本文は収まっていて
+// 　ハッシュタグを合わせると超える時は「本文とハッシュタグを合わせると…」。forNotice＝「内容を確認する」で止める時の知らせ（字数を出さず改行で分ける）
+function overLimitText(total, forNotice) {
+  const body = countCharsX(document.getElementById('post-textarea').value);
+  if (body > POST_TOTAL_LIMIT) {
+    return forNotice
+      ? '本文が' + POST_TOTAL_LIMIT + '字を超えています（' + body + '字）。\n本文を短くしてください。'
+      : '本文が' + POST_TOTAL_LIMIT + '字を超えています（' + body + '字）。本文を短くしてください。';
+  }
+  return forNotice
+    ? '本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています（' + total + '字）。\n本文を短くするか、ハッシュタグを減らしてください。'
+    : '本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています（' + total + '字）。本文を短くするか、ハッシュタグを減らしてください。';
 }
 
 // ★liff_textgen.html152：本文とそのSNSのハッシュタグを合わせた文字数（実際の投稿と同じ組み立て。全角換算）
@@ -3116,7 +3137,7 @@ function updateCharCount(e) {
   if (postTotal > POST_TOTAL_LIMIT) {
     xWarn.classList.add('show', 'error');
     xWarn.classList.remove('ok');
-    xWarn.textContent = '本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています（' + postTotal + '字）。本文を短くするか、ハッシュタグを減らしてください。';
+    xWarn.textContent = overLimitText(postTotal, false); // ★liff_textgen.html178
   } else {
     xWarn.classList.remove('show', 'ok', 'error');
     xWarn.textContent = '';
@@ -3823,7 +3844,8 @@ async function showConfirm() {
   if (igChecked && !igExcluded) overSns.push('IG');
   if (thChecked) overSns.push('TH');
   if (overSns.some(sns => snsPostTotal(sns) > POST_TOTAL_LIMIT)) {
-    aipostNotice('本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えています。\n本文を短くするか、ハッシュタグを減らしてください。');
+    // ★liff_textgen.html178：本文だけで超えている時は「本文が…」（Kenさん指示）
+    aipostNotice(overLimitText(Math.max.apply(null, overSns.map(sns => snsPostTotal(sns))), true));
     return;
   }
 
@@ -5223,6 +5245,27 @@ function imgCancelNone() {
 }
 
 
+// ★liff_textgen.html178：画像を確定した後のボタンを、帯の表示に合わせて出し入れする（帯を出す・隠す所が多いため、帯の変化を見張って行う）。
+// 　画像がある時：「📁 画像を選び直す」「✂️ トリミングをやり直す」。「画像なし」の時：「📁 画像を選ぶ」だけ
+function updateImgSelectedActions() {
+  const bar = document.getElementById('img-selected-bar');
+  const box = document.getElementById('img-selected-actions');
+  if (!bar || !box) return;
+  const shown = bar.style.display !== 'none';
+  box.style.display = shown ? 'flex' : 'none';
+  if (!shown) return;
+  const hasImage = imageState !== 'none' && !!originalImage;
+  const re = document.getElementById('img-act-reupload');
+  if (re) re.innerHTML = hasImage ? '📁 画像を<wbr>選び直す' : '📁 画像を<wbr>選ぶ';
+  const rt = document.getElementById('img-act-retrim');
+  if (rt) rt.style.display = hasImage ? '' : 'none';
+}
+(function () {
+  const bar = document.getElementById('img-selected-bar');
+  if (!bar || typeof MutationObserver !== 'function') return;
+  new MutationObserver(function () { updateImgSelectedActions(); }).observe(bar, { attributes: true, attributeFilter: ['style'], childList: true, subtree: true, characterData: true });
+})();
+
 // 画像リセット（×ボタンからも呼ばれる）
 function resetImageUpload() {
   showImageCancelOptions();
@@ -5289,7 +5332,7 @@ function selectMyImageWithoutTrim() {
   const bar = document.getElementById("img-selected-bar");
   bar.style.display = "flex";
   document.getElementById("img-selected-thumb").textContent = "🖼️";
-  document.getElementById("img-selected-name").textContent = "マイ画像（トリミングなし）";
+  document.getElementById("img-selected-name").textContent = "元画像のまま"; // ★liff_textgen.html178：「マイ画像（トリミングなし）」から、予約内容の確認と同じ言葉に
   document.getElementById("img-selected-name").style.color = "#2e7d32";
   document.getElementById("my-img-preview-wrap").style.display = "none";
 }
