@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成176 - AiPost</title>
+<title>投稿文作成177 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -198,7 +198,6 @@
   .char-counter { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
   .post-total { font-size: 11px; color: var(--text-sub); margin: 4px 2px 0; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; } /* ★liff_textgen.html164 */
   .post-total.over { color: var(--danger); font-weight: 700; }
-  .char-limit-msg { font-size: 11px; color: var(--danger, #e53935); margin: 4px 2px 0; word-break: keep-all; overflow-wrap: anywhere; } /* ★liff_textgen.html164 */
   .char-count { font-size: 12px; font-weight: 600; color: var(--text-sub); min-width: 70px; }
   .char-count.warn { color: var(--warning); }
   .char-count.over { color: var(--danger); }
@@ -478,8 +477,6 @@
   /* ★liff_textgen.html154：案内の文は、決めた区切り（<wbr>）でだけ折り返す。入りきらない時だけ、やむを得ず途中で折る */
   .trial-card, .unregistered-card { word-break: keep-all; overflow-wrap: anywhere; }
   .unregistered-card { background: #fff3e0; border: 1px solid #ffcc80; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #e65100; line-height: 1.7; }
-  .limit-toast { display: none; position: fixed; left: 16px; right: 16px; bottom: 90px; background: rgba(33,33,33,0.92); color: #fff; font-size: 13px; line-height: 1.7; padding: 12px 14px; border-radius: 10px; z-index: 3000; }
-  .limit-toast.show { display: block; }
 
   /* 予約確認モーダルの内容 */
   .confirm-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
@@ -890,7 +887,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成176</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成177</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1173,10 +1170,10 @@
     <!-- ★liff_textgen.html136：投稿文の中のハッシュタグの注意（予約の時に止めるため、先に知らせる。Kenさん指示） -->
     <div class="caution-box" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑦の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
     <div class="genre-notice" id="genre-notice">📍 登録業種<wbr>（<span id="genre-label"></span>）を<wbr>もとに<wbr>投稿文を<wbr>作成しました。</div>
-    <!-- ★liff_textgen.html164：利用者の入力は、上限を超える時は受け付けない（どこに入力しても）。そのため入力の知らせ（event）を渡す -->
+    <!-- ★liff_textgen.html164：利用者の入力は、上限を超える時は受け付けない（どこに入力しても）。そのため入力の知らせ（event）を渡す
+         ★liff_textgen.html177：上限を超えても入力できるようにした（超えている間は字数を赤で出す。予約の時に止める）。「入力できません」の知らせは消した -->
     <textarea class="post-textarea" id="post-textarea" oninput="updateCharCount(event)" oncompositionend="updateCharCount(event)"
       placeholder="AIで作成した投稿文がここに表示されます。直接入力することもできます。"></textarea>
-    <div class="char-limit-msg" id="char-limit-msg" style="display:none;">上限（140字）を<wbr>超えるため、<wbr>入力できません。<wbr>先に<wbr>ほかの所を<wbr>短くしてください。</div>
     <div class="char-counter">
       <span class="char-count" id="char-count">0字</span>
       <div class="char-bar-bg"><div class="char-bar-fill" id="char-bar" style="width:0%;"></div></div>
@@ -1206,7 +1203,7 @@
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
-    <div class="caution-box" style="margin-top:10px;">⚠️ チェックを<wbr>付けて<wbr>文字数の<wbr>上限を<wbr>超えた<wbr>場合は、<wbr>投稿文を<wbr>短くしてから、<wbr>もう<wbr>一度<wbr>チェックを<wbr>付けてください。</div>
+    <div class="caution-box" style="margin-top:10px;">⚠️ 付けて<wbr>文字数の<wbr>上限を<wbr>超えた<wbr>時は、<wbr>投稿文を<wbr>短くしてください。<wbr>超えたままでは<wbr>予約できません。</div>
     <div class="keyword-hint" style="margin-top:6px;">店名・所在地は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
   </div>
 
@@ -1421,7 +1418,7 @@
     <div class="accordion-body" id="acc-t6">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>自分で<wbr>直接入力する<wbr>ことも<wbr>できます。<wbr>すでに<wbr>投稿文が<wbr>ある<wbr>時に<wbr>もう<wbr>一度<wbr>作成すると、<wbr>上書きして<wbr>よいかの<wbr>確認が<wbr>出ます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限と<wbr>数え方</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;"><!-- ★liff_textgen.html156：FREEプランも140字にそろえた（Kenさん決定）。「（FREEプランは70文字）」を消した -->投稿文の<wbr>上限は<wbr>全角140字<wbr>です<wbr>（全プラン<wbr>共通）<wbr>。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5字、<wbr>絵文字は<wbr>1字と<wbr>して数えます。<wbr>上限を<wbr>超える分は<wbr>入力で<wbr>きません。<wbr>また、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて全角140字<wbr>までです<wbr>（⑦を<wbr>参照）<wbr>。<wbr></div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;"><!-- ★liff_textgen.html156：FREEプランも140字にそろえた（Kenさん決定）。「（FREEプランは70文字）」を消した -->投稿文の<wbr>上限は<wbr>全角140字<wbr>です<wbr>（全プラン<wbr>共通）<wbr>。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5字、<wbr>絵文字は<wbr>1字と<wbr>して数えます。<wbr>上限を<wbr>超えても<wbr>入力できますが、<wbr>超えたままでは<wbr>予約できません<wbr>（字数が<wbr>赤で<wbr>出ます）。<wbr>また、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて全角140字<wbr>までです<wbr>（⑦を<wbr>参照）<wbr>。<wbr></div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文が<wbr>全角140字である<wbr>理由</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AiPostでは、<wbr>同じ<wbr>投稿文・<wbr>同じ<wbr>画像で<wbr>あれば、<wbr>複数の<wbr>SNSへの<wbr>同時投稿を<wbr>「1投稿」と<wbr>して<wbr>数えます。<wbr>その<wbr>ためには<wbr>投稿文が<wbr>すべての<wbr>SNSで<wbr>共通の<wbr>1つである<wbr>必要が<wbr>あり、<wbr>文字数の<wbr>制限が<wbr>最も<wbr>厳しい<wbr>X<wbr>（全角<wbr>140字＝半角280字）に<wbr>合わせる<wbr>ことで、<wbr>どの<wbr>SNSを<wbr>選んでも<wbr>確実に<wbr>投稿できるように<wbr>しています。</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
@@ -1467,7 +1464,7 @@
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 チェックできる<wbr>時</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文が<wbr>空の<wbr>時は<wbr>チェックできません。<wbr>先に<wbr>投稿文を<wbr>作成するか、<wbr>⑤に<wbr>入力してください。<wbr>投稿文を<wbr>すべて<wbr>消すと、<wbr>チェックも<wbr>外れます。<wbr>チェックした<wbr>後に<wbr>AIで<wbr>作成し直した<wbr>場合も、<wbr>作成した<wbr>投稿文の<wbr>最後に<wbr>付きます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限を<wbr>超える<wbr>場合</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">付けると<wbr>文字数の<wbr>上限を<wbr>超える<wbr>場合は、<wbr>付けずに<wbr>お知らせします。<wbr>投稿文を<wbr>短くしてから、<wbr>もう<wbr>一度<wbr>チェックしてください。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">付けて<wbr>文字数の<wbr>上限を<wbr>超えた<wbr>時も、<wbr>そのまま<wbr>付けます。<wbr>投稿文を<wbr>短くして<wbr>上限に<wbr>納めてください<wbr>（超えたままでは<wbr>予約できません）。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 AIを<wbr>使わない<wbr>理由</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">所在地を<wbr>AIに<wbr>書かせると、<wbr>番地や<wbr>ビル名を<wbr>省略したり<wbr>書き換えたりする<wbr>おそれが<wbr>ある<wbr>ためです。<wbr>登録した<wbr>とおりの<wbr>表記で<wbr>載せたい<wbr>店名・所在地は、<wbr>⑥で<wbr>付けてください。</div>
     </div>
@@ -1497,7 +1494,7 @@
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文と<wbr>合わせた<wbr>文字数の<wbr>上限</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文と<wbr>ハッシュタグを<wbr>合わせて、<wbr>全角140字（半角280字）<wbr>まで<wbr>で<wbr>す。<wbr>全ての<wbr>SNS・全ての<wbr>プランで<wbr>同じで<wbr>す。<wbr>投稿文と<wbr>ハッシュタグの<wbr>間の<wbr>改行2つと、<wbr>ハッシュタグに<wbr>付く半角の<wbr>「#」・空白も<wbr>数えます（半角は<wbr>0.5字）<wbr>。<wbr></div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 AIで<wbr>作成した<wbr>時の<wbr>チェック</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">X 2つ・Instagram 5つ・Threads 1つに<wbr>チェックを<wbr>入れます。<wbr>投稿文と<wbr>合わせて140字を<wbr>超える場合は、<wbr>下の<wbr>ハッシュタグからチェックを<wbr>外して表示します。<wbr>チェックを<wbr>足して140字を<wbr>超える時は、<wbr>付けずに<wbr>お知らせします。<wbr></div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">X 2つ・Instagram 5つ・Threads 1つに<wbr>チェックを<wbr>入れます。<wbr>投稿文と<wbr>合わせて140字を<wbr>超える場合は、<wbr>下の<wbr>ハッシュタグからチェックを<wbr>外して表示します。<wbr>チェックを<wbr>足して140字を<wbr>超えた時も、<wbr>そのまま<wbr>付けます<wbr>（超えたままでは<wbr>予約できません）。<wbr></div>
     </div>
   </div>
 
@@ -1682,8 +1679,7 @@
   </div>
 </div>
 
-<!-- ★liff_textgen.html152：ハッシュタグを付けると文字数の上限を超える時のお知らせ（数秒で消える） -->
-<div class="limit-toast" id="limit-toast"></div>
+<!-- ★liff_textgen.html177：ハッシュタグを付けると文字数の上限を超える時のお知らせ（limit-toast）は、超えても付けるようにしたので消した -->
 
 <!-- トースト -->
 
@@ -1986,7 +1982,10 @@ const TRACE_KEY = 'aipost_trace';
 // 　予約内容の確認の画像「マイ画像（トリミングなし）」を「元画像のまま」に（トリミングの選び方の言葉にそろえる）
 // ★liff_textgen.html170：画面の言葉を「トリミング」にそろえた（「切り抜き」「切り抜く」を使わない。Kenさん指摘・予約確認76と同じ）
 // ★liff_textgen.html176：予約した時に、予約確認画面が覚えている投稿履歴の「次の投稿の時刻」を、早ければこの予約の時刻にする（予約確認82。Kenさん承認）
-const TRACE_SCREEN = '投稿文作成176';
+// ★liff_textgen.html177：文字数の上限（本文とハッシュタグで140字）を超えても、入力・⑥店名・所在地を付ける・⑦ハッシュタグのチェックが
+// 　できるようにした。超えている間は字数と赤い文で知らせ、「内容を確認する」（予約）の時に止める（Kenさん指示：一旦超えた状態から削って
+// 　納める方が便利な時がある）。AIで作成した時の自動の調整（店名・ハッシュタグを上限に収める）は今のまま（Kenさん承認）
+const TRACE_SCREEN = '投稿文作成177';
 
 function traceLog(msg) {
   try {
@@ -2481,9 +2480,8 @@ function onHashtagCheckToggle(i, sns) {
   const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
   if (!cb) return;
   const order = hashtagCheckOrder[sns];
-  // ★liff_textgen.html152：付けると上限（本文とハッシュタグで140字）を超える時は、付けずに知らせる（元の状態に戻す）
-  // （このチェックは押された後なので、押す前の状態として、このチェックだけ元の値に戻して覚える）
-  const before = { order: order.slice(), checked: [1, 2, 3, 4, 5].map(n => { const c = document.getElementById(`hashtag-check-${n}-${sns}`); return n === i ? !cb.checked : !!(c && c.checked); }) };
+  // ★liff_textgen.html177：付けると上限（本文とハッシュタグで140字）を超える時も、そのまま付ける（超えている間は赤い文で知らせ、
+  // 　予約の時に止める。Kenさん指示）。以前は付けずに知らせ、元の状態に戻していた（liff_textgen.html152）
   const idx = order.indexOf(i);
   if (cb.checked) {
     if (idx === -1) order.push(i);
@@ -2492,12 +2490,6 @@ function onHashtagCheckToggle(i, sns) {
       const oldest = order.shift();
       const oldCb = document.getElementById(`hashtag-check-${oldest}-${sns}`);
       if (oldCb) oldCb.checked = false;
-    }
-    const urlX = sns === 'X' && /https?:\/\//.test(document.getElementById('post-textarea').value);
-    if (!urlX && snsPostTotal(sns) > POST_TOTAL_LIMIT) {
-      [1, 2, 3, 4, 5].forEach((n, k) => { const c = document.getElementById(`hashtag-check-${n}-${sns}`); if (c) c.checked = before.checked[k]; });
-      hashtagCheckOrder[sns] = before.order;
-      showLimitToast('本文とハッシュタグを合わせると' + POST_TOTAL_LIMIT + '字を超えるため、このハッシュタグは付けられません。');
     }
   } else if (idx !== -1) {
     order.splice(idx, 1);
@@ -2633,15 +2625,6 @@ function fitHashtagsToLimit() {
       }
     }
   });
-}
-let limitToastTimer = null;
-function showLimitToast(message) {
-  const el = document.getElementById('limit-toast');
-  if (!el) return;
-  el.textContent = message;
-  el.classList.add('show');
-  clearTimeout(limitToastTimer);
-  limitToastTimer = setTimeout(function () { el.classList.remove('show'); }, 3500);
 }
 
 // ハッシュタグ入力欄・チェックボックスの変更時に呼び出す
@@ -2817,11 +2800,8 @@ function toggleEndLine(el, kind) {
   const want = { shop: isEndLineOn('shop'), address: isEndLineOn('address') };
   want[kind] = turningOn;
   if (ta && ta.value.trim() !== '') {
+    // ★liff_textgen.html177：付けると上限を超える時も、そのまま付ける（超えている間は字数を赤で出し、予約の時に止める。Kenさん指示）
     const next = rebuildEndLines(ta.value, want);
-    if (turningOn && countCharsX(next) > CHAR_LIMIT) {
-      aipostNotice(label + 'を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くしてから、もう一度チェックを付けてください。');
-      return;
-    }
     ta.value = next;
     // ★liff_textgen.html163：先にチェックを変えてから知らせる（入力欄の行とチェックをそろえる処理が、付け外しの途中で働かないように）
     toggleInclude(el);
@@ -2841,7 +2821,8 @@ function syncEndLineChecks() {
     if (lines.indexOf(pair[1]) === -1) setEndLineChecked(pair[0], false);
   });
 }
-// 「内容を確認する」の時、オンの行が投稿文に無ければ付ける。付けると上限を超える時は false（確認に進まない）
+// 「内容を確認する」の時、オンの行が投稿文に無ければ付ける。
+// ★liff_textgen.html177：付けると上限を超える時も付ける（その後の文字数の確かめで止まる）。いつも true
 function ensureEndLines() {
   const ta = document.getElementById('post-textarea');
   if (!ta) return true;
@@ -2849,10 +2830,6 @@ function ensureEndLines() {
   if (!want.shop && !want.address) return true;
   const next = rebuildEndLines(ta.value, want);
   if (next === ta.value) return true;
-  if (countCharsX(next) > CHAR_LIMIT) {
-    aipostNotice('⑥の店名・所在地を付けると、文字数の上限（' + CHAR_LIMIT + '字）を超えます。\n投稿文を短くするか、⑥のチェックを外してください。');
-    return false;
-  }
   ta.value = next;
   ta.dispatchEvent(new Event('input'));
   return true;
@@ -3103,70 +3080,11 @@ function countChars(text) {
   return countCharsX(text);
 }
 
-// 本文が全角換算140字を超えないよう、超過分を末尾から物理的に削る
-// ★liff_textgen.html162：最後に⑦の店名・所在地の行がある時は、その行は残し、その前の本文の最後から削る（所在地の行が途中で切れ、
-// 　付けた行と見分けられなくなる不具合〔Kenさん報告〕を直した）。⑦の行だけで上限を超える時は、今までどおり全体の最後から削る
-function enforceCharLimit(ta) {
-  let text = ta.value;
-  if (countCharsX(text) <= CHAR_LIMIT) return;
-  const shopLine = endLineText('shop');
-  const addrLine = endLineText('address');
-  const lines = text.split('\n');
-  const tail = [];
-  while (lines.length > 0) {
-    const t = lines[lines.length - 1].trim();
-    if ((shopLine && t === shopLine) || (addrLine && t === addrLine)) {
-      tail.unshift(lines.pop());
-    } else {
-      break;
-    }
-  }
-  if (tail.length > 0 && lines.length > 0) {
-    const tailText = '\n' + tail.join('\n');
-    let body = lines.join('\n');
-    while (countCharsX(body + tailText) > CHAR_LIMIT && body.length > 0) {
-      body = body.slice(0, -1);
-    }
-    text = body + tailText;
-  }
-  while (countCharsX(text) > CHAR_LIMIT && text.length > 0) {
-    text = text.slice(0, -1);
-  }
-  if (text !== ta.value) {
-    // ★liff_textgen.html162：⑦の行を残した時は、入力していた位置（本文の中）にカーソルを置く
-    const caret = (tail.length > 0 && typeof ta.selectionStart === 'number') ? ta.selectionStart : -1;
-    ta.value = text;
-    const bodyEnd = tail.length > 0 ? text.length - ('\n' + tail.join('\n')).length : text.length;
-    const pos = caret >= 0 ? Math.min(caret, Math.max(bodyEnd, 0)) : text.length;
-    ta.selectionStart = ta.selectionEnd = pos;
-  }
-}
-// ★liff_textgen.html164：上限を超えない最後の入力欄の中身（利用者の入力が上限を超えた時に、この中身に戻す）
-let TA_LAST_OK = '';
-let TA_LIMIT_MSG_TIMER = null;
-function showCharLimitMsg() {
-  const el = document.getElementById('char-limit-msg');
-  if (!el) return;
-  el.style.display = 'block';
-  if (TA_LIMIT_MSG_TIMER) clearTimeout(TA_LIMIT_MSG_TIMER);
-  TA_LIMIT_MSG_TIMER = setTimeout(function () { el.style.display = 'none'; }, 3000);
-}
+// ★liff_textgen.html177：上限を超えた分を最後から削る enforceCharLimit()・入力を戻す TA_LAST_OK・showCharLimitMsg() は、使わなくなったので消した
 function updateCharCount(e) {
   const ta = document.getElementById('post-textarea');
-  // ★liff_textgen.html164：利用者の入力（キーボード・貼り付け）で上限を超えた時は、どこに入力しても受け付けず、入力の前の中身に戻す
-  // 　（以前は文章の最後から削っていたため、文章の途中を直すと、気付かないうちに最後が削られていた。Kenさん指摘）。
-  // 　日本語の変換中は戻さず、変換が終わった時に確かめる。プログラムが入れた文（AIで作成など）は、今までどおり最後（⑦の行の前）から削る
-  const composing = !!(e && e.isComposing);
-  if (e && e.isTrusted && !composing && countCharsX(ta.value) > CHAR_LIMIT && countCharsX(TA_LAST_OK) <= CHAR_LIMIT) {
-    const added = Math.max(ta.value.length - TA_LAST_OK.length, 0);
-    const caret = Math.max((typeof ta.selectionStart === 'number' ? ta.selectionStart : TA_LAST_OK.length) - added, 0);
-    ta.value = TA_LAST_OK;
-    ta.selectionStart = ta.selectionEnd = Math.min(caret, ta.value.length);
-    showCharLimitMsg();
-  } else if (!composing) {
-    enforceCharLimit(ta);
-  }
-  if (!composing && countCharsX(ta.value) <= CHAR_LIMIT) TA_LAST_OK = ta.value;
+  // ★liff_textgen.html177：上限を超えても、入力を戻したり最後を削ったりしない（Kenさん指示。超えている間は下の字数を赤で出し、
+  // 　「内容を確認する」〔予約〕の時に止める）。以前は、利用者の入力は元に戻し〔164〕、プログラムが入れた文は最後から削っていた
   // ★liff_textgen.html139：投稿文が空になったら、⑦の「店名を付ける」「所在地を付ける」のチェックも外す（Kenさん指示）
   if (ta && ta.value.trim() === '') {
     setEndLineChecked('shop', false);
