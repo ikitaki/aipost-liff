@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成179 - AiPost</title>
+<title>投稿文作成180 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -743,6 +743,20 @@
   .mat-summary b { font-weight: 700; }
   .mat-summary small { font-size: 11px; }
   .photo-mismatch-note { font-size: 11px; color: var(--text-sub); background: #f1f3f5; border-radius: 8px; padding: 8px 10px; margin: 0 16px 10px; line-height: 1.6; }
+  /* ★liff_textgen.html180：作り方・目的 */
+  .mk-seg { display: flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .mk-seg button { flex: 1; border: none; background: #fff; padding: 11px 4px; font-size: 13px; font-weight: 700; color: var(--text-sub); font-family: inherit; cursor: pointer; }
+  .mk-seg button + button { border-left: 1px solid var(--border); }
+  .mk-seg button.on { background: #f0f2ff; color: var(--primary); }
+  .mk-radio { display: flex; flex-direction: column; gap: 2px; }
+  .mk-radio label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); padding: 6px 2px; cursor: pointer; }
+  .mk-radio input { width: 17px; height: 17px; margin: 0; accent-color: var(--primary); flex-shrink: 0; }
+  .mk-box { background: #f8f9fc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
+  .mk-lbl { font-size: 12px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+  .mk-in { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: inherit; box-sizing: border-box; background: #fff; color: var(--text); }
+  textarea.mk-in { resize: vertical; min-height: 56px; }
+  .mk-in + .mk-lbl { margin-top: 10px; }
+  .mk-off { display: none !important; }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -887,7 +901,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成179</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成180</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1026,7 +1040,7 @@
 
   <div id="tab-form" class="tab-panel active">
 
-  <div class="section-title">投稿文作成</div>
+  <div class="section-title" style="font-size:18px;color:var(--text);">📝 投稿文を作る</div>
 
   <!-- ★liff_textgen.html152：お試し中（プラン未申し込み）の案内・登録が見つからない時の案内 -->
   <div class="trial-card" id="trial-card" style="display:none;">
@@ -1037,17 +1051,9 @@
     ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
   </div>
 
-  <!-- ★liff_textgen.html136：この画面でできることの案内（Kenさん指示） -->
-  <div class="page-intro">
-    <div class="page-intro-title">📝 この<wbr>画面で<wbr>できる<wbr>こと</div>
-    <div>写真・<wbr>キーワード・<wbr>要望を<wbr>もとに、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>予約すると、<wbr>指定した<wbr>日時に<wbr>SNSへ<wbr>自動で<wbr>投稿されます。</div>
-    <div class="page-intro-sub">くわしくは、<wbr>上の<wbr>「📖 ガイド」を<wbr>ご覧ください。</div>
-  </div>
-
   <!-- ① 投稿先SNS選択 -->
   <div class="card">
     <div class="card-title">① 投稿先の<wbr>SNSを<wbr>選ぶ</div>
-    <p class="step-hint">連携済みの<wbr>SNSから<wbr>選んでください<wbr>（<wbr>選べる<wbr>数は<wbr>プランに<wbr>よって<wbr>異なります）。</p>
     <div class="sns-check-list">
       <div class="sns-check-item checked" id="sns-item-x" onclick="toggleSns(this)">
         <div class="sns-icon-sm sns-x">X</div>
@@ -1071,58 +1077,40 @@
     <p class="sns-plan-note" id="sns-pending-free-note" style="display:none;"></p>
   </div>
 
-  <!-- ★liff_textgen.html167：② AIに渡す材料（写真・キーワード・ご要望）。それまでの②キーワード・③要望を1枚にまとめ、写真を足した（Kenさん承認の見本）。
-       どれも「なくても可」。入れたものだけを使う（チェックは、写真を文に使うかどうかの1つだけ）。写真は⑧の画像と同じもの（同じ input を使う）。 -->
-  <div class="card">
-    <div class="card-title">② AIに<wbr>渡す<wbr>材料<wbr>（使う<wbr>ものだけ）</div>
-    <p class="step-hint">写真・<wbr>キーワード・<wbr>ご要望の<wbr>うち、<wbr>使う<wbr>ものだけ<wbr>入れて<wbr>ください。<wbr>1つだけでも、<wbr>組み合わせても<wbr>かまいません。</p>
-    <div class="mat-item mat-first">
-      <div class="mat-label">📷 写真</div>
-      <div class="mat-desc">写って<wbr>いる<wbr>ものを、<wbr>AIが<wbr>文の<wbr>材料に<wbr>します。<wbr>この<wbr>写真が<wbr>⑧の<wbr>投稿の<wbr>画像にも<wbr>なります。</div>
-      <div class="mat-photo-btns" id="mat-photo-btns">
-        <button type="button" style="background:var(--primary);" onclick="document.getElementById('my-img-input').click()">📁 フォルダから<wbr>選ぶ</button>
-        <button type="button" style="background:#2e7d32;" onclick="document.getElementById('my-cam-input').click()">📷 写真を<wbr>撮る</button>
-      </div>
-      <div class="mat-thumb-row" id="mat-photo-selected" style="display:none;">
-        <img class="mat-thumb" id="mat-photo-thumb" alt="選んだ写真">
-        <div style="flex:1;min-width:0;">
-          <label class="mat-check"><input type="checkbox" id="mat-photo-use" checked onchange="onMaterialPhotoUseChange()">この<wbr>写真の<wbr>内容も<wbr>文に<wbr>使う</label>
-          <div class="mat-status" id="mat-photo-status"></div>
-          <button type="button" class="mat-small-btn" onclick="reselectImage()">写真を<wbr>選び直す</button>
-        </div>
-      </div>
-    </div>
-    <div class="mat-item">
-      <div class="mat-label">🔑 キーワード</div>
-      <div class="mat-desc">入れた<wbr>言葉は、<wbr>必ず<wbr>文に<wbr>入ります<wbr>（最大3個・<wbr>1個15字まで。<wbr>商品名・<wbr>特徴・<wbr>季節など）。</div>
-      <div class="keyword-input-grid">
-        <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" placeholder="キーワード1" oninput="updateMaterialSummary()">
-        <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" placeholder="キーワード2" oninput="updateMaterialSummary()">
-        <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" placeholder="キーワード3" oninput="updateMaterialSummary()">
-      </div>
-    </div>
-    <div class="mat-item">
-      <div class="mat-label">💬 ご要望</div>
-      <div class="mat-desc">どんな<wbr>投稿に<wbr>したいかを、<wbr>自由に<wbr>書いて<wbr>ください<wbr>（150字まで）。</div>
-      <textarea id="free-text-input" maxlength="150" placeholder="例：新商品の告知をしたい" oninput="updateMaterialSummary()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;box-sizing:border-box;"></textarea>
-      <div class="keyword-hint" style="margin-top:4px;">✏️ 自分で<wbr>書く<wbr>場合は、<wbr>⑤に<wbr>直接入力できます。</div>
-    </div>
+  <!-- ★liff_textgen.html180：② 作り方を選ぶ（AIで作る／自分で書く）。選ぶまでは③から下を出さない -->
+  <div class="card" id="card-make-mode">
+    <div class="card-title">② 作り方を<wbr>選ぶ</div>
+    <div class="mk-seg"><button type="button" id="mk-mode-ai" onclick="setMakeMode('ai')">AIで作る</button><button type="button" id="mk-mode-mine" onclick="setMakeMode('mine')">自分で書く</button></div>
   </div>
 
-  <!-- ④ 訴求パターン -->
-  <div class="card">
-    <div class="card-title">③ 訴求パターンを<wbr>選ぶ</div>
-    <p style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">投稿の<wbr>伝え方を<wbr>選んでください。<wbr>迷った<wbr>ときは<wbr>「AIに任せる」のままで<wbr>大丈夫です。</p>
-    <div class="pattern-grid">
-      <button class="pattern-btn selected" onclick="selectPattern(this)"><span class="pattern-icon">🤖</span>AIに<wbr>任せる</button>
-      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">⏰</span>限定</button>
-      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💰</span>お得</button>
-      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">💡</span>悩み解決</button>
-      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🔥</span>トレンド</button>
-      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">⭐</span>信頼</button>
-      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🌸</span>季節</button>
-      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">🆕</span>新登場</button>
-      <button class="pattern-btn" onclick="selectPattern(this)"><span class="pattern-icon">📍</span>地域密着</button>
+  <!-- ★liff_textgen.html180：③ 目的・写真・キーワード（AIで作る時だけ）。写真は⑧の画像と同じもの（同じ input を使う） -->
+  <div class="card" id="card-material">
+    <div class="card-title">③ 目的・<wbr>写真・<wbr>キーワード</div>
+    <div class="mat-label">🎯 目的</div>
+    <div class="mk-radio" id="mk-purpose-list"><label><input type="radio" name="mk-purpose" value="product" onclick="onPurposeClick(this)">商品・メニューの紹介</label><label><input type="radio" name="mk-purpose" value="notice" onclick="onPurposeClick(this)">お知らせ（営業日・休み・イベント）</label><label><input type="radio" name="mk-purpose" value="deal" onclick="onPurposeClick(this)">お得な情報</label><label><input type="radio" name="mk-purpose" value="recruit" onclick="onPurposeClick(this)">人材募集</label><label><input type="radio" name="mk-purpose" value="daily" onclick="onPurposeClick(this)">お店の様子・日常</label><label><input type="radio" name="mk-purpose" value="other" onclick="onPurposeClick(this)">その他</label></div>
+    <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー</div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"></div>
+    <div class="mk-box mk-off" id="mk-fields-notice"><div class="mk-lbl">お知らせの内容</div><textarea class="mk-in" id="mk-notice-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
+    <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容</div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間</div><input type="text" class="mk-in" id="mk-deal-period" maxlength="40" oninput="updateMaterialSummary()"></div>
+    <div class="mk-box mk-off" id="mk-fields-recruit"><div class="mk-lbl">職種</div><input type="text" class="mk-in" id="mk-recruit-job" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">条件（時間・時給など）</div><textarea class="mk-in" id="mk-recruit-cond" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
+    <div class="mk-box mk-off" id="mk-fields-other"><div class="mk-lbl">どんな投稿にしたいか</div><textarea class="mk-in" id="mk-other-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
+    <div class="mat-label" style="margin-top:14px;">📷 写真から作る</div>
+    <div class="mat-photo-btns" id="mat-photo-btns">
+      <button type="button" style="background:var(--primary);" onclick="document.getElementById('my-img-input').click()">📁 フォルダから<wbr>選ぶ</button>
+      <button type="button" style="background:#2e7d32;" onclick="document.getElementById('my-cam-input').click()">📷 写真を<wbr>撮る</button>
+    </div>
+    <div class="mat-thumb-row" id="mat-photo-selected" style="display:none;">
+      <img class="mat-thumb" id="mat-photo-thumb" alt="選んだ写真">
+      <div style="flex:1;min-width:0;">
+        <label class="mat-check" id="mat-photo-use-wrap"><input type="checkbox" id="mat-photo-use" checked onchange="onMaterialPhotoUseChange()">この<wbr>写真の<wbr>内容も<wbr>文に<wbr>使う</label>
+        <div class="mat-status" id="mat-photo-status"></div>
+        <button type="button" class="mat-small-btn" onclick="reselectImage()">写真を<wbr>選び直す</button>
+      </div>
+    </div>
+    <div class="mat-label" style="margin-top:14px;">🔑 文章に<wbr>含めたい<wbr>キーワード<wbr>（15文字以内）</div>
+    <div class="keyword-input-grid">
+      <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" oninput="updateMaterialSummary()">
+      <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" oninput="updateMaterialSummary()">
+      <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" oninput="updateMaterialSummary()">
     </div>
   </div>
 
@@ -1133,9 +1121,8 @@
          文字数を見ながら付け外しできるよう、⑥の文字数表示のすぐ下に置いた（Kenさん指示）。
        それまでの⑥「店名・所在地を含める」の店名（AI）は⑤へ移し、それまでの⑦の「＋店名を入れる」「＋所在地を入れる」ボタンは⑦にまとめて外した。 -->
   <!-- ⑤ エリア・店名を含めて投稿文を作成する -->
-  <div class="card">
-    <div class="card-title">④ エリア・店名を<wbr>含めて<wbr>投稿文を<wbr>作成する</div>
-    <p class="step-hint">チェックした<wbr>項目を<wbr>含めて、<wbr>AIが<wbr>投稿文を<wbr>作成します。</p>
+  <div class="card" id="card-include">
+    <div class="card-title">④ エリア・<wbr>店名を<wbr>入れる</div>
     <div class="sns-check-list">
       <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
         <div class="sns-check-name">エリアを<wbr>含める</div>
@@ -1146,11 +1133,10 @@
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
-    <div class="keyword-hint" style="margin-top:6px;">エリア・<wbr>店名は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
   </div>
 
   <!-- ★liff_textgen.html167：今AIに渡す材料を1行で出す（入力に合わせて updateMaterialSummary() が書き換える） -->
-  <div class="mat-summary" id="material-summary">🧩 AIに<wbr>渡す<wbr>材料：<wbr><b>確認中</b></div>
+  <div class="mat-summary mk-off" id="material-summary">🧩 AIに<wbr>渡す<wbr>材料：<wbr><b>確認中</b></div>
 
   <!-- AI生成ボタン -->
   <button class="generate-btn" id="generate-btn" onclick="confirmAndGenerate()">
@@ -1166,7 +1152,6 @@
   <!-- ⑥ 投稿文を確認・編集する（★liff_textgen.html137：それまでの⑦） -->
   <div class="card">
     <div class="card-title">⑤ 投稿文を<wbr>確認・編集する</div>
-    <p style="font-size:12px;color:var(--text-sub);margin-bottom:8px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集できます。<wbr>直接入力する<wbr>ことも<wbr>できます。</p>
     <!-- ★liff_textgen.html136：投稿文の中のハッシュタグの注意（予約の時に止めるため、先に知らせる。Kenさん指示） -->
     <div class="caution-box" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑦の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
     <div class="genre-notice" id="genre-notice">📍 登録業種<wbr>（<span id="genre-label"></span>）を<wbr>もとに<wbr>投稿文を<wbr>作成しました。</div>
@@ -1993,7 +1978,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html178：画像を確定した後に「画像を選び直す」「トリミングをやり直す」のボタンを出す（帯の「×」は消した）・帯の「マイ画像（トリミングなし）」を
 // 　「元画像のまま」に・本文だけで140字を超えている時は「本文が140字を超えています」と出す（Kenさん指示）
 // ★liff_textgen.html179：AIの文が3回とも確かめに通らなかった時の知らせに「作成に失敗しました：」を付けない（文章生成gs_18 の文をそのまま出す）
-const TRACE_SCREEN = '投稿文作成179';
+// ★liff_textgen.html180：お試し（実機で確かめる用）。②を「作り方を選ぶ」（AIで作る／自分で書く）にし、③に目的・写真・キーワードを置いた（Kenさん指示の見本_04）。
+// 　③訴求パターン・ご要望の欄・この画面でできることの案内・各欄の説明の文を外した。GASは変えていない（目的と目的ごとの欄は、ご要望（freeText）の文にまとめて送る）
+const TRACE_SCREEN = '投稿文作成180';
 
 function traceLog(msg) {
   try {
@@ -2265,9 +2252,90 @@ function getKeywords() {
 }
 
 // ご要望（自由記述）欄の値を取得
+// ★liff_textgen.html180：ご要望の欄は無くした。目的と目的ごとの欄を1つの文にまとめて、ご要望（freeText）として送る
 function getFreeText() {
-  const el = document.getElementById('free-text-input');
-  return el ? el.value.trim() : '';
+  const p = getPurpose();
+  if (!p) return '';
+  const v = function (id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const parts = ['投稿の目的：' + MK_PURPOSE_LABEL[p]];
+  if (p === 'product' && v('mk-product-name')) parts.push('紹介する商品・メニュー：' + v('mk-product-name'));
+  if (p === 'notice' && v('mk-notice-text')) parts.push('お知らせの内容：' + v('mk-notice-text'));
+  if (p === 'deal') {
+    if (v('mk-deal-text')) parts.push('お得な内容：' + v('mk-deal-text'));
+    if (v('mk-deal-period')) parts.push('期間：' + v('mk-deal-period'));
+  }
+  if (p === 'recruit') {
+    if (v('mk-recruit-job')) parts.push('募集する職種：' + v('mk-recruit-job'));
+    if (v('mk-recruit-cond')) parts.push('条件：' + v('mk-recruit-cond'));
+    else parts.push('条件は書かず、詳しくはお問い合わせくださいという形にする');
+  }
+  if (p === 'other' && v('mk-other-text')) parts.push('どんな投稿にしたいか：' + v('mk-other-text'));
+  return parts.join('。') + '。';
+}
+
+// ===== ★liff_textgen.html180：② 作り方・③ 目的 =====
+let MK_MODE = '';     // ''＝まだ選んでいない／'ai'＝AIで作る／'mine'＝自分で書く
+const MK_PURPOSE_LABEL = { product: '商品・メニューの紹介', notice: 'お知らせ（営業日・休み・イベント）', deal: 'お得な情報', recruit: '人材募集', daily: 'お店の様子・日常', other: 'その他' };
+// 目的ごとに、入れてもらう欄（最初の欄は必ず入れる）
+const MK_REQUIRED = { product: ['mk-product-name', '紹介する商品・メニュー'], notice: ['mk-notice-text', 'お知らせの内容'], deal: ['mk-deal-text', 'お得な内容'], recruit: ['mk-recruit-job', '職種'], other: ['mk-other-text', 'どんな投稿にしたいか'] };
+
+function getPurpose() {
+  const el = document.querySelector('input[name="mk-purpose"]:checked');
+  return el ? el.value : '';
+}
+
+// ②の選び方に合わせて、下の欄を出し分ける
+function setMakeMode(mode) {
+  MK_MODE = mode || '';
+  const ai = document.getElementById('mk-mode-ai');
+  const mine = document.getElementById('mk-mode-mine');
+  if (ai) ai.classList.toggle('on', MK_MODE === 'ai');
+  if (mine) mine.classList.toggle('on', MK_MODE === 'mine');
+  const forAi = ['card-material', 'card-include', 'generate-btn', 'loading'];
+  let el = document.getElementById('card-make-mode');
+  while (el && (el = el.nextElementSibling)) {
+    const off = !MK_MODE || (MK_MODE === 'mine' && forAi.indexOf(el.id) >= 0);
+    el.classList.toggle('mk-off', off);
+  }
+  // 材料の1行は使わない（いつも隠す）
+  const sum = document.getElementById('material-summary');
+  if (sum) sum.classList.add('mk-off');
+}
+
+// 目的を押した時。選んでいる目的をもう一度押すと外す（写真だけで作る時のため）
+let MK_LAST_PURPOSE = '';
+function onPurposeClick(radio) {
+  if (MK_LAST_PURPOSE === radio.value) {
+    radio.checked = false;
+    MK_LAST_PURPOSE = '';
+  } else {
+    MK_LAST_PURPOSE = radio.value;
+  }
+  renderPurposeFields();
+}
+
+function renderPurposeFields() {
+  const p = getPurpose();
+  ['product', 'notice', 'deal', 'recruit', 'other'].forEach(function (k) {
+    const box = document.getElementById('mk-fields-' + k);
+    if (box) box.classList.toggle('mk-off', k !== p);
+  });
+  // 目的を選んでいない時（写真から作る）は、写真を必ず文に使うので、チェックは出さない
+  const wrap = document.getElementById('mat-photo-use-wrap');
+  if (wrap) wrap.style.display = p ? '' : 'none';
+  renderMaterialPhotoStatus();
+  updateMaterialSummary();
+}
+
+// 目的・目的ごとの欄を空にする
+function clearPurpose() {
+  document.querySelectorAll('input[name="mk-purpose"]').forEach(function (r) { r.checked = false; });
+  MK_LAST_PURPOSE = '';
+  ['mk-product-name', 'mk-notice-text', 'mk-deal-text', 'mk-deal-period', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  renderPurposeFields();
 }
 
 // ② キーワード入力欄の案内文（html125：カード名「② キーワードから文章を生成する」）（業種登録の有無で出し分け）
@@ -2303,6 +2371,8 @@ function matPhotoActive() {
 // 写真を文の材料に使う（写真があり、「この写真の内容も文に使う」にチェックがある）
 function matPhotoUse() {
   const cb = document.getElementById('mat-photo-use');
+  // ★liff_textgen.html180：目的を選んでいない時（写真から作る）は、写真を必ず文に使う
+  if (matPhotoActive() && !getPurpose()) return true;
   return matPhotoActive() && !!(cb && cb.checked);
 }
 
@@ -2348,7 +2418,7 @@ function renderMaterialPhotoStatus(loading) {
   } else if (MAT_PHOTO_DESC.token === MAT_PHOTO_TOKEN && MAT_PHOTO_DESC.status === 'unclear') {
     el.textContent = '写真の内容を読み取れませんでした。別の写真にするか、チェックを外してください。';
   } else {
-    el.textContent = '作成を押すと、写真に写っているものをAIが読み取って、文の材料にします。';
+    el.textContent = '';
   }
 }
 
@@ -2400,7 +2470,7 @@ async function ensurePhotoDescription() {
     return { ok: true, text: MAT_PHOTO_DESC.text, token: token };
   }
   if (MAT_PHOTO_DESC.token === token && MAT_PHOTO_DESC.status === 'unclear') {
-    return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、②の「この写真の内容も文に使う」のチェックを外して作成してください。' };
+    return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、③の「この写真の内容も文に使う」のチェックを外して作成してください。' };
   }
   if (MAT_PHOTO_PENDING && MAT_PHOTO_PENDING.token === token) return MAT_PHOTO_PENDING.promise;
   const promise = (async function () {
@@ -2423,11 +2493,11 @@ async function ensurePhotoDescription() {
       if (!result || !result.success) {
         const msg = (result && result.error) ? String(result.error) : '';
         if (result && result.trialPhotoLimitReached) {
-          return { ok: false, message: msg + '\n②の「この写真の内容も文に使う」のチェックを外すと、写真を使わずに作成できます。' };
+          return { ok: false, message: msg + '\n③の「この写真の内容も文に使う」のチェックを外すと、写真を使わずに作成できます。' };
         }
         // GASの案内の文（「。」で終わる）はそのまま出し、技術的なエラーの文は出さない
         const friendly = /。$/.test(msg) ? msg + '\n' : '写真の内容を読み取れませんでした。\n';
-        return { ok: false, message: friendly + 'もう一度お試しいただくか、②の「この写真の内容も文に使う」のチェックを外して作成してください。' };
+        return { ok: false, message: friendly + 'もう一度お試しいただくか、③の「この写真の内容も文に使う」のチェックを外して作成してください。' };
       }
       if (token !== MAT_PHOTO_TOKEN) {
         return { ok: false, message: '作成の途中で写真が変わりました。もう一度「投稿文・ハッシュタグを作成」を押してください。' };
@@ -2435,7 +2505,7 @@ async function ensurePhotoDescription() {
       const data = result.data || {};
       if (data.unclear || !data.description) {
         MAT_PHOTO_DESC = { token: token, status: 'unclear', text: '' };
-        return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、②の「この写真の内容も文に使う」のチェックを外して作成してください。' };
+        return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、③の「この写真の内容も文に使う」のチェックを外して作成してください。' };
       }
       MAT_PHOTO_DESC = { token: token, status: 'ok', text: String(data.description) };
       return { ok: true, text: MAT_PHOTO_DESC.text, token: token };
@@ -2702,6 +2772,11 @@ const PATTERN_LABEL_MAP = {
 };
 
 function getSelectedAppealPattern() {
+  // ★liff_textgen.html180：訴求パターンのボタンは無くした。目的が「お得な情報」の時だけ「お得」にする（他はAIに任せる）
+  return getPurpose() === 'deal' ? PATTERN_LABEL_MAP['お得'] : null;
+}
+
+function getSelectedAppealPatternOld() {
   const selectedBtn = document.querySelector('.pattern-btn.selected');
   if (!selectedBtn) return null;
   // ボタンをクローンし、アイコン用span（.pattern-icon）を除去してから
@@ -2862,12 +2937,19 @@ function confirmAndGenerate() {
   const hasKeyword = getKeywords().length > 0;
   const hasFreeText = getFreeText().length > 0;
 
-  // 業種未登録・写真も使わない・キーワード未入力・ご要望未入力の場合はアラート
-  // ★liff_textgen.html167：写真も材料になったため、写真を使う時は通す
-  if (!USER_GENRE && !hasKeyword && !hasFreeText && !matPhotoUse()) {
-    aipostNotice('写真・キーワード・ご要望のどれか1つを入れてください。\n業種が未登録の場合、どれか1つが必要です。');
-    document.getElementById('keyword-input-1').focus();
+  // ★liff_textgen.html180：目的か写真のどちらかが要る。目的を選んだ時は、その目的の最初の欄が要る
+  const purpose = getPurpose();
+  if (!purpose && !matPhotoActive()) {
+    aipostNotice('目的を選ぶか、写真を選んでください。');
     return;
+  }
+  if (purpose && MK_REQUIRED[purpose]) {
+    const req = document.getElementById(MK_REQUIRED[purpose][0]);
+    if (req && !req.value.trim()) {
+      aipostNotice('「' + MK_REQUIRED[purpose][1] + '」を入れてください。');
+      req.focus();
+      return;
+    }
   }
 
   // テキストエリアに文章がある場合は上書き確認
@@ -4301,6 +4383,9 @@ function resetAllForm() {
   // 　予約確定後のリセットから漏れており、文字が残ったままになっていた（Kenさん報告）
   const freeText = document.getElementById('free-text-input');
   if (freeText) freeText.value = '';
+  // ★liff_textgen.html180：目的・作り方も戻す
+  clearPurpose();
+  setMakeMode('');
 
   // ハッシュタグ
   for (let i = 1; i <= 5; i++) {
@@ -4517,7 +4602,8 @@ function loadEditModeFromUrl() {
   if (params.get('edit') !== '1') return;
 
   // ヘッダー・ボタンの文言を編集モード用に変更
-  document.querySelector('.section-title').textContent = '投稿文作成（編集中）';
+  document.querySelector('.section-title').textContent = '📝 投稿文を作る（編集中）';
+  setMakeMode('mine'); // ★liff_textgen.html180：予約の修正は、⑤から下を出した形で始める（AIで作り直す時は②で選ぶ）
   const reserveBtn = document.querySelector('.reserve-btn');
   if (reserveBtn) reserveBtn.innerHTML = '<span style="font-size:20px;">✅</span>この内容で予約を更新する';
   const banner = document.createElement('div');
@@ -4630,6 +4716,7 @@ let imageState = null;
 // 　何も入力していない状態では確認を出さずにそのまま更新する。
 function textgenHasInput() {
   const ids = ['keyword-input-1', 'keyword-input-2', 'keyword-input-3', 'free-text-input', 'post-textarea',
+    'mk-product-name', 'mk-notice-text', 'mk-deal-text', 'mk-deal-period', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text',
     'hashtag-input-1', 'hashtag-input-2', 'hashtag-input-3', 'hashtag-input-4', 'hashtag-input-5'];
   const hasText = ids.some(function (id) {
     const el = document.getElementById(id);
@@ -5435,6 +5522,7 @@ initLiff();
 // 全ての変数宣言・初期化が完了した後に、編集モードの読み込みを実行する
 // （originalImage・trimResults・imageStateはこのファイル後方でletにより宣言されているため、
 // 　それより前に呼び出すとTDZ（temporal dead zone）エラーで失敗する）
+setMakeMode(''); renderPurposeFields(); // ★liff_textgen.html180
 loadEditModeFromUrl();
 </script>
 
