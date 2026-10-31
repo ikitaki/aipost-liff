@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成182 - AiPost</title>
+<title>投稿文作成183 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -758,6 +758,9 @@
   .mk-in + .mk-lbl { margin-top: 10px; }
   .mk-off { display: none !important; }
   .mat-label.mk-head { display: block; }
+  .mk-help-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-left: 6px; border-radius: 50%; border: 1.5px solid var(--primary); background: #fff; color: var(--primary); font-size: 12px; font-weight: 700; line-height: 1; padding: 0; vertical-align: 1px; cursor: pointer; font-family: inherit; }
+  .mk-help-btn.on { background: var(--primary); color: #fff; }
+  .mk-help-box { background: #f8f9fc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px 2px; margin-bottom: 10px; }
   .mk-tag { font-weight: 400; font-size: 11.5px; color: var(--text-sub); margin-left: 2px; }
   .mk-period { display: flex; align-items: center; gap: 6px; }
   .mk-period .mk-in { flex: 1; min-width: 0; padding: 9px 6px; }
@@ -912,7 +915,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成182</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成183</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1205,10 +1208,12 @@
 
   <!-- ⑧ ハッシュタグ -->
   <div class="card">
-    <div class="card-title">⑦ ハッシュタグ</div>
+    <div class="card-title">⑦ ハッシュタグ<button type="button" class="mk-help-btn" id="hashtag-help-btn" onclick="toggleHashtagHelp()" aria-label="ハッシュタグの説明">？</button></div>
+    <div class="mk-help-box mk-off" id="hashtag-help">
     <p class="hashtag-desc">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>投稿文と<wbr>同様、<wbr>自由に<wbr>編集できます。<wbr>チェックした<wbr>SNSにだけ付与されます。<wbr>「#」は<wbr>自動で<wbr>付きます。</p>
     <!-- ★liff_textgen.html164：ハッシュタグの数え方の説明（Kenさん指摘） -->
     <p class="hashtag-desc" style="margin-top:-4px;">文字数は、<wbr>「#」と<wbr>タグの間の<wbr>空白、<wbr>投稿文との<wbr>間の<wbr>改行も<wbr>数えます<wbr>（半角は<wbr>0.5字）。<wbr>例：<wbr>「カフェ」（3字）を<wbr>1つ<wbr>付けると<wbr>約5字、<wbr>2つ目からは<wbr>1つにつき<wbr>「タグの<wbr>字数＋1字」<wbr>増えます。</p>
+    </div>
     <div class="hashtag-x-status" id="hashtag-x-status"></div>
     <div class="hashtag-header">
       <div class="hashtag-header-spacer"></div>
@@ -1220,42 +1225,41 @@
     </div>
     <div class="hashtag-rows" id="hashtag-rows">
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-1" maxlength="15" placeholder="ハッシュタグ1" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-1" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-1-X" onchange="onHashtagCheckToggle(1,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-1-IG" onchange="onHashtagCheckToggle(1,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-1-TH" onchange="onHashtagCheckToggle(1,'TH')"></span>
         </div>
       </div>
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-2" maxlength="15" placeholder="ハッシュタグ2" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-2" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-2-X" onchange="onHashtagCheckToggle(2,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-2-IG" onchange="onHashtagCheckToggle(2,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-2-TH" onchange="onHashtagCheckToggle(2,'TH')"></span>
         </div>
       </div>
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-3" maxlength="15" placeholder="ハッシュタグ3" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-3" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-3-X" onchange="onHashtagCheckToggle(3,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-3-IG" onchange="onHashtagCheckToggle(3,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-3-TH" onchange="onHashtagCheckToggle(3,'TH')"></span>
         </div>
       </div>
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-4" maxlength="15" placeholder="ハッシュタグ4" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-4" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-4-X" onchange="onHashtagCheckToggle(4,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-4-IG" onchange="onHashtagCheckToggle(4,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-4-TH" onchange="onHashtagCheckToggle(4,'TH')"></span>
         </div>
       </div>
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-5" maxlength="15" placeholder="ハッシュタグ5" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-5" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-5-X" onchange="onHashtagCheckToggle(5,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-5-IG" onchange="onHashtagCheckToggle(5,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-5-TH" onchange="onHashtagCheckToggle(5,'TH')"></span>
         </div>
       </div>
     </div>
-    <div class="keyword-hint" style="margin-top:6px;">💡 ハッシュタグは<wbr>1個15字までです。</div>
   </div>
 
   <!-- ⑨ 画像アップロード（インライン） -->
@@ -1993,7 +1997,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html181：④⑥のチェックを、目的と同じ形（左に四角のチェック・右に名前）にそろえた。④の名前を「エリア・店名を文章に含める」に。⑥の説明の文を外した（Kenさん指示）
 // ★liff_textgen.html182：目的を必須に、写真から作るを任意にした（Kenさん指示の仕様変更）。③の見出しの（必須）（任意）を見出しの文に続けて出す（横に離れていた）。
 // 　キーワードの「15文字以内」は欄の中の薄い字にした。期間の終わりの日を、始まりの日より前にできないようにした
-const TRACE_SCREEN = '投稿文作成182';
+// ★liff_textgen.html183：⑦ハッシュタグの説明の文2つを、見出しの横の「？」を押した時だけ出すようにした（Kenさん指示）。
+// 　欄の下の「💡 ハッシュタグは1個15字までです。」を外し、欄の中の薄い字を「15文字以内」にした（キーワードの欄とそろえた）
+const TRACE_SCREEN = '投稿文作成183';
 
 function traceLog(msg) {
   try {
@@ -2334,6 +2340,15 @@ function renderPurposeFields() {
   });
   renderMaterialPhotoStatus();
   updateMaterialSummary();
+}
+
+// ★liff_textgen.html183：⑦ハッシュタグの「？」。押すたびに説明を出す・しまう
+function toggleHashtagHelp() {
+  const box = document.getElementById('hashtag-help');
+  const btn = document.getElementById('hashtag-help-btn');
+  if (!box) return;
+  const open = box.classList.toggle('mk-off') === false;
+  if (btn) btn.classList.toggle('on', open);
 }
 
 // ★liff_textgen.html182：期間の終わりの日を、始まりの日より前にできないようにする（カレンダーの選べる日も絞る）
