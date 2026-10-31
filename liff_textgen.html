@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成180 - AiPost</title>
+<title>投稿文作成181 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -757,6 +757,16 @@
   textarea.mk-in { resize: vertical; min-height: 56px; }
   .mk-in + .mk-lbl { margin-top: 10px; }
   .mk-off { display: none !important; }
+  .mk-tag { font-weight: 400; font-size: 11.5px; color: var(--text-sub); margin-left: 2px; }
+  .mk-period { display: flex; align-items: center; gap: 6px; }
+  .mk-period .mk-in { flex: 1; min-width: 0; padding: 9px 6px; }
+  .mk-period span { flex-shrink: 0; color: var(--text-sub); }
+  /* ★liff_textgen.html181：④⑥のチェックを目的の並びと同じ形にする（中の作りと checked の付け外しは今のまま） */
+  .mk-check-list { display: flex; flex-direction: column; gap: 2px; }
+  .mk-check-list .include-check-item { flex-direction: row; justify-content: flex-start; gap: 8px; min-height: 0; padding: 6px 2px; border: none; border-radius: 0; background: transparent; }
+  .mk-check-list .include-check-item.checked { background: transparent; }
+  .mk-check-list .include-check-item .sns-checkbox { order: -1; width: 17px; height: 17px; border-radius: 3px; border: 1.5px solid #767676; font-size: 11px; }
+  .mk-check-list .include-check-item .sns-check-name { font-size: 13px; font-weight: 400; color: var(--text); }
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -901,7 +911,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成180</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成181</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1086,14 +1096,14 @@
   <!-- ★liff_textgen.html180：③ 目的・写真・キーワード（AIで作る時だけ）。写真は⑧の画像と同じもの（同じ input を使う） -->
   <div class="card" id="card-material">
     <div class="card-title">③ 目的・<wbr>写真・<wbr>キーワード</div>
-    <div class="mat-label">🎯 目的</div>
+    <div class="mat-label">🎯 目的<span class="mk-tag">（写真と<wbr>どちらか<wbr>必須）</span></div>
     <div class="mk-radio" id="mk-purpose-list"><label><input type="radio" name="mk-purpose" value="product" onclick="onPurposeClick(this)">商品・メニューの紹介</label><label><input type="radio" name="mk-purpose" value="notice" onclick="onPurposeClick(this)">お知らせ（営業日・休み・イベント）</label><label><input type="radio" name="mk-purpose" value="deal" onclick="onPurposeClick(this)">お得な情報</label><label><input type="radio" name="mk-purpose" value="recruit" onclick="onPurposeClick(this)">人材募集</label><label><input type="radio" name="mk-purpose" value="daily" onclick="onPurposeClick(this)">お店の様子・日常</label><label><input type="radio" name="mk-purpose" value="other" onclick="onPurposeClick(this)">その他</label></div>
-    <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー</div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"></div>
-    <div class="mk-box mk-off" id="mk-fields-notice"><div class="mk-lbl">お知らせの内容</div><textarea class="mk-in" id="mk-notice-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
-    <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容</div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間</div><input type="text" class="mk-in" id="mk-deal-period" maxlength="40" oninput="updateMaterialSummary()"></div>
-    <div class="mk-box mk-off" id="mk-fields-recruit"><div class="mk-lbl">職種</div><input type="text" class="mk-in" id="mk-recruit-job" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">条件（時間・時給など）</div><textarea class="mk-in" id="mk-recruit-cond" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
-    <div class="mk-box mk-off" id="mk-fields-other"><div class="mk-lbl">どんな投稿にしたいか</div><textarea class="mk-in" id="mk-other-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
-    <div class="mat-label" style="margin-top:14px;">📷 写真から作る</div>
+    <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"></div>
+    <div class="mk-box mk-off" id="mk-fields-notice"><div class="mk-lbl">お知らせの内容<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-notice-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
+    <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-deal-from" onchange="updateMaterialSummary()"><span>〜</span><input type="date" class="mk-in" id="mk-deal-to" onchange="updateMaterialSummary()"></div></div>
+    <div class="mk-box mk-off" id="mk-fields-recruit"><div class="mk-lbl">職種<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-recruit-job" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">条件（時間・時給など）<span class="mk-tag">（任意）</span></div><textarea class="mk-in" id="mk-recruit-cond" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
+    <div class="mk-box mk-off" id="mk-fields-other"><div class="mk-lbl">どんな投稿にしたいか<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-other-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
+    <div class="mat-label" style="margin-top:14px;">📷 写真から作る<span class="mk-tag">（目的と<wbr>どちらか<wbr>必須）</span></div>
     <div class="mat-photo-btns" id="mat-photo-btns">
       <button type="button" style="background:var(--primary);" onclick="document.getElementById('my-img-input').click()">📁 フォルダから<wbr>選ぶ</button>
       <button type="button" style="background:#2e7d32;" onclick="document.getElementById('my-cam-input').click()">📷 写真を<wbr>撮る</button>
@@ -1106,7 +1116,7 @@
         <button type="button" class="mat-small-btn" onclick="reselectImage()">写真を<wbr>選び直す</button>
       </div>
     </div>
-    <div class="mat-label" style="margin-top:14px;">🔑 文章に<wbr>含めたい<wbr>キーワード<wbr>（15文字以内）</div>
+    <div class="mat-label" style="margin-top:14px;">🔑 文章に<wbr>含めたい<wbr>キーワード<span class="mk-tag">（任意・<wbr>15文字以内）</span></div>
     <div class="keyword-input-grid">
       <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" oninput="updateMaterialSummary()">
       <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" oninput="updateMaterialSummary()">
@@ -1122,8 +1132,8 @@
        それまでの⑥「店名・所在地を含める」の店名（AI）は⑤へ移し、それまでの⑦の「＋店名を入れる」「＋所在地を入れる」ボタンは⑦にまとめて外した。 -->
   <!-- ⑤ エリア・店名を含めて投稿文を作成する -->
   <div class="card" id="card-include">
-    <div class="card-title">④ エリア・<wbr>店名を<wbr>入れる</div>
-    <div class="sns-check-list">
+    <div class="card-title">④ エリア・<wbr>店名を<wbr>文章に<wbr>含める</div>
+    <div class="mk-check-list">
       <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
         <div class="sns-check-name">エリアを<wbr>含める</div>
         <div class="sns-checkbox">✓</div>
@@ -1177,8 +1187,7 @@
   <div class="card">
     <div class="card-title">⑥ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける</div>
     <!-- ★liff_textgen.html139：投稿文が空の時はチェックできない（Kenさん指示） -->
-    <p class="step-hint">チェックすると、<wbr>登録済みの<wbr>店名・所在地を、<wbr>投稿文の<wbr>最後に<wbr>そのまま<wbr>付けます<wbr>（AIは<wbr>使いません）。<wbr>投稿文が<wbr>空の<wbr>時は<wbr>チェックできません。</p>
-    <div class="sns-check-list">
+    <div class="mk-check-list">
       <div class="include-check-item" id="include-shopend-item" onclick="toggleEndLine(this, 'shop')">
         <div class="sns-check-name">店名を<wbr>付ける</div>
         <div class="sns-checkbox">✓</div>
@@ -1189,7 +1198,6 @@
       </div>
     </div>
     <div class="caution-box" style="margin-top:10px;">⚠️ 付けて<wbr>文字数の<wbr>上限を<wbr>超えた<wbr>時は、<wbr>投稿文を<wbr>短くしてください。<wbr>超えたままでは<wbr>予約できません。</div>
-    <div class="keyword-hint" style="margin-top:6px;">店名・所在地は、<wbr>設定画面での<wbr>登録が<wbr>必要です。</div>
   </div>
 
 
@@ -1980,7 +1988,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html179：AIの文が3回とも確かめに通らなかった時の知らせに「作成に失敗しました：」を付けない（文章生成gs_18 の文をそのまま出す）
 // ★liff_textgen.html180：お試し（実機で確かめる用）。②を「作り方を選ぶ」（AIで作る／自分で書く）にし、③に目的・写真・キーワードを置いた（Kenさん指示の見本_04）。
 // 　③訴求パターン・ご要望の欄・この画面でできることの案内・各欄の説明の文を外した。GASは変えていない（目的と目的ごとの欄は、ご要望（freeText）の文にまとめて送る）
-const TRACE_SCREEN = '投稿文作成180';
+// ★liff_textgen.html181：③の欄の名前に（必須）（任意）を付けた。お得な情報の期間を、カレンダーで選ぶ2つの欄（〜でつなぐ）にした（Kenさん指示）
+// ★liff_textgen.html181：④⑥のチェックを、目的と同じ形（左に四角のチェック・右に名前）にそろえた。④の名前を「エリア・店名を文章に含める」に。⑥の説明の文を外した（Kenさん指示）
+const TRACE_SCREEN = '投稿文作成181';
 
 function traceLog(msg) {
   try {
@@ -2262,7 +2272,11 @@ function getFreeText() {
   if (p === 'notice' && v('mk-notice-text')) parts.push('お知らせの内容：' + v('mk-notice-text'));
   if (p === 'deal') {
     if (v('mk-deal-text')) parts.push('お得な内容：' + v('mk-deal-text'));
-    if (v('mk-deal-period')) parts.push('期間：' + v('mk-deal-period'));
+    const md = function (iso) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? (Number(m[2]) + '月' + Number(m[3]) + '日') : ''; };
+    const from = md(v('mk-deal-from')), to = md(v('mk-deal-to'));
+    if (from && to) parts.push('期間：' + from + '〜' + to);
+    else if (to) parts.push('期間：' + to + 'まで');
+    else if (from) parts.push('期間：' + from + 'から');
   }
   if (p === 'recruit') {
     if (v('mk-recruit-job')) parts.push('募集する職種：' + v('mk-recruit-job'));
@@ -2331,7 +2345,7 @@ function renderPurposeFields() {
 function clearPurpose() {
   document.querySelectorAll('input[name="mk-purpose"]').forEach(function (r) { r.checked = false; });
   MK_LAST_PURPOSE = '';
-  ['mk-product-name', 'mk-notice-text', 'mk-deal-text', 'mk-deal-period', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text'].forEach(function (id) {
+  ['mk-product-name', 'mk-notice-text', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text'].forEach(function (id) {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -4716,7 +4730,7 @@ let imageState = null;
 // 　何も入力していない状態では確認を出さずにそのまま更新する。
 function textgenHasInput() {
   const ids = ['keyword-input-1', 'keyword-input-2', 'keyword-input-3', 'free-text-input', 'post-textarea',
-    'mk-product-name', 'mk-notice-text', 'mk-deal-text', 'mk-deal-period', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text',
+    'mk-product-name', 'mk-notice-text', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text',
     'hashtag-input-1', 'hashtag-input-2', 'hashtag-input-3', 'hashtag-input-4', 'hashtag-input-5'];
   const hasText = ids.some(function (id) {
     const el = document.getElementById(id);
