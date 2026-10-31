@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成181 - AiPost</title>
+<title>投稿文作成182 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -757,6 +757,7 @@
   textarea.mk-in { resize: vertical; min-height: 56px; }
   .mk-in + .mk-lbl { margin-top: 10px; }
   .mk-off { display: none !important; }
+  .mat-label.mk-head { display: block; }
   .mk-tag { font-weight: 400; font-size: 11.5px; color: var(--text-sub); margin-left: 2px; }
   .mk-period { display: flex; align-items: center; gap: 6px; }
   .mk-period .mk-in { flex: 1; min-width: 0; padding: 9px 6px; }
@@ -911,7 +912,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成181</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成182</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1096,14 +1097,14 @@
   <!-- ★liff_textgen.html180：③ 目的・写真・キーワード（AIで作る時だけ）。写真は⑧の画像と同じもの（同じ input を使う） -->
   <div class="card" id="card-material">
     <div class="card-title">③ 目的・<wbr>写真・<wbr>キーワード</div>
-    <div class="mat-label">🎯 目的<span class="mk-tag">（写真と<wbr>どちらか<wbr>必須）</span></div>
+    <div class="mat-label mk-head">🎯 目的<span class="mk-tag">（必須）</span></div>
     <div class="mk-radio" id="mk-purpose-list"><label><input type="radio" name="mk-purpose" value="product" onclick="onPurposeClick(this)">商品・メニューの紹介</label><label><input type="radio" name="mk-purpose" value="notice" onclick="onPurposeClick(this)">お知らせ（営業日・休み・イベント）</label><label><input type="radio" name="mk-purpose" value="deal" onclick="onPurposeClick(this)">お得な情報</label><label><input type="radio" name="mk-purpose" value="recruit" onclick="onPurposeClick(this)">人材募集</label><label><input type="radio" name="mk-purpose" value="daily" onclick="onPurposeClick(this)">お店の様子・日常</label><label><input type="radio" name="mk-purpose" value="other" onclick="onPurposeClick(this)">その他</label></div>
     <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"></div>
     <div class="mk-box mk-off" id="mk-fields-notice"><div class="mk-lbl">お知らせの内容<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-notice-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
-    <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-deal-from" onchange="updateMaterialSummary()"><span>〜</span><input type="date" class="mk-in" id="mk-deal-to" onchange="updateMaterialSummary()"></div></div>
+    <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-deal-from" onchange="onDealPeriodChange('from')"><span>〜</span><input type="date" class="mk-in" id="mk-deal-to" onchange="onDealPeriodChange('to')"></div></div>
     <div class="mk-box mk-off" id="mk-fields-recruit"><div class="mk-lbl">職種<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-recruit-job" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">条件（時間・時給など）<span class="mk-tag">（任意）</span></div><textarea class="mk-in" id="mk-recruit-cond" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
     <div class="mk-box mk-off" id="mk-fields-other"><div class="mk-lbl">どんな投稿にしたいか<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-other-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
-    <div class="mat-label" style="margin-top:14px;">📷 写真から作る<span class="mk-tag">（目的と<wbr>どちらか<wbr>必須）</span></div>
+    <div class="mat-label mk-head" style="margin-top:14px;">📷 写真から作る<span class="mk-tag">（任意）</span></div>
     <div class="mat-photo-btns" id="mat-photo-btns">
       <button type="button" style="background:var(--primary);" onclick="document.getElementById('my-img-input').click()">📁 フォルダから<wbr>選ぶ</button>
       <button type="button" style="background:#2e7d32;" onclick="document.getElementById('my-cam-input').click()">📷 写真を<wbr>撮る</button>
@@ -1116,11 +1117,11 @@
         <button type="button" class="mat-small-btn" onclick="reselectImage()">写真を<wbr>選び直す</button>
       </div>
     </div>
-    <div class="mat-label" style="margin-top:14px;">🔑 文章に<wbr>含めたい<wbr>キーワード<span class="mk-tag">（任意・<wbr>15文字以内）</span></div>
+    <div class="mat-label mk-head" style="margin-top:14px;">🔑 文章に<wbr>含めたい<wbr>キーワード<span class="mk-tag">（任意）</span></div>
     <div class="keyword-input-grid">
-      <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" oninput="updateMaterialSummary()">
-      <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" oninput="updateMaterialSummary()">
-      <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" oninput="updateMaterialSummary()">
+      <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" placeholder="15文字以内" oninput="updateMaterialSummary()">
+      <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" placeholder="15文字以内" oninput="updateMaterialSummary()">
+      <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" placeholder="15文字以内" oninput="updateMaterialSummary()">
     </div>
   </div>
 
@@ -1990,7 +1991,9 @@ const TRACE_KEY = 'aipost_trace';
 // 　③訴求パターン・ご要望の欄・この画面でできることの案内・各欄の説明の文を外した。GASは変えていない（目的と目的ごとの欄は、ご要望（freeText）の文にまとめて送る）
 // ★liff_textgen.html181：③の欄の名前に（必須）（任意）を付けた。お得な情報の期間を、カレンダーで選ぶ2つの欄（〜でつなぐ）にした（Kenさん指示）
 // ★liff_textgen.html181：④⑥のチェックを、目的と同じ形（左に四角のチェック・右に名前）にそろえた。④の名前を「エリア・店名を文章に含める」に。⑥の説明の文を外した（Kenさん指示）
-const TRACE_SCREEN = '投稿文作成181';
+// ★liff_textgen.html182：目的を必須に、写真から作るを任意にした（Kenさん指示の仕様変更）。③の見出しの（必須）（任意）を見出しの文に続けて出す（横に離れていた）。
+// 　キーワードの「15文字以内」は欄の中の薄い字にした。期間の終わりの日を、始まりの日より前にできないようにした
+const TRACE_SCREEN = '投稿文作成182';
 
 function traceLog(msg) {
   try {
@@ -2316,15 +2319,10 @@ function setMakeMode(mode) {
   if (sum) sum.classList.add('mk-off');
 }
 
-// 目的を押した時。選んでいる目的をもう一度押すと外す（写真だけで作る時のため）
+// 目的を押した時（★liff_textgen.html182：目的は必須にしたので、もう一度押して外す動きはやめた）
 let MK_LAST_PURPOSE = '';
 function onPurposeClick(radio) {
-  if (MK_LAST_PURPOSE === radio.value) {
-    radio.checked = false;
-    MK_LAST_PURPOSE = '';
-  } else {
-    MK_LAST_PURPOSE = radio.value;
-  }
+  MK_LAST_PURPOSE = radio.value;
   renderPurposeFields();
 }
 
@@ -2334,10 +2332,26 @@ function renderPurposeFields() {
     const box = document.getElementById('mk-fields-' + k);
     if (box) box.classList.toggle('mk-off', k !== p);
   });
-  // 目的を選んでいない時（写真から作る）は、写真を必ず文に使うので、チェックは出さない
-  const wrap = document.getElementById('mat-photo-use-wrap');
-  if (wrap) wrap.style.display = p ? '' : 'none';
   renderMaterialPhotoStatus();
+  updateMaterialSummary();
+}
+
+// ★liff_textgen.html182：期間の終わりの日を、始まりの日より前にできないようにする（カレンダーの選べる日も絞る）
+function onDealPeriodChange(which) {
+  const from = document.getElementById('mk-deal-from');
+  const to = document.getElementById('mk-deal-to');
+  if (!from || !to) return;
+  if (from.value && to.value && to.value < from.value) {
+    if (which === 'from') {
+      to.value = '';
+      aipostNotice('期間の終わりの日を選び直してください。');
+    } else {
+      to.value = '';
+      aipostNotice('期間の終わりの日は、始まりの日より後の日を選んでください。');
+    }
+  }
+  to.min = from.value || '';
+  from.max = to.value || '';
   updateMaterialSummary();
 }
 
@@ -2349,6 +2363,9 @@ function clearPurpose() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  const dFrom = document.getElementById('mk-deal-from'), dTo = document.getElementById('mk-deal-to');
+  if (dFrom) dFrom.max = '';
+  if (dTo) dTo.min = '';
   renderPurposeFields();
 }
 
@@ -2385,8 +2402,6 @@ function matPhotoActive() {
 // 写真を文の材料に使う（写真があり、「この写真の内容も文に使う」にチェックがある）
 function matPhotoUse() {
   const cb = document.getElementById('mat-photo-use');
-  // ★liff_textgen.html180：目的を選んでいない時（写真から作る）は、写真を必ず文に使う
-  if (matPhotoActive() && !getPurpose()) return true;
   return matPhotoActive() && !!(cb && cb.checked);
 }
 
@@ -2953,8 +2968,8 @@ function confirmAndGenerate() {
 
   // ★liff_textgen.html180：目的か写真のどちらかが要る。目的を選んだ時は、その目的の最初の欄が要る
   const purpose = getPurpose();
-  if (!purpose && !matPhotoActive()) {
-    aipostNotice('目的を選ぶか、写真を選んでください。');
+  if (!purpose) {
+    aipostNotice('目的を選んでください。');
     return;
   }
   if (purpose && MK_REQUIRED[purpose]) {
