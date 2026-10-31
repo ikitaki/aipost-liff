@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成185 - AiPost</title>
+<title>投稿文作成186 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -917,7 +917,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成185</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成186</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1104,7 +1104,7 @@
     <div class="card-title">③ 目的・<wbr>写真・<wbr>キーワード</div>
     <div class="mat-label mk-head">🎯 目的<span class="mk-tag">（必須）</span></div>
     <div class="mk-radio" id="mk-purpose-list"><label><input type="radio" name="mk-purpose" value="product" onclick="onPurposeClick(this)">商品・メニューの紹介</label><label><input type="radio" name="mk-purpose" value="notice" onclick="onPurposeClick(this)">お知らせ（営業日・休み・イベント）</label><label><input type="radio" name="mk-purpose" value="deal" onclick="onPurposeClick(this)">お得な情報</label><label><input type="radio" name="mk-purpose" value="recruit" onclick="onPurposeClick(this)">人材募集</label><label><input type="radio" name="mk-purpose" value="daily" onclick="onPurposeClick(this)">お店の様子・日常</label><label><input type="radio" name="mk-purpose" value="other" onclick="onPurposeClick(this)">その他</label></div>
-    <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">伝え方<span class="mk-tag">（任意）</span></div><div class="mk-radio mk-radio-2col"><label><input type="radio" name="mk-appeal" value="" checked>おまかせ</label><label><input type="radio" name="mk-appeal" value="①限定">限定</label><label><input type="radio" name="mk-appeal" value="③悩み解決">悩み解決</label><label><input type="radio" name="mk-appeal" value="④トレンド">人気</label><label><input type="radio" name="mk-appeal" value="⑤信頼">信頼</label><label><input type="radio" name="mk-appeal" value="⑥季節">季節</label><label><input type="radio" name="mk-appeal" value="⑦新登場">新登場</label><label><input type="radio" name="mk-appeal" value="⑧地域密着">地域密着</label></div></div>
+    <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">訴求パターン<button type="button" class="mk-help-btn" id="appeal-help-btn" onclick="toggleAppealHelp()" aria-label="訴求パターンの説明">？</button></div><div class="mk-help-box mk-off" id="appeal-help" style="background:#fff;"></div><div class="mk-radio mk-radio-2col"><label><input type="radio" name="mk-appeal" value="" checked>おまかせ</label><label><input type="radio" name="mk-appeal" value="①限定">限定</label><label><input type="radio" name="mk-appeal" value="③悩み解決">悩み解決</label><label><input type="radio" name="mk-appeal" value="④トレンド">トレンド</label><label><input type="radio" name="mk-appeal" value="⑤信頼">信頼</label><label><input type="radio" name="mk-appeal" value="⑥季節">季節</label><label><input type="radio" name="mk-appeal" value="⑦新登場">新登場</label><label><input type="radio" name="mk-appeal" value="⑧地域密着">地域密着</label></div></div>
     <div class="mk-box mk-off" id="mk-fields-notice"><div class="mk-lbl">お知らせの内容<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-notice-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
     <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-deal-from" onchange="onDealPeriodChange('from')"><span>〜</span><input type="date" class="mk-in" id="mk-deal-to" onchange="onDealPeriodChange('to')"></div></div>
     <div class="mk-box mk-off" id="mk-fields-recruit"><div class="mk-lbl">職種<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-recruit-job" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">条件（時間・時給など）<span class="mk-tag">（任意）</span></div><textarea class="mk-in" id="mk-recruit-cond" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
@@ -2004,7 +2004,8 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html184：キーワード・ハッシュタグを1つ10文字までにした（15文字×8つで字数を取りすぎるため。Kenさん指示）。
 // 　AIが作ったハッシュタグで10文字を超えるものは使わない（欄の上限は手で打つ時にしか効かないため。HashtagGenerationgs_02 でAIにも10文字以内を指示）
 // ★liff_textgen.html185：目的「商品・メニューの紹介」の時だけ「伝え方（任意）」を出す（前の訴求パターンのうち、お得以外の7つ。トレンドは「人気」と言う。Kenさん承認）
-const TRACE_SCREEN = '投稿文作成185';
+// ★liff_textgen.html186：「伝え方（任意）」を「訴求パターン」にし、横の「？」で8つの意味を出す。「人気」を「トレンド」に戻した（Kenさん指示）
+const TRACE_SCREEN = '投稿文作成186';
 
 function traceLog(msg) {
   try {
@@ -2345,6 +2346,30 @@ function renderPurposeFields() {
   });
   renderMaterialPhotoStatus();
   updateMaterialSummary();
+}
+
+// ★liff_textgen.html186：訴求パターンの「？」。押すたびに8つの意味を出す・しまう
+const APPEAL_HELP = [
+  ['おまかせ', '文章に含めたいキーワードを見て、AIが合う訴求パターンを選びます。'],
+  ['限定', '「今だけ」「数量限定」など、今しか手に入らないことを伝えます。'],
+  ['悩み解決', 'お客様の困りごとを、どう解決できるかを伝えます。'],
+  ['トレンド', '人気や話題になっていることを伝えます。'],
+  ['信頼', '実績やこだわりなど、安心して選べる理由を伝えます。'],
+  ['季節', '今の季節に合わせた話題で伝えます。'],
+  ['新登場', '新しく始めた商品・メニューであることを伝えます。'],
+  ['地域密着', '地元の方に向けて、身近なお店であることを伝えます。']
+];
+function toggleAppealHelp() {
+  const box = document.getElementById('appeal-help');
+  const btn = document.getElementById('appeal-help-btn');
+  if (!box) return;
+  if (!box.innerHTML) {
+    box.innerHTML = APPEAL_HELP.map(function (a) {
+      return '<p class="hashtag-desc" style="margin:0 0 8px;"><b style="color:var(--primary);">' + a[0] + '</b><br>' + a[1] + '</p>';
+    }).join('');
+  }
+  const open = box.classList.toggle('mk-off') === false;
+  if (btn) btn.classList.toggle('on', open);
 }
 
 // ★liff_textgen.html183：⑦ハッシュタグの「？」。押すたびに説明を出す・しまう
