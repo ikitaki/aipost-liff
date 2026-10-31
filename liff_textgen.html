@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成186 - AiPost</title>
+<title>投稿文作成187 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -917,7 +917,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成186</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成187</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1105,8 +1105,8 @@
     <div class="mat-label mk-head">🎯 目的<span class="mk-tag">（必須）</span></div>
     <div class="mk-radio" id="mk-purpose-list"><label><input type="radio" name="mk-purpose" value="product" onclick="onPurposeClick(this)">商品・メニューの紹介</label><label><input type="radio" name="mk-purpose" value="notice" onclick="onPurposeClick(this)">お知らせ（営業日・休み・イベント）</label><label><input type="radio" name="mk-purpose" value="deal" onclick="onPurposeClick(this)">お得な情報</label><label><input type="radio" name="mk-purpose" value="recruit" onclick="onPurposeClick(this)">人材募集</label><label><input type="radio" name="mk-purpose" value="daily" onclick="onPurposeClick(this)">お店の様子・日常</label><label><input type="radio" name="mk-purpose" value="other" onclick="onPurposeClick(this)">その他</label></div>
     <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">訴求パターン<button type="button" class="mk-help-btn" id="appeal-help-btn" onclick="toggleAppealHelp()" aria-label="訴求パターンの説明">？</button></div><div class="mk-help-box mk-off" id="appeal-help" style="background:#fff;"></div><div class="mk-radio mk-radio-2col"><label><input type="radio" name="mk-appeal" value="" checked>おまかせ</label><label><input type="radio" name="mk-appeal" value="①限定">限定</label><label><input type="radio" name="mk-appeal" value="③悩み解決">悩み解決</label><label><input type="radio" name="mk-appeal" value="④トレンド">トレンド</label><label><input type="radio" name="mk-appeal" value="⑤信頼">信頼</label><label><input type="radio" name="mk-appeal" value="⑥季節">季節</label><label><input type="radio" name="mk-appeal" value="⑦新登場">新登場</label><label><input type="radio" name="mk-appeal" value="⑧地域密着">地域密着</label></div></div>
-    <div class="mk-box mk-off" id="mk-fields-notice"><div class="mk-lbl">お知らせの内容<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-notice-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
-    <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-deal-from" onchange="onDealPeriodChange('from')"><span>〜</span><input type="date" class="mk-in" id="mk-deal-to" onchange="onDealPeriodChange('to')"></div></div>
+    <div class="mk-box mk-off" id="mk-fields-notice"><div class="mk-lbl">お知らせの内容<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-notice-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-notice-from" onchange="onPeriodChange('notice', 'from')"><span>〜</span><input type="date" class="mk-in" id="mk-notice-to" onchange="onPeriodChange('notice', 'to')"></div></div>
+    <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-deal-from" onchange="onPeriodChange('deal', 'from')"><span>〜</span><input type="date" class="mk-in" id="mk-deal-to" onchange="onPeriodChange('deal', 'to')"></div></div>
     <div class="mk-box mk-off" id="mk-fields-recruit"><div class="mk-lbl">職種<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-recruit-job" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">条件（時間・時給など）<span class="mk-tag">（任意）</span></div><textarea class="mk-in" id="mk-recruit-cond" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
     <div class="mk-box mk-off" id="mk-fields-other"><div class="mk-lbl">どんな投稿にしたいか<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-other-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
     <div class="mat-label mk-head" style="margin-top:14px;">📷 写真から作る<span class="mk-tag">（任意）</span></div>
@@ -2005,7 +2005,9 @@ const TRACE_KEY = 'aipost_trace';
 // 　AIが作ったハッシュタグで10文字を超えるものは使わない（欄の上限は手で打つ時にしか効かないため。HashtagGenerationgs_02 でAIにも10文字以内を指示）
 // ★liff_textgen.html185：目的「商品・メニューの紹介」の時だけ「伝え方（任意）」を出す（前の訴求パターンのうち、お得以外の7つ。トレンドは「人気」と言う。Kenさん承認）
 // ★liff_textgen.html186：「伝え方（任意）」を「訴求パターン」にし、横の「？」で8つの意味を出す。「人気」を「トレンド」に戻した（Kenさん指示）
-const TRACE_SCREEN = '投稿文作成186';
+// ★liff_textgen.html187：目的「お知らせ」にも「期間（任意）」を付けた（お得な情報と同じ形。Kenさん指示）。
+// 　始まりの日を選んだ時、終わりの欄が空なら同じ日を入れる（1日だけの時は1つ選べば済む）。始まりと終わりが同じ日は「11月3日」と1日で渡す
+const TRACE_SCREEN = '投稿文作成187';
 
 function traceLog(msg) {
   try {
@@ -2284,14 +2286,22 @@ function getFreeText() {
   const v = function (id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
   const parts = ['投稿の目的：' + MK_PURPOSE_LABEL[p]];
   if (p === 'product' && v('mk-product-name')) parts.push('紹介する商品・メニュー：' + v('mk-product-name'));
-  if (p === 'notice' && v('mk-notice-text')) parts.push('お知らせの内容：' + v('mk-notice-text'));
+  // ★liff_textgen.html187：期間の文（お得な情報・お知らせで同じ）。同じ日の時は1日で渡す
+  const md = function (iso) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? (Number(m[2]) + '月' + Number(m[3]) + '日') : ''; };
+  const period = function (key) {
+    const from = md(v('mk-' + key + '-from')), to = md(v('mk-' + key + '-to'));
+    if (from && to) return from === to ? ('期間：' + from) : ('期間：' + from + '〜' + to);
+    if (to) return '期間：' + to + 'まで';
+    if (from) return '期間：' + from + 'から';
+    return '';
+  };
+  if (p === 'notice') {
+    if (v('mk-notice-text')) parts.push('お知らせの内容：' + v('mk-notice-text'));
+    if (period('notice')) parts.push(period('notice'));
+  }
   if (p === 'deal') {
     if (v('mk-deal-text')) parts.push('お得な内容：' + v('mk-deal-text'));
-    const md = function (iso) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? (Number(m[2]) + '月' + Number(m[3]) + '日') : ''; };
-    const from = md(v('mk-deal-from')), to = md(v('mk-deal-to'));
-    if (from && to) parts.push('期間：' + from + '〜' + to);
-    else if (to) parts.push('期間：' + to + 'まで');
-    else if (from) parts.push('期間：' + from + 'から');
+    if (period('deal')) parts.push(period('deal'));
   }
   if (p === 'recruit') {
     if (v('mk-recruit-job')) parts.push('募集する職種：' + v('mk-recruit-job'));
@@ -2382,10 +2392,12 @@ function toggleHashtagHelp() {
 }
 
 // ★liff_textgen.html182：期間の終わりの日を、始まりの日より前にできないようにする（カレンダーの選べる日も絞る）
-function onDealPeriodChange(which) {
-  const from = document.getElementById('mk-deal-from');
-  const to = document.getElementById('mk-deal-to');
+// ★liff_textgen.html187：お知らせにも使う（key：'deal'＝お得な情報／'notice'＝お知らせ）。始まりの日を選んだ時、終わりが空なら同じ日を入れる
+function onPeriodChange(key, which) {
+  const from = document.getElementById('mk-' + key + '-from');
+  const to = document.getElementById('mk-' + key + '-to');
   if (!from || !to) return;
+  if (which === 'from' && from.value && !to.value) to.value = from.value;
   if (from.value && to.value && to.value < from.value) {
     if (which === 'from') {
       to.value = '';
@@ -2404,15 +2416,17 @@ function onDealPeriodChange(which) {
 function clearPurpose() {
   document.querySelectorAll('input[name="mk-purpose"]').forEach(function (r) { r.checked = false; });
   MK_LAST_PURPOSE = '';
-  ['mk-product-name', 'mk-notice-text', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text'].forEach(function (id) {
+  ['mk-product-name', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text'].forEach(function (id) {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   const appealDefault = document.querySelector('input[name="mk-appeal"][value=""]');
   if (appealDefault) appealDefault.checked = true;
-  const dFrom = document.getElementById('mk-deal-from'), dTo = document.getElementById('mk-deal-to');
-  if (dFrom) dFrom.max = '';
-  if (dTo) dTo.min = '';
+  ['deal', 'notice'].forEach(function (key) {
+    const dFrom = document.getElementById('mk-' + key + '-from'), dTo = document.getElementById('mk-' + key + '-to');
+    if (dFrom) dFrom.max = '';
+    if (dTo) dTo.min = '';
+  });
   renderPurposeFields();
 }
 
@@ -4800,7 +4814,7 @@ let imageState = null;
 // 　何も入力していない状態では確認を出さずにそのまま更新する。
 function textgenHasInput() {
   const ids = ['keyword-input-1', 'keyword-input-2', 'keyword-input-3', 'free-text-input', 'post-textarea',
-    'mk-product-name', 'mk-notice-text', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text',
+    'mk-product-name', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text',
     'hashtag-input-1', 'hashtag-input-2', 'hashtag-input-3', 'hashtag-input-4', 'hashtag-input-5'];
   const hasText = ids.some(function (id) {
     const el = document.getElementById(id);
