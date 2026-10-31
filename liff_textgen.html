@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成183 - AiPost</title>
+<title>投稿文作成184 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -915,7 +915,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成183</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成184</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1122,9 +1122,9 @@
     </div>
     <div class="mat-label mk-head" style="margin-top:14px;">🔑 文章に<wbr>含めたい<wbr>キーワード<span class="mk-tag">（任意）</span></div>
     <div class="keyword-input-grid">
-      <input type="text" class="keyword-input" id="keyword-input-1" maxlength="15" placeholder="15文字以内" oninput="updateMaterialSummary()">
-      <input type="text" class="keyword-input" id="keyword-input-2" maxlength="15" placeholder="15文字以内" oninput="updateMaterialSummary()">
-      <input type="text" class="keyword-input" id="keyword-input-3" maxlength="15" placeholder="15文字以内" oninput="updateMaterialSummary()">
+      <input type="text" class="keyword-input" id="keyword-input-1" maxlength="10" placeholder="10文字以内" oninput="updateMaterialSummary()">
+      <input type="text" class="keyword-input" id="keyword-input-2" maxlength="10" placeholder="10文字以内" oninput="updateMaterialSummary()">
+      <input type="text" class="keyword-input" id="keyword-input-3" maxlength="10" placeholder="10文字以内" oninput="updateMaterialSummary()">
     </div>
   </div>
 
@@ -1225,35 +1225,35 @@
     </div>
     <div class="hashtag-rows" id="hashtag-rows">
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-1" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-1" maxlength="10" placeholder="10文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-1-X" onchange="onHashtagCheckToggle(1,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-1-IG" onchange="onHashtagCheckToggle(1,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-1-TH" onchange="onHashtagCheckToggle(1,'TH')"></span>
         </div>
       </div>
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-2" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-2" maxlength="10" placeholder="10文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-2-X" onchange="onHashtagCheckToggle(2,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-2-IG" onchange="onHashtagCheckToggle(2,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-2-TH" onchange="onHashtagCheckToggle(2,'TH')"></span>
         </div>
       </div>
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-3" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-3" maxlength="10" placeholder="10文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-3-X" onchange="onHashtagCheckToggle(3,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-3-IG" onchange="onHashtagCheckToggle(3,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-3-TH" onchange="onHashtagCheckToggle(3,'TH')"></span>
         </div>
       </div>
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-4" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-4" maxlength="10" placeholder="10文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-4-X" onchange="onHashtagCheckToggle(4,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-4-IG" onchange="onHashtagCheckToggle(4,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-4-TH" onchange="onHashtagCheckToggle(4,'TH')"></span>
         </div>
       </div>
       <div class="hashtag-row">
-        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-5" maxlength="15" placeholder="15文字以内" oninput="onHashtagChange()"></div>
+        <div class="hashtag-input-wrap"><span class="hashtag-prefix">#</span><input type="text" class="hashtag-input" id="hashtag-input-5" maxlength="10" placeholder="10文字以内" oninput="onHashtagChange()"></div>
         <div class="hashtag-checks">
           <span class="hashtag-col hashtag-col-X"><input type="checkbox" id="hashtag-check-5-X" onchange="onHashtagCheckToggle(5,'X')"></span>
           <span class="hashtag-col hashtag-col-IG"><input type="checkbox" id="hashtag-check-5-IG" onchange="onHashtagCheckToggle(5,'IG')"></span>          <span class="hashtag-col hashtag-col-TH"><input type="checkbox" id="hashtag-check-5-TH" onchange="onHashtagCheckToggle(5,'TH')"></span>
@@ -1393,8 +1393,8 @@
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">写真・<wbr>キーワード・<wbr>ご要望の<wbr>うち、<wbr>入れた<wbr>ものを<wbr>材料に<wbr>して、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>1つだけでも、<wbr>組み合わせても<wbr>かまいません。<wbr>どれも<wbr>入れない<wbr>場合は、<wbr>設定画面で<wbr>登録した<wbr>業種を<wbr>もとに<wbr>作成します<wbr>（業種を<wbr>登録していない<wbr>場合は、<wbr>どれか<wbr>1つを<wbr>入れてください）。<wbr>「投稿文・ハッシュタグを作成」の<wbr>すぐ上に、<wbr>今<wbr>AIに<wbr>渡す<wbr>材料が<wbr>出ます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 写真</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">写真を<wbr>選ぶと、<wbr>作成を<wbr>押した<wbr>時に、<wbr>写真に<wbr>写って<wbr>いる<wbr>ものを<wbr>AIが<wbr>読み取って、<wbr>文の<wbr>材料に<wbr>します。<wbr>料理名・<wbr>値段など、<wbr>写真から<wbr>分からない<wbr>ことは<wbr>書きません。<wbr>読み取るのは<wbr>写真<wbr>1枚に<wbr>つき<wbr>1回だけで、<wbr>何回<wbr>作成しても<wbr>同じ<wbr>読み取りの<wbr>結果を<wbr>使います。<wbr>選んだ<wbr>写真は、<wbr>⑧の<wbr>投稿の<wbr>画像にも<wbr>なります。<wbr>投稿の<wbr>画像に<wbr>だけ<wbr>使い、<wbr>文の<wbr>材料に<wbr>しない<wbr>時は、<wbr>「この写真の内容も文に使う」の<wbr>チェックを<wbr>外して<wbr>ください。<wbr>⑧で<wbr>別の<wbr>画像に<wbr>変えた<wbr>時は、<wbr>投稿文が<wbr>前の<wbr>写真の<wbr>ままに<wbr>なって<wbr>いないか<wbr>確かめて<wbr>ください。<wbr>お試し中は、<wbr>写真の<wbr>読み取りも、<wbr>作成と<wbr>同じ<wbr>回数まで<wbr>です<wbr>（作成の<wbr>回数とは<wbr>別に<wbr>数えます）。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 キーワード<wbr>（最大3個・<wbr>1個15字まで）</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入れた<wbr>キーワードは、<wbr>必ず<wbr>投稿文に<wbr>入ります。<wbr>投稿文は<wbr>限られた<wbr>文字数<wbr>（⑤を<wbr>参照）で<wbr>作成する<wbr>ため、<wbr>キーワードが<wbr>多すぎると、<wbr>AIが<wbr>すべてを<wbr>詰め込もうと<wbr>して<wbr>不自然な<wbr>投稿文に<wbr>なりがちです。<wbr>3個程度に<wbr>絞って<wbr>投稿文には<wbr>中心となる<wbr>言葉だけを<wbr>入れ、<wbr>細かい<wbr>言葉は<wbr>⑦ハッシュタグで<wbr>補う、と<wbr>いう<wbr>役割分担に<wbr>しています。<wbr>キーワードは<wbr>短い<wbr>言葉での<wbr>入力を<wbr>想定しているため、<wbr>15字を<wbr>上限に<wbr>しています<wbr>（外部の<wbr>調査の<wbr>数値ではなく、<wbr>AiPost独自の<wbr>設計です）。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 キーワード<wbr>（最大3個・<wbr>1個10字まで）</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入れた<wbr>キーワードは、<wbr>必ず<wbr>投稿文に<wbr>入ります。<wbr>投稿文は<wbr>限られた<wbr>文字数<wbr>（⑤を<wbr>参照）で<wbr>作成する<wbr>ため、<wbr>キーワードが<wbr>多すぎると、<wbr>AIが<wbr>すべてを<wbr>詰め込もうと<wbr>して<wbr>不自然な<wbr>投稿文に<wbr>なりがちです。<wbr>3個程度に<wbr>絞って<wbr>投稿文には<wbr>中心となる<wbr>言葉だけを<wbr>入れ、<wbr>細かい<wbr>言葉は<wbr>⑦ハッシュタグで<wbr>補う、と<wbr>いう<wbr>役割分担に<wbr>しています。<wbr>キーワードは<wbr>短い<wbr>言葉での<wbr>入力を<wbr>想定しているため、<wbr>10字を<wbr>上限に<wbr>しています<wbr>（外部の<wbr>調査の<wbr>数値ではなく、<wbr>AiPost独自の<wbr>設計です）。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ご要望<wbr>（150字まで）</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">どのような<wbr>投稿に<wbr>したいかを<wbr>自由に<wbr>書けます<wbr>（例：新商品の<wbr>告知を<wbr>したい）。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>「いつ」<wbr>「何を」<wbr>「誰に向けて」などを<wbr>具体的に<wbr>書く<wbr>ほど、<wbr>思いどおりの<wbr>投稿文に<wbr>なりやすくなります。<wbr>投稿文を<wbr>自分で<wbr>書く<wbr>場合は、<wbr>②を<wbr>使わずに<wbr>⑤に<wbr>直接入力できます。</div>
     </div>
@@ -1476,7 +1476,7 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t8')">⑦ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t8">▶</span></div>
     <div class="accordion-body" id="acc-t8">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>チェックした<wbr>SNSにだけ<wbr>付きます。<wbr>1個15字まで、<wbr>5個まで<wbr>入力できます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>チェックした<wbr>SNSにだけ<wbr>付きます。<wbr>1個10字まで、<wbr>5個まで<wbr>入力できます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 <wbr>「#」は<wbr>自動で<wbr>付きます</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入力欄に<wbr>「#」を<wbr>入力する<wbr>必要は<wbr>ありません。<wbr>自分で<wbr>「#」を<wbr>入力すると、<wbr>全角の<wbr>「＃」に<wbr>なったりスペースが<wbr>抜けたりして、<wbr>ハッシュタグと<wbr>して<wbr>働かなくなる<wbr>ことがある<wbr>ため、<wbr>AiPostが<wbr>半角の<wbr>「#」を<wbr>自動で<wbr>付けます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとの<wbr>上限とおすすめの<wbr>数</div>
@@ -1999,7 +1999,9 @@ const TRACE_KEY = 'aipost_trace';
 // 　キーワードの「15文字以内」は欄の中の薄い字にした。期間の終わりの日を、始まりの日より前にできないようにした
 // ★liff_textgen.html183：⑦ハッシュタグの説明の文2つを、見出しの横の「？」を押した時だけ出すようにした（Kenさん指示）。
 // 　欄の下の「💡 ハッシュタグは1個15字までです。」を外し、欄の中の薄い字を「15文字以内」にした（キーワードの欄とそろえた）
-const TRACE_SCREEN = '投稿文作成183';
+// ★liff_textgen.html184：キーワード・ハッシュタグを1つ10文字までにした（15文字×8つで字数を取りすぎるため。Kenさん指示）。
+// 　AIが作ったハッシュタグで10文字を超えるものは使わない（欄の上限は手で打つ時にしか効かないため。HashtagGenerationgs_02 でAIにも10文字以内を指示）
+const TRACE_SCREEN = '投稿文作成184';
 
 function traceLog(msg) {
   try {
@@ -3123,7 +3125,8 @@ async function executeGenerate() {
       // setGeneratedHashtags()は既存実装上「#」なし前提（HTML側に静的な
       // 「#」プレフィックスが別途表示されるため）。API応答は「#」付きの
       // 配列で返るため、ここで「#」を除去してから渡す。
-      setGeneratedHashtags(hashtagResult.data.map(h => h.replace(/^#/, '')));
+      // ★liff_textgen.html184：10文字を超えるハッシュタグは使わない
+      setGeneratedHashtags(hashtagResult.data.map(h => h.replace(/^#/, '')).filter(h => Array.from(h).length <= 10));
     }
 
     // 業種ベース生成（キーワード・ご要望とも未入力）の場合は既存の通知を表示
