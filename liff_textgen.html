@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成188 - AiPost</title>
+<title>投稿文作成189 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -917,7 +917,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成188</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成189</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1386,29 +1386,30 @@
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② AIに<wbr>渡す<wbr>材料<wbr>（写真・<wbr>キーワード・<wbr>ご要望）<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② 作り方を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
     <div class="accordion-body" id="acc-t2">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">写真・<wbr>キーワード・<wbr>ご要望の<wbr>うち、<wbr>入れた<wbr>ものを<wbr>材料に<wbr>して、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>1つだけでも、<wbr>組み合わせても<wbr>かまいません。<wbr>どれも<wbr>入れない<wbr>場合は、<wbr>設定画面で<wbr>登録した<wbr>業種を<wbr>もとに<wbr>作成します<wbr>（業種を<wbr>登録していない<wbr>場合は、<wbr>どれか<wbr>1つを<wbr>入れてください）。<wbr>「投稿文・ハッシュタグを作成」の<wbr>すぐ上に、<wbr>今<wbr>AIに<wbr>渡す<wbr>材料が<wbr>出ます。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 写真</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">写真を<wbr>選ぶと、<wbr>作成を<wbr>押した<wbr>時に、<wbr>写真に<wbr>写って<wbr>いる<wbr>ものを<wbr>AIが<wbr>読み取って、<wbr>文の<wbr>材料に<wbr>します。<wbr>料理名・<wbr>値段など、<wbr>写真から<wbr>分からない<wbr>ことは<wbr>書きません。<wbr>読み取るのは<wbr>写真<wbr>1枚に<wbr>つき<wbr>1回だけで、<wbr>何回<wbr>作成しても<wbr>同じ<wbr>読み取りの<wbr>結果を<wbr>使います。<wbr>選んだ<wbr>写真は、<wbr>⑧の<wbr>投稿の<wbr>画像にも<wbr>なります。<wbr>投稿の<wbr>画像に<wbr>だけ<wbr>使い、<wbr>文の<wbr>材料に<wbr>しない<wbr>時は、<wbr>「この写真の内容も文に使う」の<wbr>チェックを<wbr>外して<wbr>ください。<wbr>⑧で<wbr>別の<wbr>画像に<wbr>変えた<wbr>時は、<wbr>投稿文が<wbr>前の<wbr>写真の<wbr>ままに<wbr>なって<wbr>いないか<wbr>確かめて<wbr>ください。<wbr>お試し中は、<wbr>写真の<wbr>読み取りも、<wbr>作成と<wbr>同じ<wbr>回数まで<wbr>です<wbr>（作成の<wbr>回数とは<wbr>別に<wbr>数えます）。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 キーワード<wbr>（最大3個・<wbr>1個10字まで）</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入れた<wbr>キーワードは、<wbr>必ず<wbr>投稿文に<wbr>入ります。<wbr>投稿文は<wbr>限られた<wbr>文字数<wbr>（⑤を<wbr>参照）で<wbr>作成する<wbr>ため、<wbr>キーワードが<wbr>多すぎると、<wbr>AIが<wbr>すべてを<wbr>詰め込もうと<wbr>して<wbr>不自然な<wbr>投稿文に<wbr>なりがちです。<wbr>3個程度に<wbr>絞って<wbr>投稿文には<wbr>中心となる<wbr>言葉だけを<wbr>入れ、<wbr>細かい<wbr>言葉は<wbr>⑦ハッシュタグで<wbr>補う、と<wbr>いう<wbr>役割分担に<wbr>しています。<wbr>キーワードは<wbr>短い<wbr>言葉での<wbr>入力を<wbr>想定しているため、<wbr>10字を<wbr>上限に<wbr>しています<wbr>（外部の<wbr>調査の<wbr>数値ではなく、<wbr>AiPost独自の<wbr>設計です）。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ご要望<wbr>（150字まで）</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">どのような<wbr>投稿に<wbr>したいかを<wbr>自由に<wbr>書けます<wbr>（例：新商品の<wbr>告知を<wbr>したい）。<wbr>その<wbr>内容に<wbr>沿って、<wbr>AIが<wbr>投稿文を<wbr>作成します。<wbr>「いつ」<wbr>「何を」<wbr>「誰に向けて」などを<wbr>具体的に<wbr>書く<wbr>ほど、<wbr>思いどおりの<wbr>投稿文に<wbr>なりやすくなります。<wbr>投稿文を<wbr>自分で<wbr>書く<wbr>場合は、<wbr>②を<wbr>使わずに<wbr>⑤に<wbr>直接入力できます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">「AIで作る」を<wbr>選ぶと、<wbr>③の<wbr>内容を<wbr>もとに、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>「自分で書く」を<wbr>選ぶと、<wbr>⑤に<wbr>直接<wbr>入力します<wbr>（③④と<wbr>作成の<wbr>ボタンは<wbr>出ません）。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">③ 訴求パターンを<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">③ 目的・<wbr>写真・<wbr>キーワード<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
     <div class="accordion-body" id="acc-t4">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の<wbr>伝え方<wbr>（限定感・<wbr>お得感など）を<wbr>選びます。<wbr>「🤖&nbsp;AIに任せる」のままに<wbr>すると、<wbr>AIが<wbr>キーワードなどから<wbr>合う<wbr>伝え方を<wbr>判断して<wbr>投稿文を<wbr>作成します。<wbr>特に<wbr>こだわりが<wbr>なければ、<wbr>そのままで<wbr>大丈夫です。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 目的<wbr>（必須）</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿の<wbr>目的を<wbr>選ぶと、<wbr>その<wbr>目的に<wbr>要る<wbr>欄だけが<wbr>出ます。<wbr>お知らせ・<wbr>人材募集・<wbr>お店の様子・<wbr>その他は、<wbr>売り込みでは<wbr>なく、<wbr>内容を<wbr>伝える<wbr>書き方で<wbr>作成します。<wbr>期間は、<wbr>1日だけの<wbr>時は<wbr>始まりの<wbr>日を<wbr>選ぶだけで<wbr>済みます。<wbr>人材募集で<wbr>条件を<wbr>入れない<wbr>時は、<wbr>条件を<wbr>作らず<wbr>「詳しくは<wbr>お問い合わせください」の<wbr>形に<wbr>します。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 訴求パターン<wbr>（商品・<wbr>メニューの<wbr>紹介の時）</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">伝え方を<wbr>8つから<wbr>選べます<wbr>（それぞれの<wbr>意味は<wbr>「？」で<wbr>見られます）。<wbr>「おまかせ」の<wbr>ままに<wbr>すると、<wbr>キーワードから<wbr>AIが<wbr>選びます。<wbr>「地域密着」を<wbr>選んだ<wbr>時は、<wbr>地域名<wbr>（例：中央区・<wbr>梅田）を<wbr>入れてください。<wbr>登録した<wbr>都道府県では<wbr>範囲が<wbr>広すぎて、<wbr>地域らしい<wbr>文に<wbr>ならない<wbr>ためです。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 写真から作る<wbr>（任意）</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">写真を<wbr>選ぶと、<wbr>作成を<wbr>押した<wbr>時に、<wbr>写真に<wbr>写って<wbr>いる<wbr>ものを<wbr>AIが<wbr>読み取って、<wbr>文の<wbr>材料に<wbr>します。<wbr>料理名・<wbr>値段など、<wbr>写真から<wbr>分からない<wbr>ことは<wbr>書きません。<wbr>読み取るのは<wbr>写真<wbr>1枚に<wbr>つき<wbr>1回だけで、<wbr>何回<wbr>作成しても<wbr>同じ<wbr>読み取りの<wbr>結果を<wbr>使います。<wbr>選んだ<wbr>写真は、<wbr>⑧の<wbr>投稿の<wbr>画像にも<wbr>なります。<wbr>投稿の<wbr>画像に<wbr>だけ<wbr>使い、<wbr>文の<wbr>材料に<wbr>しない<wbr>時は、<wbr>「この写真の内容も文に使う」の<wbr>チェックを<wbr>外して<wbr>ください。<wbr>⑧で<wbr>別の<wbr>画像に<wbr>変えた<wbr>時は、<wbr>投稿文が<wbr>前の<wbr>写真の<wbr>ままに<wbr>なって<wbr>いないか<wbr>確かめて<wbr>ください。<wbr>お試し中は、<wbr>写真の<wbr>読み取りも、<wbr>作成と<wbr>同じ<wbr>回数まで<wbr>です<wbr>（作成の<wbr>回数とは<wbr>別に<wbr>数えます）。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文章に<wbr>含めたい<wbr>キーワード<wbr>（任意・<wbr>3個・<wbr>1個10字まで）</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">入れた<wbr>キーワードは、<wbr>必ず<wbr>投稿文に<wbr>入ります。<wbr>投稿文は<wbr>限られた<wbr>文字数<wbr>（⑤を<wbr>参照）で<wbr>作成する<wbr>ため、<wbr>キーワードが<wbr>多すぎると、<wbr>AIが<wbr>すべてを<wbr>詰め込もうと<wbr>して<wbr>不自然な<wbr>投稿文に<wbr>なりがちです。<wbr>3個程度に<wbr>絞って<wbr>投稿文には<wbr>中心となる<wbr>言葉だけを<wbr>入れ、<wbr>細かい<wbr>言葉は<wbr>⑦ハッシュタグで<wbr>補う、と<wbr>いう<wbr>役割分担に<wbr>しています。<wbr>キーワードは<wbr>短い<wbr>言葉での<wbr>入力を<wbr>想定しているため、<wbr>10字を<wbr>上限に<wbr>しています<wbr>（外部の<wbr>調査の<wbr>数値ではなく、<wbr>AiPost独自の<wbr>設計です）。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">④ エリア・店名を<wbr>含めて<wbr>投稿文を<wbr>作成する<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">④ 店名を<wbr>文章に<wbr>含める<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
     <div class="accordion-body" id="acc-t5">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">チェックした<wbr>項目を、<wbr>AIが<wbr>投稿文の<wbr>中に<wbr>自然な<wbr>形で<wbr>入れて<wbr>作成します。<wbr>エリアは<wbr>設定画面で<wbr>登録した<wbr>都道府県、<wbr>店名は<wbr>登録した<wbr>店名を<wbr>使います。<wbr>登録していない<wbr>項目は<wbr>使えないため、<wbr>先に<wbr>設定画面で<wbr>登録してください。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">チェックすると、<wbr>設定画面で<wbr>登録した<wbr>店名を、<wbr>AIが<wbr>投稿文の<wbr>中に<wbr>自然な<wbr>形で<wbr>入れて<wbr>作成します。<wbr>登録して<wbr>いない<wbr>時は<wbr>使えないため、<wbr>先に<wbr>設定画面で<wbr>登録してください。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ⑥との<wbr>違い</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">④は、<wbr>AIが<wbr>文章の<wbr>流れに<wbr>合わせて<wbr>投稿文の<wbr>中に<wbr>入れます。<wbr>⑥は、<wbr>AIを<wbr>使わずに、<wbr>登録した<wbr>店名・所在地を<wbr>そのまま<wbr>投稿文の<wbr>最後に<wbr>付けます。</div>
     </div>
@@ -1502,7 +1503,7 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t9')">⑧ 画像アップロード<span class="accordion-arrow" id="arr-acc-t9">▶</span></div>
     <div class="accordion-body" id="acc-t9">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">フォルダから<wbr>選ぶか、<wbr>その場で<wbr>写真を<wbr>撮って、<wbr>画像を<wbr>1枚選びます<wbr>（②で<wbr>写真を<wbr>選んだ<wbr>場合は、<wbr>その<wbr>写真が<wbr>入っています）。<wbr>画像を<wbr>選ぶと、<wbr>SNSごとに<wbr>合う<wbr>比率で<wbr>トリミング<wbr>できます。<wbr>⭐が<wbr>付いている<wbr>比率が<wbr>おすすめです。<wbr>「自由」を<wbr>選ぶと、<wbr>縦横の<wbr>比率を<wbr>決めずに<wbr>トリミング<wbr>できます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">フォルダから<wbr>選ぶか、<wbr>その場で<wbr>写真を<wbr>撮って、<wbr>画像を<wbr>1枚選びます<wbr>（③で<wbr>写真を<wbr>選んだ<wbr>場合は、<wbr>その<wbr>写真が<wbr>入っています）。<wbr>画像を<wbr>選ぶと、<wbr>SNSごとに<wbr>合う<wbr>比率で<wbr>トリミング<wbr>できます。<wbr>⭐が<wbr>付いている<wbr>比率が<wbr>おすすめです。<wbr>「自由」を<wbr>選ぶと、<wbr>縦横の<wbr>比率を<wbr>決めずに<wbr>トリミング<wbr>できます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとに<wbr>選べる<wbr>こと</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">「✂️&nbsp;SNSごとにトリミングする」では、<wbr>SNSごとに<wbr>「✂️&nbsp;トリミングする」<wbr>「🖼️&nbsp;元画像」<wbr>（トリミングせずに<wbr>載せる）<wbr>「🚫&nbsp;画像なし」の<wbr>3つから<wbr>選べます。<wbr>すべての<wbr>SNSで<wbr>同じ<wbr>画像を<wbr>そのまま<wbr>使う<wbr>場合は<wbr>「トリミングせずにそのまま使う」、<wbr>画像を<wbr>付けない<wbr>場合は<wbr>「🚫&nbsp;画像なしで投稿する」を<wbr>選んでください。</div>
       <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
@@ -2005,7 +2006,8 @@ const TRACE_KEY = 'aipost_trace';
 // 　始まりの日を選んだ時、終わりの欄が空なら同じ日を入れる（1日だけの時は1つ選べば済む）。始まりと終わりが同じ日は「11月3日」と1日で渡す
 // ★liff_textgen.html188：訴求パターン「地域密着」の時だけ「地域名（必須）」を出し、GASに areaText で渡す。④の「エリアを含める」を外した（登録の都道府県は広すぎるため。
 // 　都道府県は分析の同業者比較だけに使う。Kenさん承認）。選んだ目的を purpose でGASに渡す（文章生成gs_19 で目的ごとの構造を使う）
-const TRACE_SCREEN = '投稿文作成188';
+// ★liff_textgen.html189：ガイドの②③④を、目的から作る今の画面に合わせて書き直した（②作り方を選ぶ・③目的・写真・キーワード・④店名を文章に含める）。⑧の「②で写真」を「③」に（Kenさん承認）
+const TRACE_SCREEN = '投稿文作成189';
 
 function traceLog(msg) {
   try {
