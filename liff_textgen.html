@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成187 - AiPost</title>
+<title>投稿文作成188 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -917,7 +917,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成187</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成188</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1104,7 +1104,7 @@
     <div class="card-title">③ 目的・<wbr>写真・<wbr>キーワード</div>
     <div class="mat-label mk-head">🎯 目的<span class="mk-tag">（必須）</span></div>
     <div class="mk-radio" id="mk-purpose-list"><label><input type="radio" name="mk-purpose" value="product" onclick="onPurposeClick(this)">商品・メニューの紹介</label><label><input type="radio" name="mk-purpose" value="notice" onclick="onPurposeClick(this)">お知らせ（営業日・休み・イベント）</label><label><input type="radio" name="mk-purpose" value="deal" onclick="onPurposeClick(this)">お得な情報</label><label><input type="radio" name="mk-purpose" value="recruit" onclick="onPurposeClick(this)">人材募集</label><label><input type="radio" name="mk-purpose" value="daily" onclick="onPurposeClick(this)">お店の様子・日常</label><label><input type="radio" name="mk-purpose" value="other" onclick="onPurposeClick(this)">その他</label></div>
-    <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">訴求パターン<button type="button" class="mk-help-btn" id="appeal-help-btn" onclick="toggleAppealHelp()" aria-label="訴求パターンの説明">？</button></div><div class="mk-help-box mk-off" id="appeal-help" style="background:#fff;"></div><div class="mk-radio mk-radio-2col"><label><input type="radio" name="mk-appeal" value="" checked>おまかせ</label><label><input type="radio" name="mk-appeal" value="①限定">限定</label><label><input type="radio" name="mk-appeal" value="③悩み解決">悩み解決</label><label><input type="radio" name="mk-appeal" value="④トレンド">トレンド</label><label><input type="radio" name="mk-appeal" value="⑤信頼">信頼</label><label><input type="radio" name="mk-appeal" value="⑥季節">季節</label><label><input type="radio" name="mk-appeal" value="⑦新登場">新登場</label><label><input type="radio" name="mk-appeal" value="⑧地域密着">地域密着</label></div></div>
+    <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">訴求パターン<button type="button" class="mk-help-btn" id="appeal-help-btn" onclick="toggleAppealHelp()" aria-label="訴求パターンの説明">？</button></div><div class="mk-help-box mk-off" id="appeal-help" style="background:#fff;"></div><div class="mk-radio mk-radio-2col" onchange="renderAreaField()"><label><input type="radio" name="mk-appeal" value="" checked>おまかせ</label><label><input type="radio" name="mk-appeal" value="①限定">限定</label><label><input type="radio" name="mk-appeal" value="③悩み解決">悩み解決</label><label><input type="radio" name="mk-appeal" value="④トレンド">トレンド</label><label><input type="radio" name="mk-appeal" value="⑤信頼">信頼</label><label><input type="radio" name="mk-appeal" value="⑥季節">季節</label><label><input type="radio" name="mk-appeal" value="⑦新登場">新登場</label><label><input type="radio" name="mk-appeal" value="⑧地域密着">地域密着</label></div><div class="mk-off" id="mk-area-wrap"><div class="mk-lbl" style="margin-top:10px;">地域名<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-area-text" maxlength="20" placeholder="例：中央区・梅田・〇〇駅前"></div></div>
     <div class="mk-box mk-off" id="mk-fields-notice"><div class="mk-lbl">お知らせの内容<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-notice-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-notice-from" onchange="onPeriodChange('notice', 'from')"><span>〜</span><input type="date" class="mk-in" id="mk-notice-to" onchange="onPeriodChange('notice', 'to')"></div></div>
     <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-deal-from" onchange="onPeriodChange('deal', 'from')"><span>〜</span><input type="date" class="mk-in" id="mk-deal-to" onchange="onPeriodChange('deal', 'to')"></div></div>
     <div class="mk-box mk-off" id="mk-fields-recruit"><div class="mk-lbl">職種<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-recruit-job" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">条件（時間・時給など）<span class="mk-tag">（任意）</span></div><textarea class="mk-in" id="mk-recruit-cond" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
@@ -1138,12 +1138,8 @@
        それまでの⑥「店名・所在地を含める」の店名（AI）は⑤へ移し、それまでの⑦の「＋店名を入れる」「＋所在地を入れる」ボタンは⑦にまとめて外した。 -->
   <!-- ⑤ エリア・店名を含めて投稿文を作成する -->
   <div class="card" id="card-include">
-    <div class="card-title">④ エリア・<wbr>店名を<wbr>文章に<wbr>含める</div>
+    <div class="card-title">④ 店名を<wbr>文章に<wbr>含める</div>
     <div class="mk-check-list">
-      <div class="include-check-item" id="include-area-item" onclick="toggleInclude(this)">
-        <div class="sns-check-name">エリアを<wbr>含める</div>
-        <div class="sns-checkbox">✓</div>
-      </div>
       <div class="include-check-item" id="include-shopname-item" onclick="toggleInclude(this)">
         <div class="sns-check-name">店名を<wbr>含める</div>
         <div class="sns-checkbox">✓</div>
@@ -2007,7 +2003,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html186：「伝え方（任意）」を「訴求パターン」にし、横の「？」で8つの意味を出す。「人気」を「トレンド」に戻した（Kenさん指示）
 // ★liff_textgen.html187：目的「お知らせ」にも「期間（任意）」を付けた（お得な情報と同じ形。Kenさん指示）。
 // 　始まりの日を選んだ時、終わりの欄が空なら同じ日を入れる（1日だけの時は1つ選べば済む）。始まりと終わりが同じ日は「11月3日」と1日で渡す
-const TRACE_SCREEN = '投稿文作成187';
+// ★liff_textgen.html188：訴求パターン「地域密着」の時だけ「地域名（必須）」を出し、GASに areaText で渡す。④の「エリアを含める」を外した（登録の都道府県は広すぎるため。
+// 　都道府県は分析の同業者比較だけに使う。Kenさん承認）。選んだ目的を purpose でGASに渡す（文章生成gs_19 で目的ごとの構造を使う）
+const TRACE_SCREEN = '投稿文作成188';
 
 function traceLog(msg) {
   try {
@@ -2350,12 +2348,27 @@ function onPurposeClick(radio) {
 
 function renderPurposeFields() {
   const p = getPurpose();
+  renderAreaField();
   ['product', 'notice', 'deal', 'recruit', 'other'].forEach(function (k) {
     const box = document.getElementById('mk-fields-' + k);
     if (box) box.classList.toggle('mk-off', k !== p);
   });
   renderMaterialPhotoStatus();
   updateMaterialSummary();
+}
+
+// ★liff_textgen.html188：訴求パターン「地域密着」の時だけ、地域名の欄を出す
+function isAreaAppeal() {
+  const a = document.querySelector('input[name="mk-appeal"]:checked');
+  return getPurpose() === 'product' && !!a && a.value === '⑧地域密着';
+}
+function renderAreaField() {
+  const wrap = document.getElementById('mk-area-wrap');
+  if (wrap) wrap.classList.toggle('mk-off', !isAreaAppeal());
+}
+function getAreaText() {
+  const el = document.getElementById('mk-area-text');
+  return (isAreaAppeal() && el) ? el.value.trim() : '';
 }
 
 // ★liff_textgen.html186：訴求パターンの「？」。押すたびに8つの意味を出す・しまう
@@ -2416,12 +2429,13 @@ function onPeriodChange(key, which) {
 function clearPurpose() {
   document.querySelectorAll('input[name="mk-purpose"]').forEach(function (r) { r.checked = false; });
   MK_LAST_PURPOSE = '';
-  ['mk-product-name', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text'].forEach(function (id) {
+  ['mk-product-name', 'mk-area-text', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text'].forEach(function (id) {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   const appealDefault = document.querySelector('input[name="mk-appeal"][value=""]');
   if (appealDefault) appealDefault.checked = true;
+  renderAreaField();
   ['deal', 'notice'].forEach(function (key) {
     const dFrom = document.getElementById('mk-' + key + '-from'), dTo = document.getElementById('mk-' + key + '-to');
     if (dFrom) dFrom.max = '';
@@ -3040,6 +3054,12 @@ function confirmAndGenerate() {
     aipostNotice('目的を選んでください。');
     return;
   }
+  if (isAreaAppeal() && !getAreaText()) {
+    aipostNotice('「地域名」を入れてください。');
+    const areaEl = document.getElementById('mk-area-text');
+    if (areaEl) areaEl.focus();
+    return;
+  }
   if (purpose && MK_REQUIRED[purpose]) {
     const req = document.getElementById(MK_REQUIRED[purpose][0]);
     if (req && !req.value.trim()) {
@@ -3107,7 +3127,9 @@ async function executeGenerate() {
       includeArea: includeFlags.includeArea,
       includeAddress: includeFlags.includeAddress, // ★html126
       appealPatternOverride: appealPatternOverride,
-      photoDescription: photoDescription // ★liff_textgen.html167：写真の説明文（使わない時は空）
+      photoDescription: photoDescription, // ★liff_textgen.html167：写真の説明文（使わない時は空）
+      purpose: getPurpose(), // ★liff_textgen.html188：選んだ目的（product・notice・deal・recruit・daily・other）
+      areaText: getAreaText() // ★liff_textgen.html188：地域密着の時に入れた地域名（それ以外は空）
     }
   };
 
@@ -3458,7 +3480,7 @@ function toggleInclude(el) {
 function getIncludeFlags() {
   return {
     includeShopName: document.getElementById('include-shopname-item').classList.contains('checked'),
-    includeArea: document.getElementById('include-area-item').classList.contains('checked'),
+    includeArea: false, // ★liff_textgen.html188：「エリアを含める」は外した（地域密着の時だけ、入れた地域名を areaText で渡す）
     includeAddress: document.getElementById('include-address-item').classList.contains('checked') // ★html126
   };
 }
@@ -4814,7 +4836,7 @@ let imageState = null;
 // 　何も入力していない状態では確認を出さずにそのまま更新する。
 function textgenHasInput() {
   const ids = ['keyword-input-1', 'keyword-input-2', 'keyword-input-3', 'free-text-input', 'post-textarea',
-    'mk-product-name', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text',
+    'mk-product-name', 'mk-area-text', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text',
     'hashtag-input-1', 'hashtag-input-2', 'hashtag-input-3', 'hashtag-input-4', 'hashtag-input-5'];
   const hasText = ids.some(function (id) {
     const el = document.getElementById(id);
