@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成189 - AiPost</title>
+<title>投稿文作成190 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -476,6 +476,8 @@
   .trial-card .modal-btn { margin: 10px 0 0; padding: 10px; font-size: 13px; }
   /* ★liff_textgen.html154：案内の文は、決めた区切り（<wbr>）でだけ折り返す。入りきらない時だけ、やむを得ず途中で折る */
   .trial-card, .unregistered-card { word-break: keep-all; overflow-wrap: anywhere; }
+  /* ★liff_textgen.html190：業種が未登録の時の案内（注意ではないため、お試しの案内と同じ緑） */
+  .genre-card { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 12px; color: #1b5e20; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
   .unregistered-card { background: #fff3e0; border: 1px solid #ffcc80; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #e65100; line-height: 1.7; }
 
   /* 予約確認モーダルの内容 */
@@ -739,6 +741,11 @@
   .mat-check input { width: 16px; height: 16px; margin: 0; flex-shrink: 0; }
   .mat-status { font-size: 11px; color: var(--text-sub); line-height: 1.6; margin: 4px 0 6px; word-break: normal; overflow-wrap: anywhere; } /* AIの説明文は長いので、ふつうの折り返し */
   .mat-small-btn { padding: 5px 10px; background: transparent; color: var(--primary); border: 1px solid var(--primary); border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+  /* ★liff_textgen.html190：「写真を選び直す」「キャンセル」を同じ大きさで横に並べる（キャンセルはほかの窓の「やめる」と同じ灰色） */
+  #mat-photo-selected { flex-wrap: wrap; }
+  .mat-photo-acts { display: flex; gap: 8px; flex: 0 0 100%; margin-top: 8px; }
+  .mat-photo-acts .mat-small-btn { flex: 1; padding: 8px 6px; font-size: 12px; white-space: nowrap; }
+  .mat-small-btn.mat-cancel { color: #5f6368; border-color: #bdbdbd; }
   .mat-summary { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 10px; padding: 10px 12px; font-size: 12.5px; color: #1a237e; line-height: 1.6; margin: 4px 0 10px; }
   .mat-summary b { font-weight: 700; }
   .mat-summary small { font-size: 11px; }
@@ -917,7 +924,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成189</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成190</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1063,6 +1070,8 @@
     お試し中は、<wbr>投稿文と<wbr>ハッシュタグの<wbr>作成を<wbr>1日<span id="trial-daily-limit">20</span>回まで<wbr>ご利用いただけます。<wbr>SNSへの<wbr>予約投稿は、<wbr>プランを<wbr>お申し込みいただくと<wbr>ご利用いただけます。
     <button type="button" class="modal-btn modal-btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
   </div>
+  <!-- ★liff_textgen.html190：業種が未登録の時だけ出す案内（業種が無いと、AIにお店の情報が伝わらないため） -->
+  <div class="genre-card" id="genre-card" style="display:none;">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種を<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</div>
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
     ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
   </div>
@@ -1119,7 +1128,12 @@
       <div style="flex:1;min-width:0;">
         <label class="mat-check" id="mat-photo-use-wrap"><input type="checkbox" id="mat-photo-use" checked onchange="onMaterialPhotoUseChange()">この<wbr>写真の<wbr>内容も<wbr>文に<wbr>使う</label>
         <div class="mat-status" id="mat-photo-status"></div>
-        <button type="button" class="mat-small-btn" onclick="reselectImage()">写真を<wbr>選び直す</button>
+      </div>
+      <!-- ★liff_textgen.html190：「選び直す」はすぐに写真を選ぶ画面を開く。「キャンセル」は写真を外して、フォルダ・カメラのボタンに戻す（Kenさん指示）。
+           文字を大きくしても折れないよう、写真の下に横いっぱいで並べる -->
+      <div class="mat-photo-acts">
+        <button type="button" class="mat-small-btn" onclick="matReselectPhoto()">写真を選び直す</button>
+        <button type="button" class="mat-small-btn mat-cancel" onclick="matCancelPhoto()">キャンセル</button>
       </div>
     </div>
     <div class="mat-label mk-head" style="margin-top:14px;">🔑 文章に<wbr>含めたい<wbr>キーワード<span class="mk-tag">（任意）</span></div>
@@ -2007,7 +2021,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html188：訴求パターン「地域密着」の時だけ「地域名（必須）」を出し、GASに areaText で渡す。④の「エリアを含める」を外した（登録の都道府県は広すぎるため。
 // 　都道府県は分析の同業者比較だけに使う。Kenさん承認）。選んだ目的を purpose でGASに渡す（文章生成gs_19 で目的ごとの構造を使う）
 // ★liff_textgen.html189：ガイドの②③④を、目的から作る今の画面に合わせて書き直した（②作り方を選ぶ・③目的・写真・キーワード・④店名を文章に含める）。⑧の「②で写真」を「③」に（Kenさん承認）
-const TRACE_SCREEN = '投稿文作成189';
+// ★liff_textgen.html190：業種が未登録の人に、投稿作成タブのいちばん上（①の上）で「業種が未登録です。設定画面の「登録」タブで業種を登録すると、お店に合った文になります。」と出す（#genre-card。updateUserGenreFromProfile() で出し分け。Kenさん承認）。
+// ★liff_textgen.html190：「写真から作る」で写真を選んだ後のボタンを「写真を選び直す」（同じ方法ですぐに選ぶ画面を開く）と「キャンセル」（写真を外す）の2つにした（matReselectPhoto・matCancelPhoto。Kenさん指示）。
+const TRACE_SCREEN = '投稿文作成190';
 
 function traceLog(msg) {
   try {
@@ -2944,6 +2960,9 @@ function updateUserGenreFromProfile(profile) {
   if (USER_SHOP_NAME === '' && shopEndItem && shopEndItem.classList.contains('checked')) toggleInclude(shopEndItem);
   renderKeywordGuide();
   updateMaterialSummary(); // ★liff_textgen.html167：業種が分かったら、材料の1行を直す
+  // ★liff_textgen.html190：業種が未登録と分かった時だけ案内を出す（業種の項目が無い古い保存の情報では出さない）
+  const genreCard = document.getElementById('genre-card');
+  if (genreCard) genreCard.style.display = (profile && profile.businessMajor !== undefined && !USER_GENRE) ? 'block' : 'none';
 }
 
 // ★liff_textgen.html136：⑦「投稿文の最後に店名・所在地を付ける」（⑥の文字数表示の下）（AIを使わず、登録内容をそのまま行として付ける。Kenさん指示）
@@ -4890,6 +4909,7 @@ const IMAGE_SIZE_LIMIT_BYTES = 5 * 1024 * 1024;
 function handleImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
+  if (event.target && event.target.id) matLastPhotoInputId = event.target.id; // ★liff_textgen.html190：選び直す時に、同じ方法（フォルダ・カメラ）で開くため
   // ★liff_textgen.html167：5MBを超える写真は、選んだ時点で知らせて受け付けない（予約で保存できる上限が5MBのため）
   if (file.size > IMAGE_SIZE_LIMIT_BYTES) {
     event.target.value = ''; // 同じ写真をもう一度選んでも、ここを通るようにする
@@ -5488,6 +5508,18 @@ function resetImageUpload() {
 // ★liff_textgen.html129：画像を選んだ直後（確定前）に選び直す。既存の imgCancelReupload() で、
 // 　選んだ画像・トリミングの途中経過を消して「フォルダから選ぶ／写真を撮る」の画面に戻す（確認は出さない）。
 function reselectImage() {
+  imgCancelReupload();
+}
+
+// ★liff_textgen.html190：「写真から作る」の写真を、前と同じ方法（フォルダ・カメラ）ですぐに選び直す
+let matLastPhotoInputId = 'my-img-input';
+function matReselectPhoto() {
+  imgCancelReupload();
+  const input = document.getElementById(matLastPhotoInputId) || document.getElementById('my-img-input');
+  if (input) input.click();
+}
+// ★liff_textgen.html190：「写真から作る」の写真を外し、「フォルダから選ぶ」「写真を撮る」に戻す（今までの「選び直す」と同じ動き）
+function matCancelPhoto() {
   imgCancelReupload();
 }
 
