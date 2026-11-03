@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成192 - AiPost</title>
+<title>投稿文作成194 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -924,7 +924,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成192</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成194</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1036,10 +1036,12 @@
 
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
-  <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+  <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:2px 8px;margin-bottom:3px;flex-wrap:wrap;">
     <!-- ★liff_textgen.html153：仮の表示（STANDARD ¥1,280/月）をやめ、「確認中」から始める（設定画面と同じ。プランが分かったら色を付ける） -->
     <span class="plan-badge" id="plan-badge" style="background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">確認中</span>
     <span id="plan-price"></span>
+    <!-- ★liff_textgen.html194：残り予約枠を、プランと料金の行の右端に移した（上の帯を低くして、画面を広くするため。Kenさん指示。入りきらない時は次の行に右寄せ） -->
+    <span id="reservation-quota" style="margin-left:auto;font-weight:700;white-space:nowrap;">確認中…</span>
     <!-- ★liff_textgen.html123：デモの固定文字「次回更新：2026年7月1日」を削除した。決済（Stripe）実装時に、有料プランのみ実際の次回請求日を表示する -->
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;white-space:nowrap;">
@@ -1049,7 +1051,6 @@
     <span id="subbar-sns-x" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span id="subbar-sns-ig" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
     <span id="subbar-sns-th" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
-    <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
 </div>
 
@@ -1071,7 +1072,7 @@
     <button type="button" class="modal-btn modal-btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
   </div>
   <!-- ★liff_textgen.html190：業種が未登録の時だけ出す案内（業種が無いと、AIにお店の情報が伝わらないため） -->
-  <div class="genre-card" id="genre-card" style="display:none;"><span id="genre-card-none">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種<wbr>（大分類と<wbr>小分類）を<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</span><span id="genre-card-major-only" style="display:none;">業種の<wbr>小分類が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>小分類も<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</span></div>
+  <div class="genre-card" id="genre-card" style="display:none;"><span id="genre-card-none">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種<wbr>（大分類と<wbr>小分類）を<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</span><span id="genre-card-major-only" style="display:none;">業種の<wbr>小分類が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>小分類も<wbr>登録すると、<wbr>より<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</span></div>
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
     ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
   </div>
@@ -2026,7 +2027,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html191：業種の案内を「業種（大分類と小分類）を登録すると」にした（大分類だけでは案内が消えないため。Kenさん指示）。
 // ★liff_textgen.html192：大分類だけ登録してある人には「業種の小分類が未登録です。…小分類も登録すると…」と出す（大分類はAIへの指示に使われているため、
 // 　「業種が未登録です。」は正確でなかった）。何も登録していない人は191のまま。
-const TRACE_SCREEN = '投稿文作成192';
+// ★liff_textgen.html193：大分類だけの時の案内を「小分類も登録すると、よりお店に合った文になります。」にした（大分類では合わないと受け取れたため。Kenさん指示）。
+// ★liff_textgen.html194：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
+const TRACE_SCREEN = '投稿文作成194';
 
 function traceLog(msg) {
   try {

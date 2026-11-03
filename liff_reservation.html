@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更89 - AiPost</title>
+<title>予約確認・変更91 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -760,7 +760,13 @@
   .res-cancel-bar.show { display: block; }
   .res-cancel-bar-inner { max-width: 480px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 8px; }
   body.res-bar-open { padding-bottom: 140px; }
-  body.del-bar-open { padding-bottom: 140px; } /* ★liff_reservation.html78：投稿削除の帯の分 */
+  body.del-bar-open { padding-bottom: 120px; } /* ★liff_reservation.html78：投稿削除の帯の分（★90：帯を低くしたので140→120） */
+  /* ★liff_reservation.html90：投稿削除の帯のボタンを、X／Threads のボタン（.del-sns-tab）と同じ高さにする */
+  #del-action-bar .res-cancel-bar-inner { padding: 8px 16px; }
+  /* 　行の高さを決めて書く（日本語の文字は、行の高さを「normal」にすると英字より高くなり、X／Threads のボタンより高くなるため） */
+  #del-action-bar .btn, .del-sns-tab { line-height: 1.2; }
+  #del-action-bar .btn { padding: 9px 4px; font-size: 13px; border-radius: 10px; white-space: nowrap; }
+  #del-action-bar .btn-danger { border: 1.5px solid transparent; }
   .btn-res-cancel { flex: 1.2; white-space: nowrap; padding-left: 6px; padding-right: 6px; } /* ★liff_reservation.html68：「予約取り消し」に短くしたため 1.4→1.2 */
 
   /* ============================================ */
@@ -1021,7 +1027,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更89</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更91</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1133,10 +1139,12 @@
 
 <!-- プラン・SNSサブバー -->
 <div class="subbar">
-  <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+  <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:2px 8px;margin-bottom:3px;flex-wrap:wrap;">
     <!-- ★liff_reservation.html59：仮の表示（STANDARD ¥1,280/月）をやめ、「確認中」から始める（設定画面と同じ。プランが分かったら色を付ける） -->
     <span class="plan-badge" id="plan-badge" style="background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">確認中</span>
     <span id="plan-price"></span>
+    <!-- ★liff_reservation.html91：残り予約枠を、プランと料金の行の右端に移した（上の帯を低くして、画面を広くするため。Kenさん指示。入りきらない時は次の行に右寄せ） -->
+    <span id="reservation-quota" style="margin-left:auto;font-weight:700;white-space:nowrap;">確認中…</span>
     <!-- ★liff_reservation.html42：デモの固定文字「次回更新：2026年7月1日」を削除した。決済（Stripe）実装時に、有料プランのみ実際の次回請求日を表示する -->
   </div>
   <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;white-space:nowrap;">
@@ -1146,7 +1154,6 @@
     <span id="subbar-sns-x" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
     <span id="subbar-sns-ig" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
     <span id="subbar-sns-th" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
-    <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
   </div>
 </div>
 
@@ -2092,7 +2099,9 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   // ★liff_reservation.html89：「一覧／カレンダー」の切り替え（投稿削除は「X／Threads」も）を、下へスクロールしても上に止めて隠れないようにした（.sticky-tools。
   // 　止める位置は上のタブの下。updateHeaderLayout() で --sticky-top を決める）。切り替えた時、止まっている所より下まで進んでいたら、切り替えの所まで戻す。
   // 　投稿削除にも「一覧／カレンダー」を足した（カレンダーは月ごと。日を押すとその日の投稿を選べる。選んだものは一覧と同じ。Kenさん指示）。
-  const TRACE_SCREEN = '予約確認89';
+  // ★liff_reservation.html90：投稿削除の「選択をすべて外す」「削除する」を、X／Threads のボタンと同じ高さにした（帯が高く、一覧を狭くしていた。Kenさん指示）
+  // ★liff_reservation.html91：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
+  const TRACE_SCREEN = '予約確認91';
 
   function traceLog(msg) {
     try {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金26 - AiPost</title>
+  <title>プラン・料金27 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -419,7 +419,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金26</span></span>
+    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金27</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -533,16 +533,17 @@
 
   <!-- プラン・SNSサブバー（★liff_plan.html6：デモの固定文字をやめ、実際の値を表示する） -->
   <div class="subbar">
-    <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+    <div style="font-size:10px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:2px 8px;margin-bottom:3px;flex-wrap:wrap;">
       <span id="plan-badge" style="background:#fff8e1;color:#e65100;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">確認中</span>
       <span id="plan-price"></span>
+      <!-- ★liff_plan.html27：残り予約枠を、プランと料金の行の右端に移した（上の帯を低くして、画面を広くするため。Kenさん指示。入りきらない時は次の行に右寄せ） -->
+      <span id="reservation-quota" style="margin-left:auto;font-weight:700;white-space:nowrap;">確認中…</span>
     </div>
     <div style="font-size:10px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;white-space:nowrap;">
       <span>連携中：</span>
       <span id="subbar-sns-x" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">X</span>
       <span id="subbar-sns-ig" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Instagram</span>
       <span id="subbar-sns-th" style="display:none;background:rgba(255,255,255,0.15);color:white;padding:1px 8px;border-radius:6px;font-weight:700;">Threads</span>
-      <span id="reservation-quota" style="margin-left:auto;font-weight:700;">確認中…</span>
     </div>
   </div>
 
@@ -750,7 +751,8 @@
   // ★liff_plan.html24：「更新」と「変更の予定を取り消す」の端末の確認の窓を、画面の中の確認の窓（aipostAsk）にした（Kenさん承認）
   // ★liff_plan.html25：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
   // ★liff_plan.html26：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
-  const TRACE_SCREEN = 'プラン26';
+  // ★liff_plan.html27：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
+  const TRACE_SCREEN = 'プラン27';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
