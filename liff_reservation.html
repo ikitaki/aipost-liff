@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更88 - AiPost</title>
+<title>予約確認・変更89 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -709,6 +709,10 @@
   .view-seg button { flex: 1; padding: 9px 4px; border: none; border-right: 1px solid var(--border); background: transparent; color: var(--text-sub); font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
   .view-seg button:last-child { border-right: none; }
   .view-seg button.active { background: #e8eaf6; color: var(--primary); }
+  /* ★liff_reservation.html89：下へスクロールしても、切り替えのボタンを上のタブの下に止める */
+  .sticky-tools { position: sticky; top: var(--sticky-top, 120px); z-index: 97; background: var(--bg); margin: 0 -14px 12px; padding: 8px 14px 0; border-bottom: 1px solid var(--border); }
+  .sticky-tools .view-seg, .sticky-tools .del-sns-tabs { margin-bottom: 8px; }
+  .del-day-tools { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
   .sub-view { display: none; }
   .sub-view.active { display: block; }
   .count-card { background: var(--surface); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
@@ -1017,7 +1021,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更88</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更89</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1181,9 +1185,12 @@
         <div class="count-card-sub">これから投稿される予約の件数です。</div>
       </div>
     </div>
+    <div class="sticky-anchor" id="anchor-res"></div>
+    <div class="sticky-tools">
     <div class="view-seg">
       <button type="button" class="active" id="seg-res-list" onclick="switchSub('res','list')">📋 一覧</button>
       <button type="button" id="seg-res-calendar" onclick="switchSub('res','calendar')">📆 カレンダー</button>
+    </div>
     </div>
 
   <!-- 予約一覧 -->
@@ -1255,9 +1262,12 @@
         <div class="count-card-sub">SNSへの投稿処理が行われた予約の件数です。</div>
       </div>
     </div>
+    <div class="sticky-anchor" id="anchor-hist"></div>
+    <div class="sticky-tools">
     <div class="view-seg">
       <button type="button" class="active" id="seg-hist-list" onclick="switchSub('hist','list')">📋 一覧</button>
       <button type="button" id="seg-hist-calendar" onclick="switchSub('hist','calendar')">📆 カレンダー</button>
+    </div>
     </div>
 
     <div id="history-status" class="empty-list-note" style="display:none;"></div>
@@ -1324,9 +1334,17 @@
       削除できるのは、AiPostから投稿した X・Threads の投稿です（今月と過去12か月）。Instagramは、Instagramのアプリから削除してください。
     </div>
 
+    <!-- ★liff_reservation.html89：X／Threads と 一覧／カレンダー を、スクロールしても上に止める -->
+    <div class="sticky-anchor" id="anchor-del"></div>
+    <div class="sticky-tools">
     <div class="del-sns-tabs">
       <button type="button" class="del-sns-tab active" id="del-sns-tab-X" onclick="switchDeleteSns('X')">X</button>
       <button type="button" class="del-sns-tab" id="del-sns-tab-Threads" onclick="switchDeleteSns('Threads')">Threads</button>
+    </div>
+    <div class="view-seg">
+      <button type="button" class="active" id="seg-del-list" onclick="switchSub('del','list')">📋 一覧</button>
+      <button type="button" id="seg-del-calendar" onclick="switchSub('del','calendar')">📆 カレンダー</button>
+    </div>
     </div>
 
     <div id="del-status" class="empty-list-note" style="display:none;"></div>
@@ -1334,10 +1352,45 @@
     <div id="del-body" style="display:none;">
       <!-- ★liff_reservation.html87：件数は上の枠に移した。月送りをやめ、すべての投稿を1つの一覧にした -->
       <div id="del-unlinked" class="del-note-ng" style="display:none;"></div>
+      <div id="tab-dlist" class="sub-view active">
       <div style="text-align:right;margin-bottom:6px;">
         <button type="button" class="del-selectall" id="del-selectall-btn" onclick="toggleDeleteSelectAll()">すべて選ぶ</button>
       </div>
       <div id="del-list"></div>
+      </div>
+      <!-- ★liff_reservation.html89：投稿削除のカレンダー（表示中のSNSの、削除できる投稿の件数を日ごとに出す。日を押すと、その日の投稿を選べる） -->
+      <div id="tab-dcal" class="sub-view">
+        <div class="calendar-wrap">
+          <div class="cal-header">
+            <button class="cal-nav" id="del-prev-month" onclick="changeDeleteMonth(-1)">‹</button>
+            <div class="cal-title" id="del-cal-title"></div>
+            <button class="cal-nav" id="del-next-month" onclick="changeDeleteMonth(1)">›</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-days">
+              <div class="cal-day-label">日</div>
+              <div class="cal-day-label">月</div>
+              <div class="cal-day-label">火</div>
+              <div class="cal-day-label">水</div>
+              <div class="cal-day-label">木</div>
+              <div class="cal-day-label">金</div>
+              <div class="cal-day-label">土</div>
+            </div>
+            <div class="cal-dates" id="del-cal-dates"></div>
+          </div>
+        </div>
+        <div id="del-day-section" style="display:none;">
+          <div class="del-day-tools">
+            <div class="selected-date-label" style="margin-bottom:0;"><span id="del-day-label"></span></div>
+            <button type="button" class="del-selectall" id="del-day-selectall-btn" onclick="toggleDeleteDaySelectAll()">この日をすべて選ぶ</button>
+          </div>
+          <div id="del-day-list"></div>
+        </div>
+        <div id="del-no-selected" class="empty-state" style="padding:24px 20px;">
+          <div class="empty-title">日付をタップしてください</div>
+          <div class="empty-sub">削除できる投稿がある日には件数が表示されます。</div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -1629,7 +1682,9 @@ function switchTab(id) {
 
 // ★liff_reservation.html87：予約・投稿履歴のタブの中で、一覧とカレンダーを切り替える（group：'res'／'hist'、view：'list'／'calendar'）
 function switchSub(group, view) {
-  const ids = group === 'res' ? { list: 'tab-list', calendar: 'tab-calendar' } : { list: 'tab-hlist', calendar: 'tab-history' };
+  // ★liff_reservation.html89：投稿削除（del）も
+  const ids = group === 'res' ? { list: 'tab-list', calendar: 'tab-calendar' }
+    : group === 'hist' ? { list: 'tab-hlist', calendar: 'tab-history' } : { list: 'tab-dlist', calendar: 'tab-dcal' };
   ['list', 'calendar'].forEach(function (v) {
     const panel = document.getElementById(ids[v]);
     if (panel) panel.classList.toggle('active', v === view);
@@ -1638,6 +1693,13 @@ function switchSub(group, view) {
   });
   if (group === 'hist' && view === 'list' && typeof markHistoryOverflow === 'function') markHistoryOverflow();
   if (typeof updateReservationSelectionUi === 'function') updateReservationSelectionUi();
+  // ★liff_reservation.html89：切り替えの所より下まで進んでいたら、切り替えの所（上に止まる位置）まで戻す（短い方に切り替えた時に、何も無い所が出ないように）
+  const anchor = document.getElementById('anchor-' + group);
+  if (anchor) {
+    const stickTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sticky-top')) || 0;
+    const y = anchor.getBoundingClientRect().top + window.scrollY - stickTop;
+    if (window.scrollY > y) window.scrollTo(0, Math.max(0, y));
+  }
 }
 
 // ★liff_reservation.html82：タブの中身の上で横にスライドすると、隣のタブへ移る（Kenさん指示）。
@@ -2027,7 +2089,10 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   // 　横のスライドは3つのタブの間を移る（一覧・カレンダーの切り替えは変わらない）。
   // ★liff_reservation.html88：一覧は月ごとにせず、見られる投稿をすべて並べる（月ごとはカレンダーで見る。予約・投稿履歴・投稿削除でそろえた。Kenさん指示）。
   // 　今年でない日付には年を付ける。予約・投稿履歴のカレンダーの「日付をタップしてください」のアイコンを外した（2つで違っていたため。Kenさん指示）。
-  const TRACE_SCREEN = '予約確認88';
+  // ★liff_reservation.html89：「一覧／カレンダー」の切り替え（投稿削除は「X／Threads」も）を、下へスクロールしても上に止めて隠れないようにした（.sticky-tools。
+  // 　止める位置は上のタブの下。updateHeaderLayout() で --sticky-top を決める）。切り替えた時、止まっている所より下まで進んでいたら、切り替えの所まで戻す。
+  // 　投稿削除にも「一覧／カレンダー」を足した（カレンダーは月ごと。日を押すとその日の投稿を選べる。選んだものは一覧と同じ。Kenさん指示）。
+  const TRACE_SCREEN = '予約確認89';
 
   function traceLog(msg) {
     try {
@@ -4701,6 +4766,7 @@ function _dataUrlToBase64(dataUrl) {
     if (next < range.min || next > range.max) return;
     delViewYear = Math.floor(next / 12);
     delViewMonth = next % 12;
+    delSelectedKey = null; // ★liff_reservation.html89
     renderDeleteList();
   }
 
@@ -4754,9 +4820,20 @@ function _dataUrlToBase64(dataUrl) {
     if (items.length === 0) {
       list.innerHTML = '<div class="empty-list-note">削除できる' + deleteSns + 'の投稿はありません。</div>'; // ★liff_reservation.html87
     } else {
+      list.innerHTML = items.map(deleteCardHtml).join(''); // ★liff_reservation.html89：カードは deleteCardHtml()（カレンダーの日の一覧と同じ）
+    }
+    buildDeleteCalendar(); // ★liff_reservation.html89
+    renderDeleteDay();
+    updateDeleteControls();
+  }
+
+  // ★liff_reservation.html89：投稿削除の1つのカード（一覧とカレンダーの日の一覧で同じもの）
+  function deleteCardHtml(item) {
+      const selection = deleteSelection[deleteSns];
+      const errors = deleteErrors[deleteSns];
       const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
       const p2 = function (n) { return (n < 10 ? '0' : '') + n; };
-      list.innerHTML = items.map(function (item) {
+      return (function (item) {
         const dt = item.postedAt;
         const head = (dt.getFullYear() !== new Date().getFullYear() ? dt.getFullYear() + '年' : '') + (dt.getMonth() + 1) + '月' + dt.getDate() + '日（' + dayNames[dt.getDay()] + '） ' + dt.getHours() + ':' + p2(dt.getMinutes()) + ' に投稿';
         const selectable = isDeleteSelectable(item);
@@ -4777,9 +4854,84 @@ function _dataUrlToBase64(dataUrl) {
             '</div>' +
           '</div>' +
         '</label>';
-      }).join('');
+      })(item);
+  }
+
+  // ★liff_reservation.html89：投稿削除のカレンダー（delViewYear・delViewMonth の月。表示中のSNSの、削除できる投稿の件数を日ごとに出す）
+  let delSelectedKey = null;
+  function deleteItemsByDate() {
+    const map = {};
+    deleteMonthItems().forEach(function (item) {
+      const key = historyDateKey(item.postedAt);
+      (map[key] = map[key] || []).push(item);
+    });
+    return map;
+  }
+  function buildDeleteCalendar() {
+    const grid = document.getElementById('del-cal-dates');
+    if (!grid || delViewYear === null) return;
+    document.getElementById('del-cal-title').textContent = delViewYear + '年' + (delViewMonth + 1) + '月';
+    const range = historyMonthRange();
+    const current = delViewYear * 12 + delViewMonth;
+    document.getElementById('del-prev-month').disabled = current <= range.min;
+    document.getElementById('del-next-month').disabled = current >= range.max;
+    const byDate = deleteItemsByDate();
+    grid.innerHTML = '';
+    const firstDay = new Date(delViewYear, delViewMonth, 1).getDay();
+    const days = new Date(delViewYear, delViewMonth + 1, 0).getDate();
+    const todayKey = historyDateKey(new Date());
+    for (let i = 0; i < firstDay; i++) {
+      const blank = document.createElement('div');
+      blank.className = 'cal-date blank';
+      grid.appendChild(blank);
     }
-    updateDeleteControls();
+    for (let d = 1; d <= days; d++) {
+      const key = historyDateKey(new Date(delViewYear, delViewMonth, d));
+      const posts = byDate[key];
+      const dayOfWeek = (firstDay + d - 1) % 7;
+      let cls = 'cal-date';
+      if (dayOfWeek === 0) cls += ' sunday';
+      if (dayOfWeek === 6) cls += ' saturday';
+      if (key === todayKey) cls += ' today';
+      if (posts) cls += ' has-post';
+      if (key === delSelectedKey) cls += ' selected';
+      const el = document.createElement('div');
+      el.className = cls;
+      if (posts) el.innerHTML = '<span>' + d + '</span><span class="cal-post-count">' + posts.length + '件</span>';
+      else el.textContent = d;
+      el.onclick = function () { delSelectedKey = key; buildDeleteCalendar(); renderDeleteDay(); };
+      grid.appendChild(el);
+    }
+  }
+  // 押した日の投稿（選べる形）。日を押していない時は「日付をタップしてください」
+  function renderDeleteDay() {
+    const section = document.getElementById('del-day-section');
+    const empty = document.getElementById('del-no-selected');
+    if (!section || !empty) return;
+    const posts = delSelectedKey ? (deleteItemsByDate()[delSelectedKey] || []) : null;
+    if (!posts) { section.style.display = 'none'; empty.style.display = 'block'; return; }
+    section.style.display = 'block';
+    empty.style.display = 'none';
+    const parts = delSelectedKey.split('-');
+    document.getElementById('del-day-label').textContent = Number(parts[1]) + '月' + Number(parts[2]) + '日の投稿（' + posts.length + '件）';
+    document.getElementById('del-day-list').innerHTML = posts.length
+      ? posts.map(deleteCardHtml).join('')
+      : '<div class="empty-list-note">この日に削除できる' + deleteSns + 'の投稿はありません。</div>';
+    const keys = posts.filter(isDeleteSelectable).map(function (item) { return item.reservationId; });
+    const sel = deleteSelection[deleteSns];
+    const btn = document.getElementById('del-day-selectall-btn');
+    btn.disabled = keys.length === 0 || deleteRunning;
+    btn.textContent = (keys.length > 0 && keys.every(function (k) { return sel[k]; })) ? 'この日を外す' : 'この日をすべて選ぶ';
+  }
+  // この日の選べる投稿をすべて選ぶ（すべて選ばれていれば外す）
+  function toggleDeleteDaySelectAll() {
+    if (deleteRunning || !delSelectedKey) return;
+    const keys = (deleteItemsByDate()[delSelectedKey] || []).filter(isDeleteSelectable).map(function (item) { return item.reservationId; });
+    if (keys.length === 0) return;
+    const sel = deleteSelection[deleteSns];
+    const allOn = keys.every(function (k) { return sel[k]; });
+    keys.forEach(function (k) { if (allOn) delete sel[k]; else sel[k] = true; });
+    renderDeleteList();
   }
 
   function toggleDeleteItem(reservationId, checked) {
@@ -4934,9 +5086,11 @@ function _dataUrlToBase64(dataUrl) {
     const tabNav = document.querySelector('.tab-nav');
     if (header && subbar) subbar.style.top = header.offsetHeight + 'px';
     if (header && subbar && tabNav) tabNav.style.top = (header.offsetHeight + subbar.offsetHeight) + 'px';
+    // ★liff_reservation.html89：一覧／カレンダーの切り替えを止める位置（上のタブのすぐ下）
+    if (header && subbar && tabNav) document.documentElement.style.setProperty('--sticky-top', (header.offsetHeight + subbar.offsetHeight + tabNav.offsetHeight) + 'px');
   }
   window.addEventListener('resize', updateHeaderLayout);
-  try { const ro = new ResizeObserver(updateHeaderLayout); ro.observe(document.querySelector('.header')); ro.observe(document.querySelector('.subbar')); } catch (e) {}
+  try { const ro = new ResizeObserver(updateHeaderLayout); ro.observe(document.querySelector('.header')); ro.observe(document.querySelector('.subbar')); ro.observe(document.querySelector('.tab-nav')); } catch (e) {}
   updateHeaderLayout();
 
   traceStart();

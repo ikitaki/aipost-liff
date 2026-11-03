@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成191 - AiPost</title>
+<title>投稿文作成192 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -924,7 +924,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成191</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成192</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1071,7 +1071,7 @@
     <button type="button" class="modal-btn modal-btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
   </div>
   <!-- ★liff_textgen.html190：業種が未登録の時だけ出す案内（業種が無いと、AIにお店の情報が伝わらないため） -->
-  <div class="genre-card" id="genre-card" style="display:none;">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種<wbr>（大分類と<wbr>小分類）を<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</div>
+  <div class="genre-card" id="genre-card" style="display:none;"><span id="genre-card-none">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種<wbr>（大分類と<wbr>小分類）を<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</span><span id="genre-card-major-only" style="display:none;">業種の<wbr>小分類が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>小分類も<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</span></div>
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
     ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
   </div>
@@ -2024,7 +2024,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html190：業種が未登録の人に、投稿作成タブのいちばん上（①の上）で「業種が未登録です。設定画面の「登録」タブで業種を登録すると、お店に合った文になります。」と出す（#genre-card。updateUserGenreFromProfile() で出し分け。Kenさん承認）。
 // ★liff_textgen.html190：「写真から作る」で写真を選んだ後のボタンを「写真を選び直す」（同じ方法ですぐに選ぶ画面を開く）と「キャンセル」（写真を外す）の2つにした（matReselectPhoto・matCancelPhoto。Kenさん指示）。
 // ★liff_textgen.html191：業種の案内を「業種（大分類と小分類）を登録すると」にした（大分類だけでは案内が消えないため。Kenさん指示）。
-const TRACE_SCREEN = '投稿文作成191';
+// ★liff_textgen.html192：大分類だけ登録してある人には「業種の小分類が未登録です。…小分類も登録すると…」と出す（大分類はAIへの指示に使われているため、
+// 　「業種が未登録です。」は正確でなかった）。何も登録していない人は191のまま。
+const TRACE_SCREEN = '投稿文作成192';
 
 function traceLog(msg) {
   try {
@@ -2964,6 +2966,12 @@ function updateUserGenreFromProfile(profile) {
   // ★liff_textgen.html190：業種が未登録と分かった時だけ案内を出す（業種の項目が無い古い保存の情報では出さない）
   const genreCard = document.getElementById('genre-card');
   if (genreCard) genreCard.style.display = (profile && profile.businessMajor !== undefined && !USER_GENRE) ? 'block' : 'none';
+  // ★liff_textgen.html192：大分類だけ登録してある時は、小分類の案内にする
+  const genreMajorOnly = document.getElementById('genre-card-major-only');
+  const genreNone = document.getElementById('genre-card-none');
+  const majorOnly = !!(profile && profile.businessMajor && !profile.businessMinor);
+  if (genreMajorOnly) genreMajorOnly.style.display = majorOnly ? '' : 'none';
+  if (genreNone) genreNone.style.display = majorOnly ? 'none' : '';
 }
 
 // ★liff_textgen.html136：⑦「投稿文の最後に店名・所在地を付ける」（⑥の文字数表示の下）（AIを使わず、登録内容をそのまま行として付ける。Kenさん指示）
