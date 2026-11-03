@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成190 - AiPost</title>
+<title>投稿文作成191 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -924,7 +924,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成190</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成191</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1071,7 +1071,7 @@
     <button type="button" class="modal-btn modal-btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
   </div>
   <!-- ★liff_textgen.html190：業種が未登録の時だけ出す案内（業種が無いと、AIにお店の情報が伝わらないため） -->
-  <div class="genre-card" id="genre-card" style="display:none;">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種を<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</div>
+  <div class="genre-card" id="genre-card" style="display:none;">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種<wbr>（大分類と<wbr>小分類）を<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</div>
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
     ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
   </div>
@@ -2023,7 +2023,8 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html189：ガイドの②③④を、目的から作る今の画面に合わせて書き直した（②作り方を選ぶ・③目的・写真・キーワード・④店名を文章に含める）。⑧の「②で写真」を「③」に（Kenさん承認）
 // ★liff_textgen.html190：業種が未登録の人に、投稿作成タブのいちばん上（①の上）で「業種が未登録です。設定画面の「登録」タブで業種を登録すると、お店に合った文になります。」と出す（#genre-card。updateUserGenreFromProfile() で出し分け。Kenさん承認）。
 // ★liff_textgen.html190：「写真から作る」で写真を選んだ後のボタンを「写真を選び直す」（同じ方法ですぐに選ぶ画面を開く）と「キャンセル」（写真を外す）の2つにした（matReselectPhoto・matCancelPhoto。Kenさん指示）。
-const TRACE_SCREEN = '投稿文作成190';
+// ★liff_textgen.html191：業種の案内を「業種（大分類と小分類）を登録すると」にした（大分類だけでは案内が消えないため。Kenさん指示）。
+const TRACE_SCREEN = '投稿文作成191';
 
 function traceLog(msg) {
   try {

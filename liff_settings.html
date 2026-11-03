@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録85 - AiPost</title>
+<title>設定・登録86 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -314,6 +314,13 @@
     cursor: pointer; margin-bottom: 8px;
   }
   .btn-primary { background: var(--primary); color: white; }
+  /* ★liff_settings.html86：「？」と説明（分析画面と同じ形）・小分類の案内・下に固定する保存ボタン */
+  .status-help-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-left: 6px; border-radius: 50%; border: 1.5px solid var(--primary); background: #fff; color: var(--primary); font-size: 12px; font-weight: 700; line-height: 1; padding: 0; vertical-align: 1px; cursor: pointer; font-family: inherit; }
+  .status-help-btn.on { background: var(--primary); color: #fff; }
+  .status-help-box { background: #f8f9fc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin: 4px 0 8px; font-size: 12px; color: var(--text); line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+  .genre-minor-hint { font-size: 11px; color: var(--primary); margin-top: 4px; }
+  .shop-save-fixed { position: fixed; left: 0; right: 0; bottom: 60px; padding: 8px 16px; background: rgba(255,255,255,0.96); border-top: 1px solid #e0e0e0; z-index: 999; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
+  .shop-save-fixed .btn { margin: 0; }
   /* ★liff_settings.html60：変更が無い時は保存ボタンを押せない（薄く表示） */
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
@@ -630,7 +637,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録85</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録86</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -832,7 +839,8 @@
           <input type="text" class="form-input" id="shop-name-input" placeholder="例：山田カフェ" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
         </div>
         <div class="form-group">
-          <label class="form-label">業種（大分類）</label>
+          <label class="form-label">業種（大分類）<button type="button" class="status-help-btn" onclick="toggleGenreHelp(this)" aria-label="説明">？</button></label>
+          <div class="status-help-box" id="genre-help-box" style="display:none;">業種（大分類と小分類）を<wbr>登録すると、<wbr>AIが<wbr>お店の<wbr>業種に<wbr>合った<wbr>投稿文と<wbr>ハッシュタグを<wbr>作ります。<wbr>大分類と<wbr>小分類の<wbr>両方を<wbr>選んでください。</div>
           <div class="select-wrap">
             <select class="form-select" id="business-major-select"></select>
           </div>
@@ -842,6 +850,7 @@
           <div class="select-wrap">
             <select class="form-select" id="business-minor-select"></select>
           </div>
+          <div class="genre-minor-hint" id="genre-minor-hint" style="display:none;">小分類も選んでください。</div>
         </div>
         <div class="form-group">
           <label class="form-label">エリア（都道府県）</label>
@@ -1232,7 +1241,11 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_settings.html84：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
 // ★liff_settings.html85：退会の理由の自由記述を500字までにし、字数（「0 / 500字」）を出す（GASは500字を超えた分を何も知らせずに捨てていたため）。
 // 　あわせて、退会のお申し込みの画面を、文字を大きくしても言葉の途中で折らないようにした（keep-all・<wbr>・\u200b。Kenさん指示）
-const TRACE_SCREEN = '設定85';
+// ★liff_settings.html86：①店舗情報を変えて保存していない間、元のボタンが画面に見えない時は、画面の下（メニューの上）に「店舗情報を変更する」を固定して出す
+// 　（#shop-save-fixed。押し忘れて画面を離れ、反映されないことがあったため。Kenさん指示）。②保存していないまま、下のメニューで別の画面へ移る時・
+// 　タブを切り替える時は、確認の窓を出す（confirmLeaveShopForm()）。③業種（大分類）の横に「？」（業種の使われ方）。大分類だけ選んで小分類が
+// 　未選択の間は「小分類も選んでください。」を出し、保存できない（isShopGenreIncomplete()）。
+const TRACE_SCREEN = '設定86';
 
 function traceLog(msg) {
   try {
@@ -1406,11 +1419,14 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 2000);
 }
 
-function switchTab(id) {
+async function switchTab(id) {
+  const cur = document.getElementById('tab-' + id);
+  if (!(cur && cur.classList.contains('active')) && !(await confirmLeaveShopForm())) return; // ★liff_settings.html86：保存していない店舗情報があれば確かめる
   const tabs = ['sns','account'];
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i]===id));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
+  updateShopSaveFixed(); // ★liff_settings.html86
 }
 
 // ===== プラン別のSNS連携数上限表示 =====
@@ -2383,12 +2399,59 @@ function isEmailChanged() {
   return document.getElementById('email-input').value.trim() !== SAVED_EMAIL;
 }
 
+// ★liff_settings.html86：大分類を選んだのに小分類が未選択なら true（この間は保存できない）
+function isShopGenreIncomplete() {
+  const now = readShopForm();
+  return now.businessMajor !== '' && now.businessMinor === '';
+}
+
 function updateSaveButtons() {
   const shopBtn = document.querySelector('button[onclick="saveShopInfo()"]');
-  if (shopBtn && !SHOP_SAVING) shopBtn.disabled = !isShopFormChanged();
+  if (shopBtn && !SHOP_SAVING) shopBtn.disabled = !isShopFormChanged() || isShopGenreIncomplete(); // ★liff_settings.html86：小分類が未選択の間は押せない
+  const hint = document.getElementById('genre-minor-hint'); // ★liff_settings.html86
+  if (hint) hint.style.display = isShopGenreIncomplete() ? '' : 'none';
+  updateShopSaveFixed(); // ★liff_settings.html86
   const emailBtn = document.querySelector('button[onclick="saveEmail()"]');
   if (emailBtn && !EMAIL_SAVING) emailBtn.disabled = !isEmailChanged();
 }
+
+// ★liff_settings.html86：保存していない店舗情報がある時、移ってよいかを確かめる（移ってよければ true）
+// 　保存中・変更が無い時は確かめない。移る時は、入力を保存済みの内容に戻さない（画面を離れるため）
+async function confirmLeaveShopForm() {
+  if (SHOP_SAVING || !isShopFormChanged()) return true;
+  return await window.aipostAsk({ title: '店舗情報の変更が保存されていません。', ok: '保存せずに移る', cancel: '戻る' });
+}
+
+// ★liff_settings.html86：「？」を押すと、業種の説明を出す・閉じる
+function toggleGenreHelp(btn) {
+  const box = document.getElementById('genre-help-box');
+  if (!box) return;
+  const open = box.style.display === 'none';
+  box.style.display = open ? '' : 'none';
+  btn.classList.toggle('on', open);
+}
+
+// ★liff_settings.html86：保存していない店舗情報があり、元の「店舗情報を変更する」が画面に見えない時だけ、下に固定したボタンを出す
+let SHOP_BTN_VISIBLE = true;
+function updateShopSaveFixed() {
+  const bar = document.getElementById('shop-save-fixed');
+  if (!bar) return;
+  const panel = document.getElementById('tab-account');
+  const onAccount = !!(panel && panel.classList.contains('active'));
+  const show = onAccount && !SHOP_SAVING && isShopFormChanged() && !isShopGenreIncomplete() && !SHOP_BTN_VISIBLE;
+  bar.style.display = show ? 'block' : 'none';
+  const fixedBtn = document.getElementById('shop-save-fixed-btn');
+  const shopBtn = document.querySelector('button[onclick="saveShopInfo()"]');
+  if (fixedBtn && shopBtn) fixedBtn.textContent = shopBtn.textContent;
+}
+(function watchShopSaveButton() {
+  const shopBtn = document.querySelector('button[onclick="saveShopInfo()"]');
+  if (!shopBtn || typeof IntersectionObserver === 'undefined') { SHOP_BTN_VISIBLE = false; return; }
+  new IntersectionObserver(function(entries) {
+    SHOP_BTN_VISIBLE = entries[0].isIntersecting;
+    updateShopSaveFixed();
+  }, { rootMargin: '0px 0px -60px 0px' }).observe(shopBtn);
+})();
 
 function captureSavedForm() {
   SAVED_SHOP_INFO = readShopForm();
@@ -2419,7 +2482,8 @@ async function saveShopInfo() {
   }
 
   // ★liff_settings.html60：変更が無ければ何もしない（ボタンも押せない状態）
-  if (!isShopFormChanged()) {
+  // ★liff_settings.html86：小分類が未選択の時も保存しない
+  if (!isShopFormChanged() || isShopGenreIncomplete()) {
     updateSaveButtons();
     return;
   }
@@ -2568,6 +2632,10 @@ updateSnsSummary();
 </script>
 
 <!-- ボトムナビゲーションバー -->
+<!-- ★liff_settings.html86：保存していない店舗情報がある時に、画面の下（メニューの上）に固定して出す保存ボタン（updateShopSaveFixed() で出し入れ） -->
+<div class="shop-save-fixed" id="shop-save-fixed" style="display:none;">
+  <button type="button" class="btn btn-primary" id="shop-save-fixed-btn" onclick="saveShopInfo()">店舗情報を変更する</button>
+</div>
 <nav class="bottom-nav" id="bottom-nav">
   <button class="nav-item" onclick="navigateTo('textgen')">
     <span class="nav-icon">📝</span><span class="nav-label">投稿文<wbr>作成</span>
@@ -2614,7 +2682,9 @@ const LIFF_URLS = {
   };
 
   // 他のLIFF画面に移動する
-  function navigateTo(page) {
+  // ★liff_settings.html86：保存していない店舗情報があれば、移る前に確かめる
+  async function navigateTo(page) {
+    if (LIFF_URLS[page] && page !== 'settings' && !(await confirmLeaveShopForm())) return;
     if (LIFF_URLS[page]) {
       window.location.href = LIFF_URLS[page];
     }
