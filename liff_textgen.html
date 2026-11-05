@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成194 - AiPost</title>
+<title>投稿文作成195 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -764,6 +764,42 @@
   textarea.mk-in { resize: vertical; min-height: 56px; }
   .mk-in + .mk-lbl { margin-top: 10px; }
   .mk-off { display: none !important; }
+  /* ★liff_textgen.html195：人材募集 */
+  .rc-row { display: flex; gap: 8px; font-size: 12.5px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+  .rc-row:last-of-type { border-bottom: none; }
+  .rc-k { width: 64px; flex-shrink: 0; color: var(--text-sub); font-weight: 700; }
+  .rc-v { flex: 1; color: var(--text); word-break: break-all; }
+  .rc-v.rc-none { color: #e65100; font-weight: 700; }
+  .rc-set { margin-top: 8px; font-size: 12px; padding: 8px; border: 1px solid var(--primary); color: var(--primary); background: #fff; border-radius: 8px; width: 100%; font-weight: 700; font-family: inherit; cursor: pointer; }
+  .rc-meter { position: sticky; top: 110px; z-index: 5; background: #eef1ff; border: 1px solid #c5cae9; border-radius: 10px; padding: 8px 10px; margin-bottom: 12px; }
+  .rc-meter-t { display: flex; justify-content: space-between; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--text); }
+  .rc-meter-t b { color: var(--primary); }
+  .rc-meter.over { background: #ffebee; border-color: #ef9a9a; }
+  .rc-meter.over .rc-meter-t b { color: var(--danger); }
+  .rc-bar { height: 6px; background: #dfe3f5; border-radius: 3px; margin-top: 6px; overflow: hidden; }
+  .rc-bar i { display: block; height: 100%; width: 0; background: var(--primary); }
+  .rc-meter.over .rc-bar i { background: var(--danger); }
+  .rc-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .rc-chip { font-size: 12.5px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 16px; background: #fff; color: var(--text-sub); font-family: inherit; cursor: pointer; }
+  .rc-chip.on { background: #f0f2ff; border-color: var(--primary); color: var(--primary); font-weight: 700; }
+  .rc-chip.on::before { content: '✓ '; }
+  .rc-line { display: flex; align-items: center; gap: 6px; font-size: 12.5px; }
+  .rc-line .mk-in { padding: 9px 6px; }
+  .rc-sel { width: auto; flex: 0 0 auto; }
+  .rc-num { width: 64px; flex: 0 0 64px; text-align: right; }
+  .rc-left { font-size: 11px; color: var(--text-sub); margin-top: 3px; text-align: right; }
+  .rc-left b { color: var(--primary); }
+  .rc-ex { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .rc-ex button { font-size: 11.5px; padding: 5px 8px; border: 1px dashed var(--primary); color: var(--primary); background: #fff; border-radius: 12px; font-family: inherit; cursor: pointer; }
+  .rc-check { display: flex; align-items: center; gap: 6px; font-size: 12.5px; margin-top: 6px; cursor: pointer; }
+  .rc-check input { width: 16px; height: 16px; accent-color: var(--primary); margin: 0; }
+  .rc-blk { margin-top: 12px; }
+  .rc-note { font-size: 11px; color: var(--text-sub); line-height: 1.7; margin-top: 6px; }
+  .rc-dim { opacity: .45; pointer-events: none; }
+  .rc-ng { background: #fff3e0; color: #e65100; border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.7; margin-top: 8px; }
+  .rc-ng b { display: block; margin-bottom: 2px; }
+  .post-textarea[readonly] { background: #f8f9fc; }
+  .rc-warn-text { white-space: pre-wrap; font-size: 12px; line-height: 1.7; background: #f8f9fc; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; margin-bottom: 12px; color: var(--text); max-height: 140px; overflow: auto; word-break: normal; overflow-wrap: break-word; }
   .mat-label.mk-head { display: block; }
   .mk-help-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-left: 6px; border-radius: 50%; border: 1.5px solid var(--primary); background: #fff; color: var(--primary); font-size: 12px; font-weight: 700; line-height: 1; padding: 0; vertical-align: 1px; cursor: pointer; font-family: inherit; }
   .mk-help-btn.on { background: var(--primary); color: #fff; }
@@ -924,7 +960,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成194</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成195</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1103,21 +1139,69 @@
     <p class="sns-plan-note" id="sns-pending-free-note" style="display:none;"></p>
   </div>
 
-  <!-- ★liff_textgen.html180：② 作り方を選ぶ（AIで作る／自分で書く）。選ぶまでは③から下を出さない -->
+  <!-- ★liff_textgen.html195：② 目的を選ぶ（それまで③の中にあった）。選ぶまでは③から下を出さない -->
+  <div class="card" id="card-purpose">
+    <div class="card-title">② 目的を<wbr>選ぶ</div>
+    <div class="mk-radio" id="mk-purpose-list"><label><input type="radio" name="mk-purpose" value="product" onclick="onPurposeClick(this)">商品・メニューの紹介</label><label><input type="radio" name="mk-purpose" value="notice" onclick="onPurposeClick(this)">お知らせ（営業日・休み・イベント）</label><label><input type="radio" name="mk-purpose" value="deal" onclick="onPurposeClick(this)">お得な情報</label><label><input type="radio" name="mk-purpose" value="recruit" onclick="onPurposeClick(this)">人材募集</label><label><input type="radio" name="mk-purpose" value="daily" onclick="onPurposeClick(this)">お店の様子・日常</label><label><input type="radio" name="mk-purpose" value="other" onclick="onPurposeClick(this)">その他</label></div>
+    <div class="rc-note mk-off" id="rc-purpose-note">人材募集は、<wbr>AIを<wbr>使わずに、<wbr>入力した<wbr>内容を<wbr>決まった<wbr>形で<wbr>並べます。<wbr>ハッシュタグは<wbr>付けません。</div>
+  </div>
+
+  <!-- ★liff_textgen.html180：作り方を選ぶ（AIで作る／自分で書く）。★liff_textgen.html195：③にした。人材募集の時は出さない -->
   <div class="card" id="card-make-mode">
-    <div class="card-title">② 作り方を<wbr>選ぶ</div>
+    <div class="card-title">③ 作り方を<wbr>選ぶ</div>
     <div class="mk-seg"><button type="button" id="mk-mode-ai" onclick="setMakeMode('ai')">AIで作る</button><button type="button" id="mk-mode-mine" onclick="setMakeMode('mine')">自分で書く</button></div>
   </div>
 
-  <!-- ★liff_textgen.html180：③ 目的・写真・キーワード（AIで作る時だけ）。写真は⑧の画像と同じもの（同じ input を使う） -->
+
+  <!-- ★liff_textgen.html195：人材募集 ③ 登録している情報（設定画面の店名・所在地・求人の連絡先。ここでは直せない） -->
+  <div class="card mk-off" id="card-recruit-reg">
+    <div class="card-title">③ 登録している<wbr>情報<span class="mk-tag">（必須）</span></div>
+    <div class="rc-row"><span class="rc-k">店名・社名</span><span class="rc-v" id="rc-shop">確認中…</span></div>
+    <div class="rc-row"><span class="rc-k">所在地</span><span class="rc-v" id="rc-addr">確認中…</span></div>
+    <div class="rc-row"><span class="rc-k">連絡先</span><span class="rc-v" id="rc-contact">確認中…</span></div>
+    <div class="rc-note" id="rc-reg-ok">投稿文に<wbr>そのまま<wbr>載ります。<wbr>変える時は<wbr>設定画面で<wbr>変更してください。</div>
+    <div class="rc-ng mk-off" id="rc-reg-ng"><b id="rc-reg-ng-title">⚠️ 人材募集を<wbr>作るには、<wbr>登録が<wbr>必要です</b><span id="rc-reg-ng-text">求人の<wbr>投稿には、<wbr>店名・社名、<wbr>所在地、<wbr>連絡先を<wbr>載せる<wbr>必要が<wbr>あります。<wbr>設定画面で<wbr>登録してください。</span></div>
+    <button class="rc-set" type="button" id="rc-set-btn" onclick="navigateTo('settings')">⚙️ 設定画面で<wbr>変更する</button>
+  </div>
+
+  <!-- ★liff_textgen.html195：人材募集 ④ 求人の内容（6つの項目は必須。自由に入れる欄は、残りの字数までしか入らない） -->
+  <div class="card mk-off" id="card-recruit">
+    <div class="card-title">④ 求人の<wbr>内容</div>
+    <div class="rc-meter" id="rc-meter"><div class="rc-meter-t"><span>投稿文の<wbr>字数</span><span><b id="rc-used">0</b>／140字<wbr>（<span id="rc-rest-label">残り</span><b id="rc-rest">140</b>字）</span></div><div class="rc-bar"><i id="rc-bar"></i></div></div>
+
+    <div class="mk-lbl">仕事の内容<span class="mk-tag">（必須）</span></div>
+    <input type="text" class="mk-in" id="rc-job" placeholder="例：賃貸物件の案内・契約の手続き" oninput="rcOnInput(event)" oncompositionend="rcOnInput(event)">
+    <div class="rc-left">あと<b class="rc-rest2">140</b>字まで<wbr>入力できます</div>
+
+    <div class="rc-blk"><div class="mk-lbl">雇用形態<span class="mk-tag">（必須・<wbr>いくつでも）</span></div>
+    <div class="rc-chips" id="rc-employ"><button type="button" class="rc-chip" data-v="正社員" onclick="rcToggleEmploy(this)">正社員</button><button type="button" class="rc-chip" data-v="契約社員" onclick="rcToggleEmploy(this)">契約社員</button><button type="button" class="rc-chip" data-v="パート・アルバイト" onclick="rcToggleEmploy(this)">パート・<wbr>アルバイト</button></div></div>
+
+    <div class="rc-blk"><div class="mk-lbl">賃金<span class="mk-tag">（必須）</span></div>
+    <div class="rc-line"><select class="mk-in rc-sel" id="rc-wage-type" onchange="rcOnWageType()"><option value="時給">時給</option><option value="日給">日給</option><option value="月給">月給</option><option value="年収">年収</option></select><input type="text" class="mk-in rc-num" id="rc-wage-min" inputmode="decimal" oninput="rcOnWage(this)"><span id="rc-unit-1">円</span><span>〜</span><input type="text" class="mk-in rc-num" id="rc-wage-max" inputmode="decimal" oninput="rcOnWage(this)"><span id="rc-unit-2">円</span></div>
+    <div class="rc-note" style="margin-top:3px;">時給・<wbr>日給は<wbr>円、<wbr>月給・<wbr>年収は<wbr>万円で<wbr>入れます<wbr>（数字だけ）。<wbr>「〜」の<wbr>右は<wbr>任意です。</div></div>
+
+    <div class="rc-blk"><div class="mk-lbl">働く場所<span class="mk-tag">（必須）</span></div>
+    <label class="rc-check"><input type="checkbox" id="rc-place-same" checked onchange="rcOnPlaceSame()">所在地と<wbr>同じ</label>
+    <div class="mk-off" id="rc-place-wrap" style="margin-top:6px;"><input type="text" class="mk-in" id="rc-place" placeholder="例：大阪市北区梅田2-3-4" oninput="rcOnInput(event)" oncompositionend="rcOnInput(event)"><div class="rc-left">あと<b class="rc-rest2">140</b>字まで<wbr>入力できます</div></div>
+    <div class="rc-note" style="margin-top:3px;" id="rc-place-note">違う時は、<wbr>チェックを<wbr>外すと<wbr>入力欄が<wbr>出ます。</div></div>
+
+    <div class="rc-blk"><div class="mk-lbl">勤務時間<span class="mk-tag">（任意）</span></div>
+    <div class="rc-line"><select class="mk-in rc-sel" id="rc-time-from" onchange="rcUpdate()"></select><span>〜</span><select class="mk-in rc-sel" id="rc-time-to" onchange="rcUpdate()"></select></div>
+    <label class="rc-check"><input type="checkbox" id="rc-shift" onchange="rcUpdate()">シフト制</label></div>
+
+    <div class="rc-blk"><div class="mk-lbl">ひとこと<span class="mk-tag">（任意）</span></div>
+    <input type="text" class="mk-in" id="rc-comment" oninput="rcOnInput(event)" oncompositionend="rcOnInput(event)">
+    <div class="rc-left">あと<b class="rc-rest2">140</b>字まで<wbr>入力できます</div>
+    <div class="rc-ex"><button type="button" onclick="rcSetComment(this.textContent)">一緒に働ける仲間を募集しています。</button><button type="button" onclick="rcSetComment(this.textContent)">お気軽にご応募ください。</button><button type="button" onclick="rcSetComment(this.textContent)">ご応募をお待ちしています。</button></div></div>
+  </div>
+
+  <!-- ★liff_textgen.html180：③ 目的・写真・キーワード（AIで作る時だけ）。写真は⑧の画像と同じもの（同じ input を使う）
+       ★liff_textgen.html195：④にした。目的の選び肢は②へ移した（ここは目的ごとの欄・写真・キーワード） -->
   <div class="card" id="card-material">
-    <div class="card-title">③ 目的・<wbr>写真・<wbr>キーワード</div>
-    <div class="mat-label mk-head">🎯 目的<span class="mk-tag">（必須）</span></div>
-    <div class="mk-radio" id="mk-purpose-list"><label><input type="radio" name="mk-purpose" value="product" onclick="onPurposeClick(this)">商品・メニューの紹介</label><label><input type="radio" name="mk-purpose" value="notice" onclick="onPurposeClick(this)">お知らせ（営業日・休み・イベント）</label><label><input type="radio" name="mk-purpose" value="deal" onclick="onPurposeClick(this)">お得な情報</label><label><input type="radio" name="mk-purpose" value="recruit" onclick="onPurposeClick(this)">人材募集</label><label><input type="radio" name="mk-purpose" value="daily" onclick="onPurposeClick(this)">お店の様子・日常</label><label><input type="radio" name="mk-purpose" value="other" onclick="onPurposeClick(this)">その他</label></div>
+    <div class="card-title">④ 投稿の<wbr>内容・<wbr>写真・<wbr>キーワード</div>
     <div class="mk-box mk-off" id="mk-fields-product"><div class="mk-lbl">紹介する商品・メニュー<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-product-name" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">訴求パターン<button type="button" class="mk-help-btn" id="appeal-help-btn" onclick="toggleAppealHelp()" aria-label="訴求パターンの説明">？</button></div><div class="mk-help-box mk-off" id="appeal-help" style="background:#fff;"></div><div class="mk-radio mk-radio-2col" onchange="renderAreaField()"><label><input type="radio" name="mk-appeal" value="" checked>おまかせ</label><label><input type="radio" name="mk-appeal" value="①限定">限定</label><label><input type="radio" name="mk-appeal" value="③悩み解決">悩み解決</label><label><input type="radio" name="mk-appeal" value="④トレンド">トレンド</label><label><input type="radio" name="mk-appeal" value="⑤信頼">信頼</label><label><input type="radio" name="mk-appeal" value="⑥季節">季節</label><label><input type="radio" name="mk-appeal" value="⑦新登場">新登場</label><label><input type="radio" name="mk-appeal" value="⑧地域密着">地域密着</label></div><div class="mk-off" id="mk-area-wrap"><div class="mk-lbl" style="margin-top:10px;">地域名<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-area-text" maxlength="20" placeholder="例：中央区・梅田・〇〇駅前"></div></div>
     <div class="mk-box mk-off" id="mk-fields-notice"><div class="mk-lbl">お知らせの内容<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-notice-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-notice-from" onchange="onPeriodChange('notice', 'from')"><span>〜</span><input type="date" class="mk-in" id="mk-notice-to" onchange="onPeriodChange('notice', 'to')"></div></div>
     <div class="mk-box mk-off" id="mk-fields-deal"><div class="mk-lbl">お得な内容<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-deal-text" maxlength="60" oninput="updateMaterialSummary()"><div class="mk-lbl">期間<span class="mk-tag">（任意）</span></div><div class="mk-period"><input type="date" class="mk-in" id="mk-deal-from" onchange="onPeriodChange('deal', 'from')"><span>〜</span><input type="date" class="mk-in" id="mk-deal-to" onchange="onPeriodChange('deal', 'to')"></div></div>
-    <div class="mk-box mk-off" id="mk-fields-recruit"><div class="mk-lbl">職種<span class="mk-tag">（必須）</span></div><input type="text" class="mk-in" id="mk-recruit-job" maxlength="40" oninput="updateMaterialSummary()"><div class="mk-lbl">条件（時間・時給など）<span class="mk-tag">（任意）</span></div><textarea class="mk-in" id="mk-recruit-cond" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
     <div class="mk-box mk-off" id="mk-fields-other"><div class="mk-lbl">どんな投稿にしたいか<span class="mk-tag">（必須）</span></div><textarea class="mk-in" id="mk-other-text" maxlength="100" rows="2" oninput="updateMaterialSummary()"></textarea></div>
     <div class="mat-label mk-head" style="margin-top:14px;">📷 写真から作る<span class="mk-tag">（任意）</span></div>
     <div class="mat-photo-btns" id="mat-photo-btns">
@@ -1153,7 +1237,7 @@
        それまでの⑥「店名・所在地を含める」の店名（AI）は⑤へ移し、それまでの⑦の「＋店名を入れる」「＋所在地を入れる」ボタンは⑦にまとめて外した。 -->
   <!-- ⑤ エリア・店名を含めて投稿文を作成する -->
   <div class="card" id="card-include">
-    <div class="card-title">④ 店名を<wbr>文章に<wbr>含める</div>
+    <div class="card-title">⑤ 店名を<wbr>文章に<wbr>含める</div>
     <div class="mk-check-list">
       <div class="include-check-item" id="include-shopname-item" onclick="toggleInclude(this)">
         <div class="sns-check-name">店名を<wbr>含める</div>
@@ -1177,10 +1261,11 @@
   </div>
 
   <!-- ⑥ 投稿文を確認・編集する（★liff_textgen.html137：それまでの⑦） -->
-  <div class="card">
-    <div class="card-title">⑤ 投稿文を<wbr>確認・編集する</div>
+  <div class="card" id="card-post">
+    <div class="card-title"><span id="step-no-post">⑥</span> <span id="step-name-post">投稿文を<wbr>確認・編集する</span></div>
+    <div class="rc-note mk-off" id="rc-post-note" style="margin:0 0 8px;">人材募集の<wbr>投稿文は、<wbr>ここでは<wbr>直せません。<wbr>直す時は、<wbr>③④を<wbr>直してください。<wbr>どのSNSにも<wbr>同じ文が<wbr>載ります。</div>
     <!-- ★liff_textgen.html136：投稿文の中のハッシュタグの注意（予約の時に止めるため、先に知らせる。Kenさん指示） -->
-    <div class="caution-box" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑦の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
+    <div class="caution-box" id="post-hashtag-caution" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑧の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
     <div class="genre-notice" id="genre-notice">📍 登録業種<wbr>（<span id="genre-label"></span>）を<wbr>もとに<wbr>投稿文を<wbr>作成しました。</div>
     <!-- ★liff_textgen.html164：利用者の入力は、上限を超える時は受け付けない（どこに入力しても）。そのため入力の知らせ（event）を渡す
          ★liff_textgen.html177：上限を超えても入力できるようにした（超えている間は字数を赤で出す。予約の時に止める）。「入力できません」の知らせは消した -->
@@ -1201,8 +1286,8 @@
   </div>
 
   <!-- ⑦ 投稿文の最後に店名・所在地を付ける（★liff_textgen.html137：⑥の文字数表示の下に移した。Kenさん指示） -->
-  <div class="card">
-    <div class="card-title">⑥ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける</div>
+  <div class="card" id="card-endline">
+    <div class="card-title">⑦ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける</div>
     <!-- ★liff_textgen.html139：投稿文が空の時はチェックできない（Kenさん指示） -->
     <div class="mk-check-list">
       <div class="include-check-item" id="include-shopend-item" onclick="toggleEndLine(this, 'shop')">
@@ -1220,8 +1305,8 @@
 
 
   <!-- ⑧ ハッシュタグ -->
-  <div class="card">
-    <div class="card-title">⑦ ハッシュタグ<button type="button" class="mk-help-btn" id="hashtag-help-btn" onclick="toggleHashtagHelp()" aria-label="ハッシュタグの説明">？</button></div>
+  <div class="card" id="card-hashtag">
+    <div class="card-title">⑧ ハッシュタグ<button type="button" class="mk-help-btn" id="hashtag-help-btn" onclick="toggleHashtagHelp()" aria-label="ハッシュタグの説明">？</button></div>
     <div class="mk-help-box mk-off" id="hashtag-help">
     <p class="hashtag-desc">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>投稿文と<wbr>同様、<wbr>自由に<wbr>編集できます。<wbr>チェックした<wbr>SNSにだけ付与されます。<wbr>「#」は<wbr>自動で<wbr>付きます。</p>
     <!-- ★liff_textgen.html164：ハッシュタグの数え方の説明（Kenさん指摘） -->
@@ -1276,9 +1361,9 @@
   </div>
 
   <!-- ⑨ 画像アップロード（インライン） -->
-  <div class="image-section">
+  <div class="image-section" id="image-section">
     <div class="image-section-header">
-      <div class="image-section-title">⑧ 画像アップロード</div>
+      <div class="image-section-title"><span id="step-no-image">⑨</span> 画像アップロード</div>
     </div>
     <!-- ★liff_textgen.html167：作成に使った写真と、今の画像が違う時の案内（refreshPhotoMismatchNote()） -->
     <p class="photo-mismatch-note" id="photo-mismatch-note" style="display:none;">投稿文は、<wbr>前の<wbr>写真を<wbr>もとに<wbr>作っています。<wbr>合わない<wbr>時は、<wbr>投稿文を<wbr>直すか<wbr>作り直して<wbr>ください。</p>
@@ -1333,9 +1418,9 @@
   </div>
 
   <!-- ⑩ 投稿日時：カレンダー -->
-  <div class="card" style="padding:0;overflow:hidden;">
+  <div class="card" id="card-date" style="padding:0;overflow:hidden;">
     <div style="padding:14px 16px 12px;border-bottom:1px solid var(--border);">
-      <div class="card-title" style="margin-bottom:0;">⑨ 投稿日を<wbr>選ぶ</div>
+      <div class="card-title" style="margin-bottom:0;"><span id="step-no-date">⑩</span> 投稿日を<wbr>選ぶ</div>
       <p class="step-hint" id="cal-range-hint" style="margin:6px 0 0;">予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日までです。</p>
     </div>
     <div class="calendar-wrap">
@@ -1374,9 +1459,9 @@
   </div>
 
   <!-- ★liff_textgen.html136：このボタンではまだ予約されないことの案内 -->
-  <p class="step-hint" style="margin:4px 2px 8px;">次の<wbr>確認画面で<wbr>「予約を<wbr>確定する」を<wbr>押すと、<wbr>予約が<wbr>完了します。</p>
+  <p class="step-hint" id="reserve-hint" style="margin:4px 2px 8px;">次の<wbr>確認画面で<wbr>「予約を<wbr>確定する」を<wbr>押すと、<wbr>予約が<wbr>完了します。</p>
   <!-- 予約ボタン -->
-  <button class="reserve-btn" onclick="showConfirm()">
+  <button class="reserve-btn" id="reserve-btn" onclick="showConfirm()">
     <span style="font-size:20px;">✅</span>内容を<wbr>確認する
   </button>
 
@@ -1394,48 +1479,71 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t1')">① 投稿先の<wbr>SNSを<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t1">▶</span></div>
     <div class="accordion-body" id="acc-t1">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">連携済みの<wbr>SNSの<wbr>中から、<wbr>今回投稿する<wbr>SNSを<wbr>選びます。<wbr>連携していない<wbr>SNSは<wbr>選べません<wbr>（設定画面で<wbr>連携できます）。<wbr>ここで<wbr>選んだ<wbr>SNSに<wbr>合わせて、<wbr>⑦ハッシュタグの<wbr>チェック欄と、<wbr>⑧画像の<wbr>トリミングの<wbr>対象が<wbr>切り<wbr>替わります。<wbr>1つも<wbr>選ばずに<wbr>予約する<wbr>ことは<wbr>できません。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">連携済みの<wbr>SNSの<wbr>中から、<wbr>今回投稿する<wbr>SNSを<wbr>選びます。<wbr>連携していない<wbr>SNSは<wbr>選べません<wbr>（設定画面で<wbr>連携できます）。<wbr>ここで<wbr>選んだ<wbr>SNSに<wbr>合わせて、<wbr>⑧ハッシュタグの<wbr>チェック欄と、<wbr>⑨画像の<wbr>トリミングの<wbr>対象が<wbr>切り<wbr>替わります。<wbr>1つも<wbr>選ばずに<wbr>予約する<wbr>ことは<wbr>できません。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 プランごとに<wbr>選べる<wbr>数</div>
       <!-- ★liff_textgen.html160：FREEの投稿先を2つにした（Kenさん決定） --><div style="font-size:11px;color:var(--text-sub);line-height:1.8;">FREEプランは<wbr>2つ<wbr>（Xは<wbr>選べません）、<wbr>PERSONAL・LITEプランは<wbr>2つ、<wbr>STANDARD・PROプランは<wbr>3つまで<wbr>選べます。<wbr>上限まで<wbr>選んでいる<wbr>時に<wbr>別の<wbr>SNSに<wbr>したい<wbr>場合は、<wbr>先に<wbr>チェックを<wbr>外してください。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">② 作り方を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
-    <div class="accordion-body" id="acc-t2">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">「AIで作る」を<wbr>選ぶと、<wbr>③の<wbr>内容を<wbr>もとに、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>「自分で書く」を<wbr>選ぶと、<wbr>⑤に<wbr>直接<wbr>入力します<wbr>（③④と<wbr>作成の<wbr>ボタンは<wbr>出ません）。</div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t3')">② 目的を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t3">▶</span></div>
+    <div class="accordion-body" id="acc-t3">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿の<wbr>目的を<wbr>6つから<wbr>選びます。<wbr>目的によって、<wbr>下に<wbr>出る<wbr>項目が<wbr>変わります。<wbr>人材募集のほかは、<wbr>③で<wbr>作り<wbr>方（AIで<wbr>作る／自分で<wbr>書く）<wbr>を<wbr>選びます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 人材募集</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">人材募集を<wbr>選ぶと、<wbr>AIを<wbr>使わずに、<wbr>入力した<wbr>内容を<wbr>決まった<wbr>形に<wbr>並べて<wbr>投稿文にします。<wbr>求人の<wbr>情報は、<wbr>法律（職業安定法）<wbr>で<wbr>正確に<wbr>出すことが<wbr>決められているため、<wbr>店名・社名、<wbr>所在地、<wbr>連絡先、<wbr>仕事の<wbr>内容、<wbr>働く<wbr>場所、<wbr>賃金を<wbr>必ず<wbr>載せる<wbr>形にしています。</div>
+      <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">③ 登録している<wbr>情報</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">設定画面で<wbr>登録した<wbr>店名・所在地・求人の<wbr>連絡先が、<wbr>そのまま<wbr>載ります。<wbr>3つのどれかが<wbr>未登録の<wbr>時は<wbr>作れません。<wbr>設定画面の<wbr>「登録」<wbr>タブで<wbr>登録してください。</div>
+      </div>
+      <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">④ 求人の<wbr>内容</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">仕事の<wbr>内容・雇用形態・賃金・働く<wbr>場所は<wbr>必須、<wbr>勤務時間・ひとことは<wbr>任意です。<wbr>上に<wbr>投稿文の<wbr>字数が<wbr>出ます。<wbr>仕事の<wbr>内容・働く<wbr>場所・ひとことは、<wbr>残りの<wbr>字数までしか<wbr>入りません。</div>
+      </div>
+      <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">⑤ 投稿文を<wbr>確認する</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">並べた<wbr>投稿文は、<wbr>ここでは<wbr>直せません。<wbr>直す<wbr>時は③④を<wbr>直してください。<wbr>ハッシュタグは<wbr>付けず、<wbr>どの<wbr>SNSにも<wbr>同じ<wbr>文が<wbr>載ります<wbr>（140字まで）<wbr>。<wbr>画像・投稿日の<wbr>選び<wbr>方は、<wbr>ほかの<wbr>目的と<wbr>同じです。</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 求人らしい言葉がある時</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">人材募集のほかの<wbr>目的で、<wbr>投稿文に<wbr>求人らしい<wbr>言葉（アルバイト・時給など）<wbr>があると、<wbr>「内容を<wbr>確認する」<wbr>を<wbr>押した<wbr>時に<wbr>注意が<wbr>出ます。<wbr>求人の<wbr>投稿は、<wbr>目的「人材募集」<wbr>から<wbr>作成してください。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">③ 目的・<wbr>写真・<wbr>キーワード<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">③ 作り方を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
+    <div class="accordion-body" id="acc-t2">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">「AIで作る」を<wbr>選ぶと、<wbr>④の<wbr>内容を<wbr>もとに、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>「自分で書く」を<wbr>選ぶと、<wbr>⑥に<wbr>直接<wbr>入力します<wbr>（④⑤と<wbr>作成の<wbr>ボタンは<wbr>出ません）。<wbr>人材募集の<wbr>時は、<wbr>③は<wbr>出ません。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ 投稿の<wbr>内容・<wbr>写真・<wbr>キーワード<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
     <div class="accordion-body" id="acc-t4">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 目的<wbr>（必須）</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿の<wbr>目的を<wbr>選ぶと、<wbr>その<wbr>目的に<wbr>要る<wbr>欄だけが<wbr>出ます。<wbr>お知らせ・<wbr>人材募集・<wbr>お店の様子・<wbr>その他は、<wbr>売り込みでは<wbr>なく、<wbr>内容を<wbr>伝える<wbr>書き方で<wbr>作成します。<wbr>期間は、<wbr>1日だけの<wbr>時は<wbr>始まりの<wbr>日を<wbr>選ぶだけで<wbr>済みます。<wbr>人材募集で<wbr>条件を<wbr>入れない<wbr>時は、<wbr>条件を<wbr>作らず<wbr>「詳しくは<wbr>お問い合わせください」の<wbr>形に<wbr>します。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿の内容</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">②で<wbr>選んだ<wbr>目的に<wbr>要る<wbr>欄だけが<wbr>出ます。<wbr>お<wbr>知らせ・お<wbr>店の<wbr>様子・その<wbr>他は、<wbr>売り<wbr>込みではなく、<wbr>内容を<wbr>伝える<wbr>書き<wbr>方で<wbr>作成します。<wbr>期間は、<wbr>1日だけの<wbr>時は<wbr>始まりの<wbr>日を<wbr>選ぶだけで<wbr>済みます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 訴求パターン<wbr>（商品・<wbr>メニューの<wbr>紹介の時）</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">伝え方を<wbr>8つから<wbr>選べます<wbr>（それぞれの<wbr>意味は<wbr>「？」で<wbr>見られます）。<wbr>「おまかせ」の<wbr>ままに<wbr>すると、<wbr>キーワードから<wbr>AIが<wbr>選びます。<wbr>「地域密着」を<wbr>選んだ<wbr>時は、<wbr>地域名<wbr>（例：中央区・<wbr>梅田）を<wbr>入れてください。<wbr>登録した<wbr>都道府県では<wbr>範囲が<wbr>広すぎて、<wbr>地域らしい<wbr>文に<wbr>ならない<wbr>ためです。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 写真から作る<wbr>（任意）</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">写真を<wbr>選ぶと、<wbr>作成を<wbr>押した<wbr>時に、<wbr>写真に<wbr>写って<wbr>いる<wbr>ものを<wbr>AIが<wbr>読み取って、<wbr>文の<wbr>材料に<wbr>します。<wbr>料理名・<wbr>値段など、<wbr>写真から<wbr>分からない<wbr>ことは<wbr>書きません。<wbr>読み取るのは<wbr>写真<wbr>1枚に<wbr>つき<wbr>1回だけで、<wbr>何回<wbr>作成しても<wbr>同じ<wbr>読み取りの<wbr>結果を<wbr>使います。<wbr>選んだ<wbr>写真は、<wbr>⑧の<wbr>投稿の<wbr>画像にも<wbr>なります。<wbr>投稿の<wbr>画像に<wbr>だけ<wbr>使い、<wbr>文の<wbr>材料に<wbr>しない<wbr>時は、<wbr>「この写真の内容も文に使う」の<wbr>チェックを<wbr>外して<wbr>ください。<wbr>⑧で<wbr>別の<wbr>画像に<wbr>変えた<wbr>時は、<wbr>投稿文が<wbr>前の<wbr>写真の<wbr>ままに<wbr>なって<wbr>いないか<wbr>確かめて<wbr>ください。<wbr>お試し中は、<wbr>写真の<wbr>読み取りも、<wbr>作成と<wbr>同じ<wbr>回数まで<wbr>です<wbr>（作成の<wbr>回数とは<wbr>別に<wbr>数えます）。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">写真を<wbr>選ぶと、<wbr>作成を<wbr>押した<wbr>時に、<wbr>写真に<wbr>写って<wbr>いる<wbr>ものを<wbr>AIが<wbr>読み取って、<wbr>文の<wbr>材料に<wbr>します。<wbr>料理名・<wbr>値段など、<wbr>写真から<wbr>分からない<wbr>ことは<wbr>書きません。<wbr>読み取るのは<wbr>写真<wbr>1枚に<wbr>つき<wbr>1回だけで、<wbr>何回<wbr>作成しても<wbr>同じ<wbr>読み取りの<wbr>結果を<wbr>使います。<wbr>選んだ<wbr>写真は、<wbr>⑨の<wbr>投稿の<wbr>画像にも<wbr>なります。<wbr>投稿の<wbr>画像に<wbr>だけ<wbr>使い、<wbr>文の<wbr>材料に<wbr>しない<wbr>時は、<wbr>「この写真の内容も文に使う」の<wbr>チェックを<wbr>外して<wbr>ください。<wbr>⑨で<wbr>別の<wbr>画像に<wbr>変えた<wbr>時は、<wbr>投稿文が<wbr>前の<wbr>写真の<wbr>ままに<wbr>なって<wbr>いないか<wbr>確かめて<wbr>ください。<wbr>お試し中は、<wbr>写真の<wbr>読み取りも、<wbr>作成と<wbr>同じ<wbr>回数まで<wbr>です<wbr>（作成の<wbr>回数とは<wbr>別に<wbr>数えます）。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文章に<wbr>含めたい<wbr>キーワード<wbr>（任意・<wbr>3個・<wbr>1個10字まで）</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">入れた<wbr>キーワードは、<wbr>必ず<wbr>投稿文に<wbr>入ります。<wbr>投稿文は<wbr>限られた<wbr>文字数<wbr>（⑤を<wbr>参照）で<wbr>作成する<wbr>ため、<wbr>キーワードが<wbr>多すぎると、<wbr>AIが<wbr>すべてを<wbr>詰め込もうと<wbr>して<wbr>不自然な<wbr>投稿文に<wbr>なりがちです。<wbr>3個程度に<wbr>絞って<wbr>投稿文には<wbr>中心となる<wbr>言葉だけを<wbr>入れ、<wbr>細かい<wbr>言葉は<wbr>⑦ハッシュタグで<wbr>補う、と<wbr>いう<wbr>役割分担に<wbr>しています。<wbr>キーワードは<wbr>短い<wbr>言葉での<wbr>入力を<wbr>想定しているため、<wbr>10字を<wbr>上限に<wbr>しています<wbr>（外部の<wbr>調査の<wbr>数値ではなく、<wbr>AiPost独自の<wbr>設計です）。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">入れた<wbr>キーワードは、<wbr>必ず<wbr>投稿文に<wbr>入ります。<wbr>投稿文は<wbr>限られた<wbr>文字数<wbr>（⑥を<wbr>参照）で<wbr>作成する<wbr>ため、<wbr>キーワードが<wbr>多すぎると、<wbr>AIが<wbr>すべてを<wbr>詰め込もうと<wbr>して<wbr>不自然な<wbr>投稿文に<wbr>なりがちです。<wbr>3個程度に<wbr>絞って<wbr>投稿文には<wbr>中心となる<wbr>言葉だけを<wbr>入れ、<wbr>細かい<wbr>言葉は<wbr>⑧ハッシュタグで<wbr>補う、と<wbr>いう<wbr>役割分担に<wbr>しています。<wbr>キーワードは<wbr>短い<wbr>言葉での<wbr>入力を<wbr>想定しているため、<wbr>10字を<wbr>上限に<wbr>しています<wbr>（外部の<wbr>調査の<wbr>数値ではなく、<wbr>AiPost独自の<wbr>設計です）。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">④ 店名を<wbr>文章に<wbr>含める<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t5')">⑤ 店名を<wbr>文章に<wbr>含める<span class="accordion-arrow" id="arr-acc-t5">▶</span></div>
     <div class="accordion-body" id="acc-t5">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">チェックすると、<wbr>設定画面で<wbr>登録した<wbr>店名を、<wbr>AIが<wbr>投稿文の<wbr>中に<wbr>自然な<wbr>形で<wbr>入れて<wbr>作成します。<wbr>登録して<wbr>いない<wbr>時は<wbr>使えないため、<wbr>先に<wbr>設定画面で<wbr>登録してください。</div>
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ⑥との<wbr>違い</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">④は、<wbr>AIが<wbr>文章の<wbr>流れに<wbr>合わせて<wbr>投稿文の<wbr>中に<wbr>入れます。<wbr>⑥は、<wbr>AIを<wbr>使わずに、<wbr>登録した<wbr>店名・所在地を<wbr>そのまま<wbr>投稿文の<wbr>最後に<wbr>付けます。</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ⑦との<wbr>違い</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">⑤は、<wbr>AIが<wbr>文章の<wbr>流れに<wbr>合わせて<wbr>投稿文の<wbr>中に<wbr>入れます。<wbr>⑦は、<wbr>AIを<wbr>使わずに、<wbr>登録した<wbr>店名・所在地を<wbr>そのまま<wbr>投稿文の<wbr>最後に<wbr>付けます。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t6')">⑤ 投稿文を<wbr>確認・編集する<span class="accordion-arrow" id="arr-acc-t6">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t6')">⑥ 投稿文を<wbr>確認・編集する<span class="accordion-arrow" id="arr-acc-t6">▶</span></div>
     <div class="accordion-body" id="acc-t6">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>投稿文が<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>自分で<wbr>直接入力する<wbr>ことも<wbr>できます。<wbr>すでに<wbr>投稿文が<wbr>ある<wbr>時に<wbr>もう<wbr>一度<wbr>作成すると、<wbr>上書きして<wbr>よいかの<wbr>確認が<wbr>出ます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限と<wbr>数え方</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;"><!-- ★liff_textgen.html156：FREEプランも140字にそろえた（Kenさん決定）。「（FREEプランは70文字）」を消した -->投稿文の<wbr>上限は<wbr>全角140字<wbr>です<wbr>（全プラン<wbr>共通）<wbr>。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5字、<wbr>絵文字は<wbr>1字と<wbr>して数えます。<wbr>上限を<wbr>超えても<wbr>入力できますが、<wbr>超えたままでは<wbr>予約できません<wbr>（字数が<wbr>赤で<wbr>出ます）。<wbr>また、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて全角140字<wbr>までです<wbr>（⑦を<wbr>参照）<wbr>。<wbr></div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;"><!-- ★liff_textgen.html156：FREEプランも140字にそろえた（Kenさん決定）。「（FREEプランは70文字）」を消した -->投稿文の<wbr>上限は<wbr>全角140字<wbr>です<wbr>（全プラン<wbr>共通）<wbr>。<wbr>半角の<wbr>英数字・記号・スペースは<wbr>0.5字、<wbr>絵文字は<wbr>1字と<wbr>して数えます。<wbr>上限を<wbr>超えても<wbr>入力できますが、<wbr>超えたままでは<wbr>予約できません<wbr>（字数が<wbr>赤で<wbr>出ます）。<wbr>また、<wbr>投稿文と<wbr>ハッシュタグを<wbr>合わせて全角140字<wbr>までです<wbr>（⑧を<wbr>参照）<wbr>。<wbr></div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文が<wbr>全角140字である<wbr>理由</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AiPostでは、<wbr>同じ<wbr>投稿文・<wbr>同じ<wbr>画像で<wbr>あれば、<wbr>複数の<wbr>SNSへの<wbr>同時投稿を<wbr>「1投稿」と<wbr>して<wbr>数えます。<wbr>その<wbr>ためには<wbr>投稿文が<wbr>すべての<wbr>SNSで<wbr>共通の<wbr>1つである<wbr>必要が<wbr>あり、<wbr>文字数の<wbr>制限が<wbr>最も<wbr>厳しい<wbr>X<wbr>（全角<wbr>140字＝半角280字）に<wbr>合わせる<wbr>ことで、<wbr>どの<wbr>SNSを<wbr>選んでも<wbr>確実に<wbr>投稿できるように<wbr>しています。</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
@@ -1454,7 +1562,7 @@
       </div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xを<wbr>選んでいない<wbr>場合も、<wbr>上限は<wbr>140字のままです。<wbr>SNSの<wbr>選び方で<wbr>上限が<wbr>変わると、<wbr>投稿文を<wbr>書いている<wbr>途中で<wbr>SNSを<wbr>選び直した<wbr>時に、<wbr>急に<wbr>文字数オーバーに<wbr>なると<wbr>いった<wbr>混乱が<wbr>起きやす<wbr>いためです。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿文に<wbr>ハッシュタグは<wbr>入れられません</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文の<wbr>中に<wbr>「#」で<wbr>始まる<wbr>ハッシュタグが<wbr>あると、<wbr>予約できません。<wbr>ハッシュタグは<wbr>⑦の<wbr>欄に<wbr>入力してください。<wbr>SNSごとの<wbr>ハッシュタグの<wbr>数の<wbr>上限を<wbr>正しく<wbr>守る<wbr>ためです。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文の<wbr>中に<wbr>「#」で<wbr>始まる<wbr>ハッシュタグが<wbr>あると、<wbr>予約できません。<wbr>ハッシュタグは<wbr>⑧の<wbr>欄に<wbr>入力してください。<wbr>SNSごとの<wbr>ハッシュタグの<wbr>数の<wbr>上限を<wbr>正しく<wbr>守る<wbr>ためです。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Xへの<wbr>投稿文に<wbr>URLは<wbr>入れられません</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">Xへの<wbr>投稿文には、<wbr>URL<wbr>（http://・https://で<wbr>始まるリンク）を<wbr>含められません。<wbr>Instagram・Threadsは、<wbr>URLを<wbr>含めても<wbr>通常どおり投稿できます。<wbr>AIが<wbr>作成する<wbr>投稿文に<wbr>URLは<wbr>入りませんが、<wbr>自分で<wbr>URLを<wbr>入力した<wbr>場合は、<wbr>次のようになります。</div>
       <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
@@ -1475,20 +1583,20 @@
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑥ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑦ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
     <div class="accordion-body" id="acc-t7">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">チェックすると、<wbr>設定画面で<wbr>登録した<wbr>店名・所在地を、<wbr>投稿文の<wbr>最後の<wbr>行に<wbr>そのまま<wbr>付けます<wbr>（AIは<wbr>使いません）。<wbr>「🏠店名」<wbr>「📍所在地」の<wbr>順で<wbr>付き、<wbr>チェックを<wbr>外すと<wbr>その<wbr>行が<wbr>消えます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 チェックできる<wbr>時</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文が<wbr>空の<wbr>時は<wbr>チェックできません。<wbr>先に<wbr>投稿文を<wbr>作成するか、<wbr>⑤に<wbr>入力してください。<wbr>投稿文を<wbr>すべて<wbr>消すと、<wbr>チェックも<wbr>外れます。<wbr>チェックした<wbr>後に<wbr>AIで<wbr>作成し直した<wbr>場合も、<wbr>作成した<wbr>投稿文の<wbr>最後に<wbr>付きます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文が<wbr>空の<wbr>時は<wbr>チェックできません。<wbr>先に<wbr>投稿文を<wbr>作成するか、<wbr>⑥に<wbr>入力してください。<wbr>投稿文を<wbr>すべて<wbr>消すと、<wbr>チェックも<wbr>外れます。<wbr>チェックした<wbr>後に<wbr>AIで<wbr>作成し直した<wbr>場合も、<wbr>作成した<wbr>投稿文の<wbr>最後に<wbr>付きます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数の<wbr>上限を<wbr>超える<wbr>場合</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">付けて<wbr>文字数の<wbr>上限を<wbr>超えた<wbr>時も、<wbr>そのまま<wbr>付けます。<wbr>投稿文を<wbr>短くして<wbr>上限に<wbr>納めてください<wbr>（超えたままでは<wbr>予約できません）。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 AIを<wbr>使わない<wbr>理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">所在地を<wbr>AIに<wbr>書かせると、<wbr>番地や<wbr>ビル名を<wbr>省略したり<wbr>書き換えたりする<wbr>おそれが<wbr>ある<wbr>ためです。<wbr>登録した<wbr>とおりの<wbr>表記で<wbr>載せたい<wbr>店名・所在地は、<wbr>⑥で<wbr>付けてください。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">所在地を<wbr>AIに<wbr>書かせると、<wbr>番地や<wbr>ビル名を<wbr>省略したり<wbr>書き換えたりする<wbr>おそれが<wbr>ある<wbr>ためです。<wbr>登録した<wbr>とおりの<wbr>表記で<wbr>載せたい<wbr>店名・所在地は、<wbr>⑦で<wbr>付けてください。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t8')">⑦ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t8">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t8')">⑧ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t8">▶</span></div>
     <div class="accordion-body" id="acc-t8">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>自由に<wbr>編集でき、<wbr>チェックした<wbr>SNSにだけ<wbr>付きます。<wbr>1個10字まで、<wbr>5個まで<wbr>入力できます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 <wbr>「#」は<wbr>自動で<wbr>付きます</div>
@@ -1516,9 +1624,9 @@
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t9')">⑧ 画像アップロード<span class="accordion-arrow" id="arr-acc-t9">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t9')">⑨ 画像アップロード<span class="accordion-arrow" id="arr-acc-t9">▶</span></div>
     <div class="accordion-body" id="acc-t9">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">フォルダから<wbr>選ぶか、<wbr>その場で<wbr>写真を<wbr>撮って、<wbr>画像を<wbr>1枚選びます<wbr>（③で<wbr>写真を<wbr>選んだ<wbr>場合は、<wbr>その<wbr>写真が<wbr>入っています）。<wbr>画像を<wbr>選ぶと、<wbr>SNSごとに<wbr>合う<wbr>比率で<wbr>トリミング<wbr>できます。<wbr>⭐が<wbr>付いている<wbr>比率が<wbr>おすすめです。<wbr>「自由」を<wbr>選ぶと、<wbr>縦横の<wbr>比率を<wbr>決めずに<wbr>トリミング<wbr>できます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">フォルダから<wbr>選ぶか、<wbr>その場で<wbr>写真を<wbr>撮って、<wbr>画像を<wbr>1枚選びます<wbr>（④で<wbr>写真を<wbr>選んだ<wbr>場合は、<wbr>その<wbr>写真が<wbr>入っています）。<wbr>画像を<wbr>選ぶと、<wbr>SNSごとに<wbr>合う<wbr>比率で<wbr>トリミング<wbr>できます。<wbr>⭐が<wbr>付いている<wbr>比率が<wbr>おすすめです。<wbr>「自由」を<wbr>選ぶと、<wbr>縦横の<wbr>比率を<wbr>決めずに<wbr>トリミング<wbr>できます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとに<wbr>選べる<wbr>こと</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">「✂️&nbsp;SNSごとにトリミングする」では、<wbr>SNSごとに<wbr>「✂️&nbsp;トリミングする」<wbr>「🖼️&nbsp;元画像」<wbr>（トリミングせずに<wbr>載せる）<wbr>「🚫&nbsp;画像なし」の<wbr>3つから<wbr>選べます。<wbr>すべての<wbr>SNSで<wbr>同じ<wbr>画像を<wbr>そのまま<wbr>使う<wbr>場合は<wbr>「トリミングせずにそのまま使う」、<wbr>画像を<wbr>付けない<wbr>場合は<wbr>「🚫&nbsp;画像なしで投稿する」を<wbr>選んでください。</div>
       <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
@@ -1539,12 +1647,12 @@
           <div style="font-size:11px;color:#555;line-height:1.7;">⭐4:5<wbr>（縦長）<wbr>／1:1<wbr>（正方<wbr>形）<wbr>／16:9<wbr>（横長）。<wbr>Instagramと<wbr>同じ<wbr>Meta社の<wbr>サービスの<wbr>ため、<wbr>縦長が<wbr>最も<wbr>きれいに<wbr>見えます。</div>
         </div>
       </div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">アップロードする<wbr>元の<wbr>画像は<wbr>1枚だけです。<wbr>⑤で<wbr>説明した<wbr>「同じ画像」は、<wbr>この<wbr>元の<wbr>画像の<wbr>ことです。<wbr>SNSごとに<wbr>トリミングの<wbr>しかたを<wbr>変えても、<wbr>元の<wbr>画像は<wbr>同じなので<wbr>「1投稿」の<wbr>数え方には<wbr>影響しません。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;">アップロードする<wbr>元の<wbr>画像は<wbr>1枚だけです。<wbr>⑥で<wbr>説明した<wbr>「同じ画像」は、<wbr>この<wbr>元の<wbr>画像の<wbr>ことです。<wbr>SNSごとに<wbr>トリミングの<wbr>しかたを<wbr>変えても、<wbr>元の<wbr>画像は<wbr>同じなので<wbr>「1投稿」の<wbr>数え方には<wbr>影響しません。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-t10')">⑨ 投稿日を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t10">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-t10')">⑩ 投稿日を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t10">▶</span></div>
     <div class="accordion-body" id="acc-t10">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">投稿する日と<wbr>時間を<wbr>選びます。<wbr>予約で<wbr>きるの<wbr>は、<wbr>次の<wbr>ご利用期間の<wbr>終了日まで<wbr>で<wbr>す（ご利用期間は、<wbr>プランを<wbr>お申し込みいただいた日から1か月ごと<wbr>で<wbr>す）<wbr>。<wbr>カレンダーの<wbr>各日に<wbr>は、<wbr>その<wbr>日の<wbr>予約の<wbr>件数が<wbr>表示されます。<wbr></div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿の<wbr>時間</div>
@@ -2029,7 +2137,10 @@ const TRACE_KEY = 'aipost_trace';
 // 　「業種が未登録です。」は正確でなかった）。何も登録していない人は191のまま。
 // ★liff_textgen.html193：大分類だけの時の案内を「小分類も登録すると、よりお店に合った文になります。」にした（大分類では合わないと受け取れたため。Kenさん指示）。
 // ★liff_textgen.html194：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '投稿文作成194';
+// ★liff_textgen.html195：目的を先に選ぶ形にした（①SNS→②目的→③作り方…。人材募集の時は③登録している情報→④求人の内容→⑤投稿文を確認する→⑥画像→⑦投稿日）。
+// 　人材募集はAIを使わず、入力した内容を決まった形に並べる（6つの項目は必須。店名・所在地・求人の連絡先は設定画面の登録を使う。ハッシュタグなし。
+// 　自由に入れる欄は、残りの字数までしか入らない）。ほかの目的で求人らしい言葉がある時は、「内容を確認する」で注意の窓を出す（Kenさん承認：画面見本_人材募集_01）。
+const TRACE_SCREEN = '投稿文作成195';
 
 function traceLog(msg) {
   try {
@@ -2325,11 +2436,7 @@ function getFreeText() {
     if (v('mk-deal-text')) parts.push('お得な内容：' + v('mk-deal-text'));
     if (period('deal')) parts.push(period('deal'));
   }
-  if (p === 'recruit') {
-    if (v('mk-recruit-job')) parts.push('募集する職種：' + v('mk-recruit-job'));
-    if (v('mk-recruit-cond')) parts.push('条件：' + v('mk-recruit-cond'));
-    else parts.push('条件は書かず、詳しくはお問い合わせくださいという形にする');
-  }
+  // ★liff_textgen.html195：人材募集はAIで作らない（入力を決まった形に並べる。rcBuildText()）
   if (p === 'other' && v('mk-other-text')) parts.push('どんな投稿にしたいか：' + v('mk-other-text'));
   return parts.join('。') + '。';
 }
@@ -2338,47 +2445,456 @@ function getFreeText() {
 let MK_MODE = '';     // ''＝まだ選んでいない／'ai'＝AIで作る／'mine'＝自分で書く
 const MK_PURPOSE_LABEL = { product: '商品・メニューの紹介', notice: 'お知らせ（営業日・休み・イベント）', deal: 'お得な情報', recruit: '人材募集', daily: 'お店の様子・日常', other: 'その他' };
 // 目的ごとに、入れてもらう欄（最初の欄は必ず入れる）
-const MK_REQUIRED = { product: ['mk-product-name', '紹介する商品・メニュー'], notice: ['mk-notice-text', 'お知らせの内容'], deal: ['mk-deal-text', 'お得な内容'], recruit: ['mk-recruit-job', '職種'], other: ['mk-other-text', 'どんな投稿にしたいか'] };
+const MK_REQUIRED = { product: ['mk-product-name', '紹介する商品・メニュー'], notice: ['mk-notice-text', 'お知らせの内容'], deal: ['mk-deal-text', 'お得な内容'], other: ['mk-other-text', 'どんな投稿にしたいか'] }; // ★liff_textgen.html195：人材募集を外した
 
 function getPurpose() {
   const el = document.querySelector('input[name="mk-purpose"]:checked');
   return el ? el.value : '';
 }
 
-// ②の選び方に合わせて、下の欄を出し分ける
+// ③の選び方に合わせて、下の欄を出し分ける（★liff_textgen.html195：出し分けは renderFlow() に移した）
 function setMakeMode(mode) {
   MK_MODE = mode || '';
   const ai = document.getElementById('mk-mode-ai');
   const mine = document.getElementById('mk-mode-mine');
   if (ai) ai.classList.toggle('on', MK_MODE === 'ai');
   if (mine) mine.classList.toggle('on', MK_MODE === 'mine');
-  const forAi = ['card-material', 'card-include', 'generate-btn', 'loading'];
-  let el = document.getElementById('card-make-mode');
-  while (el && (el = el.nextElementSibling)) {
-    const off = !MK_MODE || (MK_MODE === 'mine' && forAi.indexOf(el.id) >= 0);
-    el.classList.toggle('mk-off', off);
+  renderFlow();
+}
+
+// ★liff_textgen.html195：目的と作り方に合わせて、③から下のカードを出し分け、番号を付け直す。
+// 　目的を選ぶまでは③から下を出さない（予約の修正の時は、目的なしで「自分で書く」の形から始まる）。
+// 　人材募集：③登録している情報・④求人の内容・⑤投稿文を確認する（直せない）・⑥画像・⑦投稿日（作り方・AIの欄・店名と所在地を付ける・ハッシュタグは出さない）。
+// 　ほかの目的：③作り方 →（AIで作る）④投稿の内容・写真・キーワード・⑤店名を文章に含める →⑥投稿文・⑦店名と所在地を付ける・⑧ハッシュタグ・⑨画像・⑩投稿日。
+function renderFlow() {
+  const p = getPurpose();
+  const rec = p === 'recruit';
+  const started = !!p || !!MK_MODE;
+  const below = rec || (started && !!MK_MODE);
+  const ai = !rec && MK_MODE === 'ai';
+  const show = function (id, on) { const el = document.getElementById(id); if (el) el.classList.toggle('mk-off', !on); };
+  show('card-make-mode', started && !rec);
+  show('card-recruit-reg', rec);
+  show('card-recruit', rec);
+  show('rc-purpose-note', rec);
+  show('card-material', ai);
+  show('card-include', ai);
+  show('generate-btn', ai);
+  show('loading', ai);
+  ['card-post', 'image-section', 'card-date', 'reserve-hint', 'reserve-btn'].forEach(function (id) { show(id, below); });
+  show('card-endline', below && !rec);
+  show('card-hashtag', below && !rec);
+  show('rc-post-note', rec);
+  show('post-hashtag-caution', !rec);
+  const setText = function (id, t) { const el = document.getElementById(id); if (el) el.innerHTML = t; };
+  setText('step-no-post', rec ? '⑤' : '⑥');
+  setText('step-name-post', rec ? '投稿文を<wbr>確認する' : '投稿文を<wbr>確認・編集する');
+  setText('step-no-image', rec ? '⑥' : '⑨');
+  setText('step-no-date', rec ? '⑦' : '⑩');
+  const ta = document.getElementById('post-textarea');
+  if (ta) {
+    ta.readOnly = rec;
+    ta.placeholder = rec ? '④を入れると、投稿文がここに表示されます。' : 'AIで作成した投稿文がここに表示されます。直接入力することもできます。';
   }
   // 材料の1行は使わない（いつも隠す）
   const sum = document.getElementById('material-summary');
   if (sum) sum.classList.add('mk-off');
+  if (!rec) ['card-recruit', 'card-post', 'image-section', 'card-date', 'reserve-btn'].forEach(function (id) { const el = document.getElementById(id); if (el) el.classList.remove('rc-dim'); });
+  rcPlaceMeter();
 }
 
 // 目的を押した時（★liff_textgen.html182：目的は必須にしたので、もう一度押して外す動きはやめた）
+// ★liff_textgen.html195：人材募集とほかの目的を切り替える時は、入力中の投稿文（人材募集の時は④の入力）が消えることを確かめる
 let MK_LAST_PURPOSE = '';
-function onPurposeClick(radio) {
-  MK_LAST_PURPOSE = radio.value;
+async function onPurposeClick(radio, noAsk) {
+  const next = radio.value;
+  const prev = MK_LAST_PURPOSE;
+  if (next === prev) return;
+  const ta = document.getElementById('post-textarea');
+  const toRec = next === 'recruit' && prev !== 'recruit';
+  const fromRec = prev === 'recruit' && next !== 'recruit';
+  if (!noAsk) {
+    let ask = null;
+    if (toRec && ta && ta.value.trim() !== '') ask = { title: '人材募集に切り替えますか？', note: '入力中の投稿文は消えます。', ok: '切り替える' };
+    if (fromRec && rcHasInput()) ask = { title: '目的を切り替えますか？', note: '人材募集で入力した内容は消えます。', ok: '切り替える' };
+    if (ask && !(await window.aipostAsk(ask))) {
+      const back = prev ? document.querySelector('input[name="mk-purpose"][value="' + prev + '"]') : null;
+      if (back) back.checked = true; else radio.checked = false;
+      return;
+    }
+  }
+  radio.checked = true;
+  MK_LAST_PURPOSE = next;
+  if (toRec) {
+    if (ta) ta.value = '';
+    setEndLineChecked('shop', false);
+    setEndLineChecked('address', false);
+    rcLoadProfile();
+  }
+  if (fromRec) {
+    rcClear();
+    if (ta) ta.value = '';
+    updateCharCount();
+  }
   renderPurposeFields();
+  renderFlow();
+  if (toRec) rcUpdate();
 }
 
 function renderPurposeFields() {
   const p = getPurpose();
   renderAreaField();
-  ['product', 'notice', 'deal', 'recruit', 'other'].forEach(function (k) {
+  ['product', 'notice', 'deal', 'other'].forEach(function (k) { // ★liff_textgen.html195：人材募集の欄は④求人の内容へ
     const box = document.getElementById('mk-fields-' + k);
     if (box) box.classList.toggle('mk-off', k !== p);
   });
   renderMaterialPhotoStatus();
   updateMaterialSummary();
+}
+
+
+// ===== ★liff_textgen.html195：人材募集（AIを使わず、入力した内容を決まった形に並べる。Kenさん承認：画面見本_人材募集_01） =====
+// 　・③の店名・所在地・求人の連絡先は、人材募集を選んだ時に getUserProfile で取り直す（設定画面で変えた直後でも、新しい内容を使う）。
+// 　　求人の連絡先は recruitContact（GASがまだ返さない時は未登録として扱う）。
+// 　・字数は、⑥と同じ数え方（countCharsX）で、どのSNSにも共通の140字。ハッシュタグは付けない（getHashtagsForSns() が空を返す）。
+// 　・自由に入れる欄（仕事の内容・働く場所・ひとこと）は、入れて140字を超える分を、その欄の後ろから消す（文字の変換中は消さない）。
+const RC_LIMIT = 140;
+const RC_WAGE_UNIT = { '時給': '円', '日給': '円', '月給': '万円', '年収': '万円' };
+let RC_PROFILE = null;   // { ok, shopName, address, contact }（ok：取れたか）
+let RC_LOADING = false;
+let RC_LOAD_SEQ = 0;
+
+function isRecruit() { return getPurpose() === 'recruit'; }
+function rcVal(id) { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; }
+function rcChecked(id) { const el = document.getElementById(id); return !!(el && el.checked); }
+function rcEmploy() { return [...document.querySelectorAll('#rc-employ .rc-chip.on')].map(function (b) { return b.dataset.v; }); }
+
+// 金額：時給・日給は「1,200」、月給・年収は「25」「22.5」
+function rcMoney(v, unit) {
+  if (!v) return '';
+  const n = Number(v);
+  if (!isFinite(n)) return v;
+  return unit === '円' ? n.toLocaleString('ja-JP') : String(n);
+}
+
+// 投稿文を組み立てる（入っていない項目の行は出さない）
+function rcBuildText() {
+  const pf = (RC_PROFILE && RC_PROFILE.ok) ? RC_PROFILE : {};
+  const lines = ['【スタッフ募集】'];
+  const job = rcVal('rc-job');
+  if (job) lines.push('仕事：' + job);
+  const emp = rcEmploy();
+  if (emp.length) lines.push('雇用形態：' + emp.join('・'));
+  const wt = rcVal('rc-wage-type') || '時給';
+  const unit = RC_WAGE_UNIT[wt] || '円';
+  const wmin = rcVal('rc-wage-min'), wmax = rcVal('rc-wage-max');
+  if (wmin) lines.push('賃金：' + wt + rcMoney(wmin, unit) + unit + (wmax ? '〜' + rcMoney(wmax, unit) + unit : ''));
+  const tf = rcVal('rc-time-from'), tt = rcVal('rc-time-to'), shift = rcChecked('rc-shift');
+  if (tf && tt) lines.push('勤務時間：' + tf + '〜' + tt + (shift ? '（シフト制）' : ''));
+  else if (shift) lines.push('勤務時間：シフト制');
+  if (rcChecked('rc-place-same')) {
+    if (pf.address) lines.push('所在地・勤務地：' + pf.address);
+  } else {
+    const pl = rcVal('rc-place');
+    if (pl) lines.push('勤務地：' + pl);
+    if (pf.address) lines.push('所在地：' + pf.address);
+  }
+  if (pf.shopName) lines.push(pf.shopName);
+  if (pf.contact) lines.push('連絡先：' + pf.contact);
+  const cm = rcVal('rc-comment');
+  if (cm) lines.push(cm);
+  return lines.join('\n');
+}
+
+// 入力が変わった時：自由に入れる欄の「#」を消し、140字を超える分を消してから、⑤と字数を直す
+function rcOnInput(e) {
+  const el = e && e.target;
+  if (el && /[#＃]/.test(el.value)) el.value = el.value.replace(/[#＃]/g, '');
+  const composing = !!(e && e.isComposing);
+  rcUpdate(composing ? null : el);
+}
+function rcUpdate(trimEl) {
+  if (!isRecruit()) return;
+  let text = rcBuildText();
+  if (trimEl && trimEl.value) {
+    let chars = [...trimEl.value];
+    while (chars.length && countCharsX(text) > RC_LIMIT) {
+      chars.pop();
+      trimEl.value = chars.join('');
+      text = rcBuildText();
+    }
+  }
+  const ta = document.getElementById('post-textarea');
+  if (ta && ta.value !== text) {
+    ta.value = text;
+    updateCharCount();
+  }
+  const used = countCharsX(text);
+  const rest = RC_LIMIT - used;
+  const meter = document.getElementById('rc-meter');
+  if (meter) meter.classList.toggle('over', rest < 0);
+  const setT = function (id, t) { const el = document.getElementById(id); if (el) el.textContent = t; };
+  setT('rc-used', used);
+  setT('rc-rest-label', rest < 0 ? 'オーバー' : '残り');
+  setT('rc-rest', Math.abs(rest));
+  const bar = document.getElementById('rc-bar');
+  if (bar) bar.style.width = Math.min(100, used / RC_LIMIT * 100) + '%';
+  document.querySelectorAll('.rc-rest2').forEach(function (b) { b.textContent = Math.max(0, rest); });
+}
+
+function rcToggleEmploy(btn) {
+  btn.classList.toggle('on');
+  rcUpdate();
+}
+
+// 賃金：数字だけ（月給・年収は小数点1つまで）
+function rcCleanMoney(v, unit) {
+  v = String(v || '').replace(/[０-９．]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); });
+  if (unit === '円') return v.replace(/[^0-9]/g, '').slice(0, 7);
+  v = v.replace(/[^0-9.]/g, '');
+  const i = v.indexOf('.');
+  if (i !== -1) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/\./g, '').slice(0, 1);
+  return v.slice(0, 6);
+}
+function rcOnWage(el) {
+  const unit = RC_WAGE_UNIT[rcVal('rc-wage-type')] || '円';
+  const c = rcCleanMoney(el.value, unit);
+  if (c !== el.value) el.value = c;
+  rcUpdate();
+}
+function rcOnWageType() {
+  const unit = RC_WAGE_UNIT[rcVal('rc-wage-type')] || '円';
+  ['rc-unit-1', 'rc-unit-2'].forEach(function (id) { const el = document.getElementById(id); if (el) el.textContent = unit; });
+  ['rc-wage-min', 'rc-wage-max'].forEach(function (id) { const el = document.getElementById(id); if (el) el.value = rcCleanMoney(el.value, unit); });
+  rcUpdate();
+}
+
+function rcOnPlaceSame() {
+  const same = rcChecked('rc-place-same');
+  const wrap = document.getElementById('rc-place-wrap');
+  if (wrap) wrap.classList.toggle('mk-off', same);
+  const note = document.getElementById('rc-place-note');
+  if (note) note.classList.toggle('mk-off', !same);
+  rcUpdate();
+}
+
+// ひとことの例：残りの字数に入らない時は入れない
+function rcSetComment(t) {
+  const el = document.getElementById('rc-comment');
+  if (!el) return;
+  const old = el.value;
+  el.value = t;
+  if (countCharsX(rcBuildText()) > RC_LIMIT) {
+    el.value = old;
+    aipostNotice('残りの字数が足りないため、入れられません。\nほかの項目を短くしてください。');
+    return;
+  }
+  rcUpdate();
+}
+
+// 勤務時間の選び肢（30分ごと）
+function rcInitTimes() {
+  ['rc-time-from', 'rc-time-to'].forEach(function (id) {
+    const sel = document.getElementById(id);
+    if (!sel || sel.options.length) return;
+    let html = '<option value="">－</option>';
+    for (let m = 0; m < 24 * 60; m += 30) {
+      const t = Math.floor(m / 60) + ':' + (m % 60 === 0 ? '00' : '30');
+      html += '<option value="' + t + '">' + t + '</option>';
+    }
+    sel.innerHTML = html;
+  });
+}
+
+function rcHasInput() {
+  return !!(rcVal('rc-job') || rcEmploy().length || rcVal('rc-wage-min') || rcVal('rc-wage-max') || !rcChecked('rc-place-same') || rcVal('rc-place') ||
+    rcVal('rc-time-from') || rcVal('rc-time-to') || rcChecked('rc-shift') || rcVal('rc-comment'));
+}
+
+function rcClear() {
+  ['rc-job', 'rc-wage-min', 'rc-wage-max', 'rc-place', 'rc-comment', 'rc-time-from', 'rc-time-to'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.querySelectorAll('#rc-employ .rc-chip').forEach(function (b) { b.classList.remove('on'); });
+  const wt = document.getElementById('rc-wage-type');
+  if (wt) wt.value = '時給';
+  ['rc-unit-1', 'rc-unit-2'].forEach(function (id) { const el = document.getElementById(id); if (el) el.textContent = '円'; });
+  const same = document.getElementById('rc-place-same');
+  if (same) same.checked = true;
+  const shift = document.getElementById('rc-shift');
+  if (shift) shift.checked = false;
+  const wrap = document.getElementById('rc-place-wrap');
+  if (wrap) wrap.classList.add('mk-off');
+  const note = document.getElementById('rc-place-note');
+  if (note) note.classList.remove('mk-off');
+}
+
+// ③：店名・所在地・求人の連絡先を取り直して出す
+async function rcLoadProfile() {
+  const seq = ++RC_LOAD_SEQ;
+  RC_LOADING = true;
+  RC_PROFILE = null;
+  rcRenderReg();
+  let data = null;
+  try {
+    const r = await postToGas({ action: 'getUserProfile', lineUid: LINE_UID }, 'プロフィール（人材募集）');
+    data = r && r.data ? r.data : null;
+  } catch (e) {
+    data = null;
+  }
+  if (seq !== RC_LOAD_SEQ) return;
+  RC_LOADING = false;
+  const t = function (v) { return (v === undefined || v === null) ? '' : String(v).trim(); };
+  RC_PROFILE = (data && data.found !== false)
+    ? { ok: true, shopName: t(data.shopName), address: t(data.address), contact: t(data.recruitContact) }
+    : { ok: false };
+  rcRenderReg();
+  rcUpdate();
+}
+
+// 未登録の項目の名前（取れなかった時は null）
+function rcMissingReg() {
+  if (!RC_PROFILE || !RC_PROFILE.ok) return null;
+  const m = [];
+  if (!RC_PROFILE.shopName) m.push('店名・社名');
+  if (!RC_PROFILE.address) m.push('所在地');
+  if (!RC_PROFILE.contact) m.push('連絡先');
+  return m;
+}
+
+function rcRenderReg() {
+  const set = function (id, v) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = v === null ? '確認中…' : (v || '未登録');
+    el.classList.toggle('rc-none', v === '');
+  };
+  const pf = RC_PROFILE;
+  const loading = RC_LOADING || !pf;
+  set('rc-shop', loading ? null : (pf.ok ? pf.shopName : null));
+  set('rc-addr', loading ? null : (pf.ok ? pf.address : null));
+  set('rc-contact', loading ? null : (pf.ok ? pf.contact : null));
+  const missing = rcMissingReg();
+  const failed = !loading && pf && !pf.ok;
+  const ng = !!(failed || (missing && missing.length));
+  const ngBox = document.getElementById('rc-reg-ng');
+  if (ngBox) ngBox.classList.toggle('mk-off', !ng);
+  const title = document.getElementById('rc-reg-ng-title');
+  const text = document.getElementById('rc-reg-ng-text');
+  if (failed) {
+    if (title) title.textContent = '⚠️ 登録している情報を確認できませんでした';
+    if (text) text.textContent = '画面を開き直してから、もう一度お試しください。';
+  } else if (ng) {
+    if (title) title.textContent = '⚠️ 人材募集を作るには、登録が必要です';
+    if (text) text.textContent = '求人の投稿には、店名・社名、所在地、連絡先を載せる必要があります。設定画面で登録してください。';
+  }
+  const ok = document.getElementById('rc-reg-ok');
+  if (ok) ok.classList.toggle('mk-off', ng);
+  const btn = document.getElementById('rc-set-btn');
+  if (btn) btn.textContent = (missing && missing.length) ? '⚙️ 設定画面で登録する' : '⚙️ 設定画面で変更する';
+  // 登録がそろうまで、④と⑤から下は使えない
+  const ready = !loading && !ng;
+  ['card-recruit', 'card-post', 'image-section', 'card-date', 'reserve-btn'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('rc-dim', isRecruit() && !ready);
+  });
+}
+
+// 字数の帯を、上の帯とタブの下に止める
+function rcPlaceMeter() {
+  const meter = document.getElementById('rc-meter');
+  if (!meter) return;
+  let top = 0;
+  ['.header', '.subbar', '.tab-nav'].forEach(function (q) { const el = document.querySelector(q); if (el) top += el.offsetHeight; });
+  meter.style.top = (top + 4) + 'px';
+}
+window.addEventListener('resize', rcPlaceMeter);
+
+// 「内容を確認する」の時の確かめ。よければ true（⑤の文を組み立て直しておく）
+function rcCheckBeforeReserve() {
+  if (RC_LOADING || !RC_PROFILE) {
+    aipostNotice('登録している情報を確認しています。\n少し待ってから、もう一度押してください。');
+    return false;
+  }
+  if (!RC_PROFILE.ok) {
+    aipostNotice('登録している情報を確認できませんでした。\n画面を開き直してから、もう一度お試しください。');
+    return false;
+  }
+  const missingReg = rcMissingReg();
+  if (missingReg.length) {
+    aipostNotice(missingReg.join('・') + 'が未登録です。\n設定画面の「登録」タブで登録してください。');
+    return false;
+  }
+  const need = [];
+  if (!rcVal('rc-job')) need.push('仕事の内容');
+  if (!rcEmploy().length) need.push('雇用形態');
+  if (!rcVal('rc-wage-min')) need.push('賃金');
+  if (!rcChecked('rc-place-same') && !rcVal('rc-place')) need.push('働く場所');
+  if (need.length) {
+    aipostNotice('「' + need.join('」「') + '」を入れてください。');
+    return false;
+  }
+  const wmin = Number(rcVal('rc-wage-min')), wmax = rcVal('rc-wage-max') ? Number(rcVal('rc-wage-max')) : null;
+  if (!(wmin > 0) || (wmax !== null && !(wmax > wmin))) {
+    aipostNotice('賃金の金額を確かめてください。\n「〜」の右に入れる時は、左より大きい金額にしてください。');
+    return false;
+  }
+  if (!!rcVal('rc-time-from') !== !!rcVal('rc-time-to')) {
+    aipostNotice('勤務時間は、始まりと終わりの両方を選んでください。');
+    return false;
+  }
+  rcUpdate();
+  const ta = document.getElementById('post-textarea');
+  const used = countCharsX(ta ? ta.value : '');
+  if (used > RC_LIMIT) {
+    aipostNotice('投稿文が' + RC_LIMIT + '字を超えています（' + used + '字）。\n④の「仕事の内容」「勤務時間」「ひとこと」などを短くしてください。');
+    return false;
+  }
+  return true;
+}
+
+// ほかの目的で、投稿文に求人らしい言葉があるか（「募集」「採用」「パート」だけでは見ない。モニター募集・新素材を採用・デパートなどがあるため）
+const RC_JOB_WORDS = ['求人', 'スタッフ募集', '従業員募集', 'アルバイト', 'パート募集', 'パートさん', 'パートスタッフ', '正社員', '契約社員', '時給', '日給', '月給', '採用情報', '採用中', '応募資格', '未経験歓迎', '一緒に働'];
+let RC_WARN_PASSED = ''; // 「求人ではないので進む」を選んだ投稿文（同じ文では、もう聞かない）
+function rcFindJobWords(text) {
+  return RC_JOB_WORDS.filter(function (wd) { return String(text || '').indexOf(wd) !== -1; });
+}
+// 注意の窓：'recruit'＝人材募集で作り直す／'go'＝求人ではないので進む／null＝外側を押した（何もしない）
+function rcWarnAsk(words, text) {
+  return new Promise(function (resolve) {
+    let el = document.getElementById('rc-warn');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'rc-warn';
+      el.className = 'notice-confirm';
+      el.style.zIndex = '5000';
+      document.body.appendChild(el);
+    }
+    el.innerHTML = '<div class="notice-confirm-sheet"><div class="notice-confirm-handle"></div>' +
+      '<div class="notice-confirm-title">⚠️ 求人の<wbr>内容が<wbr>含まれているようです</div>' +
+      '<div class="notice-confirm-note" id="rc-warn-note"></div>' +
+      '<div class="rc-warn-text" id="rc-warn-text"></div>' +
+      '<button type="button" class="notice-confirm-btn" id="rc-warn-rec" style="background:var(--primary);color:#fff;">人材募集で<wbr>作り直す</button>' +
+      '<button type="button" class="notice-confirm-btn notice-confirm-back" id="rc-warn-go">求人ではないので<wbr>進む</button></div>';
+    document.getElementById('rc-warn-note').textContent = '投稿文に「' + words.slice(0, 3).join('」「') + '」があります。\n' +
+      '求人の投稿には、店名・社名、所在地、連絡先、仕事の内容、働く場所、賃金を載せる必要があります。求人は、目的「人材募集」から作成してください。';
+    document.getElementById('rc-warn-note').style.whiteSpace = 'pre-line';
+    document.getElementById('rc-warn-text').textContent = text;
+    const done = function (v) { el.classList.remove('open'); el.onclick = null; resolve(v); };
+    document.getElementById('rc-warn-rec').onclick = function () { done('recruit'); };
+    document.getElementById('rc-warn-go').onclick = function () { done('go'); };
+    el.onclick = function (ev) { if (ev.target === el) done(null); };
+    el.classList.add('open');
+  });
+}
+// 「人材募集で作り直す」：目的を人材募集にして、②へ移る（投稿文が消えることは、窓で知らせてある）
+async function rcSwitchToRecruit() {
+  const radio = document.querySelector('input[name="mk-purpose"][value="recruit"]');
+  if (!radio) return;
+  await onPurposeClick(radio, true);
+  const card = document.getElementById('card-purpose');
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ★liff_textgen.html188：訴求パターン「地域密着」の時だけ、地域名の欄を出す
@@ -2453,10 +2969,11 @@ function onPeriodChange(key, which) {
 function clearPurpose() {
   document.querySelectorAll('input[name="mk-purpose"]').forEach(function (r) { r.checked = false; });
   MK_LAST_PURPOSE = '';
-  ['mk-product-name', 'mk-area-text', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text'].forEach(function (id) {
+  ['mk-product-name', 'mk-area-text', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-other-text'].forEach(function (id) {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  rcClear(); // ★liff_textgen.html195
   const appealDefault = document.querySelector('input[name="mk-appeal"][value=""]');
   if (appealDefault) appealDefault.checked = true;
   renderAreaField();
@@ -2598,7 +3115,7 @@ async function ensurePhotoDescription() {
     return { ok: true, text: MAT_PHOTO_DESC.text, token: token };
   }
   if (MAT_PHOTO_DESC.token === token && MAT_PHOTO_DESC.status === 'unclear') {
-    return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、③の「この写真の内容も文に使う」のチェックを外して作成してください。' };
+    return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、④の「この写真の内容も文に使う」のチェックを外して作成してください。' };
   }
   if (MAT_PHOTO_PENDING && MAT_PHOTO_PENDING.token === token) return MAT_PHOTO_PENDING.promise;
   const promise = (async function () {
@@ -2621,11 +3138,11 @@ async function ensurePhotoDescription() {
       if (!result || !result.success) {
         const msg = (result && result.error) ? String(result.error) : '';
         if (result && result.trialPhotoLimitReached) {
-          return { ok: false, message: msg + '\n③の「この写真の内容も文に使う」のチェックを外すと、写真を使わずに作成できます。' };
+          return { ok: false, message: msg + '\n④の「この写真の内容も文に使う」のチェックを外すと、写真を使わずに作成できます。' };
         }
         // GASの案内の文（「。」で終わる）はそのまま出し、技術的なエラーの文は出さない
         const friendly = /。$/.test(msg) ? msg + '\n' : '写真の内容を読み取れませんでした。\n';
-        return { ok: false, message: friendly + 'もう一度お試しいただくか、③の「この写真の内容も文に使う」のチェックを外して作成してください。' };
+        return { ok: false, message: friendly + 'もう一度お試しいただくか、④の「この写真の内容も文に使う」のチェックを外して作成してください。' };
       }
       if (token !== MAT_PHOTO_TOKEN) {
         return { ok: false, message: '作成の途中で写真が変わりました。もう一度「投稿文・ハッシュタグを作成」を押してください。' };
@@ -2633,7 +3150,7 @@ async function ensurePhotoDescription() {
       const data = result.data || {};
       if (data.unclear || !data.description) {
         MAT_PHOTO_DESC = { token: token, status: 'unclear', text: '' };
-        return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、③の「この写真の内容も文に使う」のチェックを外して作成してください。' };
+        return { ok: false, message: '写真の内容を読み取れませんでした。\n別の写真にするか、④の「この写真の内容も文に使う」のチェックを外して作成してください。' };
       }
       MAT_PHOTO_DESC = { token: token, status: 'ok', text: String(data.description) };
       return { ok: true, text: MAT_PHOTO_DESC.text, token: token };
@@ -2666,6 +3183,7 @@ function splitHashtagInput(value) {
 
 function getHashtagsForSns(sns) {
   const result = [];
+  if (isRecruit()) return result; // ★liff_textgen.html195：人材募集はハッシュタグを付けない
   for (let i = 1; i <= 5; i++) {
     const input = document.getElementById('hashtag-input-' + i);
     const cb = document.getElementById(`hashtag-check-${i}-${sns}`);
@@ -3034,7 +3552,7 @@ function toggleEndLine(el, kind) {
     }
     // ★liff_textgen.html139：投稿文が空の時はチェックできない（Kenさん指示）
     if (!ta || ta.value.trim() === '') {
-      aipostNotice('投稿文が空のため、' + label + 'は付けられません。\n先に投稿文を作成するか、⑤に入力してください。');
+      aipostNotice('投稿文が空のため、' + label + 'は付けられません。\n先に投稿文を作成するか、⑥に入力してください。');
       return;
     }
   }
@@ -3201,7 +3719,7 @@ async function executeGenerate() {
       const withShop = result.data.generatedText + '\n' + endLineText('shop') + (result.data.addressLine ? '\n' + result.data.addressLine : '');
       if (countCharsX(withShop) > CHAR_LIMIT) {
         setEndLineChecked('shop', false);
-        aipostNotice('店名を付けると文字数の上限（' + CHAR_LIMIT + '字）を超えるため、付けませんでした。\n投稿文を短くしてから、もう一度⑥の「店名を付ける」にチェックを付けてください。');
+        aipostNotice('店名を付けると文字数の上限（' + CHAR_LIMIT + '字）を超えるため、付けませんでした。\n投稿文を短くしてから、もう一度⑦の「店名を付ける」にチェックを付けてください。');
       } else {
         ta.value = withShop;
       }
@@ -3992,10 +4510,12 @@ async function showConfirm() {
     aipostNotice('ご利用の登録が見つかりませんでした。\n設定画面の「登録」タブで店舗情報を保存すると、ご利用を始められます。');
     return;
   }
+  // ★liff_textgen.html195：人材募集は、登録・必須の項目・字数を先に確かめる
+  if (isRecruit() && !rcCheckBeforeReserve()) return;
   const ta = document.getElementById('post-textarea');
   if (!ta.value.trim()) { aipostNotice('投稿文を入力してください。'); return; }
   // ★liff_textgen.html136：⑦でオンにした店名・所在地の行が投稿文に無ければ、ここで付ける（上限を超える時は止める）
-  if (!ensureEndLines()) return;
+  if (!isRecruit() && !ensureEndLines()) return;
   // ★liff_textgen.html134：ハッシュタグの確認を、日付・画像の確認より先に行う（Kenさん指示。以前は「予約を確定する」を
   // 　押すまで分からなかった）。本文の中のハッシュタグ → Instagramのタグ数（5つまで）の順。予約の確定時にも同じ確認を残す。
   const bodyTagsAtConfirm = String(ta.value || '').match(/[#＃][^\s#＃]+/g) || [];
@@ -4009,6 +4529,18 @@ async function showConfirm() {
     if (igTagsAtConfirm.length > 5) {
       aipostNotice('Instagramのハッシュタグは5つまでです（今は' + igTagsAtConfirm.length + '個です）。\nInstagram用のチェックを外すか、タグを減らしてください。');
       return;
+    }
+  }
+  // ★liff_textgen.html195：人材募集のほかの目的で、求人らしい言葉がある時は注意の窓を出す（「進む」を選んだ同じ文では、もう聞かない）
+  if (!isRecruit()) {
+    const jobWords = rcFindJobWords(ta.value);
+    if (jobWords.length && RC_WARN_PASSED !== ta.value) {
+      showConfirmBusy = true;
+      let ans = null;
+      try { ans = await rcWarnAsk(jobWords, ta.value); } finally { showConfirmBusy = false; }
+      if (ans === 'recruit') { rcSwitchToRecruit(); return; }
+      if (ans !== 'go') return;
+      RC_WARN_PASSED = ta.value;
     }
   }
   if (!selectedDay) { aipostNotice('投稿日を選んでください。'); return; }
@@ -4435,7 +4967,7 @@ async function executeReserve() {
       keyword3: keywords[2] || '',
       includeShopName: includeFlags.includeShopName,
       includeArea: includeFlags.includeArea,
-      appealPattern: LAST_APPEAL_PATTERN || '⑦新登場',
+      appealPattern: isRecruit() ? '⑩人材募集' : (LAST_APPEAL_PATTERN || '⑦新登場'), // ★liff_textgen.html195：人材募集は⑩人材募集
       generatedText: document.getElementById('post-textarea').value,
       hashtagsBySns: {
         x: snsTargets.x ? getHashtagsForSns('X') : [],
@@ -4869,7 +5401,8 @@ let imageState = null;
 // 　何も入力していない状態では確認を出さずにそのまま更新する。
 function textgenHasInput() {
   const ids = ['keyword-input-1', 'keyword-input-2', 'keyword-input-3', 'free-text-input', 'post-textarea',
-    'mk-product-name', 'mk-area-text', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-recruit-job', 'mk-recruit-cond', 'mk-other-text',
+    'mk-product-name', 'mk-area-text', 'mk-notice-text', 'mk-notice-from', 'mk-notice-to', 'mk-deal-text', 'mk-deal-from', 'mk-deal-to', 'mk-other-text',
+    'rc-job', 'rc-wage-min', 'rc-wage-max', 'rc-place', 'rc-comment', // ★liff_textgen.html195
     'hashtag-input-1', 'hashtag-input-2', 'hashtag-input-3', 'hashtag-input-4', 'hashtag-input-5'];
   const hasText = ids.some(function (id) {
     const el = document.getElementById(id);
@@ -5688,7 +6221,7 @@ initLiff();
 // 全ての変数宣言・初期化が完了した後に、編集モードの読み込みを実行する
 // （originalImage・trimResults・imageStateはこのファイル後方でletにより宣言されているため、
 // 　それより前に呼び出すとTDZ（temporal dead zone）エラーで失敗する）
-setMakeMode(''); renderPurposeFields(); // ★liff_textgen.html180
+rcInitTimes(); setMakeMode(''); renderPurposeFields(); // ★liff_textgen.html180・195
 loadEditModeFromUrl();
 </script>
 
