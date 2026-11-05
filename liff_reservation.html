@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更91 - AiPost</title>
+<title>予約確認・変更92 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -634,6 +634,7 @@
   .detail-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .detail-btn-grid .btn { width: 100%; margin: 0; padding-left: 4px; padding-right: 4px; word-break: keep-all; overflow-wrap: anywhere; }
   .detail-btn-grid .detail-image-btn2 { border: 1.5px solid var(--primary); color: var(--primary); background: transparent; }
+  .detail-recruit-note { background: #fff3e0; color: #e65100; border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.7; margin-bottom: 8px; word-break: keep-all; overflow-wrap: anywhere; } /* ★liff_reservation.html92 */
 
   /* ★liff_reservation_html33：予約本文の修正 */
   .edit-textarea {
@@ -1027,7 +1028,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更91</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更92</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1445,6 +1446,8 @@
       <!-- ★liff_reservation.html69：ボタンを上下2つずつ・すべて同じ大きさにした（Kenさん指示）。上左「閉じる」・上右「予約キャンセル」・
            下左「投稿文を修正する」・下右「画像を変更する」（画像のない予約は「画像を掲載する」）。投稿予定の5分前を過ぎた予約では、下の2つは出さない -->
       <div class="detail-actions">
+        <!-- ★liff_reservation.html92：人材募集の予約は本文を直せない（その案内） -->
+        <div class="detail-recruit-note" id="detail-recruit-note" style="display:none;">人材募集の<wbr>投稿文は<wbr>直せません。<wbr>直す時は、<wbr>予約を<wbr>キャンセルして、<wbr>投稿文作成で<wbr>作り直してください。</div>
         <div class="detail-btn-grid">
           <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
           <button class="btn btn-danger" onclick="confirmCancel()">予約を<wbr>キャンセルする</button>
@@ -2101,7 +2104,11 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   // 　投稿削除にも「一覧／カレンダー」を足した（カレンダーは月ごと。日を押すとその日の投稿を選べる。選んだものは一覧と同じ。Kenさん指示）。
   // ★liff_reservation.html90：投稿削除の「選択をすべて外す」「削除する」を、X／Threads のボタンと同じ高さにした（帯が高く、一覧を狭くしていた。Kenさん指示）
   // ★liff_reservation.html91：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-  const TRACE_SCREEN = '予約確認91';
+  // ★liff_reservation.html92：人材募集の予約（予約一覧の isRecruit。投稿予約gs_40）は、予約の詳細で「投稿文を修正する」を出さず、
+  // 　「人材募集の投稿文は直せません。…」を出す（画像のボタンは下の段に横いっぱい）。ほかの予約の本文を直して「保存する」を押した時、
+  // 　求人らしい言葉（投稿文作成195 と同じ一覧）があれば、注意の窓を出す（「求人ではないので保存する」で今までどおり進む。Kenさん承認：画面見本_予約確認92）。
+  // 　前に覚えた予約一覧に isRecruit が無い時は、取り直す。
+  const TRACE_SCREEN = '予約確認92';
 
   function traceLog(msg) {
     try {
@@ -2564,7 +2571,7 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
           // ★liff_reservation_html33：ハッシュタグ（hashtags）を含まない旧形式の保存データは使わず取得し直す
           // ★liff_reservation_html34：画像ファイルID（imageFileId）を含まない保存データも取得し直す
           // ★liff_reservation.html65：SNSごとの画像（snsImages。投稿予約gs_35）を含まない保存データも取得し直す
-          const isCurrentFormat = Array.isArray(cachedList) && cachedList.every(function (item) { return item && item.hashtags && typeof item.imageFileId === 'string' && item.snsImages && typeof item.snsImages === 'object'; });
+          const isCurrentFormat = Array.isArray(cachedList) && cachedList.every(function (item) { return item && item.hashtags && typeof item.imageFileId === 'string' && item.snsImages && typeof item.snsImages === 'object' && typeof item.isRecruit === 'boolean'; }); // ★liff_reservation.html92：isRecruit
           if (isCurrentFormat) {
             renderReservationList(cachedList);
             return;
@@ -2615,7 +2622,11 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
     showDetailSnsImages(r); // ★liff_reservation.html65
     // ★liff_reservation_html33：修正モードを解除し、修正可能な予約のみ「修正する」を表示
     setEditMode(false);
-    document.getElementById('detail-edit-btn').style.display = isReservationEditable(r) ? '' : 'none';
+    // ★liff_reservation.html92：人材募集の予約は「投稿文を修正する」を出さず、案内を出す（画像のボタンは下の段に横いっぱい）
+    const recruitLocked = r.isRecruit === true && isReservationEditable(r);
+    document.getElementById('detail-edit-btn').style.display = (isReservationEditable(r) && r.isRecruit !== true) ? '' : 'none';
+    document.getElementById('detail-recruit-note').style.display = recruitLocked ? '' : 'none';
+    document.getElementById('detail-image-btn').style.gridColumn = recruitLocked ? '1 / span 2' : '';
     // ★liff_reservation_html35：画像差し替えモードも解除し、差し替え可能な予約のみボタンを表示
     setImageReplaceMode(false);
     document.getElementById('detail-image-btn').style.display = isReservationEditable(r) ? 'block' : 'none';
@@ -3994,6 +4005,7 @@ function _dataUrlToBase64(dataUrl) {
   function startEditReservation() {
     const r = getDetailReservation();
     if (!r) return;
+    if (r.isRecruit === true) return; // ★liff_reservation.html92：人材募集の予約は直せない（ボタンも出していない）
     if (!isReservationEditable(r)) {
       aipostNotice('投稿予定時刻の' + EDIT_CUTOFF_MINUTES + '分前を過ぎたため修正できません。');
       document.getElementById('detail-edit-btn').style.display = 'none';
@@ -4046,11 +4058,31 @@ function _dataUrlToBase64(dataUrl) {
 
   // ★liff_reservation.html75：「保存する」を押した時に、先に投稿の内容を確かめる（投稿チェックgs_05。本文の修正。直している予約は比べる相手から外す）。
   // 　止める時は窓を出して保存しない。注意だけの時は窓を出し、「このまま保存する」で保存する。何も無い時・確かめられなかった時は、そのまま保存する。
+  // ★liff_reservation.html92：求人らしい言葉（投稿文作成195 の RC_JOB_WORDS と同じ。「募集」「採用」「パート」だけでは見ない）
+  const RES_JOB_WORDS = ['求人', 'スタッフ募集', '従業員募集', 'アルバイト', 'パート募集', 'パートさん', 'パートスタッフ', '正社員', '契約社員', '時給', '日給', '月給', '採用情報', '採用中', '応募資格', '未経験歓迎', '一緒に働'];
   async function saveEditReservation() {
     const r = getDetailReservation();
     if (!r || editSaving) return;
     const newText = document.getElementById('detail-edit-text').value.trim();
     const saveBtn = document.getElementById('detail-edit-save-btn');
+    // ★liff_reservation.html92：求人らしい言葉がある時は、注意の窓を出す（「やめる」・外側を押した時は保存しない）
+    const jobWords = RES_JOB_WORDS.filter(function (w) { return newText.indexOf(w) !== -1; });
+    if (jobWords.length > 0) {
+      editSaving = true;
+      let go = false;
+      try {
+        go = await window.aipostAsk({
+          title: '⚠️ 求人の内容が含まれているようです',
+          note: '投稿文に「' + jobWords.slice(0, 3).join('」「') + '」があります。\n' +
+            '求人の投稿には、店名・社名、所在地、連絡先、仕事の内容、働く場所、賃金を載せる必要があります。求人は、予約をキャンセルして、投稿文作成の目的「人材募集」から作成してください。',
+          ok: '求人ではないので保存する',
+          cancel: 'やめる'
+        });
+      } finally {
+        editSaving = false;
+      }
+      if (!go) return;
+    }
     editSaving = true;
     saveBtn.disabled = true;
     saveBtn.textContent = '確認中…';
