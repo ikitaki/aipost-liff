@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録89 - AiPost</title>
+<title>設定・登録90 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -637,7 +637,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録89</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録90</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -873,9 +873,9 @@
             <div class="select-wrap" style="flex:0 0 96px;">
               <select class="form-select" id="recruit-contact-type"><option value="tel">電話</option><option value="mail">メール</option></select>
             </div>
-            <input type="text" class="form-input" id="recruit-contact-input" maxlength="60" placeholder="例：06-1234-5678" style="flex:1;min-width:0;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
+            <input type="text" class="form-input" id="recruit-contact-input" maxlength="60" placeholder="例：0612345678" style="flex:1;min-width:0;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
           </div>
-          <p style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:4px;">人材募集の<wbr>投稿に、<wbr>そのまま<wbr>載ります。<wbr>電話番号<wbr>（数字と<wbr>ハイフン）か、<wbr>メールアドレスを<wbr>入れてください。<wbr>人材募集を<wbr>作るには、<wbr>店舗名・<wbr>所在地・<wbr>求人の連絡先の<wbr>3つが<wbr>必要です。<br>下の<wbr>「連絡先メールアドレス」は、<wbr>AiPostからの<wbr>ご連絡用で、<wbr>投稿には<wbr>載りません。</p>
+          <p style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:4px;">人材募集の<wbr>投稿に、<wbr>そのまま<wbr>載ります。<wbr>電話番号<wbr>（数字だけ。<wbr>ハイフンは<wbr>入れません）か、<wbr>メールアドレスを<wbr>入れてください。<wbr>人材募集を<wbr>作るには、<wbr>店舗名・<wbr>所在地・<wbr>求人の連絡先の<wbr>3つが<wbr>必要です。<br>下の<wbr>「連絡先メールアドレス」は、<wbr>AiPostからの<wbr>ご連絡用で、<wbr>投稿には<wbr>載りません。</p>
         </div>
         <button class="btn btn-primary" onclick="saveShopInfo()" disabled>店舗情報を保存する</button>
       </div>
@@ -1264,7 +1264,9 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_settings.html89：店舗情報に「求人の連絡先」（電話／メール）を足した（投稿文作成の人材募集で、店舗名・所在地と一緒に投稿文に載る。
 // 　Kenさん承認：画面見本_設定89_求人の連絡先）。所在地の見出しを「所在地（任意。人材募集では必須）」にした。GASには recruitContactType（tel／mail）・
 // 　recruitContact で送る（GASの変更は別の指示書）。電話は数字とハイフン（数字10〜11けた）、メールはメールの形の時だけ保存できる。
-const TRACE_SCREEN = '設定89';
+// ★liff_settings.html90：求人の連絡先の電話番号を、ハイフンなしにした（Kenさん指示）。電話を選んでいる時は、入力欄に数字だけが入る
+// 　（ハイフン・「ー」・空白は入れたそばから消し、全角の数字は半角にする）。0で始まる10〜11けたの時だけ保存できる（UserProfilegs_23 と同じ決まり）。
+const TRACE_SCREEN = '設定90';
 
 function traceLog(msg) {
   try {
@@ -2427,10 +2429,8 @@ function normalizeRecruitContact(type, value) {
   let v = String(value || '').trim().replace(/[０-９Ａ-Ｚａ-ｚ＠．＿－＋]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); });
   if (v === '') return '';
   if (type === 'tel') {
-    v = v.replace(/[ー―‐−–]/g, '-').replace(/\s/g, '');
-    const digits = v.replace(/-/g, '');
-    if (!/^[0-9-]+$/.test(v) || !/^0[0-9]{9,10}$/.test(digits) || /--/.test(v) || /^-|-$/.test(v)) return null;
-    return v;
+    v = v.replace(/[-ー―‐−–\s]/g, ''); // ★liff_settings.html90：ハイフンなし
+    return /^0[0-9]{9,10}$/.test(v) ? v : null;
   }
   v = v.replace(/\s/g, '');
   return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) ? v : null;
@@ -2439,8 +2439,16 @@ function updateRecruitContactPlaceholder() {
   const type = document.getElementById('recruit-contact-type');
   const input = document.getElementById('recruit-contact-input');
   if (!type || !input) return;
-  input.placeholder = type.value === 'mail' ? '例：recruit@example.com' : '例：06-1234-5678';
+  input.placeholder = type.value === 'mail' ? '例：recruit@example.com' : '例：0612345678';
   input.inputMode = type.value === 'mail' ? 'email' : 'tel';
+}
+// ★liff_settings.html90：電話を選んでいる時は、入力欄に数字だけを残す（全角の数字は半角に。変換中は触らない）
+function cleanRecruitTelInput(e) {
+  const type = document.getElementById('recruit-contact-type');
+  const input = document.getElementById('recruit-contact-input');
+  if (!type || !input || type.value !== 'tel' || (e && e.isComposing)) return;
+  const v = input.value.replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/[^0-9]/g, '');
+  if (v !== input.value) input.value = v;
 }
 
 function isShopFormChanged() {
@@ -2527,6 +2535,12 @@ function captureSavedForm() {
     const el = document.getElementById(id);
     if (el) el.addEventListener('change', function() { if (id === 'recruit-contact-type') updateRecruitContactPlaceholder(); setTimeout(updateSaveButtons, 0); });
   });
+  // ★liff_settings.html90：電話の時は数字だけにする（入力のたびと、変換が終わった時）
+  const telInput = document.getElementById('recruit-contact-input');
+  if (telInput) {
+    telInput.addEventListener('input', cleanRecruitTelInput);
+    telInput.addEventListener('compositionend', function() { cleanRecruitTelInput(); setTimeout(updateSaveButtons, 0); });
+  }
 })();
 
 // loadSavedProfile()はloadProfileAndSnsFresh()に統合されたため削除
@@ -2549,7 +2563,7 @@ async function saveShopInfo() {
   const recruitContact = normalizeRecruitContact(recruitContactType, document.getElementById('recruit-contact-input').value);
   if (recruitContact === null) {
     aipostNotice(recruitContactType === 'tel'
-      ? '求人の連絡先の電話番号を確かめてください。\n数字とハイフンで入れてください（例：06-1234-5678）。'
+      ? '求人の連絡先の電話番号を確かめてください。\n0で始まる10〜11けたの数字で入れてください（例：0612345678）。'
       : '求人の連絡先のメールアドレスを確かめてください。\n（例：recruit@example.com）');
     return;
   }
