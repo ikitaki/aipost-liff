@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更92 - AiPost</title>
+<title>予約確認・変更93 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -634,7 +634,50 @@
   .detail-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .detail-btn-grid .btn { width: 100%; margin: 0; padding-left: 4px; padding-right: 4px; word-break: keep-all; overflow-wrap: anywhere; }
   .detail-btn-grid .detail-image-btn2 { border: 1.5px solid var(--primary); color: var(--primary); background: transparent; }
-  .detail-recruit-note { background: #fff3e0; color: #e65100; border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.7; margin-bottom: 8px; word-break: keep-all; overflow-wrap: anywhere; } /* ★liff_reservation.html92 */
+  /* ★liff_reservation.html93：人材募集の入力欄（投稿文作成195 と同じ形） */
+  .mk-lbl { font-size: 12px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+  .mk-in { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: inherit; box-sizing: border-box; background: #fff; color: var(--text); }
+  .mk-tag { font-weight: 400; font-size: 11.5px; color: var(--text-sub); margin-left: 2px; }
+  .mk-off { display: none !important; }
+  .rc-sec { font-size: 13px; font-weight: 700; margin: 4px 0 6px; }
+  .rc-pre { white-space: pre-wrap; font-size: 13px; line-height: 1.7; background: #f8f9fc; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; word-break: normal; overflow-wrap: break-word; }
+  #detail-rcedit { word-break: keep-all; overflow-wrap: anywhere; }
+  #detail-rcedit input, #detail-rcedit select { word-break: normal; }
+/* ★liff_textgen.html195：人材募集 */
+  .rc-row { display: flex; gap: 8px; font-size: 12.5px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+  .rc-row:last-of-type { border-bottom: none; }
+  .rc-k { width: 64px; flex-shrink: 0; color: var(--text-sub); font-weight: 700; }
+  .rc-v { flex: 1; color: var(--text); word-break: break-all; }
+  .rc-v.rc-none { color: #e65100; font-weight: 700; }
+  .rc-set { margin-top: 8px; font-size: 12px; padding: 8px; border: 1px solid var(--primary); color: var(--primary); background: #fff; border-radius: 8px; width: 100%; font-weight: 700; font-family: inherit; cursor: pointer; }
+  .rc-meter { position: sticky; top: 110px; z-index: 5; background: #eef1ff; border: 1px solid #c5cae9; border-radius: 10px; padding: 8px 10px; margin-bottom: 12px; }
+  .rc-meter-t { display: flex; justify-content: space-between; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--text); }
+  .rc-meter-t b { color: var(--primary); }
+  .rc-meter.over { background: #ffebee; border-color: #ef9a9a; }
+  .rc-meter.over .rc-meter-t b { color: var(--danger); }
+  .rc-bar { height: 6px; background: #dfe3f5; border-radius: 3px; margin-top: 6px; overflow: hidden; }
+  .rc-bar i { display: block; height: 100%; width: 0; background: var(--primary); }
+  .rc-meter.over .rc-bar i { background: var(--danger); }
+  .rc-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .rc-chip { font-size: 12.5px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 16px; background: #fff; color: var(--text-sub); font-family: inherit; cursor: pointer; }
+  .rc-chip.on { background: #f0f2ff; border-color: var(--primary); color: var(--primary); font-weight: 700; }
+  .rc-chip.on::before { content: '✓ '; }
+  .rc-line { display: flex; align-items: center; gap: 6px; font-size: 12.5px; }
+  .rc-line .mk-in { padding: 9px 6px; }
+  .rc-sel { width: auto; flex: 0 0 auto; }
+  .rc-num { width: 64px; flex: 0 0 64px; text-align: right; }
+  .rc-left { font-size: 11px; color: var(--text-sub); margin-top: 3px; text-align: right; }
+  .rc-left b { color: var(--primary); }
+  .rc-ex { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .rc-ex button { font-size: 11.5px; padding: 5px 8px; border: 1px dashed var(--primary); color: var(--primary); background: #fff; border-radius: 12px; font-family: inherit; cursor: pointer; }
+  .rc-check { display: flex; align-items: center; gap: 6px; font-size: 12.5px; margin-top: 6px; cursor: pointer; }
+  .rc-check input { width: 16px; height: 16px; accent-color: var(--primary); margin: 0; }
+  .rc-blk { margin-top: 12px; }
+  .rc-note { font-size: 11px; color: var(--text-sub); line-height: 1.7; margin-top: 6px; }
+  .rc-dim { opacity: .45; pointer-events: none; }
+  .rc-ng { background: #fff3e0; color: #e65100; border-radius: 8px; padding: 10px; font-size: 12px; line-height: 1.7; margin-top: 8px; }
+  .rc-ng b { display: block; margin-bottom: 2px; }
+
 
   /* ★liff_reservation_html33：予約本文の修正 */
   .edit-textarea {
@@ -1028,7 +1071,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更92</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更93</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1446,8 +1489,6 @@
       <!-- ★liff_reservation.html69：ボタンを上下2つずつ・すべて同じ大きさにした（Kenさん指示）。上左「閉じる」・上右「予約キャンセル」・
            下左「投稿文を修正する」・下右「画像を変更する」（画像のない予約は「画像を掲載する」）。投稿予定の5分前を過ぎた予約では、下の2つは出さない -->
       <div class="detail-actions">
-        <!-- ★liff_reservation.html92：人材募集の予約は本文を直せない（その案内） -->
-        <div class="detail-recruit-note" id="detail-recruit-note" style="display:none;">人材募集の<wbr>投稿文は<wbr>直せません。<wbr>直す時は、<wbr>予約を<wbr>キャンセルして、<wbr>投稿文作成で<wbr>作り直してください。</div>
         <div class="detail-btn-grid">
           <button class="btn btn-outline" onclick="closeDetail()">閉じる</button>
           <button class="btn btn-danger" onclick="confirmCancel()">予約を<wbr>キャンセルする</button>
@@ -1511,6 +1552,52 @@
       <div class="btn-row detail-actions">
         <button class="btn btn-gray" id="detail-edit-cancel-btn" onclick="cancelEditReservation()">やめる</button>
         <button class="btn btn-primary" id="detail-edit-save-btn" onclick="saveEditReservation()">保存する</button>
+      </div>
+    </div>
+
+    <!-- ★liff_reservation.html93：人材募集の予約を直す（投稿文作成195 と同じ入力欄。決まった形の投稿文を作り直して保存する） -->
+    <div id="detail-rcedit" style="display:none;">
+      <div class="rc-sec">登録している<wbr>情報</div>
+      <div class="rc-row"><span class="rc-k">店名・社名</span><span class="rc-v" id="rre-shop">確認中…</span></div>
+      <div class="rc-row"><span class="rc-k">所在地</span><span class="rc-v" id="rre-addr">確認中…</span></div>
+      <div class="rc-row"><span class="rc-k">連絡先</span><span class="rc-v" id="rre-contact">確認中…</span></div>
+      <div class="rc-note" id="rre-reg-ok">変える時は、<wbr>設定画面で<wbr>変更してください。</div>
+      <div class="rc-ng mk-off" id="rre-reg-ng"><b id="rre-reg-ng-title"></b><span id="rre-reg-ng-text"></span></div>
+
+      <div class="rc-sec" style="margin-top:14px;">求人の<wbr>内容</div>
+      <div class="rc-meter" id="rre-meter" style="position:static;"><div class="rc-meter-t"><span>投稿文の<wbr>字数</span><span><b id="rre-used">0</b>／140字<wbr>（<span id="rre-rest-label">残り</span><b id="rre-rest">140</b>字）</span></div><div class="rc-bar"><i id="rre-bar"></i></div></div>
+
+      <div class="mk-lbl">仕事の内容<span class="mk-tag">（必須）</span></div>
+      <input type="text" class="mk-in" id="rre-job" oninput="rreOnInput(event)" oncompositionend="rreOnInput(event)">
+      <div class="rc-left">あと<b class="rre-rest2">140</b>字まで<wbr>入力できます</div>
+
+      <div class="rc-blk"><div class="mk-lbl">雇用形態<span class="mk-tag">（必須・<wbr>いくつでも）</span></div>
+      <div class="rc-chips" id="rre-employ"><button type="button" class="rc-chip" data-v="正社員" onclick="rreToggleEmploy(this)">正社員</button><button type="button" class="rc-chip" data-v="契約社員" onclick="rreToggleEmploy(this)">契約社員</button><button type="button" class="rc-chip" data-v="パート・アルバイト" onclick="rreToggleEmploy(this)">パート・<wbr>アルバイト</button></div></div>
+
+      <div class="rc-blk"><div class="mk-lbl">賃金<span class="mk-tag">（必須）</span></div>
+      <div class="rc-line"><select class="mk-in rc-sel" id="rre-wage-type" onchange="rreOnWageType()"><option value="時給">時給</option><option value="日給">日給</option><option value="月給">月給</option><option value="年収">年収</option></select><input type="text" class="mk-in rc-num" id="rre-wage-min" inputmode="decimal" oninput="rreOnWage(this)"><span id="rre-unit-1">円</span><span>〜</span><input type="text" class="mk-in rc-num" id="rre-wage-max" inputmode="decimal" oninput="rreOnWage(this)"><span id="rre-unit-2">円</span></div>
+      <div class="rc-note" style="margin-top:3px;">時給・<wbr>日給は<wbr>円、<wbr>月給・<wbr>年収は<wbr>万円で<wbr>入れます<wbr>（数字だけ）。<wbr>「〜」の<wbr>右は<wbr>任意です。</div></div>
+
+      <div class="rc-blk"><div class="mk-lbl">働く場所<span class="mk-tag">（必須）</span></div>
+      <label class="rc-check"><input type="checkbox" id="rre-place-same" checked onchange="rreOnPlaceSame()">所在地と<wbr>同じ</label>
+      <div class="mk-off" id="rre-place-wrap" style="margin-top:6px;"><input type="text" class="mk-in" id="rre-place" oninput="rreOnInput(event)" oncompositionend="rreOnInput(event)"><div class="rc-left">あと<b class="rre-rest2">140</b>字まで<wbr>入力できます</div></div></div>
+
+      <div class="rc-blk"><div class="mk-lbl">勤務時間<span class="mk-tag">（任意）</span></div>
+      <div class="rc-line"><select class="mk-in rc-sel" id="rre-time-from" onchange="rreUpdate()"></select><span>〜</span><select class="mk-in rc-sel" id="rre-time-to" onchange="rreUpdate()"></select></div>
+      <label class="rc-check"><input type="checkbox" id="rre-shift" onchange="rreUpdate()">シフト制</label></div>
+
+      <div class="rc-blk"><div class="mk-lbl">ひとこと<span class="mk-tag">（任意）</span></div>
+      <input type="text" class="mk-in" id="rre-comment" oninput="rreOnInput(event)" oncompositionend="rreOnInput(event)">
+      <div class="rc-left">あと<b class="rre-rest2">140</b>字まで<wbr>入力できます</div>
+      <div class="rc-ex"><button type="button" onclick="rreSetComment(this.textContent)">一緒に働ける仲間を募集しています。</button><button type="button" onclick="rreSetComment(this.textContent)">お気軽にご応募ください。</button><button type="button" onclick="rreSetComment(this.textContent)">ご応募をお待ちしています。</button></div></div>
+
+      <div class="rc-sec" style="margin-top:14px;">投稿文<wbr>（この形で<wbr>投稿されます）</div>
+      <div class="rc-pre" id="rre-preview"></div>
+      <div class="edit-error" id="rre-error"></div>
+
+      <div class="btn-row detail-actions">
+        <button class="btn btn-gray" id="rre-cancel-btn" onclick="cancelEditReservation()">やめる</button>
+        <button class="btn btn-primary" id="rre-save-btn" onclick="rreSave()">保存する</button>
       </div>
     </div>
   </div>
@@ -2108,7 +2195,11 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   // 　「人材募集の投稿文は直せません。…」を出す（画像のボタンは下の段に横いっぱい）。ほかの予約の本文を直して「保存する」を押した時、
   // 　求人らしい言葉（投稿文作成195 と同じ一覧）があれば、注意の窓を出す（「求人ではないので保存する」で今までどおり進む。Kenさん承認：画面見本_予約確認92）。
   // 　前に覚えた予約一覧に isRecruit が無い時は、取り直す。
-  const TRACE_SCREEN = '予約確認92';
+  // ★liff_reservation.html93：人材募集の予約も「投稿文を修正する」で直せるようにした（Kenさん決定・承認：画面見本_予約確認93）。人材募集の予約では、
+  // 　本文の入力欄ではなく、投稿文作成195 と同じ人材募集の入力欄（今の投稿文から読み取って最初から入れる）を出し、決まった形の投稿文を作り直して保存する。
+  // 　登録している店名・所在地・連絡先は、開いた時に getUserProfile で読み直す（設定で変えていれば、新しい登録で作り直す）。読み取れない投稿文の予約は直せない。
+  // 　92 の「人材募集の投稿文は直せません」の案内は外した。GASの投稿予約gs_41 も、人材募集の予約の本文が決まった形かを確かめる。
+  const TRACE_SCREEN = '予約確認93';
 
   function traceLog(msg) {
     try {
@@ -2622,11 +2713,8 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
     showDetailSnsImages(r); // ★liff_reservation.html65
     // ★liff_reservation_html33：修正モードを解除し、修正可能な予約のみ「修正する」を表示
     setEditMode(false);
-    // ★liff_reservation.html92：人材募集の予約は「投稿文を修正する」を出さず、案内を出す（画像のボタンは下の段に横いっぱい）
-    const recruitLocked = r.isRecruit === true && isReservationEditable(r);
-    document.getElementById('detail-edit-btn').style.display = (isReservationEditable(r) && r.isRecruit !== true) ? '' : 'none';
-    document.getElementById('detail-recruit-note').style.display = recruitLocked ? '' : 'none';
-    document.getElementById('detail-image-btn').style.gridColumn = recruitLocked ? '1 / span 2' : '';
+    // ★liff_reservation.html93：人材募集の予約も直せる（人材募集の入力欄で直す）
+    document.getElementById('detail-edit-btn').style.display = isReservationEditable(r) ? '' : 'none';
     // ★liff_reservation_html35：画像差し替えモードも解除し、差し替え可能な予約のみボタンを表示
     setImageReplaceMode(false);
     document.getElementById('detail-image-btn').style.display = isReservationEditable(r) ? 'block' : 'none';
@@ -3998,6 +4086,7 @@ function _dataUrlToBase64(dataUrl) {
   function setEditMode(on) {
     document.getElementById('detail-view').style.display = on ? 'none' : 'block';
     document.getElementById('detail-edit').style.display = on ? 'block' : 'none';
+    document.getElementById('detail-rcedit').style.display = 'none'; // ★liff_reservation.html93：人材募集の入力欄は rreStart() だけが出す
     editServerError = '';
     document.getElementById('detail-edit-error').textContent = '';
   }
@@ -4005,12 +4094,12 @@ function _dataUrlToBase64(dataUrl) {
   function startEditReservation() {
     const r = getDetailReservation();
     if (!r) return;
-    if (r.isRecruit === true) return; // ★liff_reservation.html92：人材募集の予約は直せない（ボタンも出していない）
     if (!isReservationEditable(r)) {
       aipostNotice('投稿予定時刻の' + EDIT_CUTOFF_MINUTES + '分前を過ぎたため修正できません。');
       document.getElementById('detail-edit-btn').style.display = 'none';
       return;
     }
+    if (r.isRecruit === true) { rreStart(r); return; } // ★liff_reservation.html93：人材募集の予約は、人材募集の入力欄で直す
     document.getElementById('detail-edit-text').value = r.honbun;
     setEditMode(true);
     updateEditCounts();
@@ -4066,7 +4155,7 @@ function _dataUrlToBase64(dataUrl) {
     const newText = document.getElementById('detail-edit-text').value.trim();
     const saveBtn = document.getElementById('detail-edit-save-btn');
     // ★liff_reservation.html92：求人らしい言葉がある時は、注意の窓を出す（「やめる」・外側を押した時は保存しない）
-    const jobWords = RES_JOB_WORDS.filter(function (w) { return newText.indexOf(w) !== -1; });
+    const jobWords = r.isRecruit === true ? [] : RES_JOB_WORDS.filter(function (w) { return newText.indexOf(w) !== -1; }); // ★liff_reservation.html93：人材募集の予約では聞かない
     if (jobWords.length > 0) {
       editSaving = true;
       let go = false;
@@ -4145,7 +4234,308 @@ function _dataUrlToBase64(dataUrl) {
       if (document.getElementById('detail-edit').style.display !== 'none') {
         updateEditCounts();
       }
+      rreAfterSave(); // ★liff_reservation.html93
     }
+  }
+
+  // ===== ★liff_reservation.html93：人材募集の予約を直す（投稿文作成195 の人材募集と同じ並べ方・数え方） =====
+  const RRE_LIMIT = 140;
+  const RRE_WAGE_UNIT = { '時給': '円', '日給': '円', '月給': '万円', '年収': '万円' };
+  const RRE_EMPLOY = ['正社員', '契約社員', 'パート・アルバイト'];
+  let RRE_PROFILE = null;  // { ok, shopName, address, contact }
+  let RRE_LOADING = false;
+  let RRE_SEQ = 0;
+  function rreVal(id) { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; }
+  function rreChecked(id) { const el = document.getElementById(id); return !!(el && el.checked); }
+  function rreEmploy() { return [...document.querySelectorAll('#rre-employ .rc-chip.on')].map(function (b) { return b.dataset.v; }); }
+  function rreCount(text) { return Math.ceil(xWeightedLength(text) / 2); }
+  function rreMoney(v, unit) {
+    if (!v) return '';
+    const n = Number(v);
+    if (!isFinite(n)) return v;
+    return unit === '円' ? n.toLocaleString('ja-JP') : String(n);
+  }
+  function rreCleanMoney(v, unit) {
+    v = String(v || '').replace(/[０-９．]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); });
+    if (unit === '円') return v.replace(/[^0-9]/g, '').slice(0, 7);
+    v = v.replace(/[^0-9.]/g, '');
+    const i = v.indexOf('.');
+    if (i !== -1) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/\./g, '').slice(0, 1);
+    return v.slice(0, 6);
+  }
+
+  // 投稿文を読み取る（投稿文作成195 が作った形だけ）。読み取れない時は null
+  function rreParse(text) {
+    const lines = String(text || '').split('\n');
+    if (lines[0] !== '【スタッフ募集】') return null;
+    const f = { job: '', employ: [], wageType: '', wageMin: '', wageMax: '', timeFrom: '', timeTo: '', shift: false, placeSame: true, place: '', comment: '' };
+    let i = 1;
+    const take = function (prefix) {
+      if (i < lines.length && lines[i].indexOf(prefix) === 0) { const v = lines[i].slice(prefix.length); i++; return v; }
+      return null;
+    };
+    const job = take('仕事：');
+    if (!job) return null;
+    f.job = job;
+    let emp = take('雇用形態：');
+    if (!emp) return null;
+    while (emp) {
+      const hit = RRE_EMPLOY.filter(function (o) { return emp.indexOf(o) === 0; })[0];
+      if (!hit || f.employ.indexOf(hit) !== -1) return null;
+      f.employ.push(hit);
+      emp = emp.slice(hit.length);
+      if (emp.indexOf('・') === 0) emp = emp.slice(1); else if (emp !== '') return null;
+    }
+    const wage = take('賃金：');
+    const wm = wage === null ? null : /^(時給|日給|月給|年収)([0-9][0-9,]*(?:\.[0-9])?)(円|万円)(?:〜([0-9][0-9,]*(?:\.[0-9])?)(円|万円))?$/.exec(wage);
+    if (!wm || wm[3] !== RRE_WAGE_UNIT[wm[1]] || (wm[5] && wm[5] !== wm[3])) return null;
+    f.wageType = wm[1];
+    f.wageMin = wm[2].replace(/,/g, '');
+    f.wageMax = wm[4] ? wm[4].replace(/,/g, '') : '';
+    const time = take('勤務時間：');
+    if (time !== null) {
+      const tm = /^(?:([0-9]{1,2}:[0-9]{2})〜([0-9]{1,2}:[0-9]{2}))?(（シフト制）|シフト制)?$/.exec(time);
+      if (!tm || (!tm[1] && tm[3] !== 'シフト制') || (tm[1] && tm[3] === 'シフト制')) return null;
+      f.timeFrom = tm[1] || '';
+      f.timeTo = tm[2] || '';
+      f.shift = !!tm[3];
+    }
+    if (take('所在地・勤務地：') !== null) {
+      f.placeSame = true;
+    } else {
+      const place = take('勤務地：');
+      if (!place) return null;
+      f.placeSame = false;
+      f.place = place;
+      if (take('所在地：') === null) return null;
+    }
+    if (i >= lines.length) return null;
+    i++; // 店名・社名の行
+    if (take('連絡先：') === null) return null;
+    if (i < lines.length) { f.comment = lines[i]; i++; }
+    if (i < lines.length) return null;
+    return f;
+  }
+
+  function rreBuildText() {
+    const pf = (RRE_PROFILE && RRE_PROFILE.ok) ? RRE_PROFILE : {};
+    const lines = ['【スタッフ募集】'];
+    const job = rreVal('rre-job');
+    if (job) lines.push('仕事：' + job);
+    const emp = rreEmploy();
+    if (emp.length) lines.push('雇用形態：' + emp.join('・'));
+    const wt = rreVal('rre-wage-type') || '時給';
+    const unit = RRE_WAGE_UNIT[wt] || '円';
+    const wmin = rreVal('rre-wage-min'), wmax = rreVal('rre-wage-max');
+    if (wmin) lines.push('賃金：' + wt + rreMoney(wmin, unit) + unit + (wmax ? '〜' + rreMoney(wmax, unit) + unit : ''));
+    const tf = rreVal('rre-time-from'), tt = rreVal('rre-time-to'), shift = rreChecked('rre-shift');
+    if (tf && tt) lines.push('勤務時間：' + tf + '〜' + tt + (shift ? '（シフト制）' : ''));
+    else if (shift) lines.push('勤務時間：シフト制');
+    if (rreChecked('rre-place-same')) {
+      if (pf.address) lines.push('所在地・勤務地：' + pf.address);
+    } else {
+      const pl = rreVal('rre-place');
+      if (pl) lines.push('勤務地：' + pl);
+      if (pf.address) lines.push('所在地：' + pf.address);
+    }
+    if (pf.shopName) lines.push(pf.shopName);
+    if (pf.contact) lines.push('連絡先：' + pf.contact);
+    const cm = rreVal('rre-comment');
+    if (cm) lines.push(cm);
+    return lines.join('\n');
+  }
+
+  function rreInitTimes() {
+    ['rre-time-from', 'rre-time-to'].forEach(function (id) {
+      const sel = document.getElementById(id);
+      if (!sel || sel.options.length) return;
+      let html = '<option value="">－</option>';
+      for (let m = 0; m < 24 * 60; m += 30) {
+        const t = Math.floor(m / 60) + ':' + (m % 60 === 0 ? '00' : '30');
+        html += '<option value="' + t + '">' + t + '</option>';
+      }
+      sel.innerHTML = html;
+    });
+  }
+
+  // 「投稿文を修正する」（人材募集の予約）：読み取って入力欄に入れ、登録している情報を読み直す
+  function rreStart(r) {
+    const f = rreParse(r.honbun);
+    if (!f) {
+      aipostNotice('この予約は直せません。\nキャンセルして、投稿文作成で作り直してください。');
+      return;
+    }
+    rreInitTimes();
+    const set = function (id, v) { const el = document.getElementById(id); if (el) el.value = v; };
+    set('rre-job', f.job);
+    document.querySelectorAll('#rre-employ .rc-chip').forEach(function (b) { b.classList.toggle('on', f.employ.indexOf(b.dataset.v) !== -1); });
+    set('rre-wage-type', f.wageType);
+    const unit = RRE_WAGE_UNIT[f.wageType] || '円';
+    ['rre-unit-1', 'rre-unit-2'].forEach(function (id) { const el = document.getElementById(id); if (el) el.textContent = unit; });
+    set('rre-wage-min', f.wageMin);
+    set('rre-wage-max', f.wageMax);
+    document.getElementById('rre-place-same').checked = f.placeSame;
+    set('rre-place', f.place);
+    document.getElementById('rre-place-wrap').classList.toggle('mk-off', f.placeSame);
+    set('rre-time-from', f.timeFrom);
+    set('rre-time-to', f.timeTo);
+    document.getElementById('rre-shift').checked = f.shift;
+    set('rre-comment', f.comment);
+    document.getElementById('rre-error').textContent = '';
+    document.getElementById('detail-view').style.display = 'none';
+    document.getElementById('detail-edit').style.display = 'none';
+    document.getElementById('detail-rcedit').style.display = 'block';
+    editServerError = '';
+    rreLoadProfile();
+  }
+
+  async function rreLoadProfile() {
+    const seq = ++RRE_SEQ;
+    RRE_LOADING = true;
+    RRE_PROFILE = null;
+    rreRenderReg();
+    rreUpdate();
+    let data = null;
+    try {
+      const res = await postToGas({ action: 'getUserProfile', lineUid: LINE_UID }, 'プロフィール（人材募集の修正）');
+      data = res && res.data ? res.data : null;
+    } catch (e) {
+      data = null;
+    }
+    if (seq !== RRE_SEQ) return;
+    RRE_LOADING = false;
+    const t = function (v) { return (v === undefined || v === null) ? '' : String(v).trim(); };
+    RRE_PROFILE = (data && data.found !== false)
+      ? { ok: true, shopName: t(data.shopName), address: t(data.address), contact: t(data.recruitContact) }
+      : { ok: false };
+    rreRenderReg();
+    rreUpdate();
+  }
+
+  function rreMissingReg() {
+    if (!RRE_PROFILE || !RRE_PROFILE.ok) return null;
+    const m = [];
+    if (!RRE_PROFILE.shopName) m.push('店名・社名');
+    if (!RRE_PROFILE.address) m.push('所在地');
+    if (!RRE_PROFILE.contact) m.push('連絡先');
+    return m;
+  }
+
+  function rreRenderReg() {
+    const pf = RRE_PROFILE;
+    const loading = RRE_LOADING || !pf;
+    const set = function (id, v) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = v === null ? '確認中…' : (v || '未登録');
+      el.classList.toggle('rc-none', v === '');
+    };
+    set('rre-shop', loading || !pf.ok ? null : pf.shopName);
+    set('rre-addr', loading || !pf.ok ? null : pf.address);
+    set('rre-contact', loading || !pf.ok ? null : pf.contact);
+    const missing = rreMissingReg();
+    const failed = !loading && pf && !pf.ok;
+    const ng = !!(failed || (missing && missing.length));
+    document.getElementById('rre-reg-ng').classList.toggle('mk-off', !ng);
+    document.getElementById('rre-reg-ok').classList.toggle('mk-off', ng);
+    document.getElementById('rre-reg-ng-title').textContent = failed ? '⚠️ 登録している情報を確認できませんでした' : '⚠️ 登録が必要です';
+    document.getElementById('rre-reg-ng-text').textContent = failed ? '画面を開き直してから、もう一度お試しください。'
+      : '求人の投稿には、店名・社名、所在地、連絡先を載せる必要があります。設定画面で登録してください。';
+  }
+
+  function rreOnInput(e) {
+    const el = e && e.target;
+    if (el && /[#＃]/.test(el.value)) el.value = el.value.replace(/[#＃]/g, '');
+    rreUpdate(e && e.isComposing ? null : el);
+  }
+  function rreUpdate(trimEl) {
+    let text = rreBuildText();
+    if (trimEl && trimEl.value) {
+      const chars = [...trimEl.value];
+      while (chars.length && rreCount(text) > RRE_LIMIT) {
+        chars.pop();
+        trimEl.value = chars.join('');
+        text = rreBuildText();
+      }
+    }
+    document.getElementById('rre-preview').textContent = text;
+    const used = rreCount(text);
+    const rest = RRE_LIMIT - used;
+    document.getElementById('rre-meter').classList.toggle('over', rest < 0);
+    document.getElementById('rre-used').textContent = used;
+    document.getElementById('rre-rest-label').textContent = rest < 0 ? 'オーバー' : '残り';
+    document.getElementById('rre-rest').textContent = Math.abs(rest);
+    document.getElementById('rre-bar').style.width = Math.min(100, used / RRE_LIMIT * 100) + '%';
+    document.querySelectorAll('.rre-rest2').forEach(function (b) { b.textContent = Math.max(0, rest); });
+    document.getElementById('rre-error').textContent = '';
+  }
+  function rreToggleEmploy(btn) { btn.classList.toggle('on'); rreUpdate(); }
+  function rreOnWage(el) {
+    const unit = RRE_WAGE_UNIT[rreVal('rre-wage-type')] || '円';
+    const c = rreCleanMoney(el.value, unit);
+    if (c !== el.value) el.value = c;
+    rreUpdate();
+  }
+  function rreOnWageType() {
+    const unit = RRE_WAGE_UNIT[rreVal('rre-wage-type')] || '円';
+    ['rre-unit-1', 'rre-unit-2'].forEach(function (id) { const el = document.getElementById(id); if (el) el.textContent = unit; });
+    ['rre-wage-min', 'rre-wage-max'].forEach(function (id) { const el = document.getElementById(id); if (el) el.value = rreCleanMoney(el.value, unit); });
+    rreUpdate();
+  }
+  function rreOnPlaceSame() {
+    document.getElementById('rre-place-wrap').classList.toggle('mk-off', rreChecked('rre-place-same'));
+    rreUpdate();
+  }
+  function rreSetComment(t) {
+    const el = document.getElementById('rre-comment');
+    const old = el.value;
+    el.value = t;
+    if (rreCount(rreBuildText()) > RRE_LIMIT) {
+      el.value = old;
+      aipostNotice('残りの字数が足りないため、入れられません。\nほかの項目を短くしてください。');
+      return;
+    }
+    rreUpdate();
+  }
+
+  // 「保存する」：投稿文作成195 と同じ確かめをしてから、今までの保存（投稿チェック → 保存）に進む
+  async function rreSave() {
+    const r = getDetailReservation();
+    if (!r || editSaving) return;
+    if (RRE_LOADING || !RRE_PROFILE) { aipostNotice('登録している情報を確認しています。\n少し待ってから、もう一度押してください。'); return; }
+    if (!RRE_PROFILE.ok) { aipostNotice('登録している情報を確認できませんでした。\n画面を開き直してから、もう一度お試しください。'); return; }
+    const missingReg = rreMissingReg();
+    if (missingReg.length) { aipostNotice(missingReg.join('・') + 'が未登録です。\n設定画面の「登録」タブで登録してください。'); return; }
+    const need = [];
+    if (!rreVal('rre-job')) need.push('仕事の内容');
+    if (!rreEmploy().length) need.push('雇用形態');
+    if (!rreVal('rre-wage-min')) need.push('賃金');
+    if (!rreChecked('rre-place-same') && !rreVal('rre-place')) need.push('働く場所');
+    if (need.length) { aipostNotice('「' + need.join('」「') + '」を入れてください。'); return; }
+    const wmin = Number(rreVal('rre-wage-min')), wmax = rreVal('rre-wage-max') ? Number(rreVal('rre-wage-max')) : null;
+    if (!(wmin > 0) || (wmax !== null && !(wmax > wmin))) { aipostNotice('賃金の金額を確かめてください。\n「〜」の右に入れる時は、左より大きい金額にしてください。'); return; }
+    if (!!rreVal('rre-time-from') !== !!rreVal('rre-time-to')) { aipostNotice('勤務時間は、始まりと終わりの両方を選んでください。'); return; }
+    const text = rreBuildText();
+    const used = rreCount(text);
+    if (used > RRE_LIMIT) { aipostNotice('投稿文が' + RRE_LIMIT + '字を超えています（' + used + '字）。\n「仕事の内容」「勤務時間」「ひとこと」などを短くしてください。'); return; }
+    // 今までの保存の流れ（本文の入力欄の値を使う）に、作り直した投稿文を渡す
+    document.getElementById('detail-edit-text').value = text;
+    const btn = document.getElementById('rre-save-btn');
+    btn.disabled = true;
+    btn.textContent = '確認中…';
+    try {
+      await saveEditReservation();
+    } finally {
+      if (!editSaving) { btn.disabled = false; btn.textContent = '保存する'; }
+    }
+  }
+  // 保存が終わった時（成功した時は setEditMode(false) で入力欄が閉じている）：失敗した時の文を出し、ボタンを戻す
+  function rreAfterSave() {
+    const btn = document.getElementById('rre-save-btn');
+    if (btn) { btn.disabled = false; btn.textContent = '保存する'; }
+    const box = document.getElementById('detail-rcedit');
+    if (!box || box.style.display === 'none') return;
+    document.getElementById('rre-error').textContent = editServerError || '';
   }
 
   // ============================================
