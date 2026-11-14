@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金27 - AiPost</title>
+  <title>プラン・料金28 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -14,12 +14,10 @@
       --bg: #f8f9fa;
       --white: #ffffff;
       --c-free:     #64748b;
-      --c-personal: #1565c0;
       --c-lite:     #2e7d32;
       --c-standard: #e65100;
       --c-pro:      #6a1b9a;
       --b-free:     #f1f5f9;
-      --b-personal: #e3f2fd;
       --b-lite:     #e8f5e9;
       --b-standard: #fff8e1;
       --b-pro:      #f3e5f5;
@@ -61,7 +59,7 @@
     /* ★プラン名の行・機能の表・ボタンの行を1つの表にまとめ、列の幅と縦の線をそろえる */
     .plan-table { width: 100%; border-collapse: collapse; table-layout: fixed; background: var(--white); }
     .plan-table col.c-key { width: 25%; }
-    .plan-table col.c-plan { width: 15%; }
+    .plan-table col.c-plan { width: 18.75%; } /* ★liff_plan.html28：4プランで100%（25%＋18.75%×4） */
     .plan-table th, .plan-table td { border-right: 1px solid #d5d9e6; }
     .plan-table th:last-child, .plan-table td:last-child { border-right: none; }
     .plan-table thead th { padding: 6px 2px; text-align: center; font-weight: 400; border-bottom: 2px solid #d5d9e6; background: var(--white);
@@ -70,7 +68,6 @@
     .plan-table thead th.current { background: #fff8e1; }
     .plan-badge { display: block; margin: 0 auto 2px; padding: 1px 4px; border-radius: 10px; font-size: 8px; font-weight: 700; width: fit-content; }
     .plan-FREE     { background: var(--b-free);     color: var(--c-free); }
-    .plan-PERSONAL { background: var(--b-personal); color: var(--c-personal); }
     .plan-LITE     { background: var(--b-lite);     color: var(--c-lite); }
     .plan-STANDARD { background: var(--b-standard); color: var(--c-standard); }
     .plan-PRO      { background: var(--b-pro);      color: var(--c-pro); }
@@ -419,7 +416,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金27</span></span>
+    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金28</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -559,35 +556,37 @@
   <!-- ★liff_plan.html11：お試し中（プランのお申し込み前）の案内 -->
   <div class="period-card trial" id="trial-card">
     <div class="period-card-title">🌱 お試し中です</div>
-    AIでの投稿文の作成をお試しいただけます。投稿の予約・SNSの連携・分析は、プランをお申し込みいただくとご利用いただけます。<br>
-    下の表の「申し込む」から、プランを選んでください。お申し込みの日から1か月ごとの期間でご利用いただけます。
+    <!-- ★liff_plan.html28：画面の文を短くした（Kenさん指摘：回りくどい） -->
+    AIで投稿文を作れます。予約・SNS連携・分析は、プランのお申し込み後に使えます。<br>
+    下の表の「申し込む」からプランを選んでください。
   </div>
 
   <!-- ★プラン名の行・機能の表・ボタンの行は、1つの表（JavaScriptで作る。下の PLAN_FEATURES が元） -->
   <table class="plan-table">
-    <colgroup><col class="c-key"><col class="c-plan"><col class="c-plan"><col class="c-plan"><col class="c-plan"><col class="c-plan"></colgroup>
+    <!-- ★liff_plan.html28：プランが4つになったため、列を4つにした -->
+    <colgroup><col class="c-key"><col class="c-plan"><col class="c-plan"><col class="c-plan"><col class="c-plan"></colgroup>
     <thead><tr id="plan-header-row"></tr></thead>
     <tbody id="feat-body"></tbody>
     <tbody><tr class="btn-row" id="btn-row"></tr></tbody>
   </table>
   <div class="btn-status" id="btn-status"></div>
   <div class="table-notes">
-    ※ 予約1件で、選んだSNS（投稿先SNS数まで）にまとめて投稿します。使う予約枠は1件です。実質予約枠は、予約枠 × 投稿先SNS数です。<br>
-    ※ FREEプランでは、Xを投稿先に選べず、連携もできません。Xへの投稿には運営側に費用がかかるためです。<br>
-    ※ 投稿履歴は、今月と過去12か月の分を残します。FREEプランでは、投稿履歴は残らず、投稿の削除もできません。<br>
-    ※ ネガティブなコメントは、投稿の1時間後・3時間後・24時間後に、新しいコメントをAIが確かめてお知らせします（1投稿あたりXは10件、Instagram・Threadsは50件まで）。分析画面のほか、画面のベルのお知らせでもお知らせします。
+    ※ 1回の予約で、選んだSNSにまとめて投稿します（予約枠は1件）。実質予約枠＝予約枠×投稿先SNS数。<br>
+    <!-- ★liff_plan.html28：LITEプランもXは不可 -->
+    ※ FREE・LITEでは、Xに投稿・連携できません。<br>
+    ※ 投稿履歴は今月と過去12か月分を残します。FREEは投稿履歴・投稿削除がありません。<br>
+    ※ ネガティブなコメントは、投稿の1・3・24時間後にAIが確かめて通知します（1投稿あたりX 10件、Instagram・Threads 50件まで）。
   </div>
 
   <!-- 注意事項 -->
   <div class="notice-box">
     <div class="notice-box-title">⚠️ ご利用期間とプラン変更について</div>
-    ご利用期間は、プランをお申し込みいただいた日から1か月ごとです。予約枠は、ご利用期間ごとに数えます。<br>
-    有料プランどうしの変更と、FREEプランへの変更は、次回更新日から適用されます。それまでは、現在のプランをそのままご利用いただけます。<br>
-    FREEプランから有料プランへの変更は、お申し込み後すぐに適用されます。ご利用期間は、その日から1か月ごとになります。<br>
-    変更の取り消しは、次回更新日の前日まで、この画面から行えます。<br>
-    <!-- ★liff_plan.html21：FREEへ変わる時はXの連携を外し、Xに投稿しないことを書いた -->
-    すでに入っている予約は、そのまま投稿されます。SNSの連携はそのまま残ります。投稿先に選べるSNSの数は、新しいプランに合わせて変わります。ただし、FREEプランへ変わる時は、Xの連携を外し、変わった日からの予約ではXに投稿しません。<br>
-    ※ この画面はデモのため、支払いは行いません。
+    ご利用期間は、お申し込み日から1か月ごとです。予約枠はご利用期間ごとに数えます。<br>
+    FREEから有料プランへの変更は、すぐに変わります。ご利用期間はその日から1か月ごとになります。<br>
+    それ以外の変更は、次回更新日に変わります。それまでは今のプランのままです。取り消しは、次回更新日の前日までこの画面でできます。<br>
+    <!-- ★liff_plan.html21：FREEへ変わる時はXの連携を外し、Xに投稿しないことを書いた。★liff_plan.html28：LITEも同じ -->
+    入っている予約はそのまま投稿します。SNSの連携は残ります。FREE・LITEに変わる時は、Xの連携を外し、その日からの予約はXに投稿しません。<br>
+    ※ デモのため、支払いは行いません。
   </div>
 
   <!-- ダウングレード確認モーダル -->
@@ -599,13 +598,13 @@
         <div class="modal-warn-title">⚠️ できなくなること・<wbr>変わること</div>
         <div class="modal-warn-item" id="down-warn-items"></div>
       </div>
-      <!-- ★liff_plan.html20：切り替わる日に行うこと（FREEにする時だけ出す） -->
+      <!-- ★liff_plan.html20：切り替わる日に行うこと（FREEにする時だけ出す）。★liff_plan.html28：XのあるプランからLITEにする時も出す -->
       <div class="modal-remove" id="down-remove" style="display:none;">
         <div class="modal-remove-title" id="down-remove-title">🗑️ 次回更新日に<wbr>行うこと</div>
         <div class="modal-remove-item" id="down-remove-items"></div>
       </div>
       <div class="modal-note" id="down-note"></div>
-      <div class="modal-ask">この内容で、<wbr>ダウングレードを<wbr>申し込みますか？</div>
+      <div class="modal-ask">ダウングレードしますか？</div>
       <div class="modal-error" id="down-error"></div>
       <button class="modal-btn modal-btn-exec" id="down-exec-btn" onclick="executePlanChange('down')">申し込む</button>
       <button class="modal-btn modal-btn-cancel" id="down-cancel-btn" onclick="closePlanModals()">やめる</button>
@@ -752,7 +751,7 @@
   // ★liff_plan.html25：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
   // ★liff_plan.html26：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
   // ★liff_plan.html27：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-  const TRACE_SCREEN = 'プラン27';
+  const TRACE_SCREEN = 'プラン28';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -781,43 +780,52 @@
   })();
 
   // ---- プランと機能の表 ----
-  const PLANS = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
-  const PLAN_SHORT = { FREE: 'FREE', PERSONAL: 'PER', LITE: 'LITE', STANDARD: 'STD', PRO: 'PRO' };
-  const PLAN_PRICE = { FREE: '0', PERSONAL: '300', LITE: '680', STANDARD: '1,280', PRO: '1,980' };
+  // ★liff_plan.html28：PERSONALを廃止し、4つのプランにした。料金・予約枠を新しいプランにした。LITEもXは不可（Kenさん決定・2026年11月15日。開発引き継ぎ書96 第1章）
+  const PLANS = ['FREE', 'LITE', 'STANDARD', 'PRO'];
+  const PLAN_SHORT = { FREE: 'FREE', LITE: 'LITE', STANDARD: 'STD', PRO: 'PRO' };
+  const PLAN_PRICE = { FREE: '0', LITE: '780', STANDARD: '1,480', PRO: '2,480' };
+  // ★liff_plan.html28：Xを使えないプラン（FREE・LITE）。下げる時に、切り替わる日にXの連携を外す
+  const NO_X_PLANS = ['FREE', 'LITE'];
   const NO = '－', OK = '✓';
-  // 値は FREE・PERSONAL・LITE・STANDARD・PRO の順。「|」の後ろは小さな補足（2行目）
+  // ★liff_plan.html28：プランの予約枠（表の「予約枠」の行から）。例 '12件'
+  function quotaText(plan) {
+    const row = PLAN_FEATURES.filter(function (f) { return f.label && f.label.indexOf('予約枠') === 0; })[0];
+    const i = PLANS.indexOf(plan);
+    return (row && i !== -1) ? String(row.vals[i]).split('|')[0] : plan + 'プランの予約枠';
+  }
+  // 値は FREE・LITE・STANDARD・PRO の順。「|」の後ろは小さな補足（2行目）
   // ★liff_plan.html14：「^」は折り返してよい所（画面では<wbr>にする。確認の窓などの文では消す）
   const PLAN_FEATURES = [
     { sec: '■ 投稿' },
     // ★liff_plan.html19：FREEの投稿先を2つにした（Kenさん決定。Xは今までどおり選べない）
-    { label: '投稿先^SNS数', vals: ['2つ|Xは不可', '2つ', '2つ', '3つ', '3つ'] },
-    // ★liff_plan.html20：FREEはXを連携できない（Kenさん決定。Xに投稿できないのに連携だけできるのは不自然なため）
-    { label: 'SNS連携', vals: ['2つ|Xは不可', '3つ', '3つ', '3つ', '3つ'] },
-    { label: '予約枠|実質^予約枠', vals: ['4件|実質8件', '8件|実質16件', '10件|実質20件', '20件|実質60件', '40件|実質120件'] },
+    { label: '投稿先^SNS数', vals: ['2つ|Xは不可', '2つ|Xは不可', '3つ', '3つ'] },
+    // ★liff_plan.html20：FREEはXを連携できない（Kenさん決定。Xに投稿できないのに連携だけできるのは不自然なため）。★liff_plan.html28：LITEも同じ
+    { label: 'SNS連携', vals: ['2つ|Xは不可', '2つ|Xは不可', '3つ', '3つ'] },
+    { label: '予約枠|実質^予約枠', vals: ['4件|実質8件', '12件|実質24件', '30件|実質90件', '60件|実質180件'] },
     // ★liff_plan.html15：FREEプランも140字にそろえた（Kenさん決定。行は残す）
-    { label: '本文^文字数^上限', vals: ['140字|全角', '140字|全角', '140字|全角', '140字|全角', '140字|全角'] },
+    { label: '本文^文字数^上限', vals: ['140字|全角', '140字|全角', '140字|全角', '140字|全角'] },
     // ★liff_plan.html19：「予約修正・画像差し替え」→「投稿文修正・画像変更」（言葉をそろえた）。FREEは投稿履歴を残さず、投稿の削除もできない（Kenさん決定）
-    { label: '投稿文^修正・画像^変更', vals: [OK, OK, OK, OK, OK] },
-    { label: '予約^一括^キャンセル', vals: [OK, OK, OK, OK, OK] },
-    { label: '投稿^履歴|画像つき', vals: [NO, '1年', '1年', '1年', '1年'] },
-    { label: '投稿文^一括^削除|X・Threads', vals: [NO, OK, OK, OK, OK] },
+    { label: '投稿文^修正・画像^変更', vals: [OK, OK, OK, OK] },
+    { label: '予約^一括^キャンセル', vals: [OK, OK, OK, OK] },
+    { label: '投稿^履歴|画像つき', vals: [NO, '1年', '1年', '1年'] },
+    { label: '投稿文^一括^削除|X・Threads', vals: [NO, OK, OK, OK] },
     { sec: '■ AI投稿文作成' },
-    { label: 'AI^投稿文^作成', vals: ['∞', '∞', '∞', '∞', '∞'] },
-    { label: 'ハッシュタグ^作成', vals: [OK, OK, OK, OK, OK] },
+    { label: 'AI^投稿文^作成', vals: ['∞', '∞', '∞', '∞'] },
+    { label: 'ハッシュタグ^作成', vals: [OK, OK, OK, OK] },
     { sec: '■ 画像' },
-    { label: '画像^アップロード・SNSごとの^トリミング', vals: [OK, OK, OK, OK, OK] },
+    { label: '画像^アップロード・SNSごとの^トリミング', vals: [OK, OK, OK, OK] },
     { sec: '■ 分析' },
-    { label: '分析^データの^取得', vals: [NO, NO, '24^時間後', '24^時間後', '1・3・24^時間後'] },
+    { label: '分析^データの^取得', vals: [NO, '24^時間後', '24^時間後', '1・3・24^時間後'] },
     // ★liff_plan.html17：「今日の状況」→「最新の状況」（分析画面の見出し〔analytics60〕にそろえた。Kenさん決定）
-    { label: '最新の^状況・直近^投稿の^状況', vals: [NO, NO, OK, OK, OK] },
-    { label: '投稿^日別^データ・フォロワー^推移', vals: [NO, NO, OK, OK, OK] },
-    { label: '先週・先月の^まとめ・次回の^投稿^おすすめ', vals: [NO, NO, OK, OK, OK] },
-    { label: '投稿^平均との^比較', vals: [NO, NO, NO, OK, OK] },
-    { label: '初速^スコア', vals: [NO, NO, NO, NO, OK] },
-    { label: 'コメント^感情^分析', vals: [NO, NO, NO, NO, OK] },
-    { label: '同業種・同エリア^平均との^比較', vals: [NO, NO, NO, NO, OK] },
+    { label: '最新の^状況・直近^投稿の^状況', vals: [NO, OK, OK, OK] },
+    { label: '投稿^日別^データ・フォロワー^推移', vals: [NO, OK, OK, OK] },
+    { label: '先週・先月の^まとめ・次回の^投稿^おすすめ', vals: [NO, OK, OK, OK] },
+    { label: '投稿^平均との^比較', vals: [NO, NO, OK, OK] },
+    { label: '初速^スコア', vals: [NO, NO, NO, OK] },
+    { label: 'コメント^感情^分析', vals: [NO, NO, NO, OK] },
+    { label: '同業種・同エリア^平均との^比較', vals: [NO, NO, NO, OK] },
     // ★liff_plan.html22：「ネガティブコメント検知」→「ネガティブなコメントのお知らせ」（分析画面〔analytics63〕にそろえた。Kenさん決定）
-    { label: 'ネガティブな^コメントの^お知らせ', vals: [NO, NO, NO, NO, OK] }
+    { label: 'ネガティブな^コメントの^お知らせ', vals: [NO, NO, NO, OK] }
   ];
 
   function escapeHtml(text) {
@@ -899,7 +907,7 @@
         '<span class="plan-price-sm">¥' + PLAN_PRICE[p] + '<wbr><span>/月</span></span></th>';
     }).join('');
     document.getElementById('feat-body').innerHTML = PLAN_FEATURES.map(function (f) {
-      if (f.sec) return '<tr class="sec-row"><td colspan="6">' + escapeHtml(f.sec) + '</td></tr>';
+      if (f.sec) return '<tr class="sec-row"><td colspan="5">' + escapeHtml(f.sec) + '</td></tr>';
       return '<tr class="data-row"><td class="key-td">' + labelHtml(f.label) + '</td>' + f.vals.map(function (v, i) {
         return '<td' + (PLANS[i] === currentPlan ? ' class="current"' : '') + '>' + valHtml(v) + '</td>';
       }).join('') + '</tr>';
@@ -930,8 +938,8 @@
       return '<td><button class="plan-btn btn-downgrade"' + off + ' onclick="openDowngrade(\'' + p + '\')">ダウン</button></td>';
     }).join('');
     if (!profileReady) status.textContent = '今のプランを確認しています…';
-    else if (!profileFound) status.textContent = 'プランを変えるには、LINEで友だち追加をしてから、もう一度この画面を開いてください。';
-    else if (withdrawRequested) status.textContent = '退会のお申し込み中は、プランを変更できません。先に、設定画面で退会のお申し込みを取り消してください。';
+    else if (!profileFound) status.textContent = 'LINEで友だち追加をしてから、もう一度開いてください。';
+    else if (withdrawRequested) status.textContent = '退会のお申し込み中は、プランを変えられません。設定画面で退会を取り消してください。';
     else status.textContent = '';
   }
 
@@ -954,7 +962,7 @@
     const next = document.getElementById('period-next');
     if (nextPlan && PLANS.indexOf(nextPlan) !== -1) {
       document.getElementById('period-next-text').textContent =
-        nextPlan + 'プランへの変更を受け付けています。' + (nextStartFull ? nextStartFull + 'から適用されます。' : '次回更新日から適用されます。');
+        (nextPeriodInfo ? mdText(nextPeriodInfo.start) : '次回更新日') + 'から' + nextPlan + 'プランに変わります。'; // ★liff_plan.html28：短くした
       document.getElementById('cancel-change-btn').disabled = changing;
       next.classList.add('show');
     } else {
@@ -963,8 +971,8 @@
     const w = document.getElementById('period-withdraw');
     if (withdrawRequested) {
       w.textContent = '退会のお申し込みを受け付けています。' +
-        (periodInfo ? '現在のご利用期間の終了日（' + ymdText(periodInfo.end) + '）まで、今までどおりご利用いただけます。' : '') +
-        'プランを変更するには、先に設定画面で退会のお申し込みを取り消してください。';
+        (periodInfo ? mdText(periodInfo.end) + 'まで今までどおり使えます。' : '') +
+        'プランを変えるには、設定画面で退会を取り消してください。';
       w.classList.add('show');
     } else {
       w.classList.remove('show');
@@ -1104,7 +1112,7 @@
     const today = new Date();
     const todayMd = (today.getMonth() + 1) + '月' + today.getDate() + '日';
     if (currentPlan === 'FREE') {
-      note = 'お申し込み後、すぐに' + plan + 'プランをご利用いただけます。ご利用期間は、本日（' + todayMd + '）から1か月ごとになります。';
+      note = plan + 'プランにすぐ変わります。ご利用期間は今日（' + todayMd + '）から1か月ごとです。';
     } else {
       note = scheduledNote(plan);
     }
@@ -1115,14 +1123,15 @@
     if (changing || !isTrial) return;
     const today = new Date();
     openTermsModal(plan, 'apply', '📄 プランのお申し込み',
-      'お申し込み後、すぐに' + plan + 'プランをご利用いただけます。ご利用期間は、本日（' + (today.getMonth() + 1) + '月' + today.getDate() + '日）から1か月ごとになります。',
+      plan + 'プランをすぐに使えます。ご利用期間は今日（' + (today.getMonth() + 1) + '月' + today.getDate() + '日）から1か月ごとです。',
       'このプランを申し込む');
   }
   // ★liff_plan.html12：次回更新日から変わる時の確認の文
   function scheduledNote(plan) {
     const from = nextPeriodInfo ? ymdText(nextPeriodInfo.start) : '';
-    return (from ? '次回更新日（' + from + '）から、' : '次回更新日から、') + plan + 'プランが適用されます。' +
-      (periodInfo ? ymdText(periodInfo.end) + 'までは、' : 'それまでは、') + '現在の' + currentPlan + 'プランをそのままご利用いただけます。';
+    // ★liff_plan.html28：短くした（Kenさん指摘）
+    return (nextPeriodInfo ? mdText(nextPeriodInfo.start) : '次回更新日') + 'から' + plan + 'プランに変わります。' +
+      (periodInfo ? mdText(periodInfo.end) + 'までは' : 'それまでは') + '今の' + currentPlan + 'プランです。';
   }
   function toggleAgreeBtn() {
     const btn = document.getElementById('terms-agree-btn');
@@ -1153,17 +1162,23 @@
     const from = nextPeriodInfo ? ymdText(nextPeriodInfo.start) : '';
     // ★liff_plan.html20：FREEにする時は、切り替わる日に行うこと（Xの連携を外す・Xに投稿しない・投稿履歴が見られなくなる）を出す（Kenさん決定）
     const toFree = plan === 'FREE';
+    // ★liff_plan.html28：Xを使えるプランからXを使えないプラン（FREE・LITE）に下げる時は、Xの連携を外す・Xに投稿しないことを出す
+    const loseX = NO_X_PLANS.indexOf(plan) !== -1 && NO_X_PLANS.indexOf(currentPlan) === -1;
     const fromDay = from ? from.replace(/^\d+年/, '') : '';
-    document.getElementById('down-remove').style.display = toFree ? 'block' : 'none';
+    const removeItems = [];
+    if (loseX) {
+      removeItems.push('・Xの連携を外します。');
+      removeItems.push('・' + (fromDay || '次回更新日') + 'からの予約は、Xに投稿しません。');
+    }
+    if (toFree) {
+      removeItems.push('・これまでの投稿履歴は今月と過去12か月分残り、LITE以上に戻すと見られます。');
+    }
+    document.getElementById('down-remove').style.display = removeItems.length ? 'block' : 'none';
     document.getElementById('down-remove-title').innerHTML = '🗑️ 次回更新日' + (fromDay ? '<wbr>（' + escapeHtml(fromDay) + '）' : '') + 'に<wbr>行うこと';
-    document.getElementById('down-remove-items').innerHTML = toFree ? [
-      '・Xの連携を外します。',
-      '・' + (fromDay || '次回更新日') + 'より後の予約にXが入っている時は、Xには投稿せず、ほかのSNSにだけ投稿します。',
-      '・投稿履歴と投稿削除の画面は見られなくなります。これまでの投稿履歴は保存期間（今月と過去12か月）まで残り、PERSONALプラン以上に戻すと、また見られます。'
-    ].map(escapeHtml).join('<br>') : '';
+    document.getElementById('down-remove-items').innerHTML = removeItems.map(escapeHtml).join('<br>');
     document.getElementById('down-note').textContent = scheduledNote(plan) +
-      (toFree ? 'すでに入っている予約は、Xを除いて、そのまま投稿されます。' : 'すでに入っている予約は、そのまま投稿されます。') +
-      (from ? from + 'から' : '次回更新日から') + 'の予約枠は、' + plan + 'プランの予約枠で数えます。切り替わる3日前に、ベルのお知らせでもお知らせします。';
+      (loseX ? '入っている予約は、X以外にそのまま投稿します。' : '入っている予約は、そのまま投稿します。') +
+      (fromDay ? fromDay + 'から' : '次回更新日から') + 'の予約枠は' + quotaText(plan) + 'です。切り替え3日前に通知します。';
     document.getElementById('down-error').textContent = '';
     document.getElementById('down-exec-btn').disabled = false;
     document.getElementById('downgrade-modal').classList.add('open');
@@ -1208,8 +1223,8 @@
       }
     } catch (err) {
       message = isApply
-        ? '通信エラーが発生しました。お申し込みができたかどうかは、「🔄 更新」で確かめてください。'
-        : '通信エラーが発生しました。プランが変わったかどうかは、「🔄 更新」で確かめてください。';
+        ? '通信エラーです。お申し込みできたかは「🔄 更新」で確かめてください。'
+        : '通信エラーです。プランが変わったかは「🔄 更新」で確かめてください。';
       traceLog((isApply ? 'お申し込み' : 'プラン変更') + ' 通信エラー ' + String(err && err.message));
     } finally {
       changing = false;
@@ -1236,21 +1251,21 @@
     let title, text, icon = '✅';
     if (isApply) {
       title = plan + 'プランのお申し込みが完了しました。';
-      text = '本日からご利用いただけます。次回更新日は' + renewal + 'です。';
+      text = '今日から使えます。次回更新日は' + renewal + 'です。';
     } else if (d.changed) {
       title = 'プラン変更が完了しました。';
-      text = d.plan + 'プランを、本日からご利用いただけます。次回更新日は' + renewal + 'です。';
+      text = d.plan + 'プランを今日から使えます。次回更新日は' + renewal + 'です。';
     } else if (d.scheduled) {
       const from = ymdText(d.effectiveFrom);
       const lastDay = periodInfo ? periodInfo.end : '';
       title = 'プラン変更を受け付けました。';
-      text = (from ? from + 'から、' : '次回更新日から、') + d.plan + 'プランが適用されます。' +
-        (lastDay ? ymdText(lastDay) + 'までは、' : 'それまでは、') + '現在の' + (d.previousPlan || previous) + 'プランをそのままご利用いただけます。' +
-        '変更の取り消しは、' + (lastDay ? mdText(lastDay) + 'まで、' : '次回更新日の前日まで、') + 'この画面から行えます。';
+      text = (from ? from.replace(/^\d+年/, '') + 'から' : '次回更新日から') + d.plan + 'プランに変わります。' +
+        (lastDay ? mdText(lastDay) + 'までは' : 'それまでは') + '今の' + (d.previousPlan || previous) + 'プランです。' +
+        '取り消しは' + (lastDay ? mdText(lastDay) + 'まで' : '次回更新日の前日まで') + '、この画面でできます。';
     } else {
       icon = 'ℹ️';
       title = 'プランは変わっていません。';
-      text = '現在の' + d.plan + 'プランを、引き続きご利用いただけます。';
+      text = '今の' + d.plan + 'プランのままです。';
     }
     document.getElementById('complete-icon').textContent = icon;
     document.getElementById('complete-title').textContent = title;
@@ -1261,7 +1276,7 @@
   // ★liff_plan.html11：プラン変更の予定を取り消す（書き込みのため、自動のやり直しはせず1回だけ送る）
   async function cancelPlanChange() {
     if (changing || !LINE_UID || !nextPlan) return;
-    if (!(await window.aipostAsk({ title: 'プランの変更を取り消しますか？', note: nextPlan + 'プランへの変更を取り消します。現在の' + currentPlan + 'プランを、引き続きご利用いただけます。', ok: '取り消す' }))) return;
+    if (!(await window.aipostAsk({ title: 'プランの変更を取り消しますか？', note: nextPlan + 'プランへの変更を取り消します。今の' + currentPlan + 'プランのままです。', ok: '取り消す' }))) return;
     changing = true;
     renderButtons();
     renderPeriodCard();
@@ -1280,7 +1295,7 @@
         message = String((result && result.error) || '取り消しができませんでした。もう一度お試しください。');
       }
     } catch (err) {
-      message = '通信エラーが発生しました。取り消せたかどうかは、「🔄 更新」で確かめてください。';
+      message = '通信エラーです。取り消せたかは「🔄 更新」で確かめてください。';
       traceLog('プラン変更の予定の取り消し 通信エラー ' + String(err && err.message));
     } finally {
       changing = false;
@@ -1298,7 +1313,7 @@
     await fetchProfile(true, '読み込んでいます…');
     document.getElementById('complete-icon').textContent = '✅';
     document.getElementById('complete-title').textContent = result.data.cancelled ? 'プラン変更を取り消しました。' : 'プラン変更の予定はありませんでした。';
-    document.getElementById('complete-text').textContent = '現在の' + (result.data.plan || currentPlan || '') + 'プランを、引き続きご利用いただけます。';
+    document.getElementById('complete-text').textContent = '今の' + (result.data.plan || currentPlan || '') + 'プランのままです。';
     document.getElementById('complete-modal').classList.add('open');
   }
 
