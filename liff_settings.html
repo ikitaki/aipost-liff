@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録90 - AiPost</title>
+<title>設定・登録91 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -117,7 +117,6 @@
     font-weight: 700;
   }
   .plan-FREE { background: #f1f5f9; color: #64748b; }
-  .plan-PERSONAL { background: #e3f2fd; color: #1565c0; }
   .plan-LITE { background: #e8f5e9; color: #2e7d32; }
   .plan-STANDARD { background: #fff8e1; color: #e65100; }
   .plan-PRO { background: #f3e5f5; color: #6a1b9a; }
@@ -363,6 +362,8 @@
   .wd-badge { background: #ffebee; color: #c62828; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
   .wd-date { font-size: 13px; font-weight: 700; white-space: nowrap; }
   .wd-text { font-size: 12px; color: var(--text-sub); line-height: 1.8; margin-bottom: 12px; }
+  /* ★liff_settings.html91：登録タブの説明文を、言葉の途中で折り返さない（Kenさん指摘） */
+  #tab-account p, #tab-account .wd-text { word-break: keep-all; overflow-wrap: anywhere; }
   .wd-list { font-size: 12px; color: var(--text); line-height: 1.8; margin: 0; padding-left: 1.2em; }
   .wd-list li { margin-bottom: 4px; }
   .sheet { background: white; border-radius: 16px 16px 0 0; padding: 20px 16px 32px; width: 100%; max-width: 520px; margin: 0 auto; max-height: 85vh; overflow-y: auto; }
@@ -637,7 +638,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録90</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録91</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -787,11 +788,11 @@
     </div>
     <div class="notice">
       <span>💡</span>
-      <span>SNSへ自動投稿するには、各SNSでの承認が必要です。パスワードはお預かりしません。</span><!-- ★liff_settings.html61：文言変更（Kenさん指示） -->
+      <span style="word-break:keep-all;overflow-wrap:anywhere;">SNSへ<wbr>自動投稿するには、<wbr>各SNSでの<wbr>承認が<wbr>必要です。<wbr>パスワードは<wbr>お預かりしません。</span><!-- ★liff_settings.html61：文言変更（Kenさん指示）。★liff_settings.html91：言葉の途中で折り返さない（Kenさん指摘「パ／スワード」） -->
     </div>
     <div class="card">
       <div class="card-title" id="sns-connected-title">連携状況</div>
-      <p id="sns-post-limit-note" style="display:none;font-size:11px;color:#e65100;margin:-4px 0 8px;"></p>
+      <p id="sns-post-limit-note" style="display:none;font-size:11px;color:#e65100;margin:-4px 0 8px;word-break:keep-all;overflow-wrap:anywhere;"></p><!-- ★liff_settings.html91：言葉の途中で折り返さない -->
       <!-- ★liff_settings.html70：仮の表示（X・Instagramが連携済み）をやめ、3つとも「確認中」から始める。ボタンは状態が分かるまで押せない -->
       <div class="sns-item" id="sns-item-x">
         <div class="sns-icon sns-x">X</div>
@@ -820,8 +821,9 @@
         </div>
         <button class="sns-btn btn-connect" id="sns-btn-th" onclick="toggleSnsConnection('th')" disabled>連携</button>
       </div>
-      <div style="font-size:11px;color:var(--text-sub);margin:4px 0 0;line-height:1.6;padding:0 4px;">
-        ※連携がうまく進まない場合は、もう一度「連携」ボタンを押し直してください。
+      <!-- ★liff_settings.html91：短くし、言葉の途中で折り返さない -->
+      <div style="font-size:11px;color:var(--text-sub);margin:4px 0 0;line-height:1.6;padding:0 4px;word-break:keep-all;overflow-wrap:anywhere;">
+        ※うまく<wbr>連携できない時は、<wbr>「連携」を<wbr>押し直してください。
       </div>
     </div>
   </div>
@@ -863,8 +865,8 @@
         <!-- ★liff_settings.html60：所在地（ユーザー管理シート「所在地」列。50文字まで） -->
         <div class="form-group">
           <label class="form-label">所在地（任意。人材募集では必須）</label>
-          <input type="text" class="form-input" id="address-input" maxlength="50" placeholder="例：東京都渋谷区神南1-2-3 ○○ビル2F" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
-          <p style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:4px;">投稿文の最後に📍を付けて、そのまま載せられます。</p>
+          <input type="text" class="form-input" id="address-input" maxlength="50" placeholder="例：東京都渋谷区神南1-2-3" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
+          <p style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:4px;">投稿文の<wbr>最後に📍を<wbr>付けて<wbr>載せられます。</p>
         </div>
         <!-- ★liff_settings.html89：求人の連絡先（投稿文作成の人材募集で、投稿文にそのまま載る。下の「連絡先メールアドレス」とは別） -->
         <div class="form-group">
@@ -895,7 +897,7 @@
       <div class="card">
         <div class="card-title">連絡先メールアドレス（任意）</div>
         <p style="font-size:12px;color:var(--text-sub);line-height:1.8;margin-bottom:12px;">
-          LINEアカウントが使えなくなった場合の連絡手段として登録できます。登録しなくても利用できます。
+          LINEが<wbr>使えなくなった時の<wbr>連絡先です。<wbr>登録しなくても<wbr>使えます。
         </p>
         <div class="form-group" style="margin-bottom:0;">
           <input type="email" class="form-input" id="email-input" placeholder="例：info@example.com" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
@@ -911,7 +913,7 @@
       <div class="card" id="withdraw-card">
         <div class="card-title">退会</div>
         <div id="wd-normal">
-          <p class="wd-text" id="wd-normal-text">退会をお申し込みいただいた後も、ご利用期間の終了日まで、引き続きご利用いただけます。</p>
+          <p class="wd-text" id="wd-normal-text">退会の<wbr>お申し込みの後も、<wbr>ご利用期間の<wbr>終わりまで<wbr>使えます。</p>
           <button class="btn btn-caution" onclick="showCancelScreen()">退会の手続きへ進む</button>
         </div>
         <div id="wd-pending" style="display:none;">
@@ -1001,7 +1003,7 @@
   <div class="sheet">
     <div class="sheet-handle"></div>
     <div class="sheet-title" id="sns-disconnect-title">Instagramとの連携を解除しますか？</div>
-    <div class="sheet-note" id="sns-disconnect-note">解除すると、Instagramへの投稿の予約と、分析データの取り込みができなくなります。もう一度連携する時は、Instagramでの承認が必要です。</div>
+    <div class="sheet-note" id="sns-disconnect-note" style="word-break:keep-all;overflow-wrap:anywhere;"></div><!-- ★liff_settings.html91：文は開く時に入れる。言葉の途中で折り返さない -->
     <button class="sheet-btn sheet-btn-danger" id="sns-disconnect-btn" onclick="confirmSnsDisconnect()">連携を解除する</button>
     <button class="sheet-btn sheet-btn-cancel" id="sns-disconnect-back-btn" onclick="closeSnsDisconnectModal()">やめる</button>
   </div>
@@ -1266,7 +1268,7 @@ const TRACE_KEY = 'aipost_trace';
 // 　recruitContact で送る（GASの変更は別の指示書）。電話は数字とハイフン（数字10〜11けた）、メールはメールの形の時だけ保存できる。
 // ★liff_settings.html90：求人の連絡先の電話番号を、ハイフンなしにした（Kenさん指示）。電話を選んでいる時は、入力欄に数字だけが入る
 // 　（ハイフン・「ー」・空白は入れたそばから消し、全角の数字は半角にする）。0で始まる10〜11けたの時だけ保存できる（UserProfilegs_23 と同じ決まり）。
-const TRACE_SCREEN = '設定90';
+const TRACE_SCREEN = '設定91';
 
 function traceLog(msg) {
   try {
@@ -1457,8 +1459,11 @@ const SNS_LABEL = { ig: 'Instagram', x: 'X', th: 'Threads' };
 // 　プランで変わるのは「投稿先に選べるSNSの数」のみ（投稿文作成画面・サーバー側で制限）。
 const SNS_CONNECT_MAX = 3;
 // ★liff_settings.html79：FREEを1→2にした（Kenさん決定。GASの投稿予約gs_37 と同じ数）
-const PLAN_POST_SNS_LIMIT = { FREE: 2, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
-const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
+// ★liff_settings.html91：PERSONALを廃止し、料金を新しいプランにした。LITEもXは不可（Kenさん決定・2026年11月15日）
+const PLAN_POST_SNS_LIMIT = { FREE: 2, LITE: 2, STANDARD: 3, PRO: 3 };
+const PLAN_PRICE = { FREE: '¥0/月', LITE: '¥780/月', STANDARD: '¥1,480/月', PRO: '¥2,480/月' };
+// ★liff_settings.html91：Xを連携できないプラン
+const NO_X_PLANS = ['FREE', 'LITE'];
 let currentDemoPlan = '';  // ★liff_settings.html70：仮の値（STANDARD）をやめた。プランが分かるまでは空
 let currentRemainingReservable = null;
 // ★liff_settings.html70：お試し中（契約プラン「未入会」）・登録が無い・SNSの連携状態が分かったか
@@ -1515,12 +1520,12 @@ function applySnsButtonLock() {
 // ★liff_settings.html80：FREEプランはXを連携できない（Kenさん決定）。連携していないXの「連携」ボタンを押せなくし、案内を出す。
 // 　連携済みのXは「解除」できるようにしておく（FREEに変わる日の夜に、GASが連携を外す）。押せるようにはしない（applySnsButtonLock() が戻す）
 function applyFreeXLock() {
-  if (currentDemoPlan !== 'FREE' || !SNS_KNOWN || IS_TRIAL || NOT_REGISTERED) return;
+  if (NO_X_PLANS.indexOf(currentDemoPlan) === -1 || !SNS_KNOWN || IS_TRIAL || NOT_REGISTERED) return; // ★liff_settings.html91：LITEも
   if (isConnected('x')) return;
   const btn = document.getElementById('sns-btn-x');
   if (btn) btn.disabled = true;
   const status = document.getElementById('sns-status-x');
-  if (status) status.innerHTML = 'PERSONALプラン<wbr>以上で<wbr>連携<wbr>できます';
+  if (status) status.innerHTML = 'STANDARDプラン<wbr>以上で<wbr>連携<wbr>できます'; // ★liff_settings.html91
 }
 
 // ★liff_settings.html70：お試し中の表示（連携の案内を出し、連携ボタンを押せなくし、退会のカードを出さない）
@@ -1606,14 +1611,15 @@ function toggleSnsConnection(sns) {
     const label = SNS_LABEL[sns];
     document.getElementById('sns-disconnect-title').textContent = label + 'との連携を解除しますか？';
     // ★liff_settings.html73：文を直した（SNS名を入れる）
-    document.getElementById('sns-disconnect-note').textContent = '解除すると、' + label + 'への投稿の予約と、分析データの取り込みができなくなります。もう一度連携する時は、' + label + 'での承認が必要です。';
+    // ★liff_settings.html91：短くし、言葉の途中で折り返さない
+    document.getElementById('sns-disconnect-note').innerHTML = label + 'に<wbr>投稿・分析<wbr>できなくなります。<wbr>もう一度<wbr>連携する時は、<wbr>' + label + 'での<wbr>承認が<wbr>必要です。';
     document.getElementById('sns-disconnect-modal').classList.add('open');
     return;
   }
   // ★liff_settings.html58：プランによる連携数の上限・FREEプランのX連携不可を廃止した
   // 　（連携は全プラン3つまで可能。投稿先の数だけをプランで制限する）
   // ★liff_settings.html80：FREEプランのX連携不可を戻した（Kenさん決定。GASの XAuth でも断る）
-  if (sns === 'x' && currentDemoPlan === 'FREE') return;
+  if (sns === 'x' && NO_X_PLANS.indexOf(currentDemoPlan) !== -1) return; // ★liff_settings.html91：LITEも
 
   // X・Instagram・Threadsは実際のOAuth連携フローを開始する
   if (sns === 'x') {
@@ -1725,14 +1731,14 @@ function updateSnsSummary() {
   const connectedList = SNS_ORDER.filter(isConnected);
   // ★liff_settings.html70：連携の状態が分かるまでは件数を出さない（仮の件数を出さないため）
   // ★liff_settings.html80：FREEは連携できるのが2つ（Instagram・Threads）
-  const connectMax = (currentDemoPlan === 'FREE' && !isConnected('x')) ? 2 : SNS_CONNECT_MAX;
+  const connectMax = (NO_X_PLANS.indexOf(currentDemoPlan) !== -1 && !isConnected('x')) ? 2 : SNS_CONNECT_MAX; // ★liff_settings.html91：LITEも
   document.getElementById('sns-connected-title').textContent = SNS_KNOWN ? `連携状況（${connectedList.length}/${connectMax}）` : '連携状況';
   // ★liff_settings.html58：プランごとの投稿先の数を案内する（STANDARD・PROは3つとも選べるため表示しない）
   const postLimit = PLAN_POST_SNS_LIMIT[currentDemoPlan];
   const postNote = document.getElementById('sns-post-limit-note');
   if (postNote) {
-    if (currentDemoPlan === 'FREE') {
-      postNote.textContent = '💎 FREEプランの連携・投稿先は2つまでです（Xは選べません）。'; // ★liff_settings.html79・80
+    if (NO_X_PLANS.indexOf(currentDemoPlan) !== -1) {
+      postNote.innerHTML = '💎 ' + currentDemoPlan + 'プランは、<wbr>InstagramとThreadsの<wbr>2つまでです。'; // ★liff_settings.html79・80。★liff_settings.html91：LITEも・短くした
       postNote.style.display = 'block';
     } else if (postLimit && postLimit < 3) {
       postNote.textContent = '💎 ' + currentDemoPlan + 'プランの投稿先は' + postLimit + 'つまで';
@@ -2049,9 +2055,10 @@ function renderWithdrawState() {
   const nextMd = WD_NEXT_START ? wdMd(WD_NEXT_START) : '';
   document.getElementById('wd-normal').style.display = WD_REQUESTED ? 'none' : 'block';
   document.getElementById('wd-pending').style.display = WD_REQUESTED ? 'block' : 'none';
-  document.getElementById('wd-normal-text').textContent = endMd
-    ? '退会をお申し込みいただいた後も、ご利用期間の終了日（' + endMd + '）まで、引き続きご利用いただけます。'
-    : '退会をお申し込みいただいた後も、ご利用期間の終了日まで、引き続きご利用いただけます。';
+  // ★liff_settings.html91：短くし、言葉の途中で折り返さない
+  document.getElementById('wd-normal-text').innerHTML = endMd
+    ? '退会の<wbr>お申し込みの後も、<wbr>' + endMd + 'まで<wbr>使えます。'
+    : '退会の<wbr>お申し込みの後も、<wbr>ご利用期間の<wbr>終わりまで<wbr>使えます。';
   document.getElementById('wd-pending-date').textContent = endMd ? 'ご利用終了日：' + endMd : '';
   document.getElementById('wd-pending-text').textContent =
     (nextMd ? nextMd + 'に退会となります。' : '次回更新日に退会となります。') +
