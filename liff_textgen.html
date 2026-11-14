@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成195 - AiPost</title>
+<title>投稿文作成196 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -353,8 +353,8 @@
   }
   .plan-demo-btn.active { background: rgba(255,255,255,0.9); color: #333; border-color: transparent; }
   .sns-check-item.disabled { opacity: 0.4; cursor: not-allowed; }
-  .sns-plan-note { font-size: 11px; color: #e65100; margin: 8px 0 0; }
-  .sns-check-name { font-size: 12px; font-weight: 600; text-align: center; }
+  .sns-plan-note { font-size: 11px; color: #e65100; margin: 8px 0 0; word-break: keep-all; overflow-wrap: anywhere; } /* ★liff_textgen.html196：言葉の途中で折り返さない */
+  .sns-check-name { font-size: 12px; font-weight: 600; text-align: center; word-break: keep-all; overflow-wrap: normal; } /* ★liff_textgen.html196：「Instagra／m」と折れないように */
   .sns-checkbox {
     width: 14px; height: 14px; border-radius: 50%;
     border: 1.5px solid var(--border); display: flex; align-items: center;
@@ -960,7 +960,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成195</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成196</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1820,9 +1820,11 @@
 </nav>
 
 <script>
-let CHAR_LIMIT = 140; // 全角換算の文字数上限（PERSONAL以上：140字＝半角280字相当）※プランにより可変
+let CHAR_LIMIT = 140; // 全角換算の文字数上限（140字＝半角280字相当）※プランにより可変
 // ★liff_textgen.html156：FREEプランも140字にそろえた（Kenさん決定。システム設定の「FREEプラン文字数上限」も140）
-const PLAN_CHAR_LIMIT = { FREE: 140, PERSONAL: 140, LITE: 140, STANDARD: 140, PRO: 140 };
+const PLAN_CHAR_LIMIT = { FREE: 140, LITE: 140, STANDARD: 140, PRO: 140 }; // ★liff_textgen.html196：PERSONALを廃止
+// ★liff_textgen.html196：Xを使えないプラン（Kenさん決定・2026年11月15日）
+const NO_X_PLANS = ['FREE', 'LITE'];
 const X_LIMIT = 140;
 // ★liff_textgen.html152：本文とハッシュタグを合わせた上限（全SNS・全プラン共通。Kenさん決定。GASの投稿予約gs_33と同じ）
 const POST_TOTAL_LIMIT = 140;
@@ -1898,7 +1900,7 @@ function applySnsConnectionStatus(sns) {
   if (!sns) return;
   const itemIds = { x: 'sns-item-x', instagram: 'sns-item-ig', threads: 'sns-item-th' };
   const names = { x: 'X', instagram: 'Instagram', threads: 'Threads' };
-  const unconnected = [];
+  let unconnected = []; // ★liff_textgen.html196：後でXを外すため let
 
   Object.keys(itemIds).forEach(function (key) {
     const el = document.getElementById(itemIds[key]);
@@ -1912,20 +1914,24 @@ function applySnsConnectionStatus(sns) {
       el.classList.add('disabled');
       el.onclick = null;
     } else {
-      // FREEプランによるXの無効化（applyPlan()側の制御）は上書きしない
-      if (key === 'x' && document.getElementById('plan-badge').textContent === 'FREE') return;
+      // FREE・LITEプランによるXの無効化（applyPlan()側の制御）は上書きしない（★liff_textgen.html196：LITEも）
+      if (key === 'x' && NO_X_PLANS.indexOf(document.getElementById('plan-badge').textContent) !== -1) return;
       el.classList.remove('disabled');
       el.onclick = () => toggleSns(el);
     }
   });
 
   const note = document.getElementById('sns-unconnected-note');
+  // ★liff_textgen.html196：Xを使えないプラン（FREE・LITE）では、Xの未連携を知らせない（連携できないため）
+  if (NO_X_PLANS.indexOf(document.getElementById('plan-badge').textContent) !== -1) {
+    unconnected = unconnected.filter(function (name) { return name !== 'X'; });
+  }
   if (note) {
     if (unconnected.length > 0) {
-      // ★liff_textgen.html152：お試し中は、プランのお申し込みでSNSを連携できることを案内する
-      note.textContent = IS_TRIAL
-        ? '⚠️ SNSの連携は、プランをお申し込みいただくとご利用いただけます。'
-        : '⚠️ ' + unconnected.join('・') + 'は連携されていません（設定画面から連携できます）。';
+      // ★liff_textgen.html152：お試し中は、プランのお申し込みでSNSを連携できることを案内する。★liff_textgen.html196：短くした
+      note.innerHTML = IS_TRIAL
+        ? '⚠️ SNSの連携は、<wbr>プランの<wbr>お申し込み後に<wbr>使えます。'
+        : '⚠️ ' + unconnected.join('・') + 'は<wbr>未連携です<wbr>（設定画面で<wbr>連携できます）。';
       note.style.display = 'block';
     } else {
       note.style.display = 'none';
@@ -1957,7 +1963,7 @@ function applyQuotaFromCache(cache) {
     applyNotRegistered();
     return;
   }
-  const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
+  const validPlans = ['FREE', 'LITE', 'STANDARD', 'PRO']; // ★liff_textgen.html196：PERSONALを廃止
   // ★liff_textgen.html171：契約プランが空の時はFREEとして扱う（メモ）
   if (cache.plan === '' || cache.plan === null || cache.plan === undefined) cache.plan = 'FREE';
   if (cache.plan === '未入会') {
@@ -2140,7 +2146,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html195：目的を先に選ぶ形にした（①SNS→②目的→③作り方…。人材募集の時は③登録している情報→④求人の内容→⑤投稿文を確認する→⑥画像→⑦投稿日）。
 // 　人材募集はAIを使わず、入力した内容を決まった形に並べる（6つの項目は必須。店名・所在地・求人の連絡先は設定画面の登録を使う。ハッシュタグなし。
 // 　自由に入れる欄は、残りの字数までしか入らない）。ほかの目的で求人らしい言葉がある時は、「内容を確認する」で注意の窓を出す（Kenさん承認：画面見本_人材募集_01）。
-const TRACE_SCREEN = '投稿文作成195';
+const TRACE_SCREEN = '投稿文作成196';
 
 function traceLog(msg) {
   try {
@@ -3910,12 +3916,13 @@ function updateCharCount(e) {
 // 　getUserProfile()から取得した実際のプランをapplyPlan()へそのまま
 // 　渡す形に変更した。関数の中身（プラン別のSNS制限・文字数上限の
 // 　適用ロジック）自体は変更していない。
-const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
+// ★liff_textgen.html196：PERSONALを廃止し、料金を新しいプランにした。LITEもXは不可（Kenさん決定・2026年11月15日）
+const PLAN_PRICE = { FREE: '¥0/月', LITE: '¥780/月', STANDARD: '¥1,480/月', PRO: '¥2,480/月' };
 
 // ★liff_textgen.html120：プランごとの「投稿先に選べるSNSの数」（SNSの連携自体は全プラン3つまで可能）。
 // 　サーバー側（TextGenerationgs_22のcreateReservation()）でも同じ数で確認している。
 // ★liff_textgen.html160：FREEを1→2にした（Kenさん決定。GASの投稿予約gs_37 の TEXTGEN_PLAN_POST_SNS_LIMIT と同じ数）
-const PLAN_POST_SNS_LIMIT = { FREE: 2, PERSONAL: 2, LITE: 2, STANDARD: 3, PRO: 3 };
+const PLAN_POST_SNS_LIMIT = { FREE: 2, LITE: 2, STANDARD: 3, PRO: 3 };
 let currentPostSnsLimit = 3;
 let currentPlanName = '';
 
@@ -3942,8 +3949,8 @@ function applyPlan(plan) {
 
   const xItem = document.getElementById('sns-item-x');
   const xNote = document.getElementById('sns-plan-note');
-  if (plan === 'FREE') {
-    // FREEプランはXを選択できないため、チェックを外して選択不可にする
+  if (NO_X_PLANS.indexOf(plan) !== -1) {
+    // FREE・LITEプランはXを選択できないため、チェックを外して選択不可にする（★liff_textgen.html196：LITEも）
     if (xItem.classList.contains('checked')) {
       xItem.classList.remove('checked');
       xItem.querySelector('.sns-checkbox').textContent = '';
@@ -3957,8 +3964,8 @@ function applyPlan(plan) {
   // ★liff_textgen.html120：投稿先に選べる数をプランに合わせ、案内文を出す
   currentPlanName = plan;
   currentPostSnsLimit = PLAN_POST_SNS_LIMIT[plan] || 1;
-  if (plan === 'FREE') {
-    xNote.textContent = '💎 FREEプランの投稿先は2つまでです（Xは選べません）。'; // ★liff_textgen.html160
+  if (NO_X_PLANS.indexOf(plan) !== -1) {
+    xNote.innerHTML = '💎 ' + plan + 'プランは、<wbr>InstagramとThreadsの<wbr>2つまでです。'; // ★liff_textgen.html160。★liff_textgen.html196：LITEも・短くした
     xNote.style.display = 'block';
   } else if (currentPostSnsLimit < 3) {
     xNote.textContent = '💎 ' + plan + 'プランの投稿先は' + currentPostSnsLimit + 'つまで';
@@ -3984,7 +3991,8 @@ function applyPlan(plan) {
 // 　変わる日（次の期間の開始日）を返す。予定が無い・分からない時は null
 function tgPendingFreeStart() {
   const c = readQuotaCache();
-  if (!c || c.nextPlan !== 'FREE' || currentPlanName === 'FREE' || !c.nextPeriod) return null;
+  // ★liff_textgen.html196：次の期間からXを使えないプラン（FREE・LITE）に変わる人も同じ
+  if (!c || NO_X_PLANS.indexOf(c.nextPlan) === -1 || NO_X_PLANS.indexOf(currentPlanName) !== -1 || !c.nextPeriod) return null;
   return tgYmdToDate(c.nextPeriod.start);
 }
 function updatePendingFreeNote() {
@@ -3993,7 +4001,7 @@ function updatePendingFreeNote() {
   const start = tgPendingFreeStart();
   if (!start) { el.style.display = 'none'; return; }
   const c = readQuotaCache();
-  el.innerHTML = '💎 ' + tgMd(c.nextPeriod.start) + 'から<wbr>FREEプランに<wbr>変わるため、<wbr>その日からの<wbr>予約では<wbr>Xを<wbr>選べません。';
+  el.innerHTML = '💎 ' + tgMd(c.nextPeriod.start) + 'からは<wbr>' + c.nextPlan + 'プランに<wbr>変わるため、<wbr>Xへの<wbr>投稿は<wbr>できません。'; // ★liff_textgen.html196（Kenさんの言い方）
   el.style.display = 'block';
 }
 
@@ -4574,7 +4582,7 @@ async function showConfirm() {
   const pendingFreeStart = tgPendingFreeStart();
   if (pendingFreeStart && getCheckedSns().indexOf('X') !== -1 && !/https?:\/\//.test(ta.value) &&
       new Date(selectedYear, selectedMonth - 1, selectedDay).getTime() >= pendingFreeStart.getTime()) {
-    aipostNotice(tgMd(readQuotaCache().nextPeriod.start) + 'からFREEプランに変わるため、その日からの予約ではXを選べません。\n投稿先を選び直してください。');
+    aipostNotice(tgMd(readQuotaCache().nextPeriod.start) + 'からは' + readQuotaCache().nextPlan + 'プランに変わるため、Xへの投稿はできません。\n投稿先を選び直してください。'); // ★liff_textgen.html196（Kenさんの言い方）
     return;
   }
 
