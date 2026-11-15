@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更93 - AiPost</title>
+<title>予約確認・変更94 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -1071,7 +1071,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更93</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更94</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1219,7 +1219,7 @@
 
   <!-- ★liff_reservation.html58：お試し中（プラン未申し込み）の案内・登録が見つからない時の案内（どのタブでも出す） -->
   <div class="trial-card" id="trial-card" style="display:none;">
-    <!-- ★liff_reservation.html73：投稿履歴はPERSONALプラン以上のため、「投稿履歴」を外した -->
+    <!-- ★liff_reservation.html73：投稿履歴はFREEでは使えないため、「投稿履歴」を外した（★liff_reservation.html94：PERSONALの名前を消した） -->
     予約の<wbr>確認は、<wbr>プランを<wbr>お申し込みいただくと<wbr>ご利用いただけます。
     <button type="button" class="sheet-btn" onclick="navigateTo('plan')">プランを申し込む</button>
   </div>
@@ -1735,7 +1735,8 @@
 // ★liff_reservation_html8：デモ用切替ボタンを廃止し、実際の契約プランを
 // 　applyPlan()へ渡す形に変更した（liff_textgen.htmlと同じ対応）。
 let currentDemoPlan = 'STANDARD';
-const PLAN_PRICE = { FREE: '¥0/月', PERSONAL: '¥300/月', LITE: '¥680/月', STANDARD: '¥1,280/月', PRO: '¥1,980/月' };
+// ★liff_reservation.html94：PERSONALを廃止し、料金を新しいプランにした（Kenさん決定・2026年11月15日）
+const PLAN_PRICE = { FREE: '¥0/月', LITE: '¥780/月', STANDARD: '¥1,480/月', PRO: '¥2,480/月' };
 
 
 // ★liff_reservation.html59：プランが分かったら、プランの印をいつもの色にする（読み込み中は白っぽい「確認中」）
@@ -2082,7 +2083,7 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
       applyNotRegistered();
       return;
     }
-    const validPlans = ['FREE', 'PERSONAL', 'LITE', 'STANDARD', 'PRO'];
+    const validPlans = ['FREE', 'LITE', 'STANDARD', 'PRO']; // ★liff_reservation.html94：PERSONALを廃止
     if (plan === '未入会') {
       applyTrial(profile.trial);
     } else if (validPlans.includes(plan)) {
@@ -2199,7 +2200,7 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   // 　本文の入力欄ではなく、投稿文作成195 と同じ人材募集の入力欄（今の投稿文から読み取って最初から入れる）を出し、決まった形の投稿文を作り直して保存する。
   // 　登録している店名・所在地・連絡先は、開いた時に getUserProfile で読み直す（設定で変えていれば、新しい登録で作り直す）。読み取れない投稿文の予約は直せない。
   // 　92 の「人材募集の投稿文は直せません」の案内は外した。GASの投稿予約gs_41 も、人材募集の予約の本文が決まった形かを確かめる。
-  const TRACE_SCREEN = '予約確認93';
+  const TRACE_SCREEN = '予約確認94';
 
   function traceLog(msg) {
     try {
@@ -4858,7 +4859,7 @@ function _dataUrlToBase64(dataUrl) {
     // ★liff_reservation.html44：投稿削除タブを開いていれば、取得したデータで表示する
     renderDeleteTab();
   }
-  // ★liff_reservation.html83：画面を開いた時に呼ぶ。覚えた履歴があればすぐ出し、要る時だけ裏で取り直す（PERSONALプラン以上だけ）
+  // ★liff_reservation.html83：画面を開いた時に呼ぶ。覚えた履歴があればすぐ出し、要る時だけ裏で取り直す（LITEプラン以上だけ）
   function startPostHistoryEarly() {
     if (IS_TRIAL || NOT_REGISTERED) return;
     if (currentDemoPlan === 'FREE') { clearPostHistoryCache(); return; }
@@ -5066,7 +5067,9 @@ function _dataUrlToBase64(dataUrl) {
     '文字数超過除外': '文字数^超過の^ため^投稿せず',
     '失敗（システムエラー）': '投稿できず^（連携を^確認）',
     '投稿拒否（プラットフォーム規約）': 'SNSが^受け付けず',
-    'FREEプラン除外': 'FREEプランの^ため^投稿せず' // ★liff_reservation.html71：FREEはXに投稿しない（AutoPostgs_22）
+    // ★liff_reservation.html94：Xを使えないプランの時は「〇〇プランは対象外」（Kenさん指摘：すぐ意味が分かる言い方に。FREEもそろえた）
+    'FREEプラン除外': 'FREEプランは^対象外', // ★liff_reservation.html71：FREEはXに投稿しない（AutoPostgs_22）
+    'LITEプラン除外': 'LITEプランは^対象外' // ★liff_reservation.html94：LITEもXに投稿しない（AutoPost.gs の新しい結果）
   };
   // 「^」を、折り返してよい所（<wbr>）にする（エスケープした後の文に使う）
   function insertWbr(html) {
