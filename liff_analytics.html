@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析74 - AiPost</title>
+<title>分析75 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -387,7 +387,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析74</span></span>
+  <span class="header-logo"><span class="nowrap">分析75</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1048,7 +1048,7 @@
   <div class="card">
     <div class="card-title">⚠️ ネガティブな<wbr>コメント</div>
     <!-- ★liff_analytics.html63：何をどこまで確かめているかを、見出しのすぐ下に書いた（Kenさん指示） -->
-    <div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.7;margin:-4px 0 10px;">投稿の<wbr>3時間後・<wbr>6時間後・<wbr>24時間後に、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確かめます<wbr>（1投稿<wbr>あたり<wbr>Xは<wbr>10件、<wbr>Instagram・<wbr>Threadsは<wbr>50件まで）。<wbr>その<wbr>中に<wbr>ネガティブな<wbr>コメントが<wbr>あれば、<wbr>ベルの<wbr>お知らせで<wbr>お知らせします。<wbr>件数を<wbr>超えた<wbr>コメントや、<wbr>24時間より<wbr>後の<wbr>コメントは<wbr>確かめません。</div>
+    <div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.7;margin:-4px 0 10px;">投稿の<wbr>3時間後・<wbr>6時間後・<wbr>24時間後に、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確かめます<wbr>（1投稿<wbr>あたり<wbr>Xは<wbr>10件、<wbr>Instagram・<wbr>Threadsは<wbr>50件まで）。<wbr>その中に<wbr>ネガティブな<wbr>コメントが<wbr>あれば、<wbr>通知します。<!-- ★liff_analytics.html75：「ベルのお知らせでお知らせします」は回りくどいため短くした（Kenさん指摘） --><wbr>件数を<wbr>超えた<wbr>コメントや、<wbr>24時間より<wbr>後の<wbr>コメントは<wbr>確かめません。</div>
     <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
       <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の<wbr>大切なヒントです。早めに<wbr>気づいて対応することで、お客様との<wbr>信頼関係を<wbr>深めるチャンスに<wbr>変えましょう。</div>
     </div>
@@ -1165,7 +1165,7 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-7')">⑥ ネガティブなコメント（PRO）<span class="accordion-arrow" id="arr-acc-7">▶</span></div>
     <div class="accordion-body" id="acc-7">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の<wbr>3時間後・6時間後・24時間後に、新しいコメントを<wbr>AIが<wbr>確かめ、ネガティブなコメントがあれば<wbr>ベルで<wbr>お知らせします（1投稿あたりXは<wbr>10件、Instagram・Threadsは<wbr>50件まで）。早めに<wbr>気付いて対応すると、お客様の<wbr>信頼につながります。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の<wbr>3時間後・6時間後・24時間後に、新しいコメントを<wbr>AIが<wbr>確かめ、ネガティブなコメントがあれば<wbr>通知します<!-- ★liff_analytics.html75 -->（1投稿あたりXは<wbr>10件、Instagram・Threadsは<wbr>50件まで）。早めに<wbr>気付いて対応すると、お客様の<wbr>信頼につながります。</div>
     </div>
   </div>
 
@@ -1816,7 +1816,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析74';
+const TRACE_SCREEN = '分析75';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
