@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析73 - AiPost</title>
+<title>分析74 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -241,6 +241,8 @@
   .maint-title { font-size: 18px; font-weight: 700; color: #202124; margin: 14px 0 12px; }
   .maint-msg { font-size: clamp(12px, 3.4vw, 14px); line-height: 1.9; color: #3c4043; white-space: pre-line; text-align: center; text-wrap: balance; word-break: normal; overflow-wrap: anywhere; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 14px 10px; }
   .maint-btn { margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 8px; background: #06C755; color: #fff; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; }
+/* ★liff_analytics.html74：ガイドの文が言葉の途中で改行されないようにする（Kenさん指摘の「初速ス／コア」など） */
+#tab-guide, .card { word-break: keep-all; overflow-wrap: anywhere; } /* ★liff_analytics.html74：カードの文も同じにした */
 </style>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -385,7 +387,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析73</span></span>
+  <span class="header-logo"><span class="nowrap">分析74</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -526,7 +528,7 @@
 <div class="modal-overlay" id="profile-loading-overlay" style="z-index:2000;align-items:center;display:none;">
   <div style="background:#fff;border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;">
     <div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--primary);border-radius:50%;animation:profile-loading-spin 0.8s linear infinite;"></div>
-    <div style="font-size:14px;font-weight:700;color:#333;">保存済みの情報を読み込んでいます…</div>
+    <div style="font-size:14px;font-weight:700;color:#333;">保存済みの<wbr>情報を<wbr>読み込んでいます…</div>
   </div>
 </div>
 
@@ -564,7 +566,7 @@
         <div class="plan-feature-item"><span>📅</span><span>先週・<wbr>先月の<wbr>まとめ</span></div>
         <div class="plan-feature-item"><span>🎯</span><span>次回の<wbr>投稿おすすめ</span></div>
       </div>
-      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
+      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を<wbr>見る</button>
       <p class="plan-guide-price">LITEプラン ¥780/月</p><!-- ★liff_analytics.html72：新しい料金 -->
     </div>
   </div>
@@ -573,7 +575,7 @@
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">📊 最新の状況<button type="button" class="status-help-btn" onclick="toggleStatusHelp(this,'eg')" aria-label="説明">？</button></div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定）。★liff_analytics.html70：言葉ごとの「？」をやめ、見出しの横の「？」にまとめた -->
+    <div class="card-title">📊 最新の<wbr>状況<button type="button" class="status-help-btn" onclick="toggleStatusHelp(this,'eg')" aria-label="説明">？</button></div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定）。★liff_analytics.html70：言葉ごとの「？」をやめ、見出しの横の「？」にまとめた -->
     <div class="status-help-box" style="display:none;"></div>
 
     <!-- 3項目グリッド -->
@@ -618,12 +620,12 @@
 
   <!-- ③ 直近投稿と24時間後の状況 -->
   <div class="card">
-    <div class="card-title">📊 直近投稿と24時間後の状況</div>
+    <div class="card-title">📊 直近投稿と<wbr>24時間後の<wbr>状況</div>
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
       <div style="padding:10px 10px 0 10px;">
         <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;" id="lite-latest-meta">投稿データがありません</div>
         <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;" id="lite-latest-text"></p>
-        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('lite-p1-detail','lite-p1-btn')" id="lite-p1-btn">24時間後のデータを見る ▼</button>
+        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('lite-p1-detail','lite-p1-btn')" id="lite-p1-btn">24時間後の<wbr>データを<wbr>見る ▼</button>
       </div>
       <div id="lite-p1-detail" style="display:none;padding:10px;">
         <div id="lite-latest-detail"></div>
@@ -635,7 +637,7 @@
   <!-- ④ 投稿カレンダー（24時間後データ） -->
   <div class="card">
     <div class="card-title">📅 投稿日別データ</div>
-    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます。</p>
+    <p class="hint">💡 投稿のある日付を<wbr>タップすると<wbr>24時間後の<wbr>データを<wbr>確認できます。</p>
     <div class="cal-grid">
       <div class="cal-title" id="cal-lite-title"></div>
       <div class="cal-days">
@@ -648,18 +650,18 @@
       <div id="cal-lite-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-lite-sns"></div>
     </div>
-    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後のデータはPROプランで確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後の<wbr>データは<wbr>PROプランで<wbr>確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
   </div>
 
   <!-- ④ フォロワー推移 -->
   <!-- ★liff_analytics.html46：ダミー表示をやめ、getAnalyticsSummary()のfollowersを表示する（applyFollowers）。
        「今週」は実際の計算（7日前の記録との差）に合わせて「7日間」に変更 -->
   <div class="card">
-    <div class="card-title">👥 フォロワー数の推移（SNS別）</div>
+    <div class="card-title">👥 フォロワー数の<wbr>推移（SNS別）</div>
     <div style="display:flex;flex-direction:column;gap:10px;" id="lite-fol-card">
       <div style="font-size:10px;color:var(--text-light);">-</div>
     </div>
-    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています。</p>
+    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※&nbsp;フォロワー数は<wbr>毎日深夜に<wbr>記録しています。</p>
   </div>
 
 
@@ -690,16 +692,16 @@
   <!-- ★liff_analytics.html45：ダミー表示をやめ、getAnalyticsSummary()のnextRecommendationを表示する（applyNextRecommendation）。
        根拠を示せない文言（「最もフォロワーが活発」等）は使わず、数値で言えることだけを表示する -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">🎯 次回の投稿おすすめ</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
+    <div class="card-title">🎯 次回の<wbr>投稿おすすめ</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの<wbr>過去データをもとに<wbr>分析した<wbr>傾向と<wbr>おすすめです。</p>
     <div style="display:none;flex-direction:column;gap:6px;margin-bottom:12px;" id="lite-rec-trends"></div>
     <div style="border-top:1px solid var(--border);padding-top:10px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの<wbr>投稿時間帯</div>
       <div style="display:flex;flex-direction:column;gap:6px;" id="lite-rec-slots">
         <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日以内の<wbr>投稿の<wbr>24時間後の<wbr>EG率を<wbr>もとに<wbr>算出しています。</p>
   </div>
 
   </div><!-- /lite-content -->
@@ -725,7 +727,7 @@
         <div class="plan-feature-item"><span>🎯</span><span>次回の<wbr>投稿おすすめ</span></div>
         <div class="plan-feature-item"><span>📅</span><span>データ更新：<wbr>投稿後<wbr>24時間<wbr>（毎日）</span></div>
       </div>
-      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
+      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を<wbr>見る</button>
       <p class="plan-guide-price">STANDARDプラン ¥1,480/月</p><!-- ★liff_analytics.html72：新しい料金 -->
     </div>
   </div>
@@ -733,7 +735,7 @@
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">📊 最新の状況<button type="button" class="status-help-btn" onclick="toggleStatusHelp(this,'eg')" aria-label="説明">？</button></div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定）。★liff_analytics.html70：言葉ごとの「？」をやめ、見出しの横の「？」にまとめた -->
+    <div class="card-title">📊 最新の<wbr>状況<button type="button" class="status-help-btn" onclick="toggleStatusHelp(this,'eg')" aria-label="説明">？</button></div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定）。★liff_analytics.html70：言葉ごとの「？」をやめ、見出しの横の「？」にまとめた -->
     <div class="status-help-box" style="display:none;"></div>
 
     <!-- 3項目グリッド -->
@@ -778,16 +780,16 @@
 
   <!-- ③ 直近投稿と24時間後の状況 -->
   <div class="card">
-    <div class="card-title">📊 直近投稿と24時間後の状況</div>
+    <div class="card-title">📊 直近投稿と<wbr>24時間後の<wbr>状況</div>
     <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
       <div style="padding:10px 10px 0 10px;">
         <div style="font-size:10px;color:var(--text-light);margin-bottom:6px;" id="standard-latest-meta">投稿データがありません</div>
         <p class="post-text" style="border-left:3px solid var(--primary);padding-left:8px;margin-bottom:8px;" id="standard-latest-text"></p>
-        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('std-p1-detail','std-p1-btn')" id="std-p1-btn">24時間後のデータを見る ▼</button>
+        <button class="acc-btn" style="width:100%;text-align:center;padding:6px;margin-bottom:10px;" onclick="toggleCompare('std-p1-detail','std-p1-btn')" id="std-p1-btn">24時間後の<wbr>データを<wbr>見る ▼</button>
       </div>
       <div id="std-p1-detail" style="display:none;padding:10px;">
         <div id="standard-latest-detail"></div>
-        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後のデータはPROプランで確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
+        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後の<wbr>データは<wbr>PROプランで<wbr>確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
         <p style="font-size:9px;color:var(--text-light);margin-top:4px;">↑上昇　※ K=1,000</p>
       </div>
     </div>
@@ -796,7 +798,7 @@
   <!-- ③ 投稿カレンダー（24時間後データ） -->
   <div class="card">
     <div class="card-title">📅 投稿日別データ</div>
-    <p class="hint">💡 投稿のある日付をタップすると24時間後のデータを確認できます。</p>
+    <p class="hint">💡 投稿のある日付を<wbr>タップすると<wbr>24時間後の<wbr>データを<wbr>確認できます。</p>
     <div class="cal-grid">
       <div class="cal-title" id="cal-std-title"></div>
       <div class="cal-days">
@@ -809,32 +811,32 @@
       <div id="cal-std-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-std-sns"></div>
     </div>
-    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後のデータはPROプランで確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後の<wbr>データは<wbr>PROプランで<wbr>確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
   </div>
 
   <!-- ④ フォロワー推移 -->
   <!-- ★liff_analytics.html46：ダミー表示をやめ、getAnalyticsSummary()のfollowersを表示する（applyFollowers）。
        「今週」は実際の計算（7日前の記録との差）に合わせて「7日間」に変更 -->
   <div class="card">
-    <div class="card-title">👥 フォロワー数の推移（SNS別）</div>
+    <div class="card-title">👥 フォロワー数の<wbr>推移（SNS別）</div>
     <div style="display:flex;flex-direction:column;gap:10px;" id="standard-fol-card">
       <div style="font-size:10px;color:var(--text-light);">-</div>
     </div>
-    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています。</p>
+    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※&nbsp;フォロワー数は<wbr>毎日深夜に<wbr>記録しています。</p>
   </div>
 
   <!-- ⑥ あなたの投稿平均との比較（24時間後のみ・STANDARD固有） -->
   <!-- ★liff_analytics.html41：ダミー表示をやめ、getAnalyticsSummary()のcompareを表示する（applyCompareSection） -->
   <div class="card">
-    <div class="card-title">📊 あなたの投稿平均との比較
-      <button class="acc-btn" onclick="toggleCompare('std-compare-detail','std-compare-btn')" id="std-compare-btn" style="display:none;">詳細を見る ▼</button>
+    <div class="card-title">📊 あなたの<wbr>投稿平均との<wbr>比較
+      <button class="acc-btn" onclick="toggleCompare('std-compare-detail','std-compare-btn')" id="std-compare-btn" style="display:none;">詳細を<wbr>見る ▼</button>
     </div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="std-compare-desc">-</p>
     <div id="std-compare-detail" style="display:none;margin-top:10px;">
       <div id="std-compare-body"></div>
-      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています。</p>
-      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
-      <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 3時間後・6時間後のデータはPROプランで確認できます。</p><!-- ★liff_analytics.html73 -->
+      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※&nbsp;直近60日以内の<wbr>最大30投稿の<wbr>平均と<wbr>比べています。</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※&nbsp;K = 1,000（例：1.2K = 1,200回）</p>
+      <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 3時間後・6時間後の<wbr>データは<wbr>PROプランで<wbr>確認できます。</p><!-- ★liff_analytics.html73 -->
     </div>
   </div>
 
@@ -861,16 +863,16 @@
   <!-- ★liff_analytics.html45：ダミー表示をやめ、getAnalyticsSummary()のnextRecommendationを表示する（applyNextRecommendation）。
        根拠を示せない文言（「最もフォロワーが活発」等）は使わず、数値で言えることだけを表示する -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">🎯 次回の投稿おすすめ</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
+    <div class="card-title">🎯 次回の<wbr>投稿おすすめ</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの<wbr>過去データをもとに<wbr>分析した<wbr>傾向と<wbr>おすすめです。</p>
     <div style="display:none;flex-direction:column;gap:6px;margin-bottom:12px;" id="standard-rec-trends"></div>
     <div style="border-top:1px solid var(--border);padding-top:10px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの<wbr>投稿時間帯</div>
       <div style="display:flex;flex-direction:column;gap:6px;" id="standard-rec-slots">
         <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日以内の<wbr>投稿の<wbr>24時間後の<wbr>EG率を<wbr>もとに<wbr>算出しています。</p>
   </div>
 
   </div><!-- /standard-content -->
@@ -901,7 +903,7 @@
         <div class="plan-feature-item"><span>🎯</span><span>次回の<wbr>投稿おすすめ<wbr>（おすすめの<wbr>投稿時間帯を<wbr>含む）</span></div>
         <div class="plan-feature-item"><span>📅</span><span>データ更新：<wbr>投稿後<wbr>3時間・<wbr>6時間・<wbr>24時間<wbr>（毎日）</span></div>
       </div>
-      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
+      <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を<wbr>見る</button>
       <p class="plan-guide-price">PROプラン ¥2,480/月</p><!-- ★liff_analytics.html72：新しい料金 -->
     </div>
   </div>
@@ -912,7 +914,7 @@
 
   <!-- ① 今日の状況 -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">📊 最新の状況<button type="button" class="status-help-btn" onclick="toggleStatusHelp(this,'fsRank,fsTotal,fsSns,accum')" aria-label="説明">？</button></div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定）。★liff_analytics.html70：言葉ごとの「？」をやめ、見出しの横の「？」にまとめた -->
+    <div class="card-title">📊 最新の<wbr>状況<button type="button" class="status-help-btn" onclick="toggleStatusHelp(this,'fsRank,fsTotal,fsSns,accum')" aria-label="説明">？</button></div><!-- ★liff_analytics.html60：「今日の状況」→「最新の状況」（その日ではない数値も載るため。Kenさん決定）。★liff_analytics.html70：言葉ごとの「？」をやめ、見出しの横の「？」にまとめた -->
     <div class="status-help-box" style="display:none;"></div>
 
     <!-- グループ①：今日のパフォーマンス -->
@@ -946,7 +948,7 @@
     <!-- ⚡ 直近投稿の3時間後の反応（★liff_analytics.html73：1時間後→3時間後。idの pro-1h-reaction はそのまま） -->
     <!-- ★liff_analytics.html40：ダミー表示をやめ、getAnalyticsSummary()の直近投稿の1時間後の数値を表示する（applyPro1hReaction） -->
     <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
-      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;">⚡ 直近投稿の3時間後の反応</div>
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;">⚡ 直近投稿の<wbr>3時間後の<wbr>反応</div>
       <div style="display:flex;flex-direction:column;gap:5px;" id="pro-1h-reaction">
         <div style="font-size:10px;color:var(--text-light);padding:4px 6px;">-</div>
       </div>
@@ -995,22 +997,22 @@
     <!-- 見出しと説明文を1つの枠にまとめる（toggleSNSDetail()が直前の要素の中の「詳細を見る」を探すため） -->
     <div>
       <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div class="card-title" style="margin-bottom:0;">📊 あなたの投稿平均との比較</div>
-        <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;display:none;" onclick="toggleSNSDetail('compare-detail')" id="pro-compare-toggle">▶ 詳細を見る</span>
+        <div class="card-title" style="margin-bottom:0;">📊 あなたの<wbr>投稿平均との<wbr>比較</div>
+        <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:700;display:none;" onclick="toggleSNSDetail('compare-detail')" id="pro-compare-toggle">▶ 詳細を<wbr>見る</span>
       </div>
       <p style="font-size:11px;color:var(--text-sub);margin-top:8px;" id="pro-compare-desc">-</p>
     </div>
     <div id="compare-detail" style="display:none;margin-top:10px;">
       <div id="pro-compare-body"></div>
-      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています。</p>
-      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※&nbsp;直近60日以内の<wbr>最大30投稿の<wbr>平均と<wbr>比べています。</p>
+      <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※&nbsp;K = 1,000（例：1.2K = 1,200回）</p>
     </div>
   </div>
 
   <!-- 投稿日別データ -->
   <div class="card">
     <div class="card-title">📅 投稿日別データ</div>
-    <p class="hint">💡 投稿のある日付をタップすると詳細を確認できます。</p>
+    <p class="hint">💡 投稿のある<wbr>日付を<wbr>タップすると<wbr>詳細を<wbr>確認できます。</p>
     <div class="cal-grid">
       <div class="cal-title" id="cal-pro-title"></div>
       <div class="cal-days">
@@ -1031,11 +1033,11 @@
   <!-- ★liff_analytics.html46：ダミー表示をやめ、getAnalyticsSummary()のfollowersを表示する（applyFollowers）。
        「今週」は実際の計算（7日前の記録との差）に合わせて「7日間」に変更 -->
   <div class="card">
-    <div class="card-title">👥 フォロワー数の推移（SNS別）</div>
+    <div class="card-title">👥 フォロワー数の<wbr>推移（SNS別）</div>
     <div style="display:flex;flex-direction:column;gap:10px;" id="pro-fol-card">
       <div style="font-size:10px;color:var(--text-light);">-</div>
     </div>
-    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています。</p>
+    <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※&nbsp;フォロワー数は<wbr>毎日深夜に<wbr>記録しています。</p>
   </div>
 
   <!-- ★liff_analytics.html73：「🏙️ 同業種・同エリア平均との比較」のカードを消した（廃止。Kenさん決定・2026年11月15日。GASの集計も止める） -->
@@ -1046,12 +1048,12 @@
   <div class="card">
     <div class="card-title">⚠️ ネガティブな<wbr>コメント</div>
     <!-- ★liff_analytics.html63：何をどこまで確かめているかを、見出しのすぐ下に書いた（Kenさん指示） -->
-    <div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.7;margin:-4px 0 10px;">投稿の<wbr>1時間後・<wbr>3時間後・<wbr>24時間後に、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確かめます<wbr>（1投稿<wbr>あたり<wbr>Xは<wbr>10件、<wbr>Instagram・<wbr>Threadsは<wbr>50件まで）。<wbr>その中に<wbr>ネガティブな<wbr>コメントが<wbr>あれば、<wbr>ベルの<wbr>お知らせで<wbr>お知らせします。<wbr>件数を<wbr>超えた<wbr>コメントや、<wbr>24時間より<wbr>後の<wbr>コメントは<wbr>確かめません。</div>
+    <div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.7;margin:-4px 0 10px;">投稿の<wbr>3時間後・<wbr>6時間後・<wbr>24時間後に、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確かめます<wbr>（1投稿<wbr>あたり<wbr>Xは<wbr>10件、<wbr>Instagram・<wbr>Threadsは<wbr>50件まで）。<wbr>その<wbr>中に<wbr>ネガティブな<wbr>コメントが<wbr>あれば、<wbr>ベルの<wbr>お知らせで<wbr>お知らせします。<wbr>件数を<wbr>超えた<wbr>コメントや、<wbr>24時間より<wbr>後の<wbr>コメントは<wbr>確かめません。</div>
     <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
-      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の大切なヒントです。早めに気づいて対応することで、お客様との信頼関係を深めるチャンスに変えましょう。</div>
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の<wbr>大切なヒントです。早めに<wbr>気づいて対応することで、お客様との<wbr>信頼関係を<wbr>深めるチャンスに<wbr>変えましょう。</div>
     </div>
     <div id="pro-neg-body"><div style="font-size:10px;color:var(--text-light);">-</div></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 返信の<wbr>件数は、<wbr>SNSの<wbr>数値です<wbr>（確かめた<wbr>件数とは<wbr>異なります）。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;返信の<wbr>件数は、<wbr>SNSの<wbr>数値です<wbr>（確かめた<wbr>件数とは<wbr>異なります）。</p>
   </div>
 
 
@@ -1078,16 +1080,16 @@
   <!-- ★liff_analytics.html45：ダミー表示をやめ、getAnalyticsSummary()のnextRecommendationを表示する（applyNextRecommendation）。
        根拠を示せない文言（「最もフォロワーが活発」等）は使わず、数値で言えることだけを表示する -->
   <div class="card" style="border:2px solid var(--primary);">
-    <div class="card-title">🎯 次回の投稿おすすめ</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの過去データをもとに分析した傾向とおすすめです。</p>
+    <div class="card-title">🎯 次回の<wbr>投稿おすすめ</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの<wbr>過去データをもとに<wbr>分析した<wbr>傾向と<wbr>おすすめです。</p>
     <div style="display:none;flex-direction:column;gap:6px;margin-bottom:12px;" id="pro-rec-trends"></div>
     <div style="border-top:1px solid var(--border);padding-top:10px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの投稿時間帯</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの<wbr>投稿時間帯</div>
       <div style="display:flex;flex-direction:column;gap:6px;" id="pro-rec-slots">
         <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 直近60日以内の投稿の24時間後のEG率をもとに算出しています。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日以内の<wbr>投稿の<wbr>24時間後の<wbr>EG率を<wbr>もとに<wbr>算出しています。</p>
   </div>
 
   </div><!-- /pro-content -->
@@ -1100,35 +1102,35 @@
   <!-- ★liff_analytics.html65：ガイドを短く、やさしい言葉に書き直した（13項目→7項目。計算式・計算例・APIの話・「特徴」「このような方におすすめ」を消した。Kenさん承認） -->
   <div class="card">
     <div class="card-title" style="font-size:14px;">📖 分析ガイド</div>
-    <div style="font-size:11px;color:var(--text);line-height:1.8;">分析は、次の投稿をよくするために使います。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">分析は、次の<wbr>投稿をよくするために<wbr>使います。</div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-1')">① 分析で分かること<span class="accordion-arrow" id="arr-acc-1">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-1')">① 分析で<wbr>分かること<span class="accordion-arrow" id="arr-acc-1">▶</span></div>
     <div class="accordion-body" id="acc-1">
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🔍 LITE</div><div style="font-size:11px;color:var(--text);line-height:1.8;">最新の状況、投稿日ごとの反応、フォロワー数の推移、先週・先月のまとめ、次回の投稿おすすめが見られます。</div></div>
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">📊 STANDARD</div><div style="font-size:11px;color:var(--text);line-height:1.8;">LITEに加えて、あなたの投稿平均との比較が見られます。</div></div>
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">💎 PRO</div><div style="font-size:11px;color:var(--text);line-height:1.8;">STANDARDに加えて、投稿の1時間後・3時間後の反応、初速スコア、コメント感情分析、同業種・同エリアとの比較、ネガティブなコメントのお知らせが使えます。</div></div>
-      <div style="font-size:10px;color:var(--text-sub);line-height:1.7;">数字は、LITE・STANDARDは投稿の24時間後に1回、PROは1時間後・3時間後・24時間後に取ります。</div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🔍 LITE</div><div style="font-size:11px;color:var(--text);line-height:1.8;">最新の<wbr>状況、投稿日ごとの<wbr>反応、フォロワー数の<wbr>推移、先週・先月のまとめ、次回の<wbr>投稿おすすめが<wbr>見られます。</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">📊 STANDARD</div><div style="font-size:11px;color:var(--text);line-height:1.8;">LITEに<wbr>加えて、あなたの<wbr>投稿平均との<wbr>比較が<wbr>見られます。</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">💎 PRO</div><div style="font-size:11px;color:var(--text);line-height:1.8;">STANDARDに<wbr>加えて、投稿の<wbr>3時間後・6時間後の<wbr>反応、初速スコア、コメント感情分析、ネガティブなコメントのお知らせが<wbr>使えます。</div></div>
+      <div style="font-size:10px;color:var(--text-sub);line-height:1.7;">数字は、LITE・STANDARDは<wbr>投稿の<wbr>24時間後に<wbr>1回、PROは<wbr>3時間後・6時間後・24時間後に<wbr>取ります。</div><!-- ★liff_analytics.html74：ガイドの時間を3・6・24時間後にし、同業種の説明を消した（Kenさん指摘） -->
     </div>
   </div>
 
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-2')">② 初速スコア（PRO）<span class="accordion-arrow" id="arr-acc-2">▶</span></div>
     <div class="accordion-body" id="acc-2">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">投稿してからの反応の強さを、あなたの最近30件の投稿と比べた点数です（100点満点）。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:8px;">投稿してからの<wbr>反応の<wbr>強さを、あなたの<wbr>最近30件の<wbr>投稿と<wbr>比べた点数です（100点満点）。</div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px;"><div style="display:flex;flex-direction:column;gap:4px;">
         <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#1565c0;">🔵 90〜100点</span><span style="font-size:11px;color:var(--text);">最高！</span></div>
         <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#2e7d32;">🟢 70〜89点</span><span style="font-size:11px;color:var(--text);">好調</span></div>
         <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#fb8c00;">🟡 50〜69点</span><span style="font-size:11px;color:var(--text);">平均的</span></div>
         <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#e53935;">🔴 49点以下</span><span style="font-size:11px;color:var(--text);">伸び悩み</span></div>
       </div></div>
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿が30件たまるまでは「参考値」です。SNSの公式の点数ではありません。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿が<wbr>30件たまるまでは<wbr>「参考値」です。SNSの<wbr>公式の<wbr>点数ではありません。</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-3')">③ アイコンの意味<span class="accordion-arrow" id="arr-acc-3">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-3')">③ アイコンの<wbr>意味<span class="accordion-arrow" id="arr-acc-3">▶</span></div>
     <div class="accordion-body" id="acc-3">
       <div style="display:flex;flex-direction:column;gap:6px;">
       <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">❤️</span><span style="font-size:11px;color:var(--text);line-height:1.8;">いいね</span></div>
@@ -1136,14 +1138,14 @@
       <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">🔁</span><span style="font-size:11px;color:var(--text);line-height:1.8;">リポスト</span></div>
       <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">↩️</span><span style="font-size:11px;color:var(--text);line-height:1.8;">リプライ（返信）</span></div>
       <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">🗨️</span><span style="font-size:11px;color:var(--text);line-height:1.8;">引用</span></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">👁️</span><span style="font-size:11px;color:var(--text);line-height:1.8;">インプレッション：投稿が画面に表示された回数</span></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">📊</span><span style="font-size:11px;color:var(--text);line-height:1.8;">EG率：投稿にどれだけ反応があったかの割合</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">👁️</span><span style="font-size:11px;color:var(--text);line-height:1.8;">インプレッション：投稿が<wbr>画面に<wbr>表示された回数</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">📊</span><span style="font-size:11px;color:var(--text);line-height:1.8;">EG率：投稿にどれだけ反応があったかの<wbr>割合</span></div>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-4')">④ SNSごとに見られる数字<span class="accordion-arrow" id="arr-acc-4">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-4')">④ SNSごとに<wbr>見られる数字<span class="accordion-arrow" id="arr-acc-4">▶</span></div>
     <div class="accordion-body" id="acc-4">
       <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">X</div><div style="font-size:11px;color:var(--text);line-height:1.8;"><span class="nowrap">❤️ いいね</span>　<span class="nowrap">🔁 リポスト</span>　<span class="nowrap">↩️ リプライ</span>　<span class="nowrap">👁️ インプレッション</span>　<span class="nowrap">📊 EG率</span></div></div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">Instagram</div><div style="font-size:11px;color:var(--text);line-height:1.8;"><span class="nowrap">❤️ いいね</span>　<span class="nowrap">💬 コメント</span>　<span class="nowrap">📊 EG率</span></div></div>
@@ -1152,28 +1154,22 @@
   </div>
 
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-5')">⑤ 数字の使い方<span class="accordion-arrow" id="arr-acc-5">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-5')">⑤ 数字の<wbr>使い方<span class="accordion-arrow" id="arr-acc-5">▶</span></div>
     <div class="accordion-body" id="acc-5">
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🟢 好調な時</div><div style="font-size:11px;color:var(--text);line-height:1.8;">同じ時間帯・内容・ハッシュタグを、次の投稿でも使ってみましょう。</div></div>
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🔴 伸び悩んだ時</div><div style="font-size:11px;color:var(--text);line-height:1.8;">「次回の投稿おすすめ」の時間帯に投稿したり、内容やハッシュタグを変えたりしてみましょう。</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🟢 好調な時</div><div style="font-size:11px;color:var(--text);line-height:1.8;">同じ時間帯・内容・ハッシュタグを、次の<wbr>投稿でも<wbr>使ってみましょう。</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🔴 伸び悩んだ時</div><div style="font-size:11px;color:var(--text);line-height:1.8;">「次回の<wbr>投稿おすすめ」の<wbr>時間帯に<wbr>投稿したり、内容や<wbr>ハッシュタグを<wbr>変えたりしてみましょう。</div></div>
     </div>
   </div>
 
+  <!-- ★liff_analytics.html74：「⑥ 同業種・同エリアとの比較（PRO）」の説明を消した（廃止）。次の⑦を⑥にした -->
   <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-6')">⑥ 同業種・同エリアとの比較（PRO）<span class="accordion-arrow" id="arr-acc-6">▶</span></div>
-    <div class="accordion-body" id="acc-6">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">同じ業種・同じ地域の店舗の平均と、あなたのEG率・フォロワー数・30日間の投稿数を比べます。LITEプラン以上の店舗の数字を、どの店か分からない形でまとめています。自分を除いて5店舗以上集まると表示されます。</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title accordion-title" onclick="toggleAcc('acc-7')">⑦ ネガティブなコメント（PRO）<span class="accordion-arrow" id="arr-acc-7">▶</span></div>
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-7')">⑥ ネガティブなコメント（PRO）<span class="accordion-arrow" id="arr-acc-7">▶</span></div>
     <div class="accordion-body" id="acc-7">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の1時間後・3時間後・24時間後に、新しいコメントをAIが確かめ、ネガティブなコメントがあればベルでお知らせします（1投稿あたりXは10件、Instagram・Threadsは50件まで）。早めに気付いて対応すると、お客様の信頼につながります。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿の<wbr>3時間後・6時間後・24時間後に、新しいコメントを<wbr>AIが<wbr>確かめ、ネガティブなコメントがあれば<wbr>ベルで<wbr>お知らせします（1投稿あたりXは<wbr>10件、Instagram・Threadsは<wbr>50件まで）。早めに<wbr>気付いて対応すると、お客様の<wbr>信頼につながります。</div>
     </div>
   </div>
 
-  <button class="plan-guide-btn" onclick="navigateTo('plan')" style="margin-top:4px;">プラン・料金を見る</button>
+  <button class="plan-guide-btn" onclick="navigateTo('plan')" style="margin-top:4px;">プラン・料金を<wbr>見る</button>
 
 </div><!-- /tab-guide -->
 
@@ -1628,7 +1624,7 @@ function makeSNSBlock(snsKey, snsData, showAllTimings) {
       ${h6Row}
       ${h24Row}
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:4px;">※ K = 1,000（例：1.2K = 1,200回）</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:4px;">※&nbsp;K = 1,000（例：1.2K = 1,200回）</p>
   </div>`;
 }
 
@@ -1702,7 +1698,7 @@ function showStdUnified(d) {
   } else {
     html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません。</p>';
   }
-  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ STANDARDプランは24時間後のデータのみ取得されます。</p>';
+  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※&nbsp;STANDARDプランは24時間後のデータのみ取得されます。</p>';
   // ★liff_analytics_html23：カード下部の固定案内と重複していた「💎 1時間後・3時間後のデータは
   // 　PROプランで確認できます」の追加を削除（固定案内に一本化）
   document.getElementById('cal-std-sns').innerHTML = html;
@@ -1742,7 +1738,7 @@ function showLiteUnified(d) {
   } else {
     html = '<p style="font-size:11px;color:var(--text-sub);">この日の詳細データはありません。</p>';
   }
-  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※ LITEプランは24時間後のデータのみ取得されます。</p>';
+  html += '<p style="font-size:9px;color:var(--text-light);margin-top:6px;">※&nbsp;LITEプランは24時間後のデータのみ取得されます。</p>';
   // ★liff_analytics_html23：カード下部の固定案内と重複していた💎の追加を削除（固定案内に一本化）
   document.getElementById('cal-lite-sns').innerHTML = html;
 }
@@ -1820,7 +1816,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析73';
+const TRACE_SCREEN = '分析74';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
@@ -2522,7 +2518,7 @@ function applyFirstSpeedScore(data) {
     });
     // ★liff_analytics.html44：反応が少なく点数が出ないSNS（lowReactionSns）を下に添える
     const lowNotes = (f.lowReactionSns || []).map(function (sns) {
-      return '<div style="font-size:9px;color:var(--text-light);margin-top:4px;">※ ' +
+      return '<div style="font-size:9px;color:var(--text-light);margin-top:4px;">※&nbsp;' +
         (FIRST_SPEED_SNS_LABEL[sns] || sns) + '：反応がまだ少ないため算出できません。</div>';
     }).join('');
     bySnsEl.innerHTML = (items.length
@@ -3374,17 +3370,17 @@ initLiff();
 </style>
 <div class="consent-overlay" id="consent-overlay">
   <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
-    <div class="consent-title">ご利用の前に</div>
-    <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
-    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第5条を<wbr>ご覧ください。</div>
+    <div class="consent-title">ご利用の<wbr>前に</div>
+    <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が<wbr>必要です。</div>
+    <div class="consent-box">投稿文の<wbr>作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の<wbr>事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの<wbr>投稿や<wbr>データの<wbr>保存のため、<wbr>米国の<wbr>事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第5条を<wbr>ご覧ください。</div>
     <div class="consent-links">
       <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
-      <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを読む</button>
+      <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを<wbr>読む</button>
     </div>
     <label class="consent-check"><input type="checkbox" id="consent-check" onchange="aipostConsentUpdate()"><span>利用規約と<wbr>プライバシーポリシーに<wbr>同意します。</span></label>
     <div class="consent-error" id="consent-error"></div>
     <button type="button" class="consent-btn" id="consent-agree-btn" onclick="aipostAgreeTerms()" disabled>同意して続ける</button>
-    <button type="button" class="consent-btn consent-btn-gray" id="consent-close-btn" onclick="aipostDeclineTerms()">同意しないで閉じる</button>
+    <button type="button" class="consent-btn consent-btn-gray" id="consent-close-btn" onclick="aipostDeclineTerms()">同意しないで<wbr>閉じる</button>
   </div>
 </div>
 <div class="consent-reader" id="consent-reader">
