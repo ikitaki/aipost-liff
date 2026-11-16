@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析72 - AiPost</title>
+<title>分析73 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -385,7 +385,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析72</span></span>
+  <span class="header-logo"><span class="nowrap">分析73</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -648,7 +648,7 @@
       <div id="cal-lite-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-lite-sns"></div>
     </div>
-    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます。</p>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後のデータはPROプランで確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
   </div>
 
   <!-- ④ フォロワー推移 -->
@@ -787,7 +787,7 @@
       </div>
       <div id="std-p1-detail" style="display:none;padding:10px;">
         <div id="standard-latest-detail"></div>
-        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます。</p>
+        <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後のデータはPROプランで確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
         <p style="font-size:9px;color:var(--text-light);margin-top:4px;">↑上昇　※ K=1,000</p>
       </div>
     </div>
@@ -809,7 +809,7 @@
       <div id="cal-std-date" style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
       <div id="cal-std-sns"></div>
     </div>
-    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 1時間後・3時間後のデータはPROプランで確認できます。</p>
+    <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後のデータはPROプランで確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
   </div>
 
   <!-- ④ フォロワー推移 -->
@@ -834,7 +834,7 @@
       <div id="std-compare-body"></div>
       <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※ 直近60日以内の最大30投稿の平均と比べています。</p>
       <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※ K = 1,000（例：1.2K = 1,200回）</p>
-      <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 1時間後・3時間後のデータはPROプランで確認できます。</p>
+      <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 3時間後・6時間後のデータはPROプランで確認できます。</p><!-- ★liff_analytics.html73 -->
     </div>
   </div>
 
@@ -890,16 +890,16 @@
       <div class="plan-feature-list">
         <div class="plan-feature-label">PRO分析に<wbr>含まれる機能</div>
         <div class="plan-feature-item"><span>📊</span><span>最新の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
-        <div class="plan-feature-item"><span>⚡</span><span>直近投稿の<wbr>初速状況<wbr>（1時間・<wbr>3時間・<wbr>24時間ごとの<wbr>数値推移）</span></div>
+        <div class="plan-feature-item"><span>⚡</span><span>直近投稿の<wbr>初速状況<wbr>（3時間・<wbr>6時間・<wbr>24時間ごとの<wbr>数値推移）</span></div><!-- ★liff_analytics.html73：3・6・24時間 -->
         <div class="plan-feature-item"><span>📊</span><span>あなたの<wbr>投稿平均との<wbr>比較</span></div>
         <div class="plan-feature-item"><span>📅</span><span>投稿日別<wbr>データ</span></div>
         <div class="plan-feature-item"><span>👥</span><span>フォロワー数の<wbr>推移<wbr>（SNS別）</span></div>
-        <div class="plan-feature-item"><span>🏙️</span><span>同業種・<wbr>同エリア<wbr>平均との<wbr>比較</span></div>
+        <!-- ★liff_analytics.html73：同業種・同エリア平均との比較は廃止（Kenさん決定・2026年11月15日） -->
         <!-- ★liff_analytics.html63：「ネガティブコメント検知」を「ネガティブなコメント」にした（決まった件数のコメントだけを確かめるため、「検知」だと全部を見張っていると誤解される。Kenさん決定） -->
         <div class="plan-feature-item"><span>⚠️</span><span>ネガティブな<wbr>コメントの<wbr>お知らせ<wbr>（コメントの<wbr>感情分析を<wbr>含む）</span></div>
         <div class="plan-feature-item"><span>📅</span><span>先週・<wbr>先月の<wbr>まとめ</span></div>
         <div class="plan-feature-item"><span>🎯</span><span>次回の<wbr>投稿おすすめ<wbr>（おすすめの<wbr>投稿時間帯を<wbr>含む）</span></div>
-        <div class="plan-feature-item"><span>📅</span><span>データ更新：<wbr>投稿後<wbr>1時間・<wbr>3時間・<wbr>24時間<wbr>（毎日）</span></div>
+        <div class="plan-feature-item"><span>📅</span><span>データ更新：<wbr>投稿後<wbr>3時間・<wbr>6時間・<wbr>24時間<wbr>（毎日）</span></div>
       </div>
       <button class="plan-guide-btn" onclick="navigateTo('plan')">プラン・料金を見る</button>
       <p class="plan-guide-price">PROプラン ¥2,480/月</p><!-- ★liff_analytics.html72：新しい料金 -->
@@ -943,10 +943,10 @@
       </div>
     </div>
 
-    <!-- ⚡ 直近投稿の1時間後の反応 -->
+    <!-- ⚡ 直近投稿の3時間後の反応（★liff_analytics.html73：1時間後→3時間後。idの pro-1h-reaction はそのまま） -->
     <!-- ★liff_analytics.html40：ダミー表示をやめ、getAnalyticsSummary()の直近投稿の1時間後の数値を表示する（applyPro1hReaction） -->
     <div style="background:var(--bg);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
-      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;">⚡ 直近投稿の1時間後の反応</div>
+      <div style="font-size:10px;font-weight:700;color:var(--text-sub);margin-bottom:6px;">⚡ 直近投稿の3時間後の反応</div>
       <div style="display:flex;flex-direction:column;gap:5px;" id="pro-1h-reaction">
         <div style="font-size:10px;color:var(--text-light);padding:4px 6px;">-</div>
       </div>
@@ -1038,15 +1038,7 @@
     <p style="font-size:10px;color:var(--text-light);margin-top:8px;">※ フォロワー数は毎日深夜に記録しています。</p>
   </div>
 
-  <!-- 同業種・同エリア比較 -->
-  <!-- ★liff_analytics.html47：ダミー表示をやめ、getAnalyticsSummary()のindustryCompareを表示する（applyIndustryCompare）。
-       「月間投稿数」は実際の計算に合わせて「30日間の投稿数」に変更 -->
-  <div class="card">
-    <div class="card-title">🏙️ 同業種・同エリア平均との比較</div>
-    <p style="font-size:10px;color:var(--text-sub);margin-bottom:10px;" id="pro-ind-desc">-</p>
-    <div style="display:flex;flex-direction:column;gap:8px;" id="pro-ind-body"></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※ 同じ業種・地域の店舗（自分を除いて5店舗以上）のデータを匿名で集計しています。毎朝更新。</p>
-  </div>
+  <!-- ★liff_analytics.html73：「🏙️ 同業種・同エリア平均との比較」のカードを消した（廃止。Kenさん決定・2026年11月15日。GASの集計も止める） -->
 
   <!-- ネガティブなコメント（★liff_analytics.html63：「ネガティブコメント検知」を「ネガティブなコメント」にした（決まった件数のコメントだけを確かめるため、「検知」だと全部を見張っていると誤解される。Kenさん決定）） -->
   <!-- ★liff_analytics.html49：ダミー表示をやめ、getAnalyticsSummary()のsentimentを表示する（applySentiment）。
@@ -1489,7 +1481,7 @@ function formatCalCount(n) {
   return num >= 1000 ? (Math.round(num / 100) / 10) + 'K' : num;
 }
 
-// GASの指標オブジェクト（h1／h3／h24）を、makeSNSBlock用の表示値に変換する
+// GASの指標オブジェクト（h3／h6／h24。★liff_analytics.html73：1時間後をやめ6時間後にした）を、makeSNSBlock用の表示値に変換する
 function convertCalendarMetrics(h) {
   if (!h) return undefined;
   if (h.deleted) return { deleted: true };
@@ -1508,8 +1500,8 @@ function convertCalendarPost(post) {
   Object.keys(post.sns || {}).forEach(function (snsKey) {
     const s = post.sns[snsKey] || {};
     const o = {};
-    ['t1', 't3', 't24'].forEach(function (t) { if (s[t] !== undefined) o[t] = s[t]; });
-    ['h1', 'h3', 'h24'].forEach(function (h) { if (s[h] !== undefined) o[h] = convertCalendarMetrics(s[h]); });
+    ['t3', 't6', 't24'].forEach(function (t) { if (s[t] !== undefined) o[t] = s[t]; });
+    ['h3', 'h6', 'h24'].forEach(function (h) { if (s[h] !== undefined) o[h] = convertCalendarMetrics(s[h]); });
     sns[snsKey] = o;
   });
   return { time: post.time, text: escapeHtmlText(post.honbun), sns: sns };
@@ -1559,7 +1551,7 @@ const snsStyle = {
 };
 
 // タイミングラベル
-const timingLabel = {h1:'1時間後', h3:'3時間後', h24:'24時間後'};
+const timingLabel = {h3:'3時間後', h6:'6時間後', h24:'24時間後'}; // ★liff_analytics.html73
 
 // SNSのデータが無い場合（未取得・削除済み）に表示する簡易ブロック
 function makeNoDataBlock(snsKey, message) {
@@ -1588,31 +1580,32 @@ const SNS_METRIC_DEFS = {
 // 　省略時（PROのカレンダー詳細など）はtrue扱いで、従来どおり3段表示する。
 function makeSNSBlock(snsKey, snsData, showAllTimings) {
   const s = snsStyle[snsKey] || {label:snsKey,color:'#555'};
-  const h1 = snsData.h1 || {};
+  // ★liff_analytics.html73：PROの取得を3時間後・6時間後・24時間後にした（h3・h6・h24）
   const h3 = snsData.h3 || {};
+  const h6 = snsData.h6 || {};
   const h24 = snsData.h24 || {};
   const fmt = v => (v === undefined || v === null || v === '') ? '-' : v;
   const showTimings = showAllTimings !== false;
 
   // 削除済み（元投稿が見つからない）の場合
-  if (h1.deleted || h3.deleted || h24.deleted) {
+  if (h3.deleted || h6.deleted || h24.deleted) {
     return makeNoDataBlock(snsKey, '投稿が見つかりません（削除された可能性があります）。');
   }
 
   // SNSごとの固定リストから、アイコンと値を組み立てる
   const defs = SNS_METRIC_DEFS[snsKey] || [];
-  const metrics = defs.map(d => ({icon: d.icon, h1: h1[d.key], h3: h3[d.key], h24: h24[d.key]}));
+  const metrics = defs.map(d => ({icon: d.icon, h3: h3[d.key], h6: h6[d.key], h24: h24[d.key]}));
 
-  // まだ1つもデータが取得されていない場合（1h/3h/24hすべて空）
-  if (h1.likes === undefined && h3.likes === undefined && h24.likes === undefined) {
+  // まだ1つもデータが取得されていない場合（3h/6h/24hすべて空）
+  if (h3.likes === undefined && h6.likes === undefined && h24.likes === undefined) {
     return makeNoDataBlock(snsKey, 'まだデータが取得されていません。');
   }
 
   const cols = metrics.length;
   const gridCols = `52px repeat(${cols}, 1fr)`;
 
-  const t1  = snsData.t1  || '';
   const t3  = snsData.t3  || '';
+  const t6  = snsData.t6  || '';
   const t24 = snsData.t24 || '';
 
   // 各タイミング行：ラベル＋アイコン横並び、取得時刻＋数値縦積み
@@ -1624,15 +1617,15 @@ function makeSNSBlock(snsKey, snsData, showAllTimings) {
       metrics.map(m => `<div style="text-align:center;"><div style="font-size:12px;">${m.icon}</div><div style="font-size:11px;font-weight:700;color:var(--primary);">${fmt(m[vals])}</div></div>`).join('');
   }
 
-  const h1Row  = showTimings ? makeTimingRow('1時間後',  t1,  'h1') : '';
   const h3Row  = showTimings ? makeTimingRow('3時間後',  t3,  'h3') : '';
+  const h6Row  = showTimings ? makeTimingRow('6時間後',  t6,  'h6') : '';
   const h24Row = makeTimingRow('24時間後', t24, 'h24');
 
   return `<div style="margin-bottom:10px;">
     <div style="font-size:11px;font-weight:700;color:${s.color};margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;">${s.label}</div>
     <div style="display:grid;grid-template-columns:${gridCols};gap:6px;align-items:center;">
-      ${h1Row}
       ${h3Row}
+      ${h6Row}
       ${h24Row}
     </div>
     <p style="font-size:9px;color:var(--text-light);margin-top:4px;">※ K = 1,000（例：1.2K = 1,200回）</p>
@@ -1827,7 +1820,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析72';
+const TRACE_SCREEN = '分析73';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
@@ -2201,14 +2194,14 @@ function formatSnsBlockValues(obj) {
 }
 
 function renderSnsResultRow(result) {
-  if (!result.timing1h && !result.timing3h && !result.timing24h) {
+  if (!result.timing3h && !result.timing6h && !result.timing24h) { // ★liff_analytics.html73：timing3h・timing6h・timing24h
     return makeNoDataBlock(result.sns, 'まだデータが取得されていません。');
   }
   const showAllTimings = currentActualPlan === 'PRO';
   // ★liff_analytics.html42：formatSnsBlockValues()で表示用に整形してから渡す
   const snsData = {
-    h1:  formatSnsBlockValues(adaptTimingForSNSBlock(result.sns, result.timing1h)),
     h3:  formatSnsBlockValues(adaptTimingForSNSBlock(result.sns, result.timing3h)),
+    h6:  formatSnsBlockValues(adaptTimingForSNSBlock(result.sns, result.timing6h)),
     h24: formatSnsBlockValues(adaptTimingForSNSBlock(result.sns, result.timing24h))
   };
   return makeSNSBlock(result.sns, snsData, showAllTimings);
@@ -2354,7 +2347,7 @@ function applyPro1hReaction(data) {
   data.latestPost.results.forEach(function (r) { if (r && r.sns) bySns[r.sns] = r; });
   const rows = PRO_1H_SNS_ORDER.filter(function (k) { return bySns[k]; }).map(function (k) {
     const labelObj = PRO_1H_SNS_LABEL[k];
-    const t = bySns[k].timing1h;
+    const t = bySns[k].timing3h; // ★liff_analytics.html73：直近投稿の3時間後の反応
     if (!t) return _pro1hRow(labelObj, '<span style="color:var(--text-light);">まだ取得されていません</span>');
     if (t.deleted) return _pro1hRow(labelObj, '<span style="color:var(--text-light);">投稿が見つかりません</span>');
     const v = adaptTimingForSNSBlock(k, t);
@@ -2387,8 +2380,8 @@ const COMPARE_KEY_MAP = {
   Threads: { likes: 'likeCount', replies: 'repliesCount', reposts: 'retweetCount', quotes: 'quotesCount', imprs: 'impressionCount', eg: 'egRate' }
 };
 const COMPARE_TIMINGS = [
-  { field: 'timing1h', label: '1時間後' },
-  { field: 'timing3h', label: '3時間後' },
+  { field: 'timing3h', label: '3時間後' }, // ★liff_analytics.html73
+  { field: 'timing6h', label: '6時間後' },
   { field: 'timing24h', label: '24時間後' }
 ];
 
@@ -2865,7 +2858,8 @@ function applySummaryData(data) {
   // ★liff_analytics.html46：フォロワー前日比・推移を反映する
   applyFollowers(data);
   // ★liff_analytics.html47：同業種・同エリア平均との比較を反映する
-  applyIndustryCompare(data);
+  // ★liff_analytics.html73：廃止（カードを消した）。applyIndustryCompare() は止めて残す
+  // applyIndustryCompare(data);
   // ★liff_analytics.html49：コメント感情分析・ネガティブコメント検知を反映する
   applySentiment(data);
 }
