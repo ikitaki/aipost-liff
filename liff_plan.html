@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金30 - AiPost</title>
+  <title>プラン・料金31 - AiPost</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
@@ -416,7 +416,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金30</span></span>
+    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金31</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -570,13 +570,14 @@
     <tbody><tr class="btn-row" id="btn-row"></tr></tbody>
   </table>
   <div class="btn-status" id="btn-status"></div>
-  <div class="table-notes">
-    ※ 1回の予約で、選んだSNSにまとめて投稿します（予約枠は1件）。実質予約枠＝予約枠×投稿先SNS数。<br>
+  <div class="table-notes" style="word-break:keep-all;overflow-wrap:anywhere;"><!-- ★liff_plan.html31：言葉の途中で改行しない -->
+    ※ 1回の<wbr>予約で、<wbr>選んだSNSにまとめて投稿します（予約枠は<wbr>1件）。実質予約枠＝予約枠×投稿先SNS数。<br>
     <!-- ★liff_plan.html28：LITEプランもXは不可 -->
-    ※ FREE・LITEでは、Xに投稿・連携できません。<br>
-    ※ 投稿履歴は今月と過去12か月分を残します。FREEは投稿履歴・投稿削除がありません。<br>
+    ※ FREE・LITEでは、<wbr>Xに<wbr>投稿・連携できません。<br>
+    ※ 投稿履歴は<wbr>今月と<wbr>過去12か月分を<wbr>残します。FREEは<wbr>投稿履歴・投稿削除がありません。<br>
     <!-- ★liff_plan.html29：3・6・24時間後にした（PROの取得の時間。Kenさん決定） -->
-    ※ ネガティブなコメントは、投稿の3・6・24時間後にAIが確かめて通知します（1投稿あたりX 10件、Instagram・Threads 50件まで）。
+    <!-- ★liff_plan.html31：コメントの新しい決まり（STANDARD以上・投稿から3日間・上限は全SNS共通） -->
+    ※ コメントは、投稿から3日間AIが確かめ、ネガティブなコメントがあれば通知します。上限を超えた分は、件数だけ通知します。
   </div>
 
   <!-- 注意事項 -->
@@ -752,7 +753,7 @@
   // ★liff_plan.html25：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
   // ★liff_plan.html26：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
   // ★liff_plan.html27：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-  const TRACE_SCREEN = 'プラン30';
+  const TRACE_SCREEN = 'プラン31';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -824,10 +825,13 @@
     { label: '先週・先月の^まとめ・次回の^投稿^おすすめ', vals: [NO, OK, OK, OK] },
     { label: '投稿^平均との^比較', vals: [NO, NO, OK, OK] },
     { label: '初速^スコア', vals: [NO, NO, NO, OK] },
-    { label: 'コメント^感情^分析', vals: [NO, NO, NO, OK] },
+    // ★liff_plan.html31：コメントの機能をSTANDARD以上にした（Kenさん決定・2026年11月15日）
+    { label: 'コメント^感情^分析', vals: [NO, NO, OK, OK] },
     // ★liff_plan.html29：「同業種・同エリア平均との比較」は廃止（Kenさん決定・2026年11月15日）
     // ★liff_plan.html22：「ネガティブコメント検知」→「ネガティブなコメントのお知らせ」（分析画面〔analytics63〕にそろえた。Kenさん決定）
-    { label: 'ネガティブな^コメントの^お知らせ', vals: [NO, NO, NO, OK] }
+    { label: 'ネガティブな^コメントの^通知', vals: [NO, NO, OK, OK] },
+    // ★liff_plan.html31：投稿から3日間・全SNS共通の上限（Kenさん決定）
+    { label: 'コメントを^確かめる^上限', vals: [NO, NO, '1投稿10件^月100件', '1投稿20件^月300件'] }
   ];
 
   function escapeHtml(text) {
