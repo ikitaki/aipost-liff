@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析78 - AiPost</title>
+<title>分析79 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -387,7 +387,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析78</span></span>
+  <span class="header-logo"><span class="nowrap">分析79</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -726,6 +726,7 @@
         <div class="plan-feature-item"><span>🏷️</span><span>目的別の<wbr>反応</span></div><!-- ★liff_analytics.html77 -->
         <!-- ★liff_analytics.html76：コメントの機能をSTANDARD以上にした（Kenさん決定・2026年11月15日） -->
         <div class="plan-feature-item"><span>⚠️</span><span>ネガティブな<wbr>コメントの<wbr>通知<wbr>（1投稿10件・<wbr>月100件まで）</span></div>
+        <div class="plan-feature-item"><span>💬</span><span>先月の<wbr>コメントの<wbr>まとめ</span></div><!-- ★liff_analytics.html79 -->
         <div class="plan-feature-item"><span>📅</span><span>先週・<wbr>先月の<wbr>まとめ</span></div>
         <div class="plan-feature-item"><span>🎯</span><span>次回の<wbr>投稿おすすめ</span></div>
         <div class="plan-feature-item"><span>📅</span><span>データ更新：<wbr>投稿後<wbr>24時間<wbr>（毎日）</span></div>
@@ -930,11 +931,13 @@
         <div class="plan-feature-item"><span>📊</span><span>最新の<wbr>状況<wbr>（投稿数・<wbr>反応の<wbr>概況）</span></div>
         <div class="plan-feature-item"><span>⚡</span><span>直近投稿の<wbr>初速状況<wbr>（3時間・<wbr>6時間・<wbr>24時間ごとの<wbr>数値推移）</span></div><!-- ★liff_analytics.html73：3・6・24時間 -->
         <div class="plan-feature-item"><span>📊</span><span>あなたの<wbr>投稿平均との<wbr>比較</span></div>
+        <div class="plan-feature-item"><span>🏷️</span><span>目的別の<wbr>反応</span></div><!-- ★liff_analytics.html79：PROの案内に入れ忘れていた -->
         <div class="plan-feature-item"><span>📅</span><span>投稿日別<wbr>データ</span></div>
         <div class="plan-feature-item"><span>👥</span><span>フォロワー数の<wbr>推移<wbr>（SNS別）</span></div>
         <!-- ★liff_analytics.html73：同業種・同エリア平均との比較は廃止（Kenさん決定・2026年11月15日） -->
         <!-- ★liff_analytics.html63：「ネガティブコメント検知」を「ネガティブなコメント」にした（決まった件数のコメントだけを確かめるため、「検知」だと全部を見張っていると誤解される。Kenさん決定） -->
         <div class="plan-feature-item"><span>⚠️</span><span>ネガティブな<wbr>コメントの<wbr>通知<wbr>（1投稿20件・<wbr>月300件まで）</span></div><!-- ★liff_analytics.html76：PROは確かめる数が多い -->
+        <div class="plan-feature-item"><span>💬</span><span>先月の<wbr>コメントの<wbr>まとめ</span></div><!-- ★liff_analytics.html79 -->
         <div class="plan-feature-item"><span>📅</span><span>先週・<wbr>先月の<wbr>まとめ</span></div>
         <div class="plan-feature-item"><span>🎯</span><span>次回の<wbr>投稿おすすめ<wbr>（おすすめの<wbr>投稿時間帯を<wbr>含む）</span></div>
         <div class="plan-feature-item"><span>📅</span><span>データ更新：<wbr>投稿後<wbr>3時間・<wbr>6時間・<wbr>24時間<wbr>（毎日）</span></div>
@@ -1868,7 +1871,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析78';
+const TRACE_SCREEN = '分析79';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
