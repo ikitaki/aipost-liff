@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析77 - AiPost</title>
+<title>分析78 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -387,7 +387,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析77</span></span>
+  <span class="header-logo"><span class="nowrap">分析78</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -845,6 +845,14 @@
     <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;返信の<wbr>件数は、<wbr>SNSの<wbr>数値です<wbr>（確かめた<wbr>件数とは<wbr>異なります）。</p>
   </div>
 
+  <!-- 💬 先月のコメントのまとめ（★liff_analytics.html78：新しい機能。STANDARD以上。Kenさん決定・2026年11月17日） -->
+  <div class="card">
+    <div class="card-title">💬 先月の<wbr>コメントの<wbr>まとめ</div>
+    <p class="wrap-ja" style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="std-csum-desc">-</p>
+    <div id="std-csum-body"></div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;毎月1日に、<wbr>前の月に<wbr>確かめた<wbr>コメント<wbr>（月100件まで）を<wbr>AIが<wbr>まとめます。</p>
+  </div>
+
   <!-- ⑥ あなたの投稿平均との比較（24時間後のみ・STANDARD固有） -->
   <!-- ★liff_analytics.html41：ダミー表示をやめ、getAnalyticsSummary()のcompareを表示する（applyCompareSection） -->
   <div class="card">
@@ -1090,6 +1098,14 @@
     </div>
     <div id="pro-neg-body"><div style="font-size:10px;color:var(--text-light);">-</div></div>
     <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;返信の<wbr>件数は、<wbr>SNSの<wbr>数値です<wbr>（確かめた<wbr>件数とは<wbr>異なります）。</p>
+  </div>
+
+  <!-- 💬 先月のコメントのまとめ（★liff_analytics.html78：新しい機能。STANDARD以上。Kenさん決定・2026年11月17日） -->
+  <div class="card">
+    <div class="card-title">💬 先月の<wbr>コメントの<wbr>まとめ</div>
+    <p class="wrap-ja" style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="pro-csum-desc">-</p>
+    <div id="pro-csum-body"></div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;毎月1日に、<wbr>前の月に<wbr>確かめた<wbr>コメント<wbr>（月300件まで）を<wbr>AIが<wbr>まとめます。</p>
   </div>
 
 
@@ -1852,7 +1868,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析77';
+const TRACE_SCREEN = '分析78';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
@@ -2503,6 +2519,63 @@ function applyPurposeReaction(data) {
   });
 }
 
+// ★liff_analytics.html78：先月のコメントのまとめ（STANDARD・PROのタブに出す）。
+// GAS の data.commentSummary = { month, total, excluded, enough,
+//   good: [{ point, count, example }], bad: [{ point, count, example }], keep: [文], fix: [文] }。
+// total が0の時は「コメントがありませんでした」。enough が false（1〜4件）の時は「喜ばれていること」「不満・ご要望」だけを出し、
+// 「続けるとよいこと」「見直すとよいこと」は出さない（件数が少ないと傾向を言えないため。Kenさん決定・2026年11月17日）。
+// commentSummary が無い時は「まだまとめがありません」。
+// ★liff_analytics.html78：AIが作った文の改行の位置（助詞の後ろで、次がひらがなでない所に <wbr> を入れる。エスケープした後の文に使う）
+function wbrJaText(escaped) {
+  return String(escaped).replace(/([をにがはでとやもへの、])(?=[^ぁ-ん、。」）\s<])/g, '$1<wbr>');
+}
+
+function applyCommentSummary(data) {
+  const cs = (data && data.commentSummary) || null;
+  ['std', 'pro'].forEach(function (prefix) {
+    const descEl = document.getElementById(prefix + '-csum-desc');
+    const bodyEl = document.getElementById(prefix + '-csum-body');
+    if (!descEl || !bodyEl) return;
+    if (!cs) {
+      descEl.innerHTML = 'まだ<wbr>まとめが<wbr>ありません。<wbr>毎月1日に、<wbr>前の月の<wbr>コメントを<wbr>まとめます。';
+      bodyEl.innerHTML = '';
+      return;
+    }
+    if (!(Number(cs.total) > 0)) {
+      descEl.innerHTML = cs.month + '月は、<wbr>確かめた<wbr>コメントが<wbr>ありませんでした。';
+      bodyEl.innerHTML = '';
+      return;
+    }
+    descEl.innerHTML = cs.month + '月に<wbr>確かめた<wbr>コメント<wbr>' + (Number(cs.total) || 0) + '件を、<wbr>AIが<wbr>まとめました。' +
+      (Number(cs.excluded) ? '<wbr>悪意のある<wbr>コメント<wbr>' + Number(cs.excluded) + '件は<wbr>除いています。' : '');
+    const box = function (title, color, bg, inner) {
+      return '<div style="background:' + bg + ';border:1px solid ' + color + ';border-radius:8px;padding:8px 10px;margin-bottom:8px;">' +
+        '<div style="font-size:11px;font-weight:700;color:' + color + ';margin-bottom:4px;">' + title + '</div>' + inner + '</div>';
+    };
+    const points = function (list) {
+      if (!Array.isArray(list) || list.length === 0) return '<div style="font-size:11px;color:var(--text-light);">ありませんでした。</div>';
+      return list.map(function (it) {
+        return '<div style="margin-bottom:6px;">' +
+          '<div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.6;padding-left:1em;text-indent:-1em;">・' + wbrJaText(escapeHtmlText(it.point)) +
+            '<span style="font-size:9px;color:var(--text-sub);white-space:nowrap;">（' + (Number(it.count) || 0) + '件）</span></div>' +
+          (it.example ? '<div class="wrap-ja" style="font-size:10px;color:var(--text-sub);line-height:1.6;margin-left:1em;">例：「' + wbrJaText(escapeHtmlText(it.example)) + '」</div>' : '') +
+        '</div>';
+      }).join('');
+    };
+    const lines = function (list) {
+      if (!Array.isArray(list) || list.length === 0) return '<div style="font-size:11px;color:var(--text-light);">ありませんでした。</div>';
+      return list.map(function (t) { return '<div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.6;margin-bottom:4px;padding-left:1em;text-indent:-1em;">・' + wbrJaText(escapeHtmlText(t)) + '</div>'; }).join('');
+    };
+    bodyEl.innerHTML =
+      box('👍 喜ばれていること', '#2e7d32', '#f3f9f3', points(cs.good)) +
+      box('😟 不満・ご要望', '#e65100', '#fff8f0', points(cs.bad)) +
+      (cs.enough
+        ? box('✅ 続けるとよいこと', '#1a237e', '#f5f6fc', lines(cs.keep)) +
+          box('🔧 見直すとよいこと', '#6d4c41', '#faf6f3', lines(cs.fix))
+        : '<div class="wrap-ja" style="font-size:10px;color:var(--text-sub);line-height:1.6;">コメントが<wbr>5件以上の<wbr>月は、<wbr>続けると<wbr>よいこと・<wbr>見直すと<wbr>よいことも<wbr>お伝えします。</div>');
+  });
+}
+
 function applyCompareSection(data) {
   if (!data || data.compare === undefined) return;
   const targets = [
@@ -2928,6 +3001,7 @@ function applySummaryData(data) {
   applyDataAccumulation(data);
   applyCompareSection(data);
   applyPurposeReaction(data); // ★liff_analytics.html77：目的別の反応
+  applyCommentSummary(data); // ★liff_analytics.html78：先月のコメントのまとめ
   // ★liff_analytics.html43：初速スコアを反映する
   applyFirstSpeedScore(data);
   // ★liff_analytics.html45：次回の投稿おすすめを反映する
