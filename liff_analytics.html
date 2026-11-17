@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析79 - AiPost</title>
+<title>分析80 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -32,6 +32,28 @@
   .content.plan-pending .tab-panel { visibility:hidden; }
   .content { padding:14px; }
   .card { background:var(--surface); border-radius:12px; padding:14px; margin-bottom:12px; border:1px solid var(--border); }
+  /* ★liff_analytics.html80：先月のレポート（PRO） */
+  .report-overlay { display:none; position:fixed; inset:0; background:var(--bg, #f4f5fa); z-index:1500; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .report-overlay.open { display:block; }
+  .report-bar { position:sticky; top:0; display:flex; align-items:center; justify-content:space-between; background:var(--primary); color:#fff; padding:10px 14px; font-size:14px; font-weight:700; z-index:1; }
+  .report-bar button { background:none; border:none; color:#fff; font-size:20px; line-height:1; padding:4px 8px; }
+  .report-page { background:#fff; margin:12px; border-radius:12px; padding:16px 14px; border:1px solid var(--border); }
+  .report-head { border-bottom:2px solid var(--primary); padding-bottom:8px; margin-bottom:12px; }
+  .report-shop { font-size:12px; color:var(--text-sub); }
+  .report-title { font-size:17px; font-weight:700; color:var(--primary); }
+  .report-sec { margin-bottom:12px; }
+  .report-sec-title { font-size:11px; font-weight:700; color:var(--text-sub); margin-bottom:4px; }
+  .report-nums { display:flex; gap:8px; }
+  .report-num { flex:1; background:#f5f6fc; border-radius:8px; padding:8px; text-align:center; }
+  .report-num-label { font-size:10px; color:var(--text-sub); }
+  .report-num-val { font-size:20px; font-weight:700; color:var(--text); }
+  .report-num-sub { font-size:10px; color:var(--text-sub); }
+  .report-row { display:flex; justify-content:space-between; font-size:12px; padding:3px 0; border-bottom:1px dashed var(--border); }
+  .report-text { font-size:12px; color:var(--text); line-height:1.7; word-break:keep-all; overflow-wrap:anywhere; }
+  .report-foot { font-size:9px; color:var(--text-light); text-align:right; margin-top:8px; }
+  .report-actions { margin:0 12px 24px; }
+  .report-save-btn { width:100%; padding:12px; border:none; border-radius:10px; background:var(--primary); color:#fff; font-size:14px; font-weight:700; }
+  .report-saved img { width:100%; border:1px solid var(--border); border-radius:8px; display:block; }
   .card-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:10px; }
   .metric-row { display:flex; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); }
   .metric-row:last-child { border-bottom:none; }
@@ -387,7 +409,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析79</span></span>
+  <span class="header-logo"><span class="nowrap">分析80</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -948,6 +970,14 @@
   </div>
 
   <div id="pro-content">
+
+  <!-- 📄 先月のレポート（★liff_analytics.html80：新しい機能。PROだけ。Kenさん決定・2026年11月18日） -->
+  <div class="card">
+    <div class="card-title">📄 先月の<wbr>レポート</div>
+    <p class="wrap-ja" style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="pro-report-desc">-</p>
+    <button type="button" class="plan-guide-btn" id="pro-report-open" style="display:none;margin:0;width:100%;" onclick="openMonthlyReport()">レポートを<wbr>開く</button>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;毎月1日に、<wbr>前の月の<wbr>分析を<wbr>1枚に<wbr>まとめます。</p>
+  </div>
 
   <!-- ===== 上部：今どうなっているか ===== -->
 
@@ -1871,7 +1901,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析79';
+const TRACE_SCREEN = '分析80';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
@@ -2533,6 +2563,200 @@ function wbrJaText(escaped) {
   return String(escaped).replace(/([をにがはでとやもへの、])(?=[^ぁ-ん、。」）\s<])/g, '$1<wbr>');
 }
 
+// ★liff_analytics.html80：先月のレポート（PRO）。GAS の data.monthlyReport =
+// { year, month, shopName,
+//   months: [{ label: '6月', posts, reactions, eg }]（古い順・最大6か月。レポートを作った月の数字を残して並べる）,
+//   followersByMonth: [{ label: '6月', X, Instagram, Threads }]（古い順・最大6か月。月末の数。無いSNSは null）,
+//   posts, reactions, impressions, eg,
+//   bySns: [{ sns, posts, reactionsPer, eg }],
+//   heat: { cols: ['朝','昼','夕方','夜'], cells: [[{ posts, eg }|null ×4] ×7（月〜日）] },
+//   byPurpose: [{ label, posts, eg }],
+//   top: [{ postedAt: 'M/d H:mm', sns, text, reactions, eg }], bottom: 同じ形,
+//   comment: { total, good, bad }（good・bad は文。無ければ ''）,
+//   note: { up: [文], down: [文], next: [文] } }。
+// 比べる項目は、投稿が3件以上ある時だけ出す（GAS が決める。足りない時は空の配列）。
+let monthlyReportData = null;
+function applyMonthlyReport(data) {
+  monthlyReportData = (data && data.monthlyReport) || null;
+  const desc = document.getElementById('pro-report-desc');
+  const btn = document.getElementById('pro-report-open');
+  if (!desc || !btn) return;
+  if (!monthlyReportData) {
+    desc.innerHTML = 'まだ<wbr>レポートが<wbr>ありません。';
+    btn.style.display = 'none';
+    return;
+  }
+  desc.innerHTML = monthlyReportData.month + '月の<wbr>レポートが<wbr>できました。<wbr>画像で<wbr>保存できます。';
+  btn.style.display = '';
+}
+
+function reportBarList(items, valueOf, labelOf, fmt, color) {
+  const max = Math.max.apply(null, items.map(valueOf).concat([0]));
+  return items.map(function (it) {
+    const v = valueOf(it);
+    const w = max > 0 ? Math.max(2, Math.round(v / max * 100)) : 0;
+    return '<div style="display:flex;align-items:center;gap:6px;margin:3px 0;font-size:11px;">' +
+      '<span style="flex:0 0 82px;word-break:keep-all;overflow-wrap:anywhere;">' + labelOf(it) + '</span>' +
+      '<span style="flex:1;background:#eef0f7;border-radius:4px;height:12px;"><span style="display:block;height:12px;border-radius:4px;width:' + w + '%;background:' + color + ';"></span></span>' +
+      '<span style="flex:0 0 64px;text-align:right;white-space:nowrap;">' + fmt(it) + '</span></div>';
+  }).join('');
+}
+
+function reportColumns(months) {
+  const max = Math.max.apply(null, months.map(function (m) { return Number(m.reactions) || 0; }).concat([0]));
+  return '<div style="display:flex;align-items:flex-end;gap:6px;height:110px;padding-top:14px;">' + months.map(function (m, i) {
+    const v = Number(m.reactions) || 0;
+    const h = max > 0 ? Math.max(2, Math.round(v / max * 80)) : 0;
+    const last = i === months.length - 1;
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;">' +
+      '<span style="font-size:9px;color:var(--text-sub);">' + v.toLocaleString() + '</span>' +
+      '<span style="width:70%;height:' + h + 'px;border-radius:4px 4px 0 0;background:' + (last ? 'var(--primary)' : '#9fa8da') + ';"></span>' +
+      '<span style="font-size:10px;margin-top:2px;">' + escapeHtmlText(m.label) + '</span>' +
+      '<span style="font-size:9px;color:var(--text-sub);">' + (Number(m.posts) || 0) + '件</span></div>';
+  }).join('') + '</div>';
+}
+
+// フォロワーの推移：SNSごとに人数の桁が違うため、最初の月を0%として「何%増えたか」を同じ目盛りで比べる
+function reportFollowerLines(rows) {
+  const SNS = [['X', '#212121'], ['Instagram', '#d6249f'], ['Threads', '#7e57c2']];
+  const W = 300, H = 120, L = 34, R = 18, T = 10, B = 22;
+  const n = rows.length;
+  const xOf = function (i) { return n <= 1 ? (L + (W - L - R) / 2) : L + (W - L - R) * i / (n - 1); };
+  const series = [];
+  SNS.forEach(function (sc) {
+    const vals = rows.map(function (r) { return (r[sc[0]] === null || r[sc[0]] === undefined || r[sc[0]] === '') ? null : Number(r[sc[0]]); });
+    const firstIdx = vals.findIndex(function (v) { return v !== null && v > 0; });
+    if (firstIdx === -1) return;
+    const base = vals[firstIdx];
+    series.push({ name: sc[0], color: sc[1], vals: vals, base: base, firstLabel: rows[firstIdx].label,
+      pct: vals.map(function (v) { return v === null ? null : (v / base - 1) * 100; }) });
+  });
+  if (!series.length) return '';
+  const all = [0];
+  series.forEach(function (sr) { sr.pct.forEach(function (v) { if (v !== null) all.push(v); }); });
+  let lo = Math.min.apply(null, all), hi = Math.max.apply(null, all);
+  if (hi === lo) { hi = lo + 1; }
+  const yOf = function (v) { return T + (H - T - B) * (1 - (v - lo) / (hi - lo)); };
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="display:block;">';
+  [hi, 0, lo].filter(function (v, i, arr) { return arr.indexOf(v) === i; }).forEach(function (v) {
+    svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yOf(v).toFixed(1) + '" y2="' + yOf(v).toFixed(1) + '" stroke="#e0e0e0" stroke-width="1"/>' +
+      '<text x="' + (L - 4) + '" y="' + (yOf(v) + 3).toFixed(1) + '" font-size="9" text-anchor="end" fill="#9e9e9e">' + (v > 0 ? '+' : '') + Math.round(v) + '%</text>';
+  });
+  rows.forEach(function (r, i) { svg += '<text x="' + xOf(i).toFixed(1) + '" y="' + (H - 6) + '" font-size="10" text-anchor="middle" fill="#5f6368">' + escapeHtmlText(r.label) + '</text>'; });
+  series.forEach(function (sr) {
+    const pts = [];
+    sr.pct.forEach(function (v, i) { if (v !== null) pts.push(xOf(i).toFixed(1) + ',' + yOf(v).toFixed(1)); });
+    svg += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="' + sr.color + '" stroke-width="2"/>';
+    sr.pct.forEach(function (v, i) { if (v !== null) svg += '<circle cx="' + xOf(i).toFixed(1) + '" cy="' + yOf(v).toFixed(1) + '" r="2.5" fill="' + sr.color + '"/>'; });
+  });
+  svg += '</svg>';
+  const legend = series.map(function (sr) {
+    const ok = sr.vals.filter(function (v) { return v !== null; });
+    const last = ok[ok.length - 1], d = last - sr.base;
+    return '<span style="white-space:nowrap;"><span style="color:' + sr.color + ';">●</span> ' + sr.name + ' ' + last.toLocaleString() + '人（' + (d > 0 ? '＋' : d < 0 ? '−' : '±') + Math.abs(d) + '）</span>';
+  });
+  return svg + '<div style="display:flex;flex-wrap:wrap;gap:4px 12px;font-size:10px;margin-top:2px;">' + legend.join('') + '</div>' +
+    '<div style="font-size:9px;color:var(--text-light);margin-top:2px;">線は、<wbr>' + escapeHtmlText(rows[0].label) + 'からの<wbr>増え方<wbr>（%）。<wbr>（ ）は<wbr>' + escapeHtmlText(rows[0].label) + 'からの<wbr>増えた人数です。</div>';
+}
+
+function reportHeat(heat) {
+  const DAYS = ['月', '火', '水', '木', '金', '土', '日'];
+  let max = 0;
+  heat.cells.forEach(function (row) { row.forEach(function (c) { if (c && c.eg > max) max = c.eg; }); });
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:10px;text-align:center;"><tr><td></td>' +
+    heat.cols.map(function (c) { return '<td style="padding:2px;color:var(--text-sub);">' + escapeHtmlText(c) + '</td>'; }).join('') + '</tr>';
+  heat.cells.forEach(function (row, i) {
+    html += '<tr><td style="padding:2px;color:var(--text-sub);">' + DAYS[i] + '</td>' + row.map(function (c) {
+      if (!c) return '<td style="padding:2px;"><div style="background:#f5f5f5;border-radius:4px;padding:4px 0;color:#bdbdbd;">−</div></td>';
+      const a = max > 0 ? 0.15 + 0.85 * c.eg / max : 0.15;
+      return '<td style="padding:2px;"><div style="background:rgba(26,35,126,' + a.toFixed(2) + ');color:' + (a > 0.55 ? '#fff' : 'var(--text)') + ';border-radius:4px;padding:4px 0;">' + c.eg.toFixed(1) + '%</div></td>';
+    }).join('') + '</tr>';
+  });
+  return html + '</table><div style="font-size:9px;color:var(--text-light);margin-top:4px;">数字は<wbr>EG率<wbr>（反応÷<wbr>表示数）。<wbr>色が<wbr>濃いほど<wbr>反応が<wbr>良い時間です。<wbr>朝 6〜11時・<wbr>昼 11〜15時・<wbr>夕方 15〜18時・<wbr>夜 18〜23時。</div>';
+}
+
+function openMonthlyReport() {
+  const r = monthlyReportData;
+  if (!r) return;
+  const esc = function (t) { return wbrJaText(escapeHtmlText(t)); };
+  const few = '<div class="report-text" style="color:var(--text-sub);">投稿が<wbr>3件以上<wbr>あると<wbr>比べられます。</div>';
+  const sec = function (title, inner) { return '<div class="report-sec"><div class="report-sec-title">' + title + '</div>' + inner + '</div>'; };
+  const list = function (arr) { return (Array.isArray(arr) ? arr : []).map(function (t) { return '<div class="report-text">・' + esc(t) + '</div>'; }).join(''); };
+  const posts = function (arr) {
+    return (Array.isArray(arr) && arr.length) ? arr.map(function (p, i) {
+      return '<div style="margin-bottom:6px;"><div style="font-size:10px;color:var(--text-sub);">' + (i + 1) + '．' + escapeHtmlText(p.postedAt) + '・' + escapeHtmlText(p.sns) +
+        '・反応 ' + (Number(p.reactions) || 0) + '・EG率 ' + (Number(p.eg) || 0).toFixed(1) + '%</div><div class="report-text">' + esc(p.text) + '</div></div>';
+    }).join('') : few;
+  };
+  document.getElementById('report-bar-title').textContent = r.month + '月のレポート';
+  const months = Array.isArray(r.months) ? r.months : [];
+  const fol = Array.isArray(r.followersByMonth) ? r.followersByMonth : [];
+  const bySns = Array.isArray(r.bySns) ? r.bySns : [];
+  const byPurpose = Array.isArray(r.byPurpose) ? r.byPurpose : [];
+  const note = r.note || {};
+  const cm = r.comment || {};
+  document.getElementById('report-page').innerHTML =
+    '<div class="report-head">' + (r.shopName ? '<div class="report-shop">' + escapeHtmlText(r.shopName) + '</div>' : '') +
+      '<div class="report-title">' + r.year + '年' + r.month + '月の<wbr>レポート</div></div>' +
+    '<div class="report-sec"><div class="report-nums">' +
+      '<div class="report-num"><div class="report-num-label">投稿数</div><div class="report-num-val">' + (Number(r.posts) || 0) + '</div></div>' +
+      '<div class="report-num"><div class="report-num-label">反応の<wbr>合計</div><div class="report-num-val">' + (Number(r.reactions) || 0).toLocaleString() + '</div></div>' +
+      '<div class="report-num"><div class="report-num-label">EG率</div><div class="report-num-val">' + (Number(r.eg) || 0).toFixed(1) + '<span style="font-size:11px;">%</span></div></div>' +
+    '</div></div>' +
+    sec('📈 月ごとの<wbr>反応の<wbr>合計と<wbr>投稿数', months.length ? reportColumns(months) : '') +
+    sec('👥 フォロワーの<wbr>推移<wbr>（月末）', fol.length ? reportFollowerLines(fol) : '') +
+    sec('📱 SNSごとの<wbr>比べ<wbr>（投稿1件<wbr>あたりの<wbr>反応）', bySns.length ? reportBarList(bySns, function (x) { return Number(x.reactionsPer) || 0; },
+      function (x) { return escapeHtmlText(x.sns); }, function (x) { return (Number(x.reactionsPer) || 0).toFixed(1) + '・' + (Number(x.eg) || 0).toFixed(1) + '%'; }, '#3949ab') : few) +
+    sec('🕒 曜日・<wbr>時間帯ごとの<wbr>反応', r.heat && Array.isArray(r.heat.cells) && r.heat.cells.length ? reportHeat(r.heat) : few) +
+    sec('🏷️ 目的ごとの<wbr>EG率', byPurpose.length ? reportBarList(byPurpose, function (x) { return Number(x.eg) || 0; },
+      function (x) { return escapeHtmlText(x.label); }, function (x) { return (Number(x.eg) || 0).toFixed(1) + '%（' + (Number(x.posts) || 0) + '件）'; }, '#00897b') : few) +
+    sec('🏆 反応が<wbr>良かった<wbr>投稿', posts(r.top)) +
+    sec('📉 反応が<wbr>少なかった<wbr>投稿', posts(r.bottom)) +
+    sec('💬 コメント', Number(cm.total) > 0
+      ? '<div class="report-text">' + Number(cm.total) + '件。' + (cm.good ? '<wbr>👍 ' + esc(cm.good) : '') + (cm.bad ? '<wbr>／😟 ' + esc(cm.bad) : '') + '</div>'
+      : '<div class="report-text">確かめた<wbr>コメントは<wbr>ありませんでした。</div>') +
+    sec('🤖 AIの<wbr>読み解き', !((note.up && note.up.length) || (note.down && note.down.length) || (note.next && note.next.length)) ? few :
+      (note.up && note.up.length ? '<div class="report-text" style="font-weight:700;color:#2e7d32;">伸びた点</div>' + list(note.up) : '') +
+      (note.down && note.down.length ? '<div class="report-text" style="font-weight:700;color:#c62828;margin-top:4px;">落ちた点</div>' + list(note.down) : '') +
+      (note.next && note.next.length ? '<div class="report-text" style="font-weight:700;color:var(--primary);margin-top:4px;">来月のおすすめ</div>' + list(note.next) : '')) +
+    '<div class="report-foot">AiPost</div>';
+  document.getElementById('report-actions').innerHTML = '<button type="button" class="report-save-btn" id="report-save-btn" onclick="saveMonthlyReportImage()">画像で<wbr>保存</button>';
+  document.getElementById('report-overlay').classList.add('open');
+  document.getElementById('report-overlay').scrollTop = 0;
+}
+
+function closeMonthlyReport() {
+  document.getElementById('report-overlay').classList.remove('open');
+}
+
+// 画像にする道具（html2canvas）は、ボタンを押した時に初めて読み込む
+function loadReportImageTool() {
+  return new Promise(function (resolve, reject) {
+    if (window.html2canvas) { resolve(window.html2canvas); return; }
+    const sc = document.createElement('script');
+    sc.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+    sc.onload = function () { window.html2canvas ? resolve(window.html2canvas) : reject(new Error('html2canvas')); };
+    sc.onerror = function () { reject(new Error('html2canvas')); };
+    document.head.appendChild(sc);
+  });
+}
+
+function saveMonthlyReportImage() {
+  const actions = document.getElementById('report-actions');
+  const btn = document.getElementById('report-save-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '画像を作っています…'; }
+  loadReportImageTool().then(function (h2c) {
+    return h2c(document.getElementById('report-page'), { scale: 2, backgroundColor: '#ffffff' });
+  }).then(function (canvas) {
+    actions.innerHTML = '<div class="report-saved">' +
+      '<p class="wrap-ja" style="font-size:12px;color:var(--text);margin-bottom:8px;">画像を<wbr>長押しして、<wbr>保存してください。</p>' +
+      '<img alt="先月のレポート" src="' + canvas.toDataURL('image/png') + '"></div>';
+  }).catch(function () {
+    actions.innerHTML = '<p class="wrap-ja" style="font-size:12px;color:#c62828;margin-bottom:8px;">画像を<wbr>作れませんでした。<wbr>もう一度<wbr>お試しください。</p>' +
+      '<button type="button" class="report-save-btn" id="report-save-btn" onclick="saveMonthlyReportImage()">画像で<wbr>保存</button>';
+  });
+}
+
 function applyCommentSummary(data) {
   const cs = (data && data.commentSummary) || null;
   ['std', 'pro'].forEach(function (prefix) {
@@ -3005,6 +3229,7 @@ function applySummaryData(data) {
   applyCompareSection(data);
   applyPurposeReaction(data); // ★liff_analytics.html77：目的別の反応
   applyCommentSummary(data); // ★liff_analytics.html78：先月のコメントのまとめ
+  applyMonthlyReport(data); // ★liff_analytics.html80：先月のレポート（PRO）
   // ★liff_analytics.html43：初速スコアを反映する
   applyFirstSpeedScore(data);
   // ★liff_analytics.html45：次回の投稿おすすめを反映する
@@ -3168,6 +3393,14 @@ initLiff();
 </script>
 
 <!-- ★お知らせの一覧（ベル・帯を押すと開く）。ベルのある画面で同じ中身（★お知らせの削除：投稿文作成148・予約確認56・分析56・設定67・プラン8。チェックで選んで削除・印の行の右端に「通知を削除 □」：投稿文作成149・予約確認57・分析57・設定68・プラン10）-->
+<!-- ★liff_analytics.html80：先月のレポート（PRO）。1枚の画面と、画像で保存 -->
+<div class="report-overlay" id="report-overlay" role="dialog" aria-label="先月のレポート">
+  <div class="report-bar"><span id="report-bar-title">先月のレポート</span><button type="button" onclick="closeMonthlyReport()" aria-label="閉じる">×</button></div>
+  <div class="report-page" id="report-page"></div>
+  <div class="report-actions" id="report-actions">
+    <button type="button" class="report-save-btn" id="report-save-btn" onclick="saveMonthlyReportImage()">画像で<wbr>保存</button>
+  </div>
+</div>
 <div class="notice-overlay" id="notice-overlay" onclick="if(event.target===this)aipostCloseNotices()">
   <div class="notice-panel" role="dialog" aria-label="お知らせ">
     <div class="notice-panel-head">
