@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成196 - AiPost</title>
+<title>投稿文作成197 - AiPost</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -960,7 +960,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成196</span></span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成197</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -2146,7 +2146,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html195：目的を先に選ぶ形にした（①SNS→②目的→③作り方…。人材募集の時は③登録している情報→④求人の内容→⑤投稿文を確認する→⑥画像→⑦投稿日）。
 // 　人材募集はAIを使わず、入力した内容を決まった形に並べる（6つの項目は必須。店名・所在地・求人の連絡先は設定画面の登録を使う。ハッシュタグなし。
 // 　自由に入れる欄は、残りの字数までしか入らない）。ほかの目的で求人らしい言葉がある時は、「内容を確認する」で注意の窓を出す（Kenさん承認：画面見本_人材募集_01）。
-const TRACE_SCREEN = '投稿文作成196';
+const TRACE_SCREEN = '投稿文作成197';
 
 function traceLog(msg) {
   try {
@@ -4970,6 +4970,7 @@ async function executeReserve() {
     lineUid: LINE_UID,
     params: {
       clientRequestId: pendingReservationRequestId,
+      purpose: getPurpose(), // ★liff_textgen.html197：投稿の目的も送る（分析の「目的別の反応」に使う。投稿予約gs_43で保存）
       keyword1: keywords[0] || '',
       keyword2: keywords[1] || '',
       keyword3: keywords[2] || '',

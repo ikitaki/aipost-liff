@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析76 - AiPost</title>
+<title>分析77 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -387,7 +387,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析76</span></span>
+  <span class="header-logo"><span class="nowrap">分析77</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -723,6 +723,7 @@
         <div class="plan-feature-item"><span>📅</span><span>投稿日別<wbr>データ</span></div>
         <div class="plan-feature-item"><span>👥</span><span>フォロワー数の<wbr>推移<wbr>（SNS別）</span></div>
         <div class="plan-feature-item"><span>📊</span><span>あなたの<wbr>投稿平均との<wbr>比較</span></div>
+        <div class="plan-feature-item"><span>🏷️</span><span>目的別の<wbr>反応</span></div><!-- ★liff_analytics.html77 -->
         <!-- ★liff_analytics.html76：コメントの機能をSTANDARD以上にした（Kenさん決定・2026年11月15日） -->
         <div class="plan-feature-item"><span>⚠️</span><span>ネガティブな<wbr>コメントの<wbr>通知<wbr>（1投稿10件・<wbr>月100件まで）</span></div>
         <div class="plan-feature-item"><span>📅</span><span>先週・<wbr>先月の<wbr>まとめ</span></div>
@@ -857,6 +858,14 @@
       <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※&nbsp;K = 1,000（例：1.2K = 1,200回）</p>
       <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:4px;">💎 3時間後・6時間後の<wbr>データは<wbr>PROプランで<wbr>確認できます。</p><!-- ★liff_analytics.html73 -->
     </div>
+  </div>
+
+  <!-- 🏷️ 目的別の反応（★liff_analytics.html77：新しい機能。STANDARD以上。Kenさん決定・2026年11月15日） -->
+  <div class="card">
+    <div class="card-title">🏷️ 目的別の<wbr>反応</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="std-purpose-desc">-</p>
+    <div id="std-purpose-body"></div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日の<wbr>投稿の、<wbr>24時間後の<wbr>EG率の<wbr>平均です。<wbr>投稿が<wbr>3件未満の<wbr>目的は<wbr>参考値です。</p>
   </div>
 
 
@@ -1026,6 +1035,14 @@
       <p style="font-size:9px;color:var(--text-light);margin-top:10px;">※&nbsp;直近60日以内の<wbr>最大30投稿の<wbr>平均と<wbr>比べています。</p>
       <p style="font-size:9px;color:var(--text-light);margin-top:2px;">※&nbsp;K = 1,000（例：1.2K = 1,200回）</p>
     </div>
+  </div>
+
+  <!-- 🏷️ 目的別の反応（★liff_analytics.html77：新しい機能。STANDARD以上。Kenさん決定・2026年11月15日） -->
+  <div class="card">
+    <div class="card-title">🏷️ 目的別の<wbr>反応</div>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="pro-purpose-desc">-</p>
+    <div id="pro-purpose-body"></div>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日の<wbr>投稿の、<wbr>24時間後の<wbr>EG率の<wbr>平均です。<wbr>投稿が<wbr>3件未満の<wbr>目的は<wbr>参考値です。</p>
   </div>
 
   <!-- 投稿日別データ -->
@@ -1835,7 +1852,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析76';
+const TRACE_SCREEN = '分析77';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
@@ -2450,6 +2467,42 @@ function renderCompareSNS(r, timings) {
 
 // STANDARD・PROの比較カードに反映する。
 // 　compareがundefined（古い保存データ）の場合は何もしない。
+// ★liff_analytics.html77：目的別の反応（STANDARD・PROのタブに出す）。
+// GAS（Analyticsgs_40）の data.purposeReaction = { items: [{ label, posts, avgEg }], bestLabel }。
+// items は投稿のある目的だけ。avgEg は24時間後のEG率の平均（%）。
+function applyPurposeReaction(data) {
+  const pr = (data && data.purposeReaction) || null;
+  ['std', 'pro'].forEach(function (prefix) {
+    const descEl = document.getElementById(prefix + '-purpose-desc');
+    const bodyEl = document.getElementById(prefix + '-purpose-body');
+    if (!descEl || !bodyEl) return;
+    const items = (pr && Array.isArray(pr.items)) ? pr.items : [];
+    if (items.length === 0) {
+      descEl.innerHTML = 'まだデータがありません。<wbr>投稿文作成で<wbr>目的を選んだ<wbr>投稿から<wbr>集計します。';
+      bodyEl.innerHTML = '';
+      return;
+    }
+    descEl.innerHTML = pr.bestLabel
+      ? '反応が<wbr>いちばん良いのは<wbr>「' + escapeHtmlText(pr.bestLabel) + '」の<wbr>投稿です。'
+      : '目的ごとの<wbr>反応です。';
+    const max = Math.max.apply(null, items.map(function (it) { return Number(it.avgEg) || 0; }).concat([0.1]));
+    bodyEl.innerHTML = items.map(function (it) {
+      const eg = Number(it.avgEg) || 0;
+      const w = Math.max(2, Math.round(eg / max * 100));
+      const few = (Number(it.posts) || 0) < 3;
+      return '<div style="margin-bottom:8px;">' +
+        '<div style="display:flex;justify-content:space-between;font-size:11px;gap:6px;">' +
+          '<span style="font-weight:700;word-break:keep-all;overflow-wrap:anywhere;">' + escapeHtmlText(it.label) + '</span>' +
+          '<span style="white-space:nowrap;color:var(--text-sub);">' + eg.toFixed(1) + '%<span style="font-size:9px;">（' + (Number(it.posts) || 0) + '件' + (few ? '・参考' : '') + '）</span></span>' +
+        '</div>' +
+        '<div style="background:#eceff1;border-radius:4px;height:8px;margin-top:3px;">' +
+          '<div style="width:' + w + '%;height:8px;border-radius:4px;background:' + (few ? '#b0bec5' : 'var(--primary)') + ';"></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  });
+}
+
 function applyCompareSection(data) {
   if (!data || data.compare === undefined) return;
   const targets = [
@@ -2874,6 +2927,7 @@ function applySummaryData(data) {
   // ★liff_analytics.html41：データ蓄積率・投稿平均との比較を反映する
   applyDataAccumulation(data);
   applyCompareSection(data);
+  applyPurposeReaction(data); // ★liff_analytics.html77：目的別の反応
   // ★liff_analytics.html43：初速スコアを反映する
   applyFirstSpeedScore(data);
   // ★liff_analytics.html45：次回の投稿おすすめを反映する
