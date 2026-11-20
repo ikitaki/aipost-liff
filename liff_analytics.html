@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析80 - AiPost</title>
+<title>分析82 - AiPost</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -249,6 +249,7 @@
   .notice-tools { display: none; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 14px; border-bottom: 1px solid #f0f0f0; }
   .notice-tools.show { display: flex; }
   .notice-select-all { background: none; border: none; color: #1a237e; font-size: 12px; font-weight: 700; padding: 4px 0; cursor: pointer; }
+  .notice-sel { display: flex; gap: 16px; } /* ★liff_analytics.html82：全選択・全解除を左に並べる */
   .notice-select-all:disabled { opacity: 0.5; cursor: default; }
   .notice-del-read { background: #fff; border: 1px solid #e53935; border-radius: 16px; color: #e53935; font-size: 12px; font-weight: 700; padding: 5px 12px; cursor: pointer; }
   .notice-del-read:disabled { border-color: #e0e0e0; color: #bdbdbd; cursor: default; }
@@ -409,7 +410,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析80</span></span>
+  <span class="header-logo"><span class="nowrap">分析82</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1183,6 +1184,7 @@
 
 <!-- ===== ガイドタブ ===== -->
 <div id="tab-guide" class="tab-panel">
+  <!-- ★liff_analytics.html81：①のプランごとの内容を今の機能に合わせ、⑦先月のコメントのまとめ・⑧先月のレポートを足した。⑥の要らない1文を消した（Kenさん指示：無駄な説明をなくす） -->
 
   <!-- ★liff_analytics.html65：ガイドを短く、やさしい言葉に書き直した（13項目→7項目。計算式・計算例・APIの話・「特徴」「このような方におすすめ」を消した。Kenさん承認） -->
   <div class="card">
@@ -1193,10 +1195,10 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-1')">① 分析で<wbr>分かること<span class="accordion-arrow" id="arr-acc-1">▶</span></div>
     <div class="accordion-body" id="acc-1">
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🔍 LITE</div><div style="font-size:11px;color:var(--text);line-height:1.8;">最新の<wbr>状況、投稿日ごとの<wbr>反応、フォロワー数の<wbr>推移、先週・先月のまとめ、次回の<wbr>投稿おすすめが<wbr>見られます。</div></div>
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">📊 STANDARD</div><div style="font-size:11px;color:var(--text);line-height:1.8;">LITEに<wbr>加えて、<wbr>あなたの<wbr>投稿平均との<wbr>比較と、<wbr>コメントの<wbr>感情分析・<wbr>ネガティブな<wbr>コメントの<wbr>通知が<wbr>使えます。<!-- ★liff_analytics.html76：コメントの機能をSTANDARD以上にした --></div></div>
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">💎 PRO</div><div style="font-size:11px;color:var(--text);line-height:1.8;">STANDARDに<wbr>加えて、<wbr>投稿の<wbr>3時間後・<wbr>6時間後の<wbr>反応と、<wbr>初速スコアが<wbr>使えます。<wbr>確かめる<wbr>コメントの<wbr>数も<wbr>多くなります。</div></div>
-      <div style="font-size:10px;color:var(--text-sub);line-height:1.7;">数字は、LITE・STANDARDは<wbr>投稿の<wbr>24時間後に<wbr>1回、PROは<wbr>3時間後・6時間後・24時間後に<wbr>取ります。</div><!-- ★liff_analytics.html74：ガイドの時間を3・6・24時間後にし、同業種の説明を消した（Kenさん指摘） -->
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🔍 LITE</div><div style="font-size:11px;color:var(--text);line-height:1.8;">最新の<wbr>状況・投稿日ごとの<wbr>反応・フォロワー数の<wbr>推移・先週と<wbr>先月のまとめ・次回の<wbr>投稿おすすめ</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">📊 STANDARD</div><div style="font-size:11px;color:var(--text);line-height:1.8;">LITEの<wbr>内容に<wbr>加えて、<wbr>投稿平均との<wbr>比較・目的別の<wbr>反応・コメントの<wbr>感情分析・ネガティブなコメントの<wbr>通知・先月の<wbr>コメントのまとめ</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">💎 PRO</div><div style="font-size:11px;color:var(--text);line-height:1.8;">STANDARDの<wbr>内容に<wbr>加えて、<wbr>投稿の<wbr>3時間後・6時間後の<wbr>反応・初速スコア・先月の<wbr>レポート。<wbr>確認するコメントの<wbr>数も<wbr>多くなります。</div></div>
+      <div style="font-size:10px;color:var(--text-sub);line-height:1.7;">数字を<wbr>取得するのは、<wbr>LITE・STANDARDは<wbr>投稿の<wbr>24時間後、<wbr>PROは<wbr>3時間後・6時間後・24時間後です。</div><!-- ★liff_analytics.html74：ガイドの時間を3・6・24時間後にし、同業種の説明を消した（Kenさん指摘） -->
     </div>
   </div>
 
@@ -1250,7 +1252,21 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-7')">⑥ ネガティブなコメント（STANDARD以上）<span class="accordion-arrow" id="arr-acc-7">▶</span></div>
     <div class="accordion-body" id="acc-7">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿から<wbr>3日間<wbr>（24・48・72時間後。<wbr>PROは<wbr><span style="white-space:nowrap;">3・6時間後も</span>）、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確かめ、<wbr>ネガティブな<wbr>コメントが<wbr>あれば<wbr>通知します。<wbr>確かめるのは<wbr>1投稿10件・<wbr>月100件まで<wbr>（PROは<wbr>20件・<wbr>300件まで）で、<wbr>超えた分は<wbr>件数だけ<wbr>通知します。<wbr>早めに<wbr>気付いて<wbr>対応すると、<wbr>お客様の<wbr>信頼に<wbr>つながります。<!-- ★liff_analytics.html76：新しい決まり --></div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿から<wbr>3日間<wbr>（24・48・72時間後。<wbr>PROは<wbr><span style="white-space:nowrap;">3・6時間後も</span>）、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確認し、<wbr>ネガティブな<wbr>コメントが<wbr>あれば<wbr>通知します。<wbr>確認するのは<wbr>1投稿10件・<wbr>月100件まで<wbr>（PROは<wbr>20件・<wbr>300件まで）で、<wbr>超えた分は<wbr>件数だけ<wbr>通知します。<!-- ★liff_analytics.html76：新しい決まり --></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-8')">⑦ 先月の<wbr>コメントのまとめ（STANDARD以上）<span class="accordion-arrow" id="arr-acc-8">▶</span></div>
+    <div class="accordion-body" id="acc-8">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">毎月1日に、<wbr>前の<wbr>月の<wbr>コメントを<wbr>AIがまとめます。<wbr>喜ばれていること<wbr>・不満やご要望を、<wbr>件数と<wbr>例で<wbr>表示します。<wbr>コメントが<wbr>5件以上の<wbr>月は、<wbr>続けるとよいこと<wbr>・見直すとよいことも<wbr>表示します。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title accordion-title" onclick="toggleAcc('acc-9')">⑧ 先月の<wbr>レポート（PRO）<span class="accordion-arrow" id="arr-acc-9">▶</span></div>
+    <div class="accordion-body" id="acc-9">
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">毎月1日に、<wbr>前の<wbr>月の<wbr>分析を<wbr>1枚にまとめます。<wbr>月ごとの<wbr>推移・SNSごとの<wbr>比較・曜日と<wbr>時間帯ごとの<wbr>反応などを、<wbr>グラフと<wbr>表で<wbr>表示します。<wbr>画像で<wbr>保存できます。</div>
     </div>
   </div>
 
@@ -1901,7 +1917,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析80';
+const TRACE_SCREEN = '分析82';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
@@ -3408,7 +3424,7 @@ initLiff();
       <button type="button" class="notice-panel-close" onclick="aipostCloseNotices()">× 閉じる</button>
     </div>
     <!-- ★お知らせを消す：チェックで選んで「通知を削除（N件）」。お知らせが1件以上ある時だけ表示 -->
-    <div class="notice-tools" id="notice-tools"><button type="button" class="notice-select-all" id="notice-select-all" onclick="aipostToggleAllNotices()">すべて<wbr>選ぶ</button><button type="button" class="notice-del-read" id="notice-del-read" onclick="aipostHideSelectedNotices()" disabled>通知を<wbr>削除<wbr>（0件）</button></div>
+    <!-- ★liff_analytics.html82（2026年11月20日）：お知らせのボタンを「全選択」「全解除」「削除（N件）」にした（Kenさん指示：選ぶ・外すのボタンの名前を全画面で統一） --><div class="notice-tools" id="notice-tools"><div class="notice-sel"><button type="button" class="notice-select-all" id="notice-select-all" onclick="aipostSelectAllNotices()">全選択</button><button type="button" class="notice-select-all" id="notice-clear-all" onclick="aipostClearNotices()" disabled>全解除</button></div><button type="button" class="notice-del-read" id="notice-del-read" onclick="aipostHideSelectedNotices()" disabled>削除</button></div>
     <div class="notice-msg" id="notice-msg"></div>
     <div class="notice-panel-body" id="notice-panel-body"></div>
   </div>
@@ -3561,8 +3577,11 @@ initLiff();
     var total = data ? data.items.length : 0;
     var n = selectedIds.length;
     if (tools) tools.classList.toggle('show', total > 0);
-    if (btn) { btn.innerHTML = '通知を<wbr>削除<wbr>（' + n + '件）'; btn.disabled = hiding || n === 0; }
-    if (all) { all.innerHTML = (total > 0 && n === total) ? 'すべて<wbr>外す' : 'すべて<wbr>選ぶ'; all.disabled = hiding; }
+    // ★liff_analytics.html82：全選択は、すべて選んでいる時は押せない。全解除・削除は、1件も選んでいない時は押せない
+    var clr = document.getElementById('notice-clear-all');
+    if (btn) { btn.textContent = n === 0 ? '削除' : '削除（' + n + '件）'; btn.disabled = hiding || n === 0; }
+    if (all) all.disabled = hiding || total === 0 || n === total;
+    if (clr) clr.disabled = hiding || n === 0;
   }
   function showMsg(text) {
     var el = document.getElementById('notice-msg');
@@ -3616,10 +3635,15 @@ initLiff();
     if (!on && i !== -1) selectedIds.splice(i, 1);
     renderList(openedUnreadIds);
   };
-  // すべて選ぶ／すべて外す
-  window.aipostToggleAllNotices = function () {
+  // ★liff_analytics.html82：全選択・全解除（1つのボタンで切り替える形をやめた）
+  window.aipostSelectAllNotices = function () {
     if (!data || hiding) return;
-    selectedIds = selectedIds.length === data.items.length ? [] : data.items.map(function (n) { return n.noticeId; });
+    selectedIds = data.items.map(function (n) { return n.noticeId; });
+    renderList(openedUnreadIds);
+  };
+  window.aipostClearNotices = function () {
+    if (!data || hiding) return;
+    selectedIds = [];
     renderList(openedUnreadIds);
   };
   // ★liff_analytics.html61：お知らせの削除の確認の窓（端末の窓〔confirm〕をやめた。初めて使う時に作る。外側を押すと閉じる）
@@ -3763,7 +3787,7 @@ initLiff();
   <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
     <div class="consent-title">ご利用の<wbr>前に</div>
     <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が<wbr>必要です。</div>
-    <div class="consent-box">投稿文の<wbr>作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の<wbr>事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの<wbr>投稿や<wbr>データの<wbr>保存のため、<wbr>米国の<wbr>事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第5条を<wbr>ご覧ください。</div>
+    <div class="consent-box">投稿文の<wbr>作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の<wbr>事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの<wbr>投稿や<wbr>データの<wbr>保存のため、<wbr>米国の<wbr>事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
     <div class="consent-links">
       <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
       <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを<wbr>読む</button>

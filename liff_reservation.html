@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更94 - AiPost</title>
+<title>予約確認・変更96 - AiPost</title>
+  <!-- ★liff_reservation.html96（2026年11月20日）：投稿削除の「すべて選ぶ」は一覧を下に送ると見えなくなるため、画面の下の帯に移し、「全選択」「全解除」「削除（N件）」の3つを並べた。カレンダーでは、下の「全選択」が押した日の投稿を選ぶ（日のボタンはやめた）。予約タブのまとめてキャンセルも同じ帯（全選択・全解除・キャンセル（N件））にし、ベルのお知らせも「全選択」「全解除」「削除（N件）」にそろえた（Kenさん指示：ボタンの名前を統一） -->
+  <!-- ★liff_reservation.html95（2026年11月18日）：同意の窓の「プライバシーポリシーの第5条」を第4条にした（プライバシーポリシー9で条が1つ繰り上がったため）。「入れます」「入れてください」を「入力」にそろえた（Kenさん指示） -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -803,14 +805,18 @@
   .res-cancel-bar { display: none; position: fixed; left: 0; right: 0; bottom: 60px; z-index: 1001; background: #ffffff; border-top: 1px solid #e0e0e0; box-shadow: 0 -2px 8px rgba(0,0,0,0.08); }
   .res-cancel-bar.show { display: block; }
   .res-cancel-bar-inner { max-width: 480px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 8px; }
-  body.res-bar-open { padding-bottom: 140px; }
+  body.res-bar-open { padding-bottom: 120px; } /* ★liff_reservation.html96：帯を投稿削除と同じ高さにしたので140→120 */
   body.del-bar-open { padding-bottom: 120px; } /* ★liff_reservation.html78：投稿削除の帯の分（★90：帯を低くしたので140→120） */
   /* ★liff_reservation.html90：投稿削除の帯のボタンを、X／Threads のボタン（.del-sns-tab）と同じ高さにする */
-  #del-action-bar .res-cancel-bar-inner { padding: 8px 16px; }
+  #del-action-bar .res-cancel-bar-inner, #res-cancel-bar .res-cancel-bar-inner { padding: 8px 16px; } /* ★96：予約タブの帯も同じ形 */
   /* 　行の高さを決めて書く（日本語の文字は、行の高さを「normal」にすると英字より高くなり、X／Threads のボタンより高くなるため） */
-  #del-action-bar .btn, .del-sns-tab { line-height: 1.2; }
-  #del-action-bar .btn { padding: 9px 4px; font-size: 13px; border-radius: 10px; white-space: nowrap; }
-  #del-action-bar .btn-danger { border: 1.5px solid transparent; }
+  #del-action-bar .btn, #res-cancel-bar .btn, .del-sns-tab { line-height: 1.2; }
+  #del-action-bar .btn, #res-cancel-bar .btn { padding: 9px 4px; font-size: 13px; border-radius: 10px; white-space: nowrap; }
+  #del-action-bar .btn-danger, #res-cancel-bar .btn-danger { border: 1.5px solid transparent; }
+  /* ★liff_reservation.html96：全選択・全解除・削除（キャンセル）の3つ。右のボタンは件数が付くので広く */
+  #del-action-bar .btn, #res-cancel-bar .btn { flex: 1; min-width: 0; margin: 0; }
+  #del-action-bar .btn-danger { flex: 1.5; }
+  #res-cancel-bar .btn-danger { flex: 1.9; }
   .btn-res-cancel { flex: 1.2; white-space: nowrap; padding-left: 6px; padding-right: 6px; } /* ★liff_reservation.html68：「予約取り消し」に短くしたため 1.4→1.2 */
 
   /* ============================================ */
@@ -913,6 +919,7 @@
   .notice-tools { display: none; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 14px; border-bottom: 1px solid #f0f0f0; }
   .notice-tools.show { display: flex; }
   .notice-select-all { background: none; border: none; color: #1a237e; font-size: 12px; font-weight: 700; padding: 4px 0; cursor: pointer; }
+  .notice-sel { display: flex; gap: 16px; } /* ★liff_reservation.html96：全選択・全解除を左に並べる */
   .notice-select-all:disabled { opacity: 0.5; cursor: default; }
   .notice-del-read { background: #fff; border: 1px solid #e53935; border-radius: 16px; color: #e53935; font-size: 12px; font-weight: 700; padding: 5px 12px; cursor: pointer; }
   .notice-del-read:disabled { border-color: #e0e0e0; color: #bdbdbd; cursor: default; }
@@ -1071,7 +1078,7 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更94</span></span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更96</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -1247,10 +1254,9 @@
   <!-- 予約一覧 -->
   <div id="tab-list" class="sub-view active">
 
-    <!-- ★liff_reservation.html53：見出しの右に「すべて選ぶ」（予約が1件以上ある時だけ表示） -->
+    <!-- ★liff_reservation.html96：見出しの右の「すべて選ぶ」は、画面の下の帯の「全選択」に移した -->
     <div class="res-list-toolbar">
       <div class="section-label" id="reservation-list-label">予約中</div>
-      <button type="button" class="del-selectall" id="res-selectall-btn" onclick="toggleReservationSelectAll()" style="display:none;">すべて選ぶ</button>
     </div>
 
     <div id="reservation-list-container"></div>
@@ -1404,9 +1410,6 @@
       <!-- ★liff_reservation.html87：件数は上の枠に移した。月送りをやめ、すべての投稿を1つの一覧にした -->
       <div id="del-unlinked" class="del-note-ng" style="display:none;"></div>
       <div id="tab-dlist" class="sub-view active">
-      <div style="text-align:right;margin-bottom:6px;">
-        <button type="button" class="del-selectall" id="del-selectall-btn" onclick="toggleDeleteSelectAll()">すべて選ぶ</button>
-      </div>
       <div id="del-list"></div>
       </div>
       <!-- ★liff_reservation.html89：投稿削除のカレンダー（表示中のSNSの、削除できる投稿の件数を日ごとに出す。日を押すと、その日の投稿を選べる） -->
@@ -1433,7 +1436,6 @@
         <div id="del-day-section" style="display:none;">
           <div class="del-day-tools">
             <div class="selected-date-label" style="margin-bottom:0;"><span id="del-day-label"></span></div>
-            <button type="button" class="del-selectall" id="del-day-selectall-btn" onclick="toggleDeleteDaySelectAll()">この日をすべて選ぶ</button>
           </div>
           <div id="del-day-list"></div>
         </div>
@@ -1576,7 +1578,7 @@
 
       <div class="rc-blk"><div class="mk-lbl">賃金<span class="mk-tag">（必須）</span></div>
       <div class="rc-line"><select class="mk-in rc-sel" id="rre-wage-type" onchange="rreOnWageType()"><option value="時給">時給</option><option value="日給">日給</option><option value="月給">月給</option><option value="年収">年収</option></select><input type="text" class="mk-in rc-num" id="rre-wage-min" inputmode="decimal" oninput="rreOnWage(this)"><span id="rre-unit-1">円</span><span>〜</span><input type="text" class="mk-in rc-num" id="rre-wage-max" inputmode="decimal" oninput="rreOnWage(this)"><span id="rre-unit-2">円</span></div>
-      <div class="rc-note" style="margin-top:3px;">時給・<wbr>日給は<wbr>円、<wbr>月給・<wbr>年収は<wbr>万円で<wbr>入れます<wbr>（数字だけ）。<wbr>「〜」の<wbr>右は<wbr>任意です。</div></div>
+      <div class="rc-note" style="margin-top:3px;">時給・<wbr>日給は<wbr>円、<wbr>月給・<wbr>年収は<wbr>万円で<wbr>入力します<wbr>（数字のみ）。<wbr>「〜」の<wbr>右は<wbr>任意です。</div></div>
 
       <div class="rc-blk"><div class="mk-lbl">働く場所<span class="mk-tag">（必須）</span></div>
       <label class="rc-check"><input type="checkbox" id="rre-place-same" checked onchange="rreOnPlaceSame()">所在地と<wbr>同じ</label>
@@ -1791,6 +1793,7 @@ function switchSub(group, view) {
   });
   if (group === 'hist' && view === 'list' && typeof markHistoryOverflow === 'function') markHistoryOverflow();
   if (typeof updateReservationSelectionUi === 'function') updateReservationSelectionUi();
+  if (group === 'del' && typeof updateDeleteControls === 'function') updateDeleteControls(); // ★liff_reservation.html96：一覧とカレンダーで「全選択」の対象が変わるため
   // ★liff_reservation.html89：切り替えの所より下まで進んでいたら、切り替えの所（上に止まる位置）まで戻す（短い方に切り替えた時に、何も無い所が出ないように）
   const anchor = document.getElementById('anchor-' + group);
   if (anchor) {
@@ -1951,8 +1954,10 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
 <!-- ★liff_reservation.html53：予約一覧で選んだ予約をまとめてキャンセルする帯（1件以上選んだ時だけ、予約一覧タブで表示） -->
 <div class="res-cancel-bar" id="res-cancel-bar">
   <div class="res-cancel-bar-inner">
-    <button type="button" class="btn btn-outline" onclick="clearReservationSelection()">選択を外す</button>
-    <button type="button" class="btn btn-danger" id="res-cancel-bar-btn" onclick="openBulkCancelConfirm()">予約をキャンセル</button>
+    <!-- ★liff_reservation.html96：全選択・全解除・キャンセル（N件）の3つ（投稿削除の帯と同じ形） -->
+    <button type="button" class="btn btn-outline" id="res-all-btn" onclick="selectAllReservations()" disabled>全選択</button>
+    <button type="button" class="btn btn-outline" id="res-clear-btn" onclick="clearReservationSelection()" disabled>全解除</button>
+    <button type="button" class="btn btn-danger" id="res-cancel-bar-btn" onclick="openBulkCancelConfirm()" disabled>キャンセル</button>
   </div>
 </div>
 
@@ -1960,8 +1965,10 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
      まとめてキャンセルの帯と同じ形。投稿削除タブで投稿の一覧が出ている間は、選んでいなくても出す） -->
 <div class="res-cancel-bar" id="del-action-bar">
   <div class="res-cancel-bar-inner">
-    <button type="button" class="btn btn-outline" id="del-clear-btn" onclick="clearDeleteSelection()" disabled>選択をすべて外す</button>
-    <button type="button" class="btn btn-danger" id="del-exec-btn" onclick="openDeleteConfirm()" disabled>削除する</button>
+    <!-- ★liff_reservation.html96：「全選択」を帯に移して3つ並べた（一覧を下に送っても押せるように） -->
+    <button type="button" class="btn btn-outline" id="del-all-btn" onclick="selectAllDelete()" disabled>全選択</button>
+    <button type="button" class="btn btn-outline" id="del-clear-btn" onclick="clearDeleteSelection()" disabled>全解除</button>
+    <button type="button" class="btn btn-danger" id="del-exec-btn" onclick="openDeleteConfirm()" disabled>削除</button>
   </div>
 </div>
 
@@ -2200,7 +2207,7 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   // 　本文の入力欄ではなく、投稿文作成195 と同じ人材募集の入力欄（今の投稿文から読み取って最初から入れる）を出し、決まった形の投稿文を作り直して保存する。
   // 　登録している店名・所在地・連絡先は、開いた時に getUserProfile で読み直す（設定で変えていれば、新しい登録で作り直す）。読み取れない投稿文の予約は直せない。
   // 　92 の「人材募集の投稿文は直せません」の案内は外した。GASの投稿予約gs_41 も、人材募集の予約の本文が決まった形かを確かめる。
-  const TRACE_SCREEN = '予約確認94';
+  const TRACE_SCREEN = '予約確認96';
 
   function traceLog(msg) {
     try {
@@ -2859,11 +2866,10 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
     if (card) card.classList.toggle('selected', input.checked);
     updateReservationSelectionUi();
   }
-  function toggleReservationSelectAll() {
+  // ★liff_reservation.html96：すべて選ぶ（外すのは「全解除」）
+  function selectAllReservations() {
     if (bulkCancelRunning) return;
-    const allSelected = currentReservationList.length > 0 && selectedReservationIds().length === currentReservationList.length;
-    reservationSelection = {};
-    if (!allSelected) currentReservationList.forEach(function (r) { reservationSelection[r.reservationId] = true; });
+    currentReservationList.forEach(function (r) { reservationSelection[r.reservationId] = true; });
     syncReservationCheckboxes();
   }
   function clearReservationSelection() {
@@ -2884,19 +2890,22 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   function updateReservationSelectionUi() {
     const count = selectedReservationIds().length;
     const total = currentReservationList.length;
-    const allBtn = document.getElementById('res-selectall-btn');
-    if (allBtn) {
-      allBtn.style.display = total > 0 ? '' : 'none';
-      allBtn.textContent = (total > 0 && count === total) ? 'すべて外す' : 'すべて選ぶ';
-    }
+    // ★liff_reservation.html96：全選択は、予約が無い時と、すべて選んでいる時は押せない。全解除は、1件も選んでいない時は押せない
+    const allBtn = document.getElementById('res-all-btn');
+    if (allBtn) allBtn.disabled = total === 0 || count === total || bulkCancelRunning;
+    const clearBtn = document.getElementById('res-clear-btn');
+    if (clearBtn) clearBtn.disabled = count === 0 || bulkCancelRunning;
     const listTab = document.getElementById('tab-list');
     const resTab = document.getElementById('tab-res'); // ★liff_reservation.html87：予約タブで、一覧を出している時だけ
-    const show = count > 0 && !!(listTab && listTab.classList.contains('active')) && !!(resTab && resTab.classList.contains('active'));
+    const show = total > 0 && !!(listTab && listTab.classList.contains('active')) && !!(resTab && resTab.classList.contains('active'));
     const bar = document.getElementById('res-cancel-bar');
     if (bar) bar.classList.toggle('show', show);
     document.body.classList.toggle('res-bar-open', show);
     const barBtn = document.getElementById('res-cancel-bar-btn');
-    if (barBtn) barBtn.textContent = '予約をキャンセル（' + count + '件）'; // ★liff_reservation.html70：言葉をそろえた
+    if (barBtn) {
+      barBtn.textContent = count === 0 ? 'キャンセル' : 'キャンセル（' + count + '件）'; // ★liff_reservation.html96：3つ並べるため短くした。選んでいなくても帯を出す
+      barBtn.disabled = count === 0 || bulkCancelRunning;
+    }
   }
   function openBulkCancelConfirm() {
     if (bulkCancelRunning) return;
@@ -4512,7 +4521,7 @@ function _dataUrlToBase64(dataUrl) {
     if (!rreEmploy().length) need.push('雇用形態');
     if (!rreVal('rre-wage-min')) need.push('賃金');
     if (!rreChecked('rre-place-same') && !rreVal('rre-place')) need.push('働く場所');
-    if (need.length) { aipostNotice('「' + need.join('」「') + '」を入れてください。'); return; }
+    if (need.length) { aipostNotice('「' + need.join('」「') + '」を入力してください。'); return; }
     const wmin = Number(rreVal('rre-wage-min')), wmax = rreVal('rre-wage-max') ? Number(rreVal('rre-wage-max')) : null;
     if (!(wmin > 0) || (wmax !== null && !(wmax > wmin))) { aipostNotice('賃金の金額を確かめてください。\n「〜」の右に入れる時は、左より大きい金額にしてください。'); return; }
     if (!!rreVal('rre-time-from') !== !!rreVal('rre-time-to')) { aipostNotice('勤務時間は、始まりと終わりの両方を選んでください。'); return; }
@@ -5351,21 +5360,15 @@ function _dataUrlToBase64(dataUrl) {
     document.getElementById('del-day-list').innerHTML = posts.length
       ? posts.map(deleteCardHtml).join('')
       : '<div class="empty-list-note">この日に削除できる' + deleteSns + 'の投稿はありません。</div>';
-    const keys = posts.filter(isDeleteSelectable).map(function (item) { return item.reservationId; });
-    const sel = deleteSelection[deleteSns];
-    const btn = document.getElementById('del-day-selectall-btn');
-    btn.disabled = keys.length === 0 || deleteRunning;
-    btn.textContent = (keys.length > 0 && keys.every(function (k) { return sel[k]; })) ? 'この日を外す' : 'この日をすべて選ぶ';
   }
-  // この日の選べる投稿をすべて選ぶ（すべて選ばれていれば外す）
-  function toggleDeleteDaySelectAll() {
-    if (deleteRunning || !delSelectedKey) return;
-    const keys = (deleteItemsByDate()[delSelectedKey] || []).filter(isDeleteSelectable).map(function (item) { return item.reservationId; });
-    if (keys.length === 0) return;
-    const sel = deleteSelection[deleteSns];
-    const allOn = keys.every(function (k) { return sel[k]; });
-    keys.forEach(function (k) { if (allOn) delete sel[k]; else sel[k] = true; });
-    renderDeleteList();
+  // ★liff_reservation.html96：下の帯の「全選択」で選ぶ投稿。一覧の時は一覧のすべて、カレンダーの時は押した日の投稿（日を押していなければ無し）
+  function deleteSelectAllKeys() {
+    const cal = document.getElementById('tab-dcal');
+    if (cal && cal.classList.contains('active')) {
+      if (!delSelectedKey) return [];
+      return (deleteItemsByDate()[delSelectedKey] || []).filter(isDeleteSelectable).map(function (item) { return item.reservationId; });
+    }
+    return deleteMonthKeys();
   }
 
   function toggleDeleteItem(reservationId, checked) {
@@ -5374,14 +5377,13 @@ function _dataUrlToBase64(dataUrl) {
     renderDeleteList();
   }
 
-  // この月の選べる投稿をすべて選ぶ（すべて選ばれていれば、この月の選択を外す）
-  function toggleDeleteSelectAll() {
+  // ★liff_reservation.html96：選べる投稿をすべて選ぶ（一覧の時は一覧のすべて、カレンダーの時は押した日の投稿。外すのは「全解除」）
+  function selectAllDelete() {
     if (deleteRunning) return;
-    const keys = deleteMonthKeys();
+    const keys = deleteSelectAllKeys();
     if (keys.length === 0) return;
     const sel = deleteSelection[deleteSns];
-    const allOn = keys.every(function (k) { return sel[k]; });
-    keys.forEach(function (k) { if (allOn) delete sel[k]; else sel[k] = true; });
+    keys.forEach(function (k) { sel[k] = true; });
     renderDeleteList();
   }
 
@@ -5403,14 +5405,14 @@ function _dataUrlToBase64(dataUrl) {
     const count = selectedDeleteIds().length;
     const btn = document.getElementById('del-exec-btn');
     btn.disabled = count === 0 || deleteRunning;
-    btn.textContent = count === 0 ? '削除する' : '削除する（' + count + '件）';
+    btn.textContent = count === 0 ? '削除' : '削除（' + count + '件）'; // ★liff_reservation.html96：3つ並べるため短くした
     document.getElementById('del-clear-btn').disabled = count === 0 || deleteRunning;
 
-    const selBtn = document.getElementById('del-selectall-btn');
-    const keys = deleteMonthKeys();
+    // ★liff_reservation.html96：全選択は、選べる投稿が無い時と、すべて選んでいる時は押せない
+    const allBtn = document.getElementById('del-all-btn');
+    const keys = deleteSelectAllKeys();
     const sel = deleteSelection[deleteSns];
-    selBtn.disabled = keys.length === 0 || deleteRunning;
-    selBtn.textContent = (keys.length > 0 && keys.every(function (k) { return sel[k]; })) ? 'すべて外す' : 'すべて選ぶ'; // ★liff_reservation.html87：月ではなく一覧のすべて
+    allBtn.disabled = keys.length === 0 || keys.every(function (k) { return sel[k]; }) || deleteRunning;
     updateDeleteBar();
   }
 
@@ -5539,7 +5541,7 @@ function _dataUrlToBase64(dataUrl) {
       <button type="button" class="notice-panel-close" onclick="aipostCloseNotices()">× 閉じる</button>
     </div>
     <!-- ★お知らせを消す：チェックで選んで「通知を削除（N件）」。お知らせが1件以上ある時だけ表示 -->
-    <div class="notice-tools" id="notice-tools"><button type="button" class="notice-select-all" id="notice-select-all" onclick="aipostToggleAllNotices()">すべて<wbr>選ぶ</button><button type="button" class="notice-del-read" id="notice-del-read" onclick="aipostHideSelectedNotices()" disabled>通知を<wbr>削除<wbr>（0件）</button></div>
+    <!-- ★liff_reservation.html96（2026年11月20日）：お知らせのボタンを「全選択」「全解除」「削除（N件）」にした（Kenさん指示：選ぶ・外すのボタンの名前を全画面で統一） --><div class="notice-tools" id="notice-tools"><div class="notice-sel"><button type="button" class="notice-select-all" id="notice-select-all" onclick="aipostSelectAllNotices()">全選択</button><button type="button" class="notice-select-all" id="notice-clear-all" onclick="aipostClearNotices()" disabled>全解除</button></div><button type="button" class="notice-del-read" id="notice-del-read" onclick="aipostHideSelectedNotices()" disabled>削除</button></div>
     <div class="notice-msg" id="notice-msg"></div>
     <div class="notice-panel-body" id="notice-panel-body"></div>
   </div>
@@ -5692,8 +5694,11 @@ function _dataUrlToBase64(dataUrl) {
     var total = data ? data.items.length : 0;
     var n = selectedIds.length;
     if (tools) tools.classList.toggle('show', total > 0);
-    if (btn) { btn.innerHTML = '通知を<wbr>削除<wbr>（' + n + '件）'; btn.disabled = hiding || n === 0; }
-    if (all) { all.innerHTML = (total > 0 && n === total) ? 'すべて<wbr>外す' : 'すべて<wbr>選ぶ'; all.disabled = hiding; }
+    // ★liff_reservation.html96：全選択は、すべて選んでいる時は押せない。全解除・削除は、1件も選んでいない時は押せない
+    var clr = document.getElementById('notice-clear-all');
+    if (btn) { btn.textContent = n === 0 ? '削除' : '削除（' + n + '件）'; btn.disabled = hiding || n === 0; }
+    if (all) all.disabled = hiding || total === 0 || n === total;
+    if (clr) clr.disabled = hiding || n === 0;
   }
   function showMsg(text) {
     var el = document.getElementById('notice-msg');
@@ -5747,10 +5752,15 @@ function _dataUrlToBase64(dataUrl) {
     if (!on && i !== -1) selectedIds.splice(i, 1);
     renderList(openedUnreadIds);
   };
-  // すべて選ぶ／すべて外す
-  window.aipostToggleAllNotices = function () {
+  // ★liff_reservation.html96：全選択・全解除（1つのボタンで切り替える形をやめた）
+  window.aipostSelectAllNotices = function () {
     if (!data || hiding) return;
-    selectedIds = selectedIds.length === data.items.length ? [] : data.items.map(function (n) { return n.noticeId; });
+    selectedIds = data.items.map(function (n) { return n.noticeId; });
+    renderList(openedUnreadIds);
+  };
+  window.aipostClearNotices = function () {
+    if (!data || hiding) return;
+    selectedIds = [];
     renderList(openedUnreadIds);
   };
   // ★liff_reservation.html63：お知らせの削除の確認の窓（端末の窓〔confirm〕をやめた。初めて使う時に作る。外側を押すと閉じる）
@@ -5894,7 +5904,7 @@ function _dataUrlToBase64(dataUrl) {
   <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
     <div class="consent-title">ご利用の前に</div>
     <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
-    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第5条を<wbr>ご覧ください。</div>
+    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
     <div class="consent-links">
       <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
       <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを読む</button>

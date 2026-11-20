@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>設定・登録91 - AiPost</title>
+<title>設定・登録93 - AiPost</title>
+  <!-- ★liff_settings.html92（2026年11月18日）：同意の窓の条の番号を第4条にした（プライバシーポリシー9）。求人の連絡先の説明を短くし、「入れて」を「入力」にそろえた（Kenさん指示） -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -480,6 +481,7 @@
   .notice-tools { display: none; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 14px; border-bottom: 1px solid #f0f0f0; }
   .notice-tools.show { display: flex; }
   .notice-select-all { background: none; border: none; color: #1a237e; font-size: 12px; font-weight: 700; padding: 4px 0; cursor: pointer; }
+  .notice-sel { display: flex; gap: 16px; } /* ★liff_settings.html93：全選択・全解除を左に並べる */
   .notice-select-all:disabled { opacity: 0.5; cursor: default; }
   .notice-del-read { background: #fff; border: 1px solid #e53935; border-radius: 16px; color: #e53935; font-size: 12px; font-weight: 700; padding: 5px 12px; cursor: pointer; }
   .notice-del-read:disabled { border-color: #e0e0e0; color: #bdbdbd; cursor: default; }
@@ -638,7 +640,7 @@
 
 <div class="header">
   <span style="font-size:20px;">⚙️</span>
-  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録91</span></span>
+  <span class="header-logo"><span class="nowrap">設定・</span><span class="nowrap">登録93</span></span>
   <span class="header-sub">AiPost</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -877,7 +879,7 @@
             </div>
             <input type="text" class="form-input" id="recruit-contact-input" maxlength="60" placeholder="例：0612345678" style="flex:1;min-width:0;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;">
           </div>
-          <p style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:4px;">人材募集の<wbr>投稿に、<wbr>そのまま<wbr>載ります。<wbr>電話番号<wbr>（数字だけ。<wbr>ハイフンは<wbr>入れません）か、<wbr>メールアドレスを<wbr>入れてください。<wbr>人材募集を<wbr>作るには、<wbr>店舗名・<wbr>所在地・<wbr>求人の連絡先の<wbr>3つが<wbr>必要です。<br>下の<wbr>「連絡先メールアドレス」は、<wbr>AiPostからの<wbr>ご連絡用で、<wbr>投稿には<wbr>載りません。</p>
+          <p style="font-size:11px;color:var(--text-sub);line-height:1.6;margin-top:4px;">人材募集の<wbr>投稿に、<wbr>そのまま<wbr>載ります。<wbr>電話番号<wbr>（数字のみ・<wbr>ハイフンなし）か、<wbr>メールアドレスを<wbr>入力してください。<br>下の<wbr>「連絡先メールアドレス」は、<wbr>運営からの<wbr>連絡用で、<wbr>投稿には<wbr>載りません。</p>
         </div>
         <button class="btn btn-primary" onclick="saveShopInfo()" disabled>店舗情報を保存する</button>
       </div>
@@ -1268,7 +1270,7 @@ const TRACE_KEY = 'aipost_trace';
 // 　recruitContact で送る（GASの変更は別の指示書）。電話は数字とハイフン（数字10〜11けた）、メールはメールの形の時だけ保存できる。
 // ★liff_settings.html90：求人の連絡先の電話番号を、ハイフンなしにした（Kenさん指示）。電話を選んでいる時は、入力欄に数字だけが入る
 // 　（ハイフン・「ー」・空白は入れたそばから消し、全角の数字は半角にする）。0で始まる10〜11けたの時だけ保存できる（UserProfilegs_23 と同じ決まり）。
-const TRACE_SCREEN = '設定91';
+const TRACE_SCREEN = '設定93';
 
 function traceLog(msg) {
   try {
@@ -2570,7 +2572,7 @@ async function saveShopInfo() {
   const recruitContact = normalizeRecruitContact(recruitContactType, document.getElementById('recruit-contact-input').value);
   if (recruitContact === null) {
     aipostNotice(recruitContactType === 'tel'
-      ? '求人の連絡先の電話番号を確かめてください。\n0で始まる10〜11けたの数字で入れてください（例：0612345678）。'
+      ? '求人の連絡先の電話番号を確かめてください。\n0で始まる10〜11けたの数字で入力してください（例：0612345678）。'
       : '求人の連絡先のメールアドレスを確かめてください。\n（例：recruit@example.com）');
     return;
   }
@@ -2801,7 +2803,7 @@ const LIFF_URLS = {
       <button type="button" class="notice-panel-close" onclick="aipostCloseNotices()">× 閉じる</button>
     </div>
     <!-- ★お知らせを消す：チェックで選んで「通知を削除（N件）」。お知らせが1件以上ある時だけ表示 -->
-    <div class="notice-tools" id="notice-tools"><button type="button" class="notice-select-all" id="notice-select-all" onclick="aipostToggleAllNotices()">すべて<wbr>選ぶ</button><button type="button" class="notice-del-read" id="notice-del-read" onclick="aipostHideSelectedNotices()" disabled>通知を<wbr>削除<wbr>（0件）</button></div>
+    <!-- ★liff_settings.html93（2026年11月20日）：お知らせのボタンを「全選択」「全解除」「削除（N件）」にした（Kenさん指示：選ぶ・外すのボタンの名前を全画面で統一） --><div class="notice-tools" id="notice-tools"><div class="notice-sel"><button type="button" class="notice-select-all" id="notice-select-all" onclick="aipostSelectAllNotices()">全選択</button><button type="button" class="notice-select-all" id="notice-clear-all" onclick="aipostClearNotices()" disabled>全解除</button></div><button type="button" class="notice-del-read" id="notice-del-read" onclick="aipostHideSelectedNotices()" disabled>削除</button></div>
     <div class="notice-msg" id="notice-msg"></div>
     <div class="notice-panel-body" id="notice-panel-body"></div>
   </div>
@@ -2954,8 +2956,11 @@ const LIFF_URLS = {
     var total = data ? data.items.length : 0;
     var n = selectedIds.length;
     if (tools) tools.classList.toggle('show', total > 0);
-    if (btn) { btn.innerHTML = '通知を<wbr>削除<wbr>（' + n + '件）'; btn.disabled = hiding || n === 0; }
-    if (all) { all.innerHTML = (total > 0 && n === total) ? 'すべて<wbr>外す' : 'すべて<wbr>選ぶ'; all.disabled = hiding; }
+    // ★liff_settings.html93：全選択は、すべて選んでいる時は押せない。全解除・削除は、1件も選んでいない時は押せない
+    var clr = document.getElementById('notice-clear-all');
+    if (btn) { btn.textContent = n === 0 ? '削除' : '削除（' + n + '件）'; btn.disabled = hiding || n === 0; }
+    if (all) all.disabled = hiding || total === 0 || n === total;
+    if (clr) clr.disabled = hiding || n === 0;
   }
   function showMsg(text) {
     var el = document.getElementById('notice-msg');
@@ -3009,10 +3014,15 @@ const LIFF_URLS = {
     if (!on && i !== -1) selectedIds.splice(i, 1);
     renderList(openedUnreadIds);
   };
-  // すべて選ぶ／すべて外す
-  window.aipostToggleAllNotices = function () {
+  // ★liff_settings.html93：全選択・全解除（1つのボタンで切り替える形をやめた）
+  window.aipostSelectAllNotices = function () {
     if (!data || hiding) return;
-    selectedIds = selectedIds.length === data.items.length ? [] : data.items.map(function (n) { return n.noticeId; });
+    selectedIds = data.items.map(function (n) { return n.noticeId; });
+    renderList(openedUnreadIds);
+  };
+  window.aipostClearNotices = function () {
+    if (!data || hiding) return;
+    selectedIds = [];
     renderList(openedUnreadIds);
   };
   // ★liff_settings.html77：お知らせの削除の確認の窓（端末の窓〔confirm〕をやめた。初めて使う時に作る。外側を押すと閉じる）
@@ -3156,7 +3166,7 @@ const LIFF_URLS = {
   <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
     <div class="consent-title">ご利用の前に</div>
     <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
-    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第5条を<wbr>ご覧ください。</div>
+    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
     <div class="consent-links">
       <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
       <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを読む</button>
