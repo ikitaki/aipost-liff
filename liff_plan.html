@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金35 - AiPost</title>
+  <title>プラン・料金36 - AiPost</title>
+  <!-- ★liff_plan.html36（2026年11月21日）：上位プランへの変更はすぐ切り替わるようにした（Kenさん決定。UserProfilegs_25）。説明の文・利用規約の抜粋・確認の窓の文を直した。下位プランへの変更は今までどおり次回更新日から -->
   <!-- ★liff_plan.html34（2026年11月18日）：表の下の注意・ご利用期間の説明・利用規約の抜粋を、利用規約11に合わせて短くした（「1か月ごと」「実質予約枠」の言い方をやめた。条の番号を直した。Kenさん指示） -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
@@ -133,6 +134,7 @@
       line-height: 1.8;
       border-top: 1px solid var(--border);
       margin-top: 10px;
+      word-break: keep-all; overflow-wrap: anywhere; /* ★liff_plan.html36：言葉の途中で折り返さない（区切りは<wbr>） */
     }
     .notice-box-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
 
@@ -418,7 +420,7 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金35</span></span>
+    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金36</span></span>
     <span class="topbar-sub">AiPost</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
@@ -585,12 +587,13 @@
   <!-- 注意事項 -->
   <div class="notice-box">
     <div class="notice-box-title">⚠️ ご利用期間とプラン変更について</div>
-    ご利用期間は、お申し込みの日から1か月です。予約枠は、ご利用期間ごとに数えます。<br>
-    FREEから有料プランへの変更は、すぐに切り替わり、ご利用期間はその日から始まります。<br>
-    それ以外の変更は、次回更新日に切り替わります。取り消しは、次回更新日の前日まで、この画面でできます。<br>
+    <!-- ★liff_plan.html36：上位プランへの変更はすぐ切り替わる。言葉の途中で折り返さないよう、区切りに<wbr>を入れた（この枠は keep-all） -->
+    ご利用期間は、<wbr>お申し込みの<wbr>日から<wbr>1か月です。<wbr>予約枠は、<wbr>ご利用期間ごとに<wbr>数えます。<br>
+    上位プランへの<wbr>変更は、<wbr>すぐに<wbr>切り替わり、<wbr>ご利用期間は<wbr>その日から<wbr>始まります。<br>
+    下位プランへの<wbr>変更は、<wbr>次回更新日に<wbr>切り替わります。<wbr>取り消しは、<wbr>次回更新日の<wbr>前日まで、<wbr>この画面で<wbr>できます。<br>
     <!-- ★liff_plan.html21：FREEへ変わる時はXの連携を外し、Xに投稿しないことを書いた。★liff_plan.html28：LITEも同じ -->
-    入っている予約は、そのまま投稿します。FREE・LITEに変わる時は、Xの連携を外し、その日からの予約はXに投稿しません。<br>
-    ※ デモのため、支払いは行いません。
+    入っている予約は、<wbr>そのまま<wbr>投稿します。<wbr><span class="nowrap">FREE・LITEに</span><wbr>変わる時は、<wbr>Xの連携を<wbr>外し、<wbr>その日からの<wbr>予約は<wbr>Xに<wbr>投稿しません。<br>
+    ※ デモのため、<wbr>支払いは<wbr>行いません。
   </div>
 
   <!-- ダウングレード確認モーダル -->
@@ -634,7 +637,7 @@
         <p style="margin-bottom:10px;">料金はすべて税別の月額です。ご利用期間ごとに、その初日にお支払いいただきます。</p>
 
         <div style="font-weight:700;margin-bottom:4px;">第8〜10条（プランの変更・退会・返金）</div>
-        <p style="margin-bottom:10px;">プランの変更は、次回更新日から適用します。FREEプランから有料プランへの変更は、すぐに適用し、ご利用期間はその日から始まります。退会は、ご利用期間の終了日に行います。日割りでの返金は行いません。</p>
+        <p style="margin-bottom:10px;">上位プランへの変更は、すぐに適用し、ご利用期間はその日から始まります。下位プランへの変更は、次回更新日から適用します。退会は、ご利用期間の終了日に行います。日割りでの返金は行いません。</p>
 
         <div style="font-weight:700;margin-bottom:4px;">第11条（投稿機能の利用）</div>
         <p style="margin-bottom:10px;">SNS側の仕様の変更や障害で投稿できなかった場合、当社は責任を負いません。</p>
@@ -755,7 +758,7 @@
   // ★liff_plan.html25：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
   // ★liff_plan.html26：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
   // ★liff_plan.html27：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-  const TRACE_SCREEN = 'プラン35';
+  const TRACE_SCREEN = 'プラン36';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -1118,16 +1121,12 @@
   }
   function openUpgrade(plan) {
     if (changing || withdrawRequested || !currentPlan) return;
-    // ★liff_plan.html11：FREE→有料は今日から。有料→有料は次の更新日から
-    let note;
-    // ★liff_plan.html12：文言の見直し
+    // ★liff_plan.html36：上位プランへの変更は、すぐ切り替わり、今日から新しいご利用期間（UserProfilegs_25）。
+    // 　下位プランへの変更を予定している時は、その予定は取り消される
     const today = new Date();
     const todayMd = (today.getMonth() + 1) + '月' + today.getDate() + '日';
-    if (currentPlan === 'FREE') {
-      note = plan + 'プランにすぐ切り替わります。ご利用期間は今日（' + todayMd + '）から始まります。';
-    } else {
-      note = scheduledNote(plan);
-    }
+    const note = plan + 'プランにすぐ切り替わります。ご利用期間は今日（' + todayMd + '）から始まります。' +
+      (nextPlan ? nextPlan + 'プランへの変更の予定は取り消します。' : '');
     openTermsModal(plan, 'up', '📄 プラン変更の確認', note, 'プランを変更する');
   }
   // ★liff_plan.html11：お試し中の人のお申し込み
