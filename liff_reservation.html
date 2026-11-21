@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更98 - まるっとポスト</title>
+<title>予約確認・変更99</title>
+  <!-- ★liff_reservation.html99（2026年11月22日）：ヘッダーの「まるっとポスト」を消した（名前が長く、画面の名前が2行に折れたため）。<title>からも名前を外した（LINEの上の帯で切れたため。Kenさん指摘） -->
   <!-- ★liff_reservation.html98（2026年11月22日）：文言の直し（文言の直し案_01）。名前を「まるっとポスト」にした・同意の窓の文・登録が見つからない時の文・「確かめる」を「確認」にそろえた・投稿削除の説明を1つに・「画像なしで投稿する」・賃金の説明・「投稿文の文字数」（Kenさん指示） -->
   <!-- ★liff_reservation.html97（2026年11月21日）：投稿履歴の件数の枠に、見られる期間「表示期間：YYYY年M月〜YYYY年M月（今月と過去12か月）」を足した（Kenさん指示） -->
   <!-- ★liff_reservation.html96（2026年11月20日）：投稿削除の「すべて選ぶ」は一覧を下に送ると見えなくなるため、画面の下の帯に移し、「全選択」「全解除」「削除（N件）」の3つを並べた。カレンダーでは、下の「全選択」が押した日の投稿を選ぶ（日のボタンはやめた）。予約タブのまとめてキャンセルも同じ帯（全選択・全解除・キャンセル（N件））にし、ベルのお知らせも「全選択」「全解除」「削除（N件）」にそろえた（Kenさん指示：ボタンの名前を統一） -->
@@ -1080,8 +1081,8 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更98</span></span>
-  <span class="header-sub">まるっとポスト</span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更99</span></span>
+  <span class="header-sub"></span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
   <button type="button" class="header-refresh" onclick="if (typeof clearPostHistoryCache === 'function') clearPostHistoryCache(); aipostRefreshAll(false)">🔄 更新</button>
@@ -2211,7 +2212,7 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   // 　本文の入力欄ではなく、投稿文作成195 と同じ人材募集の入力欄（今の投稿文から読み取って最初から入れる）を出し、決まった形の投稿文を作り直して保存する。
   // 　登録している店名・所在地・連絡先は、開いた時に getUserProfile で読み直す（設定で変えていれば、新しい登録で作り直す）。読み取れない投稿文の予約は直せない。
   // 　92 の「人材募集の投稿文は直せません」の案内は外した。GASの投稿予約gs_41 も、人材募集の予約の本文が決まった形かを確かめる。
-  const TRACE_SCREEN = '予約確認98';
+  const TRACE_SCREEN = '予約確認99';
 
   function traceLog(msg) {
     try {

@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成200 - まるっとポスト</title>
+<title>投稿文作成201</title>
+  <!-- ★liff_textgen.html201（2026年11月22日）：ヘッダーの「まるっとポスト」を消した（名前が長く、画面の名前が2行に折れたため）。<title>からも名前を外した（LINEの上の帯で切れたため。Kenさん指摘） -->
   <!-- ★liff_textgen.html200（2026年11月22日）：文言の直し（文言の直し案_01）。名前を「まるっとポスト」にした・同意の窓の文・登録が見つからない時の文・「確かめる」を「確認」にそろえた・お試しの案内・業種の案内・人材募集の説明・注意の文・ガイドの文・予約できる日を日付で出す（Kenさん指示） -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -478,7 +479,7 @@
   /* ★liff_textgen.html154：案内の文は、決めた区切り（<wbr>）でだけ折り返す。入りきらない時だけ、やむを得ず途中で折る */
   .trial-card, .unregistered-card { word-break: keep-all; overflow-wrap: anywhere; }
   /* ★liff_textgen.html190：業種が未登録の時の案内（注意ではないため、お試しの案内と同じ緑） */
-  .genre-card { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 12px; color: #1b5e20; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+  .genre-card { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 12px; color: #1b5e20; line-height: 1.7; } /* ★liff_textgen.html201：ふつうの折り返しにした（長い文で行の右が空くため） */
   .unregistered-card { background: #fff3e0; border: 1px solid #ffcc80; border-radius: 10px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #e65100; line-height: 1.7; }
 
   /* 予約確認モーダルの内容 */
@@ -962,8 +963,8 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成200</span></span>
-  <span class="header-sub">まるっとポスト</span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成201</span></span>
+  <span class="header-sub"></span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
@@ -1110,7 +1111,7 @@
     <button type="button" class="modal-btn modal-btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
   </div>
   <!-- ★liff_textgen.html190：業種が未登録の時だけ出す案内（業種が無いと、AIにお店の情報が伝わらないため） -->
-  <div class="genre-card" id="genre-card" style="display:none;"><span id="genre-card-none">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種の大分類と<wbr>小分類を<wbr>登録すると、<wbr>お店に<wbr>合った投稿文を<wbr>作成できます。</span><span id="genre-card-major-only" style="display:none;">業種の<wbr>小分類が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>小分類も<wbr>登録すると、<wbr>よりお店に<wbr>合った投稿文を<wbr>作成できます。</span></div>
+  <div class="genre-card" id="genre-card" style="display:none;"><span id="genre-card-none">業種が未登録です。設定画面の「登録」タブで大分類と小分類を登録すると、お店に合った投稿文になります。</span><span id="genre-card-major-only" style="display:none;">業種の小分類が未登録です。設定画面の「登録」タブで登録すると、よりお店に合った投稿文になります。</span></div>
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
     登録情報が<wbr>見つかりません。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用<wbr>いただけます。
   </div>
@@ -2082,7 +2083,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html195：目的を先に選ぶ形にした（①SNS→②目的→③作り方…。人材募集の時は③登録している情報→④求人の内容→⑤投稿文を確認する→⑥画像→⑦投稿日）。
 // 　人材募集はAIを使わず、入力した内容を決まった形に並べる（6つの項目は必須。店名・所在地・求人の連絡先は設定画面の登録を使う。ハッシュタグなし。
 // 　自由に入れる欄は、残りの字数までしか入らない）。ほかの目的で求人らしい言葉がある時は、「内容を確認する」で注意の窓を出す（Kenさん承認：画面見本_人材募集_01）。
-const TRACE_SCREEN = '投稿文作成200';
+const TRACE_SCREEN = '投稿文作成201';
 
 function traceLog(msg) {
   try {

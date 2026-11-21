@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析83 - まるっとポスト</title>
+<title>分析84</title>
+  <!-- ★liff_analytics.html84（2026年11月22日）：ヘッダーの「まるっとポスト」を消した（名前が長く、画面の名前が2行に折れたため）。<title>からも名前を外した（LINEの上の帯で切れたため。Kenさん指摘） -->
   <!-- ★liff_analytics.html83（2026年11月22日）：文言の直し（文言の直し案_01）。名前を「まるっとポスト」にした・同意の窓の文・登録が見つからない時の文・「確かめる」を「確認」にそろえた・注意書き・ネガティブなコメントの文・「ご利用期間の予約」・ガイドの文（Kenさん指示） -->
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -411,8 +412,8 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析83</span></span>
-  <span class="header-sub">まるっとポスト</span>
+  <span class="header-logo"><span class="nowrap">分析84</span></span>
+  <span class="header-sub"></span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
@@ -1918,7 +1919,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析83';
+const TRACE_SCREEN = '分析84';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
