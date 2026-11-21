@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>プラン・料金37 - AiPost</title>
+  <title>プラン・料金38 - まるっとポスト</title>
+  <!-- ★liff_plan.html38（2026年11月22日）：文言の直し（文言の直し案_01）。名前を「まるっとポスト」にした・同意の窓の文・登録が見つからない時の文・「確かめる」を「確認」にそろえた・お試しの案内・表の下の注意・ご利用期間とプラン変更の説明・下位プランへの変更の窓のボタン「変更する」・利用規約の抜粋（第8〜10条）（Kenさん指示） -->
   <!-- ★liff_plan.html37（2026年11月21日）：比較表に「月ごとのレポート」（PRO）の行を足した（照合で見つけた抜け。Kenさん承認） -->
   <!-- ★liff_plan.html36（2026年11月21日）：上位プランへの変更はすぐ切り替わるようにした（Kenさん決定。UserProfilegs_25）。説明の文・利用規約の抜粋・確認の窓の文を直した。下位プランへの変更は今までどおり次回更新日から -->
   <!-- ★liff_plan.html34（2026年11月18日）：表の下の注意・ご利用期間の説明・利用規約の抜粋を、利用規約11に合わせて短くした（「1か月ごと」「実質予約枠」の言い方をやめた。条の番号を直した。Kenさん指示） -->
@@ -366,7 +367,7 @@
     document.getElementById('maint-icon').textContent = '🚫';
     document.getElementById('maint-title').textContent = 'ご利用を停止しています';
     var box = document.getElementById('maint-msg');
-    box.innerHTML = wrapHtml(msg || 'AiPostのご利用を停止しました。');
+    box.innerHTML = wrapHtml(msg || 'まるっとポストのご利用を停止しました。');
     box.style.wordBreak = 'keep-all';
     document.getElementById('maint-btn').style.display = 'none';
     document.getElementById('maint-overlay').classList.add('open');
@@ -421,8 +422,8 @@
 
   <div class="topbar">
     <span style="font-size:20px;">💎</span>
-    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金37</span></span>
-    <span class="topbar-sub">AiPost</span>
+    <span class="topbar-logo"><span class="nowrap">プラン・</span><span class="nowrap">料金38</span></span>
+    <span class="topbar-sub">まるっとポスト</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
     <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
@@ -562,8 +563,8 @@
   <div class="period-card trial" id="trial-card">
     <div class="period-card-title">🌱 お試し中です</div>
     <!-- ★liff_plan.html28：画面の文を短くした（Kenさん指摘：回りくどい） -->
-    AIで投稿文を作れます。予約・SNS連携・分析は、プランのお申し込み後に使えます。<br>
-    下の表の「申し込む」からプランを選んでください。
+    AIで投稿文を作成できます。予約・SNS連携・分析は、プランのお申し込み後にご利用いただけます。<br>
+    下の表の「申し込む」から、プランを選んでください。無料のFREEプランもあります。
   </div>
 
   <!-- ★プラン名の行・機能の表・ボタンの行は、1つの表（JavaScriptで作る。下の PLAN_FEATURES が元） -->
@@ -576,24 +577,24 @@
   </table>
   <div class="btn-status" id="btn-status"></div>
   <div class="table-notes" style="word-break:keep-all;overflow-wrap:anywhere;"><!-- ★liff_plan.html31：言葉の途中で改行しない -->
-    ※ 1回の<wbr>予約で、<wbr>選んだSNSに<wbr>まとめて<wbr>投稿できます（予約枠は<wbr>1件）。<br>
+    ※ 予約1件で、<wbr>選んだSNSにまとめて投稿できます。<br>
     <!-- ★liff_plan.html28：LITEプランもXは不可 -->
     ※ FREE・LITEでは、<wbr>Xに<wbr>投稿・連携できません。<br>
-    ※ 投稿履歴は<wbr>今月と<wbr>過去12か月分を<wbr>残します。FREEは<wbr>投稿履歴・投稿削除がありません。<br>
+    ※ 投稿履歴は、<wbr>今月と<wbr>過去12か月分を<wbr>保存します。<wbr>FREEでは、<wbr>投稿履歴と<wbr>投稿削除は<wbr>使えません。<br>
     <!-- ★liff_plan.html29：3・6・24時間後にした（PROの取得の時間。Kenさん決定） -->
     <!-- ★liff_plan.html31：コメントの新しい決まり（STANDARD以上・投稿から3日間・上限は全SNS共通） -->
-    ※ コメントは、<wbr>投稿から<wbr>3日間<wbr>AIが<wbr>確認し、<wbr>ネガティブな<wbr>コメントが<wbr>あれば<wbr>通知します。<wbr>上限を<wbr>超えた分は、<wbr>件数だけ<wbr>通知します。
+    ※ STANDARD以上は、<wbr>投稿後3日間、<wbr>AIが<wbr>コメントを<wbr>確認します。<wbr>ネガティブなコメントがあれば通知します。<wbr>上限を<wbr>超えた分は、<wbr>件数だけ通知します。
   </div>
 
   <!-- 注意事項 -->
   <div class="notice-box">
     <div class="notice-box-title">⚠️ ご利用期間とプラン変更について</div>
     <!-- ★liff_plan.html36：上位プランへの変更はすぐ切り替わる。言葉の途中で折り返さないよう、区切りに<wbr>を入れた（この枠は keep-all） -->
-    ご利用期間は、<wbr>お申し込みの<wbr>日から<wbr>1か月です。<wbr>予約枠は、<wbr>ご利用期間ごとに<wbr>数えます。<br>
-    上位プランへの<wbr>変更は、<wbr>すぐに<wbr>切り替わり、<wbr>ご利用期間は<wbr>その日から<wbr>始まります。<br>
-    下位プランへの<wbr>変更は、<wbr>次回更新日に<wbr>切り替わります。<wbr>取り消しは、<wbr>次回更新日の<wbr>前日まで、<wbr>この画面で<wbr>できます。<br>
+    ご利用期間は、<wbr>お申し込み日から1か月です。<wbr>予約枠は、<wbr>ご利用期間ごとに<wbr>数えます。<br>
+    上位プランへの変更はすぐに<wbr>適用され、<wbr>ご利用期間もその日から始まります。<br>
+    下位プランへの変更は、<wbr>次回更新日に<wbr>適用されます。<wbr>変更は、<wbr>次回更新日の前日まで、<wbr>この画面で<wbr>取り消せます。<br>
     <!-- ★liff_plan.html21：FREEへ変わる時はXの連携を外し、Xに投稿しないことを書いた。★liff_plan.html28：LITEも同じ -->
-    入っている予約は、<wbr>そのまま<wbr>投稿します。<wbr><span class="nowrap">FREE・LITEに</span><wbr>変わる時は、<wbr>Xの連携を<wbr>外し、<wbr>その日からの<wbr>予約は<wbr>Xに<wbr>投稿しません。<br>
+    予約済みの<wbr>投稿は、<wbr>そのまま<wbr>投稿します。<wbr><span class="nowrap">FREE・LITEに</span><wbr>変わる場合は、<wbr>Xの連携を<wbr>解除し、<wbr>切り替わる日からの<wbr>予約は<wbr>Xに<wbr>投稿しません。<br>
     ※ デモのため、<wbr>支払いは<wbr>行いません。
   </div>
 
@@ -614,7 +615,7 @@
       <div class="modal-note" id="down-note"></div>
       <div class="modal-ask">ダウングレードしますか？</div>
       <div class="modal-error" id="down-error"></div>
-      <button class="modal-btn modal-btn-exec" id="down-exec-btn" onclick="executePlanChange('down')">申し込む</button>
+      <button class="modal-btn modal-btn-exec" id="down-exec-btn" onclick="executePlanChange('down')">変更する</button>
       <button class="modal-btn modal-btn-cancel" id="down-cancel-btn" onclick="closePlanModals()">やめる</button>
     </div>
   </div>
@@ -632,13 +633,13 @@
       <div class="modal-note" id="up-note" style="font-weight:700;color:var(--text);"></div>
 
       <div style="height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;font-size:12px;line-height:1.9;color:var(--text);">
-        <div style="font-weight:700;font-size:13px;color:var(--primary);margin-bottom:10px;">AiPost 利用規約（抜粋）</div>
+        <div style="font-weight:700;font-size:13px;color:var(--primary);margin-bottom:10px;">まるっとポスト 利用規約（抜粋）</div>
 
         <div style="font-weight:700;margin-bottom:4px;">第5条（プランと料金）</div><!-- ★liff_plan.html21：条の番号を利用規約8に合わせた -->
         <p style="margin-bottom:10px;">料金はすべて税別の月額です。ご利用期間ごとに、その初日にお支払いいただきます。</p>
 
         <div style="font-weight:700;margin-bottom:4px;">第8〜10条（プランの変更・退会・返金）</div>
-        <p style="margin-bottom:10px;">上位プランへの変更は、すぐに適用し、ご利用期間はその日から始まります。下位プランへの変更は、次回更新日から適用します。退会は、ご利用期間の終了日に行います。日割りでの返金は行いません。</p>
+        <p style="margin-bottom:10px;">上位プランへの変更はすぐに適用し、ご利用期間はその日から始まります。下位プランへの変更は、次回更新日から適用します。退会は、ご利用期間の終了日に行います。日割りでの返金はしません。</p>
 
         <div style="font-weight:700;margin-bottom:4px;">第11条（投稿機能の利用）</div>
         <p style="margin-bottom:10px;">SNS側の仕様の変更や障害で投稿できなかった場合、当社は責任を負いません。</p>
@@ -650,14 +651,14 @@
         <p style="margin-bottom:10px;">各SNSの利用規約に違反する投稿、XへのURL付き投稿の迂回行為、そのほか当社が不適切と判断する行為を禁止します。</p>
 
         <div style="text-align:center;color:var(--text-sub);font-size:11px;padding-top:8px;">
-          ▼ 全文は「AiPostとは」の画面の利用規約・プライバシーポリシーでご確認ください。
+          ▼ 全文は、「まるっとポストとは」の画面でご確認いただけます。
         </div>
       </div>
 
       <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:12px;padding:12px;background:#f8f9fa;border-radius:8px;border:1px solid var(--border);">
         <input type="checkbox" id="terms-agree-check" onchange="toggleAgreeBtn()"
           style="width:20px;height:20px;margin-top:2px;flex-shrink:0;accent-color:var(--primary);">
-        <span style="font-size:13px;color:var(--text);line-height:1.8;">利用規約とプライバシーポリシーの内容を読み、同意します。</span>
+        <span style="font-size:13px;color:var(--text);line-height:1.8;">利用規約とプライバシーポリシーに同意します。</span>
       </label>
 
       <div class="modal-error" id="up-error"></div>
@@ -759,7 +760,7 @@
   // ★liff_plan.html25：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
   // ★liff_plan.html26：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
   // ★liff_plan.html27：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-  const TRACE_SCREEN = 'プラン37';
+  const TRACE_SCREEN = 'プラン38';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -976,7 +977,7 @@
     document.getElementById('period-line').innerHTML = periodInfo
       ? '<div class="period-row"><span class="period-row-label">ご利用期間</span><span class="period-row-value">' + rangeHtml(periodInfo.start, periodInfo.end) + '</span></div>' +
         (nextStartFull ? '<div class="period-row"><span class="period-row-label">次回更新日</span><span class="period-row-value nowrap">' + escapeHtml(nextStartFull) + '</span></div>' : '')
-      : escapeHtml('ご利用期間を確かめられませんでした。「🔄 更新」でもう一度お試しください。');
+      : escapeHtml('ご利用期間を確認できませんでした。「🔄 更新」でもう一度お試しください。');
     const next = document.getElementById('period-next');
     if (nextPlan && PLANS.indexOf(nextPlan) !== -1) {
       document.getElementById('period-next-text').textContent =
@@ -1192,7 +1193,7 @@
     document.getElementById('down-remove-items').innerHTML = removeItems.map(escapeHtml).join('<br>');
     document.getElementById('down-note').textContent = scheduledNote(plan) +
       (loseX ? '入っている予約は、X以外にそのまま投稿します。' : '入っている予約は、そのまま投稿します。') +
-      (fromDay ? fromDay + 'から' : '次回更新日から') + 'の予約枠は' + quotaText(plan) + 'です。切り替え3日前に通知します。';
+      (fromDay ? fromDay + 'から' : '次回更新日から') + 'の予約枠は' + quotaText(plan) + 'です。切り替わる3日前に、お知らせでお伝えします。';
     document.getElementById('down-error').textContent = '';
     document.getElementById('down-exec-btn').disabled = false;
     document.getElementById('downgrade-modal').classList.add('open');
@@ -1237,8 +1238,8 @@
       }
     } catch (err) {
       message = isApply
-        ? '通信エラーです。お申し込みできたかは「🔄 更新」で確かめてください。'
-        : '通信エラーです。プランが変わったかは「🔄 更新」で確かめてください。';
+        ? '通信エラーです。お申し込みできたかは「🔄 更新」で確認してください。'
+        : '通信エラーです。プランが変わったかは「🔄 更新」で確認してください。';
       traceLog((isApply ? 'お申し込み' : 'プラン変更') + ' 通信エラー ' + String(err && err.message));
     } finally {
       changing = false;
@@ -1310,7 +1311,7 @@
         message = String((result && result.error) || '取り消しができませんでした。もう一度お試しください。');
       }
     } catch (err) {
-      message = '通信エラーです。取り消せたかは「🔄 更新」で確かめてください。';
+      message = '通信エラーです。取り消せたかは「🔄 更新」で確認してください。';
       traceLog('プラン変更の予定の取り消し 通信エラー ' + String(err && err.message));
     } finally {
       changing = false;
@@ -1742,8 +1743,8 @@
 <div class="consent-overlay" id="consent-overlay">
   <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
     <div class="consent-title">ご利用の前に</div>
-    <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
-    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
+    <div class="consent-note">まるっとポストをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
+    <div class="consent-box">投稿文の作成のため、<wbr>入力内容と<wbr>店舗情報を<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送信します。<wbr>また、<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送信します。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
     <div class="consent-links">
       <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
       <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを読む</button>

@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>投稿文作成199 - AiPost</title>
+<title>投稿文作成200 - まるっとポスト</title>
+  <!-- ★liff_textgen.html200（2026年11月22日）：文言の直し（文言の直し案_01）。名前を「まるっとポスト」にした・同意の窓の文・登録が見つからない時の文・「確かめる」を「確認」にそろえた・お試しの案内・業種の案内・人材募集の説明・注意の文・ガイドの文・予約できる日を日付で出す（Kenさん指示） -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -907,7 +908,7 @@
     document.getElementById('maint-icon').textContent = '🚫';
     document.getElementById('maint-title').textContent = 'ご利用を停止しています';
     var box = document.getElementById('maint-msg');
-    box.innerHTML = wrapHtml(msg || 'AiPostのご利用を停止しました。');
+    box.innerHTML = wrapHtml(msg || 'まるっとポストのご利用を停止しました。');
     box.style.wordBreak = 'keep-all';
     document.getElementById('maint-btn').style.display = 'none';
     document.getElementById('maint-overlay').classList.add('open');
@@ -961,8 +962,8 @@
 
 <div class="header">
   <span style="font-size:20px;">📝</span>
-  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成199</span></span>
-  <span class="header-sub">AiPost</span>
+  <span class="header-logo"><span class="nowrap">投稿文</span><span class="nowrap">作成200</span></span>
+  <span class="header-sub">まるっとポスト</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(typeof textgenHasInput === 'function' ? textgenHasInput() : true)">🔄 更新</button>
@@ -1105,13 +1106,13 @@
 
   <!-- ★liff_textgen.html152：お試し中（プラン未申し込み）の案内・登録が見つからない時の案内 -->
   <div class="trial-card" id="trial-card" style="display:none;">
-    お試し中は、<wbr>投稿文と<wbr>ハッシュタグの<wbr>作成を<wbr>1日<span id="trial-daily-limit">20</span>回まで<wbr>ご利用いただけます。<wbr>SNSへの<wbr>予約投稿は、<wbr>プランを<wbr>お申し込みいただくと<wbr>ご利用いただけます。
+    お試し中は、<wbr>投稿文と<wbr>ハッシュタグを<wbr>1日<span id="trial-daily-limit">20</span>回まで<wbr>作成できます。<wbr>SNSへの予約投稿は、<wbr>プランのお申し込み後にご利用いただけます。
     <button type="button" class="modal-btn modal-btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
   </div>
   <!-- ★liff_textgen.html190：業種が未登録の時だけ出す案内（業種が無いと、AIにお店の情報が伝わらないため） -->
-  <div class="genre-card" id="genre-card" style="display:none;"><span id="genre-card-none">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種<wbr>（大分類と<wbr>小分類）を<wbr>登録すると、<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</span><span id="genre-card-major-only" style="display:none;">業種の<wbr>小分類が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>小分類も<wbr>登録すると、<wbr>より<wbr>お店に<wbr>合った<wbr>文に<wbr>なります。</span></div>
+  <div class="genre-card" id="genre-card" style="display:none;"><span id="genre-card-none">業種が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>業種の大分類と<wbr>小分類を<wbr>登録すると、<wbr>お店に<wbr>合った投稿文を<wbr>作成できます。</span><span id="genre-card-major-only" style="display:none;">業種の<wbr>小分類が<wbr>未登録です。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>小分類も<wbr>登録すると、<wbr>よりお店に<wbr>合った投稿文を<wbr>作成できます。</span></div>
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
-    ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
+    登録情報が<wbr>見つかりません。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用<wbr>いただけます。
   </div>
 
   <!-- ① 投稿先SNS選択 -->
@@ -1144,7 +1145,7 @@
   <div class="card" id="card-purpose">
     <div class="card-title">② 目的を<wbr>選ぶ</div>
     <div class="mk-radio" id="mk-purpose-list"><label><input type="radio" name="mk-purpose" value="product" onclick="onPurposeClick(this)">商品・メニューの紹介</label><label><input type="radio" name="mk-purpose" value="notice" onclick="onPurposeClick(this)">お知らせ（営業日・休み・イベント）</label><label><input type="radio" name="mk-purpose" value="deal" onclick="onPurposeClick(this)">お得な情報</label><label><input type="radio" name="mk-purpose" value="recruit" onclick="onPurposeClick(this)">人材募集</label><label><input type="radio" name="mk-purpose" value="daily" onclick="onPurposeClick(this)">お店の様子・日常</label><label><input type="radio" name="mk-purpose" value="other" onclick="onPurposeClick(this)">その他</label></div>
-    <div class="rc-note mk-off" id="rc-purpose-note">人材募集は、<wbr>AIを<wbr>使わずに、<wbr>入力した<wbr>内容を<wbr>決まった<wbr>形で<wbr>並べます。<wbr>ハッシュタグは<wbr>付けません。</div>
+    <div class="rc-note mk-off" id="rc-purpose-note">人材募集は<wbr>AIを<wbr>使わず、<wbr>入力した内容を<wbr>決まった形に<wbr>並べます。<wbr>ハッシュタグは<wbr>付きません。</div>
   </div>
 
   <!-- ★liff_textgen.html180：作り方を選ぶ（AIで作る／自分で書く）。★liff_textgen.html195：③にした。人材募集の時は出さない -->
@@ -1160,7 +1161,7 @@
     <div class="rc-row"><span class="rc-k">店名・社名</span><span class="rc-v" id="rc-shop">確認中…</span></div>
     <div class="rc-row"><span class="rc-k">所在地</span><span class="rc-v" id="rc-addr">確認中…</span></div>
     <div class="rc-row"><span class="rc-k">連絡先</span><span class="rc-v" id="rc-contact">確認中…</span></div>
-    <div class="rc-note" id="rc-reg-ok">投稿文に<wbr>そのまま<wbr>載ります。<wbr>変える時は<wbr>設定画面で<wbr>変更してください。</div>
+    <div class="rc-note" id="rc-reg-ok">投稿文に<wbr>そのまま<wbr>載ります。<wbr>変更は、<wbr>設定画面で<wbr>行ってください。</div>
     <div class="rc-ng mk-off" id="rc-reg-ng"><b id="rc-reg-ng-title">⚠️ 人材募集を<wbr>作るには、<wbr>登録が<wbr>必要です</b><span id="rc-reg-ng-text">求人の<wbr>投稿には、<wbr>店名・社名、<wbr>所在地、<wbr>連絡先を<wbr>載せる<wbr>必要が<wbr>あります。<wbr>設定画面で<wbr>登録してください。</span></div>
     <button class="rc-set" type="button" id="rc-set-btn" onclick="navigateTo('settings')">⚙️ 設定画面で<wbr>変更する</button>
   </div>
@@ -1168,7 +1169,7 @@
   <!-- ★liff_textgen.html195：人材募集 ④ 求人の内容（6つの項目は必須。自由に入れる欄は、残りの字数までしか入らない） -->
   <div class="card mk-off" id="card-recruit">
     <div class="card-title">④ 求人の<wbr>内容</div>
-    <div class="rc-meter" id="rc-meter"><div class="rc-meter-t"><span>投稿文の<wbr>字数</span><span><b id="rc-used">0</b>／140字<wbr>（<span id="rc-rest-label">残り</span><b id="rc-rest">140</b>字）</span></div><div class="rc-bar"><i id="rc-bar"></i></div></div>
+    <div class="rc-meter" id="rc-meter"><div class="rc-meter-t"><span>投稿文の文字数</span><span><b id="rc-used">0</b>／140字<wbr>（<span id="rc-rest-label">残り</span><b id="rc-rest">140</b>字）</span></div><div class="rc-bar"><i id="rc-bar"></i></div></div>
 
     <div class="mk-lbl">仕事の内容<span class="mk-tag">（必須）</span></div>
     <input type="text" class="mk-in" id="rc-job" placeholder="例：賃貸物件の案内・契約の手続き" oninput="rcOnInput(event)" oncompositionend="rcOnInput(event)">
@@ -1179,12 +1180,12 @@
 
     <div class="rc-blk"><div class="mk-lbl">賃金<span class="mk-tag">（必須）</span></div>
     <div class="rc-line"><select class="mk-in rc-sel" id="rc-wage-type" onchange="rcOnWageType()"><option value="時給">時給</option><option value="日給">日給</option><option value="月給">月給</option><option value="年収">年収</option></select><input type="text" class="mk-in rc-num" id="rc-wage-min" inputmode="decimal" oninput="rcOnWage(this)"><span id="rc-unit-1">円</span><span>〜</span><input type="text" class="mk-in rc-num" id="rc-wage-max" inputmode="decimal" oninput="rcOnWage(this)"><span id="rc-unit-2">円</span></div>
-    <div class="rc-note" style="margin-top:3px;">時給・<wbr>日給は<wbr>円、<wbr>月給・<wbr>年収は<wbr>万円で<wbr>入力します<wbr>（数字のみ）。<wbr>「〜」の<wbr>右は<wbr>任意です。</div></div>
+    <div class="rc-note" style="margin-top:3px;">時給・日給は<wbr>円、<wbr>月給・年収は<wbr>万円で<wbr>入力します。<wbr>数字だけを<wbr>入力してください。<wbr>「〜」の右は<wbr>空欄でもかまいません。</div></div>
 
     <div class="rc-blk"><div class="mk-lbl">働く場所<span class="mk-tag">（必須）</span></div>
     <label class="rc-check"><input type="checkbox" id="rc-place-same" checked onchange="rcOnPlaceSame()">所在地と<wbr>同じ</label>
     <div class="mk-off" id="rc-place-wrap" style="margin-top:6px;"><input type="text" class="mk-in" id="rc-place" placeholder="例：大阪市北区梅田2-3-4" oninput="rcOnInput(event)" oncompositionend="rcOnInput(event)"><div class="rc-left">あと<b class="rc-rest2">140</b>字まで<wbr>入力できます</div></div>
-    <div class="rc-note" style="margin-top:3px;" id="rc-place-note">違う時は、<wbr>チェックを<wbr>外すと<wbr>入力欄が<wbr>出ます。</div></div>
+    <div class="rc-note" style="margin-top:3px;" id="rc-place-note">所在地と<wbr>違う場合は、<wbr>チェックを<wbr>外すと<wbr>入力欄が<wbr>表示されます。</div></div>
 
     <div class="rc-blk"><div class="mk-lbl">勤務時間<span class="mk-tag">（任意）</span></div>
     <div class="rc-line"><select class="mk-in rc-sel" id="rc-time-from" onchange="rcUpdate()"></select><span>〜</span><select class="mk-in rc-sel" id="rc-time-to" onchange="rcUpdate()"></select></div>
@@ -1258,15 +1259,15 @@
   <!-- ローディング -->
   <div class="loading" id="loading">
     <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-    <div class="loading-text">AIが<wbr>投稿文を<wbr>考えています…<br>少々<wbr>お待ちください。</div>
+    <div class="loading-text">AIが<wbr>投稿文を<wbr>作成しています…<br>少々<wbr>お待ちください。</div>
   </div>
 
   <!-- ⑥ 投稿文を確認・編集する（★liff_textgen.html137：それまでの⑦） -->
   <div class="card" id="card-post">
     <div class="card-title"><span id="step-no-post">⑥</span> <span id="step-name-post">投稿文を<wbr>確認・編集する</span></div>
-    <div class="rc-note mk-off" id="rc-post-note" style="margin:0 0 8px;">人材募集の<wbr>投稿文は、<wbr>ここでは<wbr>直せません。<wbr>直す時は、<wbr>③④を<wbr>直してください。<wbr>どのSNSにも<wbr>同じ文が<wbr>載ります。</div>
+    <div class="rc-note mk-off" id="rc-post-note" style="margin:0 0 8px;">人材募集の投稿文は、<wbr>ここでは<wbr>編集できません。<wbr>③④の内容を<wbr>修正してください。<wbr>どのSNSにも<wbr>同じ文が<wbr>載ります。</div>
     <!-- ★liff_textgen.html136：投稿文の中のハッシュタグの注意（予約の時に止めるため、先に知らせる。Kenさん指示） -->
-    <div class="caution-box" id="post-hashtag-caution" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑧の<wbr>欄に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
+    <div class="caution-box" id="post-hashtag-caution" style="margin-bottom:8px;">⚠️ ハッシュタグ<wbr>（#）は<wbr>投稿文に<wbr>入れず、<wbr>⑧に<wbr>入力してください。<wbr>投稿文に<wbr>入れると<wbr>予約できません。</div>
     <div class="genre-notice" id="genre-notice">📍 登録業種<wbr>（<span id="genre-label"></span>）を<wbr>もとに<wbr>投稿文を<wbr>作成しました。</div>
     <!-- ★liff_textgen.html164：利用者の入力は、上限を超える時は受け付けない（どこに入力しても）。そのため入力の知らせ（event）を渡す
          ★liff_textgen.html177：上限を超えても入力できるようにした（超えている間は字数を赤で出す。予約の時に止める）。「入力できません」の知らせは消した -->
@@ -1281,7 +1282,7 @@
     <div class="post-total" id="post-total" style="display:none;"></div>
     <!-- ★liff_textgen.html136：「＋ 🏠店名を入れる」「＋ 📍所在地を入れる」ボタンは、⑦「投稿文の最後に店名・所在地を付ける」にまとめて外した -->
     <div class="url-warning" id="url-warning">
-      🔗 <strong>投稿文に<wbr>URLが<wbr>含まれています。</strong><br>当サービスでは<wbr>Xへの<wbr>URL付き投稿に<wbr>対応していないため、<wbr>Xは<wbr>自動的に<wbr>除外されます。
+      🔗 <strong>投稿文に<wbr>URLが<wbr>含まれています。</strong><br>当サービスは<wbr>XへのURL付き投稿に<wbr>対応していないため、<wbr>Xは<wbr>自動的に<wbr>除外されます。
     </div>
     <div class="x-warning" id="x-warning"></div>
   </div>
@@ -1300,7 +1301,7 @@
         <div class="sns-checkbox">✓</div>
       </div>
     </div>
-    <div class="caution-box" style="margin-top:10px;">⚠️ 付けて<wbr>文字数の<wbr>上限を<wbr>超えた<wbr>時は、<wbr>投稿文を<wbr>短くしてください。<wbr>超えたままでは<wbr>予約できません。</div>
+    <div class="caution-box" style="margin-top:10px;">⚠️ 付けた後に<wbr>文字数の上限を<wbr>超えた場合は、<wbr>投稿文を<wbr>短くしてください。<wbr>上限を<wbr>超えたままでは<wbr>予約できません。</div>
   </div>
 
 
@@ -1309,9 +1310,9 @@
   <div class="card" id="card-hashtag">
     <div class="card-title">⑧ ハッシュタグ<button type="button" class="mk-help-btn" id="hashtag-help-btn" onclick="toggleHashtagHelp()" aria-label="ハッシュタグの説明">？</button></div>
     <div class="mk-help-box mk-off" id="hashtag-help">
-    <p class="hashtag-desc">AIで<wbr>作成した<wbr>ハッシュタグが<wbr>表示されます。<wbr>投稿文と<wbr>同様、<wbr>自由に<wbr>編集できます。<wbr>チェックした<wbr>SNSにだけ付与されます。<wbr>「#」は<wbr>自動で<wbr>付きます。</p>
+    <p class="hashtag-desc">AIが<wbr>作成したハッシュタグが<wbr>表示されます。<wbr>投稿文と<wbr>同じように<wbr>編集できます。<wbr>チェックした<wbr>SNSにだけ付与されます。<wbr>「#」は<wbr>自動で<wbr>付きます。</p>
     <!-- ★liff_textgen.html164：ハッシュタグの数え方の説明（Kenさん指摘） -->
-    <p class="hashtag-desc" style="margin-top:-4px;">文字数は、<wbr>「#」と<wbr>タグの間の<wbr>空白、<wbr>投稿文との<wbr>間の<wbr>改行も<wbr>数えます<wbr>（半角は<wbr>0.5字）。<wbr>例：<wbr>「カフェ」（3字）を<wbr>1つ<wbr>付けると<wbr>約5字、<wbr>2つ目からは<wbr>1つにつき<wbr>「タグの<wbr>字数＋1字」<wbr>増えます。</p>
+    <p class="hashtag-desc" style="margin-top:-4px;">文字数には、<wbr>「#」と<wbr>タグの間の空白、<wbr>投稿文との間の改行も<wbr>含まれます<wbr>（半角は<wbr>0.5字）。<wbr>例：<wbr>「カフェ」（3字）を<wbr>1つ<wbr>付けると<wbr>約5字、<wbr>2つ目からは<wbr>1つにつき<wbr>「タグの<wbr>字数＋1字」<wbr>増えます。</p>
     </div>
     <div class="hashtag-x-status" id="hashtag-x-status"></div>
     <div class="hashtag-header">
@@ -1367,7 +1368,7 @@
       <div class="image-section-title"><span id="step-no-image">⑨</span> 画像アップロード</div>
     </div>
     <!-- ★liff_textgen.html167：作成に使った写真と、今の画像が違う時の案内（refreshPhotoMismatchNote()） -->
-    <p class="photo-mismatch-note" id="photo-mismatch-note" style="display:none;">投稿文は、<wbr>前の<wbr>写真を<wbr>もとに<wbr>作っています。<wbr>合わない<wbr>時は、<wbr>投稿文を<wbr>直すか<wbr>作り直して<wbr>ください。</p>
+    <p class="photo-mismatch-note" id="photo-mismatch-note" style="display:none;">投稿文は、<wbr>前に<wbr>選んだ写真をもとに<wbr>作成しています。<wbr>内容が<wbr>合わない場合は、<wbr>投稿文を<wbr>修正するか、<wbr>作り直してください。</p>
 
     <!-- 選択中プレビューバー -->
     <div class="img-selected-bar" id="img-selected-bar" style="display:none;">
@@ -1454,7 +1455,7 @@
         <option value="18">18時ごろ</option><option value="19">19時ごろ</option><option value="20">20時ごろ</option>
         <option value="21">21時ごろ</option><option value="22">22時ごろ</option><option value="23">23時ごろ</option>
       </select>
-      <p id="time-past-hint" style="font-size:11px;color:var(--danger);margin-top:6px;display:none;">⚠️ 本日は<wbr>現在時刻より<wbr>前の<wbr>時間帯は<wbr>選べません。</p>
+      <p id="time-past-hint" style="font-size:11px;color:var(--danger);margin-top:6px;display:none;">⚠️ 本日は、<wbr>現在時刻より前の時間帯は<wbr>選べません。</p>
       <p style="font-size:11px;color:var(--text-sub);margin-top:6px;">💡 指定した<wbr>時間帯に<wbr>自動で<wbr>投稿されます。</p>
     </div>
   </div>
@@ -1473,7 +1474,7 @@
 
   <div class="card">
     <div class="card-title" style="font-size:14px;">📖 投稿文作成ガイド</div>
-    <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿作成タブの<wbr>各項目の<wbr>説明です。<wbr>番号は、<wbr>投稿作成タブと<wbr>同じです。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿作成タブの各項目を<wbr>説明します。<wbr>番号は<wbr>投稿作成タブと<wbr>同じです。</div>
   </div>
 
   <div class="card">
@@ -1490,28 +1491,28 @@
     <div class="accordion-body" id="acc-t3">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">目的によって、<wbr>表示される項目が<wbr>変わります。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 人材募集</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AIを<wbr>使わず、<wbr>入力した内容を<wbr>決まった形の<wbr>投稿文にします。<wbr>求人は、<wbr>法律（職業安定法）で<wbr>正確な表示が<wbr>必要なためです。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AIを<wbr>使わず、<wbr>入力した内容を<wbr>決まった形の<wbr>投稿文にします。<wbr>求人は、<wbr>法律（職業安定法）により正確な表示が<wbr>必要なためです。</div>
       <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
         <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">③ 登録している情報</div>
-        <div style="font-size:11px;color:#5d4037;line-height:1.7;">設定画面で<wbr>登録した店名・所在地・求人の<wbr>連絡先を<wbr>使います。どれかが<wbr>未登録の<wbr>時は<wbr>作成できません。</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">設定画面で<wbr>登録した店名・所在地・求人の<wbr>連絡先を<wbr>使います。1つでも<wbr>未登録の場合は<wbr>作成できません。</div>
       </div>
       <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
         <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">④ 求人の<wbr>内容</div>
-        <div style="font-size:11px;color:#5d4037;line-height:1.7;">仕事の<wbr>内容・雇用形態・賃金・働く場所は<wbr>必須、<wbr>勤務時間・ひとことは<wbr>任意です。<wbr>文字数の<wbr>上限までしか入力できません。</div>
+        <div style="font-size:11px;color:#5d4037;line-height:1.7;">仕事の内容・雇用形態・賃金・働く場所は<wbr>必須です。<wbr>勤務時間・ひとことは<wbr>任意です。<wbr>各項目は、<wbr>文字数の上限まで<wbr>入力できます。</div>
       </div>
       <div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
         <div style="font-size:11px;font-weight:700;color:#e65100;margin-bottom:3px;">⑤ 投稿文を<wbr>確認する</div>
         <div style="font-size:11px;color:#5d4037;line-height:1.7;">ここでは<wbr>編集できません。<wbr>③④を<wbr>直してください。<wbr>ハッシュタグは<wbr>付きません。</div>
       </div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 求人らしい言葉がある時</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">ほかの<wbr>目的で、<wbr>投稿文に<wbr>求人らしい言葉（アルバイト・時給など）があると、<wbr>「内容を<wbr>確認する」で<wbr>注意が<wbr>表示されます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">ほかの<wbr>目的で、<wbr>投稿文に<wbr>求人に<wbr>関する言葉（アルバイト・時給など）があると、<wbr>「内容を<wbr>確認する」を<wbr>押した時に<wbr>注意が<wbr>表示されます。</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t2')">③ 作り方を<wbr>選ぶ<span class="accordion-arrow" id="arr-acc-t2">▶</span></div>
     <div class="accordion-body" id="acc-t2">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「AIで<wbr>作る」は、<wbr>④の<wbr>内容から、<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>「自分で<wbr>書く」は、<wbr>⑥に<wbr>直接入力します。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「AIで<wbr>作る」は、<wbr>④の内容をもとに<wbr>AIが<wbr>投稿文と<wbr>ハッシュタグを<wbr>作成します。<wbr>「自分で<wbr>書く」は、<wbr>⑥に<wbr>直接入力します。</div>
     </div>
   </div>
 
@@ -1519,13 +1520,13 @@
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t4')">④ 投稿の<wbr>内容・写真・キーワード<span class="accordion-arrow" id="arr-acc-t4">▶</span></div>
     <div class="accordion-body" id="acc-t4">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿の<wbr>内容</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">目的に<wbr>必要な項目だけが<wbr>表示されます。<wbr>期間が<wbr>1日だけの<wbr>時は、<wbr>開始日だけを<wbr>選んでください。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">目的に<wbr>必要な項目だけが<wbr>表示されます。<wbr>期間が<wbr>1日だけの場合は、<wbr>開始日だけを<wbr>選んでください。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 訴求パターン（商品・メニューの<wbr>紹介）</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">伝え方を<wbr>8つから選べます（意味は<wbr>「？」で<wbr>確認できます）。<wbr>「おまかせ」なら、<wbr>AIが<wbr>選びます。<wbr>「地域密着」は、<wbr>地域名（例：中央区・梅田）を<wbr>入力してください。<wbr>都道府県だけでは、<wbr>範囲が<wbr>広すぎるためです。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">8つの伝え方から選べます（それぞれの意味は<wbr>「？」で<wbr>確認できます）。<wbr>「おまかせ」を<wbr>選ぶと、<wbr>AIが<wbr>決めます。<wbr>「地域密着」を<wbr>選んだ場合は、<wbr>地域名（例：中央区・梅田）を<wbr>入力してください。<wbr>都道府県だけでは、<wbr>範囲が<wbr>広すぎるためです。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 写真から作る（任意）</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">写っているものを<wbr>AIが<wbr>読み取り、<wbr>投稿文に<wbr>反映します。<wbr>選んだ写真は、<wbr>⑨の<wbr>投稿画像にもなります。<wbr>投稿文に<wbr>反映しない時は、<wbr>「この<wbr>写真の<wbr>内容も<wbr>文に<wbr>使う」の<wbr>チェックを<wbr>外してください。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">写真に<wbr>写っているものを<wbr>AIが<wbr>読み取り、<wbr>投稿文に<wbr>反映します。<wbr>選んだ写真は、<wbr>⑨の<wbr>投稿画像にもなります。<wbr>写真の内容を<wbr>投稿文に<wbr>使わない場合は、<wbr>「この写真の内容も<wbr>文に<wbr>使う」のチェックを<wbr>外してください。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 キーワード（任意・3つ・1つ10字まで）</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入力したキーワードは、<wbr>必ず投稿文に<wbr>入ります。<wbr>多いと<wbr>不自然な文になるため、<wbr>3つまでです。ほかの<wbr>言葉は、<wbr>⑧ハッシュタグに<wbr>入力してください。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">入力したキーワードは、<wbr>必ず投稿文に<wbr>入ります。<wbr>多すぎると<wbr>不自然な文になるため、<wbr>3つまでです。ほかの<wbr>言葉は、<wbr>⑧ハッシュタグに<wbr>入力してください。</div>
     </div>
   </div>
 
@@ -1534,40 +1535,40 @@
     <div class="accordion-body" id="acc-t5">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">登録した店名を、<wbr>AIが<wbr>投稿文に<wbr>入れます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ⑦との<wbr>違い</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">⑤は、<wbr>AIが<wbr>文の<wbr>流れに<wbr>合わせて入れます。<wbr>⑦は、<wbr>登録した表記のまま最後に<wbr>付けます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">⑤は<wbr>AIが<wbr>文章の流れに<wbr>合わせて店名を<wbr>入れます。<wbr>⑦は<wbr>登録した表記のまま、<wbr>投稿文の最後に<wbr>付けます。</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t6')">⑥ 投稿文を<wbr>確認・編集する<span class="accordion-arrow" id="arr-acc-t6">▶</span></div>
     <div class="accordion-body" id="acc-t6">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">作成した投稿文は、<wbr>自由に<wbr>編集できます。もう一度作成すると、<wbr>上書きの<wbr>確認が<wbr>表示されます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">作成した投稿文は、<wbr>自由に<wbr>編集できます。もう一度作成すると、<wbr>上書きしてよいかの確認が<wbr>表示されます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 文字数</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">本文と<wbr>ハッシュタグを<wbr>合わせて、<wbr>全角140字までです。<wbr>半角は<wbr>0.5字、<wbr>絵文字は<wbr>1字です。<wbr>超えると<wbr>文字数が<wbr>赤く表示され、<wbr>予約できません。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">本文と<wbr>ハッシュタグを<wbr>合わせて、<wbr>全角140字までです。<wbr>半角は<wbr>0.5字、<wbr>絵文字は<wbr>1字です。<wbr>上限を<wbr>超えると<wbr>文字数が<wbr>赤く表示され、<wbr>予約できません。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 140字の<wbr>理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">1つの<wbr>投稿文をすべての<wbr>SNSで<wbr>使うため、<wbr>上限がいちばん短いX（全角140字）に<wbr>合わせています。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">すべてのSNSに<wbr>同じ投稿文を<wbr>使うため、<wbr>上限が<wbr>最も<wbr>短いX（全角140字）に<wbr>合わせています。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 ハッシュタグ</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">本文に<wbr>ハッシュタグがあると、<wbr>予約できません。<wbr>⑧に<wbr>入力してください。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 URL</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">URLがある投稿は、<wbr>Xには<wbr>投稿されません（ほかの<wbr>SNSには<wbr>投稿されます）。<wbr>投稿先が<wbr>Xだけの<wbr>時は、<wbr>予約できません。<wbr>URLの<wbr>言い換えや<wbr>短縮URLで<wbr>Xに<wbr>投稿するのは、<wbr>利用規約違反です。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">URLを<wbr>含む投稿は、<wbr>Xには<wbr>投稿されません（ほかのSNSには<wbr>投稿されます）。<wbr>投稿先が<wbr>Xだけの場合は、<wbr>予約できません。<wbr>URLの<wbr>言い換えや<wbr>短縮URLで<wbr>Xに<wbr>投稿するのは、<wbr>利用規約違反です。</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t7')">⑦ 投稿文の<wbr>最後に<wbr>店名・所在地を<wbr>付ける<span class="accordion-arrow" id="arr-acc-t7">▶</span></div>
     <div class="accordion-body" id="acc-t7">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">登録した店名・所在地を、<wbr>投稿文の<wbr>最後にそのまま付けます（AIは<wbr>使いません）。<wbr>140字を<wbr>超えた時は、<wbr>投稿文を<wbr>短くしてください。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">登録した店名・所在地を、<wbr>AIを<wbr>使わず投稿文の最後にそのまま付けます。<wbr>140字を<wbr>超えた場合は、<wbr>投稿文を<wbr>短くしてください。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 チェックできる時</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文がある時だけチェックできます。<wbr>投稿文を<wbr>全部消すと、<wbr>チェックも<wbr>外れます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿文がある時だけチェックできます。<wbr>投稿文をすべて消すと、<wbr>チェックも<wbr>外れます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 AIを<wbr>使わない理由</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AIだと、<wbr>番地や<wbr>ビル名が<wbr>省かれたり、<wbr>変わったりするおそれがあるためです。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">AIを<wbr>使うと、<wbr>番地や<wbr>ビル名が<wbr>省かれたり、<wbr>変わったりするおそれがあるためです。</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t8')">⑧ ハッシュタグ<span class="accordion-arrow" id="arr-acc-t8">▶</span></div>
     <div class="accordion-body" id="acc-t8">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIが<wbr>作成したハッシュタグは、<wbr>自由に<wbr>編集できます。<wbr>チェックしたSNSにだけ付きます。<wbr>5つまで、<wbr>1つ10字までです。<wbr>「#」は<wbr>自動で<wbr>付きます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">AIが<wbr>作成したハッシュタグは<wbr>自由に<wbr>編集できます。<wbr>チェックしたSNSにだけ付きます。<wbr>欄は<wbr>5つまで、<wbr>1つ10字までです。<wbr>「#」は<wbr>自動で<wbr>付きます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 SNSごとの<wbr>上限</div>
       <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">X：3つまで<wbr>（多いと<wbr>宣伝と<wbr>判断され、<wbr>表示されにくくなるため）<br>Instagram：5つまで<wbr>（Instagramの<wbr>決まり）<br>Threads：1つ（2つ目からは<wbr>リンクにならないため）</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 AIで<wbr>作成した時</div>
@@ -1578,11 +1579,11 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t9')">⑨ 画像アップロード<span class="accordion-arrow" id="arr-acc-t9">▶</span></div>
     <div class="accordion-body" id="acc-t9">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">画像を<wbr>1枚選ぶか、<wbr>撮影します（④で<wbr>選んだ写真も、ここに<wbr>入ります）。<wbr>SNSごとに、<wbr>「✂️ トリミングする」「🖼️ 元画像」「🚫 画像なし」を<wbr>選べます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">画像を<wbr>1枚選ぶか、<wbr>撮影します（④で<wbr>選んだ写真もここに<wbr>入ります）。<wbr>SNSごとに<wbr>「✂️ トリミングする」「🖼️ 元画像」「🚫 画像なし」を<wbr>選べます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 おすすめの<wbr>比率</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">X：16:9（横長）<br>Instagram・Threads：4:5（縦長）<br>トリミングの<wbr>画面では、<wbr>⭐が<wbr>付いています。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">X：16:9（横長）<br>Instagram・Threads：4:5（縦長）<br>トリミング画面では、<wbr>⭐が<wbr>付いています。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 Instagram</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">画像がないと<wbr>投稿できません。<wbr>画像なしにすると、<wbr>投稿先から外れます。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">画像がないと<wbr>投稿できません。<wbr>画像なしを<wbr>選ぶと、<wbr>Instagramは<wbr>投稿先から外れます。</div>
     </div>
   </div>
 
@@ -1591,18 +1592,18 @@
     <div class="accordion-body" id="acc-t10">
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">次のご利用期間の<wbr>終了日まで<wbr>予約できます。<wbr>カレンダーには、<wbr>日ごとの<wbr>予約件数が<wbr>表示されます。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 投稿の<wbr>時間</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">順番に<wbr>投稿するため、<wbr>数分ずれることがあります（「13時ごろ」と<wbr>表示しているのは、そのためです）。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">順番に<wbr>投稿するため、<wbr>数分ずれることがあります。<wbr>「13時ごろ」と<wbr>表示するのはそのためです。</div>
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;">📌 予約枠</div>
-      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿日が<wbr>入るご利用期間の<wbr>予約枠を<wbr>使います（FREE 4件・LITE 12件・STANDARD 30件・PRO 60件）。<wbr>複数の<wbr>SNSにまとめて投稿しても、<wbr>1件です。<wbr>キャンセルすると、<wbr>予約枠は<wbr>戻ります。</div>
+      <div style="font-size:11px;color:var(--text-sub);line-height:1.8;margin-bottom:10px;">投稿日が<wbr>含まれるご利用期間の予約枠を<wbr>使います（FREE 4件・LITE 12件・STANDARD 30件・PRO 60件）。<wbr>複数のSNSにまとめて投稿しても、<wbr>予約枠は<wbr>1件です。<wbr>予約を<wbr>キャンセルすると、<wbr>予約枠は<wbr>戻ります。</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-t11')">内容を<wbr>確認して予約する<span class="accordion-arrow" id="arr-acc-t11">▶</span></div>
     <div class="accordion-body" id="acc-t11">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を<wbr>確認する」を<wbr>押すと、<wbr>予約内容と<wbr>残りの<wbr>予約枠が<wbr>表示されます。<wbr>「📄 SNSごとの<wbr>投稿を<wbr>見る」で、<wbr>実際の<wbr>投稿の<wbr>形を<wbr>確認できます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「内容を<wbr>確認する」を<wbr>押すと、<wbr>予約内容と<wbr>残りの<wbr>予約枠が<wbr>表示されます。<wbr>「📄 SNSごとの<wbr>投稿を<wbr>見る」で、<wbr>実際の投稿内容を<wbr>確認できます。</div>
       <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">確認の<wbr>前に、<wbr>同じ文・似た文・同じ画像や、<wbr>SNSで<wbr>注意が<wbr>必要な表現がないかを<wbr>調べます。<wbr>予約できない時は、<wbr>理由と<wbr>直し方が<wbr>表示されます。</div>
-      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「予約を<wbr>確定する」で、<wbr>予約完了です。<wbr>予約後も、<wbr>予約確認画面で<wbr>投稿文・画像の<wbr>編集や<wbr>キャンセルができます。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;margin-bottom:10px;">「予約を<wbr>確定する」を<wbr>押すと、<wbr>予約が<wbr>完了します。<wbr>予約後も、<wbr>予約確認画面で<wbr>投稿文や<wbr>画像の編集、<wbr>キャンセルができます。</div>
     </div>
   </div>
 
@@ -1652,7 +1653,7 @@
 
   <!-- ヒント -->
   <div class="trim-hint">
-    <div class="trim-hint-main">枠を移動、拡大、縮小して調整してください。</div>
+    <div class="trim-hint-main">枠を移動・拡大・縮小して調整してください。</div>
   </div>
 
   <!-- アクションボタン -->
@@ -1677,7 +1678,7 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">入力中の投稿文があります</div>
-    <div class="modal-desc">AIが作成した投稿文で上書きします。今入力している投稿文は消えますが、よろしいですか？</div>
+    <div class="modal-desc">AIが作成した投稿文で上書きします。入力中の投稿文は消えますが、よろしいですか？</div>
     <button class="modal-btn modal-btn-primary" onclick="executeGenerate()">上書きして作成する</button>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('overwrite-modal')">やめる</button>
   </div>
@@ -1733,7 +1734,7 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">予約は、プランのお申し込み後にご利用いただけます</div>
-    <div class="modal-desc">作成した投稿文は、このまま画面に残ります。プランをお申し込みいただくと、SNSと連携して予約できるようになります。</div>
+    <div class="modal-desc">作成した投稿文は、このまま画面に残ります。プランのお申し込み後は、SNSと連携して予約できるようになります。</div>
     <button class="modal-btn modal-btn-primary" onclick="navigateTo('plan')">プランを申し込む</button>
     <button class="modal-btn modal-btn-cancel" onclick="closeModal('trial-reserve-modal')">やめる</button>
   </div>
@@ -2081,7 +2082,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_textgen.html195：目的を先に選ぶ形にした（①SNS→②目的→③作り方…。人材募集の時は③登録している情報→④求人の内容→⑤投稿文を確認する→⑥画像→⑦投稿日）。
 // 　人材募集はAIを使わず、入力した内容を決まった形に並べる（6つの項目は必須。店名・所在地・求人の連絡先は設定画面の登録を使う。ハッシュタグなし。
 // 　自由に入れる欄は、残りの字数までしか入らない）。ほかの目的で求人らしい言葉がある時は、「内容を確認する」で注意の窓を出す（Kenさん承認：画面見本_人材募集_01）。
-const TRACE_SCREEN = '投稿文作成199';
+const TRACE_SCREEN = '投稿文作成200';
 
 function traceLog(msg) {
   try {
@@ -2778,7 +2779,7 @@ function rcCheckBeforeReserve() {
   }
   const wmin = Number(rcVal('rc-wage-min')), wmax = rcVal('rc-wage-max') ? Number(rcVal('rc-wage-max')) : null;
   if (!(wmin > 0) || (wmax !== null && !(wmax > wmin))) {
-    aipostNotice('賃金の金額を確かめてください。\n「〜」の右に入れる時は、左より大きい金額にしてください。');
+    aipostNotice('賃金の金額を確認してください。\n「〜」の右に入れる時は、左より大きい金額にしてください。');
     return false;
   }
   if (!!rcVal('rc-time-from') !== !!rcVal('rc-time-to')) {
@@ -4101,7 +4102,7 @@ function updateCalendarRangeHint() {
     return;
   }
   el.innerHTML = p
-    ? '予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日<wbr>（' + tgMd(p.next.end) + '）までです。'
+    ? '予約できるのは、<wbr>' + tgMd(p.next.end) + 'までです。'
     : '予約できるのは、<wbr>次の<wbr>ご利用期間の<wbr>終了日までです。';
 }
 // 選んだ日が入るご利用期間の予約枠。分からない時は null（GAS側の確かめに任せる）
@@ -4380,8 +4381,8 @@ function renderPostCheckBox(check) {
     groups.push({ name: '共通（すべてのSNS）', items: check.common.warnings });
   }
   let note = '';
-  if (!check) note = '投稿の内容の確かめは、今回できませんでした。';
-  else if (check.aiChecked === false) note = '言い回しの確かめは、今回できませんでした。';
+  if (!check) note = '投稿の内容の確認は、今回できませんでした。';
+  else if (check.aiChecked === false) note = '言い回しの確認は、今回できませんでした。';
   if (groups.length === 0 && !note) {
     box.style.display = 'none';
     box.innerHTML = '';
@@ -4450,7 +4451,7 @@ async function showConfirm() {
     return;
   }
   if (NOT_REGISTERED) {
-    aipostNotice('ご利用の登録が見つかりませんでした。\n設定画面の「登録」タブで店舗情報を保存すると、ご利用を始められます。');
+    aipostNotice('登録情報が見つかりません。\n設定画面の「登録」タブで店舗情報を保存すると、ご利用いただけます。');
     return;
   }
   // ★liff_textgen.html195：人材募集は、登録・必須の項目・字数を先に確かめる
@@ -6539,8 +6540,8 @@ loadEditModeFromUrl();
 <div class="consent-overlay" id="consent-overlay">
   <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
     <div class="consent-title">ご利用の前に</div>
-    <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
-    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
+    <div class="consent-note">まるっとポストをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
+    <div class="consent-box">投稿文の作成のため、<wbr>入力内容と<wbr>店舗情報を<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送信します。<wbr>また、<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送信します。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
     <div class="consent-links">
       <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
       <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを読む</button>

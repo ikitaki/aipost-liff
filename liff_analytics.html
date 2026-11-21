@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>分析82 - AiPost</title>
+<title>分析83 - まるっとポスト</title>
+  <!-- ★liff_analytics.html83（2026年11月22日）：文言の直し（文言の直し案_01）。名前を「まるっとポスト」にした・同意の窓の文・登録が見つからない時の文・「確かめる」を「確認」にそろえた・注意書き・ネガティブなコメントの文・「ご利用期間の予約」・ガイドの文（Kenさん指示） -->
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root {
@@ -356,7 +357,7 @@
     document.getElementById('maint-icon').textContent = '🚫';
     document.getElementById('maint-title').textContent = 'ご利用を停止しています';
     var box = document.getElementById('maint-msg');
-    box.innerHTML = wrapHtml(msg || 'AiPostのご利用を停止しました。');
+    box.innerHTML = wrapHtml(msg || 'まるっとポストのご利用を停止しました。');
     box.style.wordBreak = 'keep-all';
     document.getElementById('maint-btn').style.display = 'none';
     document.getElementById('maint-overlay').classList.add('open');
@@ -410,8 +411,8 @@
 
 <div class="header">
   <span style="font-size:20px;">📊</span>
-  <span class="header-logo"><span class="nowrap">分析82</span></span>
-  <span class="header-sub">AiPost</span>
+  <span class="header-logo"><span class="nowrap">分析83</span></span>
+  <span class="header-sub">まるっとポスト</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
   <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
@@ -566,7 +567,7 @@
 
 <!-- ★liff_analytics.html58：登録が見つからない時の案内（タブは出さない） -->
 <div class="unregistered-card" id="unregistered-card" style="display:none;">
-  ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
+  登録情報が<wbr>見つかりません。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用<wbr>いただけます。
 </div>
 
 <!-- ===== LITE分析タブ ===== -->
@@ -609,7 +610,7 @@
         <div class="today-sub">本日<wbr>投稿済み</div>
       </div>
       <div class="today-item">
-        <div class="today-label" style="word-break:keep-all;overflow-wrap:anywhere;">期間内の<wbr>予約</div><!-- ★liff_analytics.html60：「今月の投稿数」→「期間内の予約」（ご利用期間ごとに数えるため） -->
+        <div class="today-label" style="word-break:keep-all;overflow-wrap:anywhere;">ご利用期間の予約</div><!-- ★liff_analytics.html60：「今月の投稿数」→「ご利用期間の予約」（ご利用期間ごとに数えるため） -->
         <div class="today-val" style="color:var(--primary);" id="lite-month-post">-<span style="font-size:10px;">件</span></div>
         <div class="today-sub" id="lite-month-total">/-件</div>
       </div>
@@ -652,7 +653,7 @@
       </div>
       <div id="lite-p1-detail" style="display:none;padding:10px;">
         <div id="lite-latest-detail"></div>
-        <p style="font-size:9px;color:var(--text-light);margin-top:8px;">↑上昇　※ K=1,000</p>
+        <p style="font-size:9px;color:var(--text-light);margin-top:8px;">↑上昇　※ K = 1,000（例：1.2K = 1,200回）</p>
       </div>
     </div>
   </div>
@@ -660,7 +661,7 @@
   <!-- ④ 投稿カレンダー（24時間後データ） -->
   <div class="card">
     <div class="card-title">📅 投稿日別データ</div>
-    <p class="hint">💡 投稿のある日付を<wbr>タップすると<wbr>24時間後の<wbr>データを<wbr>確認できます。</p>
+    <p class="hint">💡 投稿のある日付を<wbr>タップすると、<wbr>24時間後のデータを<wbr>確認できます。</p>
     <div class="cal-grid">
       <div class="cal-title" id="cal-lite-title"></div>
       <div class="cal-days">
@@ -716,7 +717,7 @@
        根拠を示せない文言（「最もフォロワーが活発」等）は使わず、数値で言えることだけを表示する -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の<wbr>投稿おすすめ</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの<wbr>過去データをもとに<wbr>分析した<wbr>傾向と<wbr>おすすめです。</p>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">過去のデータをもとに<wbr>分析した傾向とおすすめです。</p>
     <div style="display:none;flex-direction:column;gap:6px;margin-bottom:12px;" id="lite-rec-trends"></div>
     <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの<wbr>投稿時間帯</div>
@@ -724,7 +725,7 @@
         <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日以内の<wbr>投稿の<wbr>24時間後の<wbr>EG率を<wbr>もとに<wbr>算出しています。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日以内の投稿について、<wbr>24時間後のEG率をもとに<wbr>算出しています。</p>
   </div>
 
   </div><!-- /lite-content -->
@@ -773,7 +774,7 @@
         <div class="today-sub">本日<wbr>投稿済み</div>
       </div>
       <div class="today-item">
-        <div class="today-label" style="word-break:keep-all;overflow-wrap:anywhere;">期間内の<wbr>予約</div><!-- ★liff_analytics.html60：「今月の投稿数」→「期間内の予約」（ご利用期間ごとに数えるため） -->
+        <div class="today-label" style="word-break:keep-all;overflow-wrap:anywhere;">ご利用期間の予約</div><!-- ★liff_analytics.html60：「今月の投稿数」→「ご利用期間の予約」（ご利用期間ごとに数えるため） -->
         <div class="today-val" style="color:var(--primary);" id="standard-month-post">-<span style="font-size:10px;">件</span></div>
         <div class="today-sub" id="standard-month-total">/-件</div>
       </div>
@@ -823,7 +824,7 @@
       <div id="std-p1-detail" style="display:none;padding:10px;">
         <div id="standard-latest-detail"></div>
         <p style="font-size:9px;color:#e65100;font-weight:700;margin-top:8px;">💎 3時間後・6時間後の<wbr>データは<wbr>PROプランで<wbr>確認できます。</p><!-- ★liff_analytics.html73：PROの取得を3・6・24時間後にした（Kenさん決定） -->
-        <p style="font-size:9px;color:var(--text-light);margin-top:4px;">↑上昇　※ K=1,000</p>
+        <p style="font-size:9px;color:var(--text-light);margin-top:4px;">↑上昇　※ K = 1,000（例：1.2K = 1,200回）</p>
       </div>
     </div>
   </div>
@@ -831,7 +832,7 @@
   <!-- ③ 投稿カレンダー（24時間後データ） -->
   <div class="card">
     <div class="card-title">📅 投稿日別データ</div>
-    <p class="hint">💡 投稿のある日付を<wbr>タップすると<wbr>24時間後の<wbr>データを<wbr>確認できます。</p>
+    <p class="hint">💡 投稿のある日付を<wbr>タップすると、<wbr>24時間後のデータを<wbr>確認できます。</p>
     <div class="cal-grid">
       <div class="cal-title" id="cal-std-title"></div>
       <div class="cal-days">
@@ -861,12 +862,12 @@
   <!-- ⚠️ ネガティブなコメント（★liff_analytics.html76：STANDARDにも出す（Kenさん決定・2026年11月15日）） -->
   <div class="card">
     <div class="card-title">⚠️ ネガティブな<wbr>コメント</div>
-    <div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.7;margin:-4px 0 10px;">投稿から<wbr>3日間、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確かめます<wbr>（1投稿10件・<wbr>月100件まで）。<wbr>ネガティブな<wbr>コメントが<wbr>あれば<wbr>通知します。<wbr>上限を<wbr>超えた分は、<wbr>件数だけ<wbr>通知します。</div>
+    <div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.7;margin:-4px 0 10px;">投稿から<wbr>3日間、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確認します<wbr>（1投稿10件・<wbr>月100件まで）。<wbr>ネガティブな<wbr>コメントが<wbr>あれば<wbr>通知します。<wbr>上限を<wbr>超えた分は、<wbr>件数だけ<wbr>通知します。</div>
     <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
-      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の<wbr>大切なヒントです。早めに<wbr>気づいて対応することで、お客様との<wbr>信頼関係を<wbr>深めるチャンスに<wbr>変えましょう。</div>
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、<wbr>サービスをよくするための大切なヒントです。<wbr>早めに<wbr>気づいて対応することで、<wbr>お客様との信頼関係を<wbr>深めるきっかけになります。</div>
     </div>
     <div id="standard-neg-body"><div style="font-size:10px;color:var(--text-light);">-</div></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;返信の<wbr>件数は、<wbr>SNSの<wbr>数値です<wbr>（確かめた<wbr>件数とは<wbr>異なります）。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;返信の件数は<wbr>SNSの数値です。<wbr>AIが<wbr>確認した件数とは<wbr>異なります。</p>
   </div>
 
   <!-- 💬 先月のコメントのまとめ（★liff_analytics.html78：新しい機能。STANDARD以上。Kenさん決定・2026年11月17日） -->
@@ -874,7 +875,7 @@
     <div class="card-title">💬 先月の<wbr>コメントの<wbr>まとめ</div>
     <p class="wrap-ja" style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="std-csum-desc">-</p>
     <div id="std-csum-body"></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;毎月1日に、<wbr>前の月に<wbr>確かめた<wbr>コメント<wbr>（月100件まで）を<wbr>AIが<wbr>まとめます。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;毎月1日に、<wbr>前の月に<wbr>確認した<wbr>コメント<wbr>（月100件まで）を<wbr>AIが<wbr>まとめます。</p>
   </div>
 
   <!-- ⑥ あなたの投稿平均との比較（24時間後のみ・STANDARD固有） -->
@@ -897,7 +898,7 @@
     <div class="card-title">🏷️ 目的別の<wbr>反応</div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="std-purpose-desc">-</p>
     <div id="std-purpose-body"></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日の<wbr>投稿の、<wbr>24時間後の<wbr>EG率の<wbr>平均です。<wbr>投稿が<wbr>3件未満の<wbr>目的は<wbr>参考値です。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日の投稿について、<wbr>24時間後のEG率の平均です。<wbr>投稿が<wbr>3件未満の<wbr>目的は<wbr>参考値です。</p>
   </div>
 
 
@@ -924,7 +925,7 @@
        根拠を示せない文言（「最もフォロワーが活発」等）は使わず、数値で言えることだけを表示する -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の<wbr>投稿おすすめ</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの<wbr>過去データをもとに<wbr>分析した<wbr>傾向と<wbr>おすすめです。</p>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">過去のデータをもとに<wbr>分析した傾向とおすすめです。</p>
     <div style="display:none;flex-direction:column;gap:6px;margin-bottom:12px;" id="standard-rec-trends"></div>
     <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの<wbr>投稿時間帯</div>
@@ -932,7 +933,7 @@
         <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日以内の<wbr>投稿の<wbr>24時間後の<wbr>EG率を<wbr>もとに<wbr>算出しています。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日以内の投稿について、<wbr>24時間後のEG率をもとに<wbr>算出しています。</p>
   </div>
 
   </div><!-- /standard-content -->
@@ -1084,13 +1085,13 @@
     <div class="card-title">🏷️ 目的別の<wbr>反応</div>
     <p style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="pro-purpose-desc">-</p>
     <div id="pro-purpose-body"></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日の<wbr>投稿の、<wbr>24時間後の<wbr>EG率の<wbr>平均です。<wbr>投稿が<wbr>3件未満の<wbr>目的は<wbr>参考値です。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日の投稿について、<wbr>24時間後のEG率の平均です。<wbr>投稿が<wbr>3件未満の<wbr>目的は<wbr>参考値です。</p>
   </div>
 
   <!-- 投稿日別データ -->
   <div class="card">
     <div class="card-title">📅 投稿日別データ</div>
-    <p class="hint">💡 投稿のある<wbr>日付を<wbr>タップすると<wbr>詳細を<wbr>確認できます。</p>
+    <p class="hint">💡 投稿のある日付を<wbr>タップすると、<wbr>詳細を<wbr>確認できます。</p>
     <div class="cal-grid">
       <div class="cal-title" id="cal-pro-title"></div>
       <div class="cal-days">
@@ -1126,12 +1127,12 @@
   <div class="card">
     <div class="card-title">⚠️ ネガティブな<wbr>コメント</div>
     <!-- ★liff_analytics.html63：何をどこまで確かめているかを、見出しのすぐ下に書いた（Kenさん指示） -->
-    <div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.7;margin:-4px 0 10px;">投稿から<wbr>3日間、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確かめます<wbr>（1投稿20件・<wbr>月300件まで）。<wbr>ネガティブな<wbr>コメントが<wbr>あれば<wbr>通知します。<wbr>上限を<wbr>超えた分は、<wbr>件数だけ<wbr>通知します。</div><!-- ★liff_analytics.html76：投稿から3日間・上限（Kenさん決定・2026年11月15日） -->
+    <div class="wrap-ja" style="font-size:11px;color:var(--text);line-height:1.7;margin:-4px 0 10px;">投稿から<wbr>3日間、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確認します<wbr>（1投稿20件・<wbr>月300件まで）。<wbr>ネガティブな<wbr>コメントが<wbr>あれば<wbr>通知します。<wbr>上限を<wbr>超えた分は、<wbr>件数だけ<wbr>通知します。</div><!-- ★liff_analytics.html76：投稿から3日間・上限（Kenさん決定・2026年11月15日） -->
     <div style="background:#f3f9f3;border:1px solid #a5d6a7;border-radius:8px;padding:8px 10px;margin-bottom:10px;">
-      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、サービス改善の<wbr>大切なヒントです。早めに<wbr>気づいて対応することで、お客様との<wbr>信頼関係を<wbr>深めるチャンスに<wbr>変えましょう。</div>
+      <div style="font-size:11px;color:#2e7d32;line-height:1.7;">💡 ネガティブなご意見は、<wbr>サービスをよくするための大切なヒントです。<wbr>早めに<wbr>気づいて対応することで、<wbr>お客様との信頼関係を<wbr>深めるきっかけになります。</div>
     </div>
     <div id="pro-neg-body"><div style="font-size:10px;color:var(--text-light);">-</div></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;返信の<wbr>件数は、<wbr>SNSの<wbr>数値です<wbr>（確かめた<wbr>件数とは<wbr>異なります）。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;返信の件数は<wbr>SNSの数値です。<wbr>AIが<wbr>確認した件数とは<wbr>異なります。</p>
   </div>
 
   <!-- 💬 先月のコメントのまとめ（★liff_analytics.html78：新しい機能。STANDARD以上。Kenさん決定・2026年11月17日） -->
@@ -1139,7 +1140,7 @@
     <div class="card-title">💬 先月の<wbr>コメントの<wbr>まとめ</div>
     <p class="wrap-ja" style="font-size:11px;color:var(--text-sub);margin-bottom:8px;" id="pro-csum-desc">-</p>
     <div id="pro-csum-body"></div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;毎月1日に、<wbr>前の月に<wbr>確かめた<wbr>コメント<wbr>（月300件まで）を<wbr>AIが<wbr>まとめます。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;毎月1日に、<wbr>前の月に<wbr>確認した<wbr>コメント<wbr>（月300件まで）を<wbr>AIが<wbr>まとめます。</p>
   </div>
 
 
@@ -1167,7 +1168,7 @@
        根拠を示せない文言（「最もフォロワーが活発」等）は使わず、数値で言えることだけを表示する -->
   <div class="card" style="border:2px solid var(--primary);">
     <div class="card-title">🎯 次回の<wbr>投稿おすすめ</div>
-    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">あなたの<wbr>過去データをもとに<wbr>分析した<wbr>傾向と<wbr>おすすめです。</p>
+    <p style="font-size:11px;color:var(--text-sub);margin-bottom:10px;">過去のデータをもとに<wbr>分析した傾向とおすすめです。</p>
     <div style="display:none;flex-direction:column;gap:6px;margin-bottom:12px;" id="pro-rec-trends"></div>
     <div style="border-top:1px solid var(--border);padding-top:10px;">
       <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px;">⏰ おすすめの<wbr>投稿時間帯</div>
@@ -1175,7 +1176,7 @@
         <div style="font-size:10px;color:var(--text-light);">-</div>
       </div>
     </div>
-    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日以内の<wbr>投稿の<wbr>24時間後の<wbr>EG率を<wbr>もとに<wbr>算出しています。</p>
+    <p style="font-size:9px;color:var(--text-light);margin-top:8px;">※&nbsp;直近60日以内の投稿について、<wbr>24時間後のEG率をもとに<wbr>算出しています。</p>
   </div>
 
   </div><!-- /pro-content -->
@@ -1189,7 +1190,7 @@
   <!-- ★liff_analytics.html65：ガイドを短く、やさしい言葉に書き直した（13項目→7項目。計算式・計算例・APIの話・「特徴」「このような方におすすめ」を消した。Kenさん承認） -->
   <div class="card">
     <div class="card-title" style="font-size:14px;">📖 分析ガイド</div>
-    <div style="font-size:11px;color:var(--text);line-height:1.8;">分析は、次の<wbr>投稿をよくするために<wbr>使います。</div>
+    <div style="font-size:11px;color:var(--text);line-height:1.8;">分析は、<wbr>次の投稿をよりよくするために<wbr>使います。</div>
   </div>
 
   <div class="card">
@@ -1197,8 +1198,8 @@
     <div class="accordion-body" id="acc-1">
       <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🔍 LITE</div><div style="font-size:11px;color:var(--text);line-height:1.8;">最新の<wbr>状況・投稿日ごとの<wbr>反応・フォロワー数の<wbr>推移・先週と<wbr>先月のまとめ・次回の<wbr>投稿おすすめ</div></div>
       <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">📊 STANDARD</div><div style="font-size:11px;color:var(--text);line-height:1.8;">LITEの<wbr>内容に<wbr>加えて、<wbr>投稿平均との<wbr>比較・目的別の<wbr>反応・コメントの<wbr>感情分析・ネガティブなコメントの<wbr>通知・先月の<wbr>コメントのまとめ</div></div>
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">💎 PRO</div><div style="font-size:11px;color:var(--text);line-height:1.8;">STANDARDの<wbr>内容に<wbr>加えて、<wbr>投稿の<wbr>3時間後・6時間後の<wbr>反応・初速スコア・先月の<wbr>レポート。<wbr>確認するコメントの<wbr>数も<wbr>多くなります。</div></div>
-      <div style="font-size:10px;color:var(--text-sub);line-height:1.7;">数字を<wbr>取得するのは、<wbr>LITE・STANDARDは<wbr>投稿の<wbr>24時間後、<wbr>PROは<wbr>3時間後・6時間後・24時間後です。</div><!-- ★liff_analytics.html74：ガイドの時間を3・6・24時間後にし、同業種の説明を消した（Kenさん指摘） -->
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">💎 PRO</div><div style="font-size:11px;color:var(--text);line-height:1.8;">STANDARDの<wbr>内容に<wbr>加えて、<wbr>投稿の3時間後・6時間後の反応・初速スコア・先月のレポートを<wbr>確認できます。<wbr>確認するコメントの<wbr>数も<wbr>多くなります。</div></div>
+      <div style="font-size:10px;color:var(--text-sub);line-height:1.7;">データを<wbr>取得する時刻は、<wbr>LITE・STANDARDが<wbr>投稿の24時間後、<wbr>PROが<wbr>投稿の3時間後・6時間後・24時間後です。</div><!-- ★liff_analytics.html74：ガイドの時間を3・6・24時間後にし、同業種の説明を消した（Kenさん指摘） -->
     </div>
   </div>
 
@@ -1212,7 +1213,7 @@
         <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#fb8c00;">🟡 50〜69点</span><span style="font-size:11px;color:var(--text);">平均的</span></div>
         <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:11px;font-weight:700;color:#e53935;">🔴 49点以下</span><span style="font-size:11px;color:var(--text);">伸び悩み</span></div>
       </div></div>
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿が<wbr>30件たまるまでは<wbr>「参考値」です。SNSの<wbr>公式の<wbr>点数ではありません。</div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿が<wbr>30件たまるまでは<wbr>「参考値」です。SNS公式の点数ではありません。</div>
     </div>
   </div>
 
@@ -1226,7 +1227,7 @@
       <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">↩️</span><span style="font-size:11px;color:var(--text);line-height:1.8;">リプライ（返信）</span></div>
       <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">🗨️</span><span style="font-size:11px;color:var(--text);line-height:1.8;">引用</span></div>
       <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">👁️</span><span style="font-size:11px;color:var(--text);line-height:1.8;">インプレッション：投稿が<wbr>画面に<wbr>表示された回数</span></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">📊</span><span style="font-size:11px;color:var(--text);line-height:1.8;">EG率：投稿にどれだけ反応があったかの<wbr>割合</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;width:24px;text-align:center;">📊</span><span style="font-size:11px;color:var(--text);line-height:1.8;">EG率：投稿にどれだけ反応があったかを<wbr>示す割合</span></div>
       </div>
     </div>
   </div>
@@ -1244,7 +1245,7 @@
     <div class="card-title accordion-title" onclick="toggleAcc('acc-5')">⑤ 数字の<wbr>使い方<span class="accordion-arrow" id="arr-acc-5">▶</span></div>
     <div class="accordion-body" id="acc-5">
       <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🟢 好調な時</div><div style="font-size:11px;color:var(--text);line-height:1.8;">同じ時間帯・内容・ハッシュタグを、次の<wbr>投稿でも<wbr>使ってみましょう。</div></div>
-      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🔴 伸び悩んだ時</div><div style="font-size:11px;color:var(--text);line-height:1.8;">「次回の<wbr>投稿おすすめ」の<wbr>時間帯に<wbr>投稿したり、内容や<wbr>ハッシュタグを<wbr>変えたりしてみましょう。</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:2px;">🔴 伸び悩んだ時</div><div style="font-size:11px;color:var(--text);line-height:1.8;">「次回の投稿おすすめ」に<wbr>表示された時間帯に<wbr>投稿したり、内容や<wbr>ハッシュタグを<wbr>変えたりしてみましょう。</div></div>
     </div>
   </div>
 
@@ -1252,7 +1253,7 @@
   <div class="card">
     <div class="card-title accordion-title" onclick="toggleAcc('acc-7')">⑥ ネガティブなコメント（STANDARD以上）<span class="accordion-arrow" id="arr-acc-7">▶</span></div>
     <div class="accordion-body" id="acc-7">
-      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿から<wbr>3日間<wbr>（24・48・72時間後。<wbr>PROは<wbr><span style="white-space:nowrap;">3・6時間後も</span>）、<wbr>新しい<wbr>コメントを<wbr>AIが<wbr>確認し、<wbr>ネガティブな<wbr>コメントが<wbr>あれば<wbr>通知します。<wbr>確認するのは<wbr>1投稿10件・<wbr>月100件まで<wbr>（PROは<wbr>20件・<wbr>300件まで）で、<wbr>超えた分は<wbr>件数だけ<wbr>通知します。<!-- ★liff_analytics.html76：新しい決まり --></div>
+      <div style="font-size:11px;color:var(--text);line-height:1.8;">投稿から<wbr>3日間<wbr>（24・48・72時間後。<wbr>PROは<wbr><span style="white-space:nowrap;">3・6時間後も</span>）、<wbr>新しいコメントを<wbr>AIが<wbr>確認します。<wbr>ネガティブなコメントがあれば通知します。<wbr>確認するのは<wbr>1投稿10件・月100件まで<wbr>（PROは<wbr>20件・300件まで）です。<wbr>上限を<wbr>超えた分は、<wbr>件数だけ通知します。<!-- ★liff_analytics.html76：新しい決まり --></div>
     </div>
   </div>
 
@@ -1917,7 +1918,7 @@ const TRACE_KEY = 'aipost_trace';
 // ★liff_analytics.html69：ガイド⑥を実際の仕組みに合わせた（「LITEプラン以上の店舗」・「30日間の投稿数」・「自分を除いて5店舗以上」。メモ・Kenさん承認）
 // ★liff_analytics.html70：「最新の状況」の言葉ごとの「？」（EG率・初速スコア順位・総合初速スコア・SNS別初速スコア・データ蓄積率）をやめ、見出しの横の「？」にまとめた（Kenさん指示）
 // ★liff_analytics.html71：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-const TRACE_SCREEN = '分析82';
+const TRACE_SCREEN = '分析83';
 
 // ★liff_analytics.html64：言葉の意味（「？」を押すと窓で出す。短く、やさしい言葉で）
 const TERM_TEXT = {
@@ -2730,12 +2731,12 @@ function openMonthlyReport() {
     sec('📉 反応が<wbr>少なかった<wbr>投稿', posts(r.bottom)) +
     sec('💬 コメント', Number(cm.total) > 0
       ? '<div class="report-text">' + Number(cm.total) + '件。' + (cm.good ? '<wbr>👍 ' + esc(cm.good) : '') + (cm.bad ? '<wbr>／😟 ' + esc(cm.bad) : '') + '</div>'
-      : '<div class="report-text">確かめた<wbr>コメントは<wbr>ありませんでした。</div>') +
+      : '<div class="report-text">確認した<wbr>コメントは<wbr>ありませんでした。</div>') +
     sec('🤖 AIの<wbr>読み解き', !((note.up && note.up.length) || (note.down && note.down.length) || (note.next && note.next.length)) ? few :
       (note.up && note.up.length ? '<div class="report-text" style="font-weight:700;color:#2e7d32;">伸びた点</div>' + list(note.up) : '') +
       (note.down && note.down.length ? '<div class="report-text" style="font-weight:700;color:#c62828;margin-top:4px;">落ちた点</div>' + list(note.down) : '') +
       (note.next && note.next.length ? '<div class="report-text" style="font-weight:700;color:var(--primary);margin-top:4px;">来月のおすすめ</div>' + list(note.next) : '')) +
-    '<div class="report-foot">AiPost</div>';
+    '<div class="report-foot">まるっとポスト</div>';
   document.getElementById('report-actions').innerHTML = '<button type="button" class="report-save-btn" id="report-save-btn" onclick="saveMonthlyReportImage()">画像で<wbr>保存</button>';
   document.getElementById('report-overlay').classList.add('open');
   document.getElementById('report-overlay').scrollTop = 0;
@@ -2785,11 +2786,11 @@ function applyCommentSummary(data) {
       return;
     }
     if (!(Number(cs.total) > 0)) {
-      descEl.innerHTML = cs.month + '月は、<wbr>確かめた<wbr>コメントが<wbr>ありませんでした。';
+      descEl.innerHTML = cs.month + '月は、<wbr>確認した<wbr>コメントが<wbr>ありませんでした。';
       bodyEl.innerHTML = '';
       return;
     }
-    descEl.innerHTML = cs.month + '月に<wbr>確かめた<wbr>コメント<wbr>' + (Number(cs.total) || 0) + '件を、<wbr>AIが<wbr>まとめました。' +
+    descEl.innerHTML = cs.month + '月に<wbr>確認した<wbr>コメント<wbr>' + (Number(cs.total) || 0) + '件を、<wbr>AIが<wbr>まとめました。' +
       (Number(cs.excluded) ? '<wbr>悪意のある<wbr>コメント<wbr>' + Number(cs.excluded) + '件は<wbr>除いています。' : '');
     const box = function (title, color, bg, inner) {
       return '<div style="background:' + bg + ';border:1px solid ' + color + ';border-radius:8px;padding:8px 10px;margin-bottom:8px;">' +
@@ -3156,7 +3157,7 @@ function applySentimentFor(prefix, data) {
   const note = function (text) { return '<div style="font-size:10px;color:var(--text-light);line-height:1.6;">' + text + '</div>'; };
   // ★liff_analytics.html76：月の上限は全SNS共通（Analyticsgs_38 の sentiment.monthLimitReached・monthLimit）
   const xLimitNote = st.monthLimitReached
-    ? note('※ 今月は確かめる上限' + (st.monthLimit ? '（' + st.monthLimit + '件）' : '') + 'に達したため、新しいコメントは確かめていません。')
+    ? note('※ 今月は確認する上限' + (st.monthLimit ? '（' + st.monthLimit + '件）' : '') + 'に達したため、新しいコメントは確認していません。')
     : '';
 
   if (st.enabled === false) {
@@ -3786,8 +3787,8 @@ initLiff();
 <div class="consent-overlay" id="consent-overlay">
   <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
     <div class="consent-title">ご利用の<wbr>前に</div>
-    <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が<wbr>必要です。</div>
-    <div class="consent-box">投稿文の<wbr>作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の<wbr>事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの<wbr>投稿や<wbr>データの<wbr>保存のため、<wbr>米国の<wbr>事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
+    <div class="consent-note">まるっとポストをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が<wbr>必要です。</div>
+    <div class="consent-box">投稿文の<wbr>作成のため、<wbr>入力内容と<wbr>店舗情報を<wbr>米国の<wbr>事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送信します。<wbr>SNSへの<wbr>投稿や<wbr>データの<wbr>保存のため、<wbr>米国の<wbr>事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送信します。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
     <div class="consent-links">
       <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
       <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを<wbr>読む</button>

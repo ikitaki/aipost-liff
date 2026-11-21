@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>予約確認・変更97 - AiPost</title>
+<title>予約確認・変更98 - まるっとポスト</title>
+  <!-- ★liff_reservation.html98（2026年11月22日）：文言の直し（文言の直し案_01）。名前を「まるっとポスト」にした・同意の窓の文・登録が見つからない時の文・「確かめる」を「確認」にそろえた・投稿削除の説明を1つに・「画像なしで投稿する」・賃金の説明・「投稿文の文字数」（Kenさん指示） -->
   <!-- ★liff_reservation.html97（2026年11月21日）：投稿履歴の件数の枠に、見られる期間「表示期間：YYYY年M月〜YYYY年M月（今月と過去12か月）」を足した（Kenさん指示） -->
   <!-- ★liff_reservation.html96（2026年11月20日）：投稿削除の「すべて選ぶ」は一覧を下に送ると見えなくなるため、画面の下の帯に移し、「全選択」「全解除」「削除（N件）」の3つを並べた。カレンダーでは、下の「全選択」が押した日の投稿を選ぶ（日のボタンはやめた）。予約タブのまとめてキャンセルも同じ帯（全選択・全解除・キャンセル（N件））にし、ベルのお知らせも「全選択」「全解除」「削除（N件）」にそろえた（Kenさん指示：ボタンの名前を統一） -->
   <!-- ★liff_reservation.html95（2026年11月18日）：同意の窓の「プライバシーポリシーの第5条」を第4条にした（プライバシーポリシー9で条が1つ繰り上がったため）。「入れます」「入れてください」を「入力」にそろえた（Kenさん指示） -->
@@ -1025,7 +1026,7 @@
     document.getElementById('maint-icon').textContent = '🚫';
     document.getElementById('maint-title').textContent = 'ご利用を停止しています';
     var box = document.getElementById('maint-msg');
-    box.innerHTML = wrapHtml(msg || 'AiPostのご利用を停止しました。');
+    box.innerHTML = wrapHtml(msg || 'まるっとポストのご利用を停止しました。');
     box.style.wordBreak = 'keep-all';
     document.getElementById('maint-btn').style.display = 'none';
     document.getElementById('maint-overlay').classList.add('open');
@@ -1079,8 +1080,8 @@
 
 <div class="header">
   <span style="font-size:20px;">📅</span>
-  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更97</span></span>
-  <span class="header-sub">AiPost</span>
+  <span class="header-logo"><span class="nowrap">予約確認・</span><span class="nowrap">変更98</span></span>
+  <span class="header-sub">まるっとポスト</span>
   <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
   <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
   <button type="button" class="header-refresh" onclick="if (typeof clearPostHistoryCache === 'function') clearPostHistoryCache(); aipostRefreshAll(false)">🔄 更新</button>
@@ -1228,11 +1229,11 @@
   <!-- ★liff_reservation.html58：お試し中（プラン未申し込み）の案内・登録が見つからない時の案内（どのタブでも出す） -->
   <div class="trial-card" id="trial-card" style="display:none;">
     <!-- ★liff_reservation.html73：投稿履歴はFREEでは使えないため、「投稿履歴」を外した（★liff_reservation.html94：PERSONALの名前を消した） -->
-    予約の<wbr>確認は、<wbr>プランを<wbr>お申し込みいただくと<wbr>ご利用いただけます。
+    予約の確認は、<wbr>プランのお申し込み後にご利用いただけます。
     <button type="button" class="sheet-btn" onclick="navigateTo('plan')">プランを申し込む</button>
   </div>
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
-    ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
+    登録情報が<wbr>見つかりません。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用<wbr>いただけます。
   </div>
 
   <!-- ★liff_reservation.html87：予約タブ（件数の枠・一覧／カレンダーの切り替え・一覧・カレンダー） -->
@@ -1317,7 +1318,7 @@
       <div class="count-card-num"><b id="history-month-count">-</b><span>件</span></div>
       <div style="flex:1;">
         <div class="count-card-title">今月の投稿件数</div>
-        <div class="count-card-sub">SNSへの投稿処理が行われた予約の件数です。</div>
+        <div class="count-card-sub">SNSへの投稿が行われた予約の件数です。</div>
         <!-- ★liff_reservation.html97：見られる期間（投稿削除タブの「今月と過去12か月」と同じ範囲）。setHistoryRangeText() が書く -->
         <div class="count-card-sub" id="history-range-sub"></div>
       </div>
@@ -1385,13 +1386,13 @@
       <div class="count-card-num"><b id="del-count">-</b><span>件</span></div>
       <div style="flex:1;">
         <div class="count-card-title" id="del-count-title">削除できる投稿の件数</div>
-        <div class="count-card-sub" id="del-count-sub">AiPostから投稿したもの（今月と過去12か月）です。</div>
+        <div class="count-card-sub" id="del-count-sub">まるっとポストから投稿したX・Threadsの投稿です（今月と過去12か月）。</div>
       </div>
     </div>
 
     <div class="del-warning">
       ⚠️ <b>SNSから削除した投稿は、元に戻せません。</b><br>
-      削除できるのは、AiPostから投稿した X・Threads の投稿です（今月と過去12か月）。Instagramは、Instagramのアプリから削除してください。
+      Instagramの投稿は、Instagramのアプリから削除してください。
     </div>
 
     <!-- ★liff_reservation.html89：X／Threads と 一覧／カレンダー を、スクロールしても上に止める -->
@@ -1536,7 +1537,7 @@
         <button class="ri-btn" onclick="resetReplaceImage()" style="background:transparent;color:var(--text-sub);border:1px solid var(--border);font-weight:400;font-size:12px;">📁 別の画像を選び直す</button>
       </div>
 
-      <button class="ri-btn" id="ri-remove-btn" onclick="selectReplaceRemove()" style="background:#fff5f5;color:#e53935;border:1px solid #ffcdd2;font-weight:400;font-size:12px;">🚫 画像を外す（画像なしで投稿する）</button>
+      <button class="ri-btn" id="ri-remove-btn" onclick="selectReplaceRemove()" style="background:#fff5f5;color:#e53935;border:1px solid #ffcdd2;font-weight:400;font-size:12px;">🚫 画像なしで投稿する</button>
 
       <div class="ri-summary" id="ri-summary" style="display:none;"></div>
       <div class="edit-error" id="ri-error"></div>
@@ -1566,11 +1567,11 @@
       <div class="rc-row"><span class="rc-k">店名・社名</span><span class="rc-v" id="rre-shop">確認中…</span></div>
       <div class="rc-row"><span class="rc-k">所在地</span><span class="rc-v" id="rre-addr">確認中…</span></div>
       <div class="rc-row"><span class="rc-k">連絡先</span><span class="rc-v" id="rre-contact">確認中…</span></div>
-      <div class="rc-note" id="rre-reg-ok">変える時は、<wbr>設定画面で<wbr>変更してください。</div>
+      <div class="rc-note" id="rre-reg-ok">変更は、<wbr>設定画面で<wbr>行ってください。</div>
       <div class="rc-ng mk-off" id="rre-reg-ng"><b id="rre-reg-ng-title"></b><span id="rre-reg-ng-text"></span></div>
 
       <div class="rc-sec" style="margin-top:14px;">求人の<wbr>内容</div>
-      <div class="rc-meter" id="rre-meter" style="position:static;"><div class="rc-meter-t"><span>投稿文の<wbr>字数</span><span><b id="rre-used">0</b>／140字<wbr>（<span id="rre-rest-label">残り</span><b id="rre-rest">140</b>字）</span></div><div class="rc-bar"><i id="rre-bar"></i></div></div>
+      <div class="rc-meter" id="rre-meter" style="position:static;"><div class="rc-meter-t"><span>投稿文の文字数</span><span><b id="rre-used">0</b>／140字<wbr>（<span id="rre-rest-label">残り</span><b id="rre-rest">140</b>字）</span></div><div class="rc-bar"><i id="rre-bar"></i></div></div>
 
       <div class="mk-lbl">仕事の内容<span class="mk-tag">（必須）</span></div>
       <input type="text" class="mk-in" id="rre-job" oninput="rreOnInput(event)" oncompositionend="rreOnInput(event)">
@@ -1581,7 +1582,7 @@
 
       <div class="rc-blk"><div class="mk-lbl">賃金<span class="mk-tag">（必須）</span></div>
       <div class="rc-line"><select class="mk-in rc-sel" id="rre-wage-type" onchange="rreOnWageType()"><option value="時給">時給</option><option value="日給">日給</option><option value="月給">月給</option><option value="年収">年収</option></select><input type="text" class="mk-in rc-num" id="rre-wage-min" inputmode="decimal" oninput="rreOnWage(this)"><span id="rre-unit-1">円</span><span>〜</span><input type="text" class="mk-in rc-num" id="rre-wage-max" inputmode="decimal" oninput="rreOnWage(this)"><span id="rre-unit-2">円</span></div>
-      <div class="rc-note" style="margin-top:3px;">時給・<wbr>日給は<wbr>円、<wbr>月給・<wbr>年収は<wbr>万円で<wbr>入力します<wbr>（数字のみ）。<wbr>「〜」の<wbr>右は<wbr>任意です。</div></div>
+      <div class="rc-note" style="margin-top:3px;">時給・日給は<wbr>円、<wbr>月給・年収は<wbr>万円で<wbr>入力します。<wbr>数字だけを<wbr>入力してください。<wbr>「〜」の右は<wbr>空欄でもかまいません。</div></div>
 
       <div class="rc-blk"><div class="mk-lbl">働く場所<span class="mk-tag">（必須）</span></div>
       <label class="rc-check"><input type="checkbox" id="rre-place-same" checked onchange="rreOnPlaceSame()">所在地と<wbr>同じ</label>
@@ -1637,7 +1638,7 @@
 
   <!-- ヒント -->
   <div class="trim-hint">
-    <div class="trim-hint-main">枠を移動、拡大、縮小して調整してください。</div>
+    <div class="trim-hint-main">枠を移動・拡大・縮小して調整してください。</div>
   </div>
 
   <!-- アクションボタン -->
@@ -2210,7 +2211,7 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
   // 　本文の入力欄ではなく、投稿文作成195 と同じ人材募集の入力欄（今の投稿文から読み取って最初から入れる）を出し、決まった形の投稿文を作り直して保存する。
   // 　登録している店名・所在地・連絡先は、開いた時に getUserProfile で読み直す（設定で変えていれば、新しい登録で作り直す）。読み取れない投稿文の予約は直せない。
   // 　92 の「人材募集の投稿文は直せません」の案内は外した。GASの投稿予約gs_41 も、人材募集の予約の本文が決まった形かを確かめる。
-  const TRACE_SCREEN = '予約確認97';
+  const TRACE_SCREEN = '予約確認98';
 
   function traceLog(msg) {
     try {
@@ -2979,7 +2980,7 @@ document.addEventListener('touchcancel', function () { tabSwipeFinish(true); }, 
     if (stopMessage) {
       lines.push(stopMessage);
       if (cancelledCount > 0) lines.push(cancelledCount + '件の予約はキャンセルしました。');
-      lines.push('残りの予約は、キャンセルできていない可能性があります。一覧を確かめてから、もう一度お試しください。');
+      lines.push('残りの予約は、キャンセルできていない可能性があります。一覧を確認してから、もう一度お試しください。');
     } else if (failedErrors.length > 0) {
       if (cancelledCount > 0) lines.push(cancelledCount + '件の予約をキャンセルしました。');
       lines.push(failedErrors.length + '件はキャンセルできませんでした。');
@@ -3627,7 +3628,7 @@ function _dataUrlToBase64(dataUrl) {
       startTrimFlow();
     } catch (err) {
       console.error('今の画像の読み込みエラー:', err);
-      errorEl.textContent = '今の画像を読み込めませんでした。通信の状態を確かめて、もう一度お試しください。';
+      errorEl.textContent = '今の画像を読み込めませんでした。通信の状態を確認して、もう一度お試しください。';
     } finally {
       overlay.classList.remove('open');
     }
@@ -4526,7 +4527,7 @@ function _dataUrlToBase64(dataUrl) {
     if (!rreChecked('rre-place-same') && !rreVal('rre-place')) need.push('働く場所');
     if (need.length) { aipostNotice('「' + need.join('」「') + '」を入力してください。'); return; }
     const wmin = Number(rreVal('rre-wage-min')), wmax = rreVal('rre-wage-max') ? Number(rreVal('rre-wage-max')) : null;
-    if (!(wmin > 0) || (wmax !== null && !(wmax > wmin))) { aipostNotice('賃金の金額を確かめてください。\n「〜」の右に入れる時は、左より大きい金額にしてください。'); return; }
+    if (!(wmin > 0) || (wmax !== null && !(wmax > wmin))) { aipostNotice('賃金の金額を確認してください。\n「〜」の右に入れる時は、左より大きい金額にしてください。'); return; }
     if (!!rreVal('rre-time-from') !== !!rreVal('rre-time-to')) { aipostNotice('勤務時間は、始まりと終わりの両方を選んでください。'); return; }
     const text = rreBuildText();
     const used = rreCount(text);
@@ -4904,7 +4905,7 @@ function _dataUrlToBase64(dataUrl) {
     postHistoryLoading = true;
     // ★liff_reservation.html83：覚えた履歴を出している時は、出したまま小さく知らせる
     const showingCache = postHistoryItems !== null;
-    if (showingCache) setHistoryStatus('<span style="font-size:11px;">最新の情報を確かめています…</span>', true);
+    if (showingCache) setHistoryStatus('<span style="font-size:11px;">最新の情報を確認しています…</span>', true);
     else setHistoryStatus('読み込み中…');
     const retryHtml = '<br><button class="btn btn-outline" style="flex:none;margin-top:10px;padding:8px 20px;" onclick="loadPostHistory()">再読み込み</button>';
     try {
@@ -4915,7 +4916,7 @@ function _dataUrlToBase64(dataUrl) {
       );
       if (!result) {
         // 取得できなかった場合は「履歴なし」と誤表示しない（覚えた履歴を出している時は、そのまま出す）
-        setHistoryStatus((showingCache ? '最新の情報を確かめられませんでした。' : '投稿履歴を取得できませんでした') + retryHtml);
+        setHistoryStatus((showingCache ? '最新の情報を確認できませんでした。' : '投稿履歴を取得できませんでした') + retryHtml);
         return;
       }
       setHistoryStatus('');
@@ -4924,7 +4925,7 @@ function _dataUrlToBase64(dataUrl) {
       savePostHistoryCache(false); // ★liff_reservation.html83
     } catch (err) {
       console.error('投稿履歴の取得エラー:', err);
-      setHistoryStatus((showingCache ? '最新の情報を確かめられませんでした。' : '投稿履歴を取得できませんでした') + retryHtml);
+      setHistoryStatus((showingCache ? '最新の情報を確認できませんでした。' : '投稿履歴を取得できませんでした') + retryHtml);
     } finally {
       postHistoryLoading = false;
     }
@@ -5263,7 +5264,7 @@ function _dataUrlToBase64(dataUrl) {
     // ★liff_reservation.html87：上の件数の枠に出す（ほかのタブと同じ形）
     document.getElementById('del-count').textContent = String(allItems.length);
     document.getElementById('del-count-title').textContent = '削除できる投稿の件数（' + deleteSns + '）';
-    document.getElementById('del-count-sub').textContent = 'AiPostから投稿したもの（今月と過去12か月）です。' +
+    document.getElementById('del-count-sub').textContent = 'まるっとポストから投稿したX・Threadsの投稿です（今月と過去12か月）。' +
       (noIdCount > 0 ? 'うち' + noIdCount + '件は削除できません。' : '');
 
     const unlinked = isDeleteSnsUnlinked();
@@ -5298,7 +5299,7 @@ function _dataUrlToBase64(dataUrl) {
         const on = selectable && !!selection[item.reservationId];
         const rid = escapeHtml(item.reservationId);
         const noIdReason = (item.deletable && item.deletable[deleteSns]) ? '' :
-          '<div class="del-card-reason">この投稿はAiPostから削除できません（投稿IDの記録がありません）。</div>';
+          '<div class="del-card-reason">この投稿はまるっとポストから削除できません（投稿IDの記録がありません）。</div>';
         const err = errors[item.reservationId]
           ? '<div class="del-card-error">⚠️ ' + escapeHtml(errors[item.reservationId]) + '</div>' : '';
         return '<label class="del-card' + (on ? ' selected' : '') + (selectable ? '' : ' disabled') + '" style="display:block;cursor:' + (selectable ? 'pointer' : 'default') + ';">' +
@@ -5918,8 +5919,8 @@ function _dataUrlToBase64(dataUrl) {
 <div class="consent-overlay" id="consent-overlay">
   <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
     <div class="consent-title">ご利用の前に</div>
-    <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
-    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
+    <div class="consent-note">まるっとポストをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
+    <div class="consent-box">投稿文の作成のため、<wbr>入力内容と<wbr>店舗情報を<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送信します。<wbr>また、<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送信します。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
     <div class="consent-links">
       <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
       <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを読む</button>

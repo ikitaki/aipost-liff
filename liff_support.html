@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AIサポート26 - AiPost</title>
+  <title>AIサポート27 - まるっとポスト</title>
+  <!-- ★liff_support.html27（2026年11月22日）：文言の直し（文言の直し案_01）。名前を「まるっとポスト」にした・同意の窓の文・登録が見つからない時の文・「確かめる」を「確認」にそろえた・「解決しない場合は」（Kenさん指示） -->
   <!-- ★liff_support.html25（2026年11月18日）：同意の窓の条の番号を第4条にした（プライバシーポリシー9） -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
@@ -343,7 +344,7 @@
     document.getElementById('maint-icon').textContent = '🚫';
     document.getElementById('maint-title').textContent = 'ご利用を停止しています';
     var box = document.getElementById('maint-msg');
-    box.innerHTML = wrapHtml(msg || 'AiPostのご利用を停止しました。');
+    box.innerHTML = wrapHtml(msg || 'まるっとポストのご利用を停止しました。');
     box.style.wordBreak = 'keep-all';
     document.getElementById('maint-btn').style.display = 'none';
     document.getElementById('maint-overlay').classList.add('open');
@@ -398,8 +399,8 @@
 
   <div class="topbar">
     <span style="font-size:20px;">🤖</span>
-    <span class="topbar-logo"><span class="nowrap">AIサポート26</span></span>
-    <span class="topbar-sub">AiPost</span>
+    <span class="topbar-logo"><span class="nowrap">AIサポート27</span></span>
+    <span class="topbar-sub">まるっとポスト</span>
     <!-- ★お知らせ：ベル（未読があれば右上に件数）。押すとお知らせの一覧を開く -->
     <button type="button" class="header-bell" id="header-bell" onclick="aipostOpenNotices()" aria-label="お知らせ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header-bell-badge" id="header-bell-badge"></span></button>
     <button type="button" class="header-refresh" onclick="aipostRefreshAll(false)">🔄 更新</button>
@@ -537,14 +538,14 @@
 
   <!-- ★liff_support.html14：登録が見つからない時の案内（どちらのタブでも出す。ほかの画面と同じ文） -->
   <div class="unregistered-card" id="unregistered-card" style="display:none;">
-    ご利用の<wbr>登録が<wbr>見つかりませんでした。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用を<wbr>始められます。
+    登録情報が<wbr>見つかりません。<wbr>設定画面の<wbr><span class="nowrap">「登録」タブで</span><wbr>店舗情報を<wbr>保存すると、<wbr>ご利用<wbr>いただけます。
   </div>
 
   <!-- よくある質問（システム設定の「よくある質問マスタ」を表示する） -->
   <div class="tab-panel active" id="panel-faq">
     <div class="faq-sec">
       <input type="search" class="faq-search" id="faq-search" placeholder="言葉で探す（例：予約、Instagram）" oninput="renderFaq()">
-      <div class="faq-hint">質問を押すと、<wbr>答えが<wbr>開きます。<wbr>解決しない時は<wbr><span class="nowrap">「問い合わせ」タブから</span><wbr>お送りください。</div>
+      <div class="faq-hint">質問を押すと、<wbr>答えが<wbr>開きます。<wbr>解決しない場合は<wbr><span class="nowrap">「問い合わせ」タブから</span><wbr>お送りください。</div>
       <div id="faq-list"><div class="faq-empty">読み込んでいます…</div></div>
     </div>
   </div>
@@ -656,7 +657,7 @@
   // ★liff_support.html21：端末の知らせ（alert）を、画面の中の知らせの窓（aipostNotice）にした（Kenさん承認）
   // ★liff_support.html22：強制退会（利用停止）の人には、画面全体を覆う「🚫 ご利用を停止しています」を出す（GASの返事の suspended:true。Kenさん承認）
   // ★liff_support.html23：残り予約枠を、上の帯のプランと料金の行の右端に移した（5画面でそろえた。Kenさん指示）。
-  const TRACE_SCREEN = 'AIサポート26';
+  const TRACE_SCREEN = 'AIサポート27';
   function traceLog(msg) {
     try {
       const arr = JSON.parse(localStorage.getItem(TRACE_KEY) || '[]');
@@ -897,7 +898,7 @@
       return !word || it.q.toLowerCase().indexOf(word) !== -1 || it.a.toLowerCase().indexOf(word) !== -1;
     });
     if (hits.length === 0) {
-      list.innerHTML = '<div class="faq-empty">「' + escapeHtml(word) + '」を含む質問は見つかりませんでした。<br>解決しない時は「問い合わせ」タブからお送りください。</div>';
+      list.innerHTML = '<div class="faq-empty">「' + escapeHtml(word) + '」を含む質問は見つかりませんでした。<br>解決しない場合は「問い合わせ」タブからお送りください。</div>';
       return;
     }
     list.innerHTML = hits.map(function (it) {
@@ -1416,8 +1417,8 @@
 <div class="consent-overlay" id="consent-overlay">
   <div class="consent-sheet" role="dialog" aria-label="ご利用の前に">
     <div class="consent-title">ご利用の前に</div>
-    <div class="consent-note">AiPostをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
-    <div class="consent-box">投稿文の作成のため、<wbr>入力した内容と<wbr>店舗情報を、<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送ります。<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送ります。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
+    <div class="consent-note">まるっとポストをご利用いただくには、<wbr>利用規約と<wbr>プライバシーポリシーへの<wbr>同意が必要です。</div>
+    <div class="consent-box">投稿文の作成のため、<wbr>入力内容と<wbr>店舗情報を<wbr>米国の事業者<wbr><span style="white-space:nowrap">（OpenAI）に</span><wbr>送信します。<wbr>また、<wbr>SNSへの投稿や<wbr>データの保存のため、<wbr>米国の事業者<wbr>（X・<wbr>Meta・<wbr><span style="white-space:nowrap">Google）にも</span><wbr>送信します。<wbr>詳しくは、<wbr>プライバシーポリシーの<wbr>第4条を<wbr>ご覧ください。</div>
     <div class="consent-links">
       <button type="button" class="consent-link" onclick="aipostOpenLegal('terms')"><span style="white-space:nowrap">📄 利用規約を</span><wbr>読む</button>
       <button type="button" class="consent-link" onclick="aipostOpenLegal('privacy')"><span style="white-space:nowrap">🔒 プライバシー</span><wbr>ポリシーを読む</button>
